@@ -1,0 +1,96 @@
+# Project information
+site_name: Markdown Doc Template
+site_url: https://littlebee1024.github.io/learning_book/
+site_author: Little Bee
+site_description: >-
+  Create a static site from a set of Markdown files
+
+# Repository
+repo_name: littlebee1024/learning_book
+repo_url: https://github.com/littlebee1024/learning_book
+edit_uri: ""
+
+# Copyright
+copyright: Copyright &copy; 2021 - 2022 Little Bee
+
+# Configuration
+theme:
+  name: material
+  features:
+    - navigation.tabs
+    - navigation.top
+    - navigation.tracking
+    - search.highlight
+    - search.share
+    - search.suggest
+  palette:
+    # default scheme is light mode, can change to "slate" for dark mode
+    - scheme: default
+      primary: orange
+      accent: orange
+      toggle:
+        icon: material/toggle-switch-off-outline
+        name: Switch to dark mode
+    - scheme: slate
+      primary: orange
+      accent: orange
+      toggle:
+        icon: material/toggle-switch
+        name: Switch to light mode
+  font:
+    # Pick up a font from https://fonts.google.com/
+    text: Roboto
+    code: Roboto Mono
+  favicon: home/logo.png
+  icon:
+    # Pick up a logo from https://github.com/squidfunk/mkdocs-material/tree/master/material/.icons
+    logo: material/bee
+
+# Customization
+extra:
+  social:
+    # Pick up a logo from https://github.com/squidfunk/mkdocs-material/tree/master/material/.icons
+    - icon: fontawesome/brands/github
+      link: https://github.com/littlebee1024
+    - icon: fontawesome/brands/docker
+      link: https://hub.docker.com/r/littlebee1024
+
+# Extensions
+markdown_extensions:
+  # Show contents of a markdown file
+  - toc:
+      permalink: true
+  # Enable "note, tip..." block
+  - admonition
+  # Enable collapsible function of admonition feature
+  - pymdownx.details
+  # Block configure
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
+  - pymdownx.superfences
+  # Enable footnote feature
+  - footnotes
+  # Enable tilde character(~) for delete and subscript
+  - pymdownx.tilde
+  # Enable caret character(^) for insert and superscript
+  - pymdownx.caret
+  # Enable LaTeX math equations, which requires extra js below
+  - pymdownx.arithmatex:
+      generic: true
+  # Enable emoji
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
+  # Enable attributes for button links
+  - attr_list
+  # Enable metadata for tags
+  - meta
+  # Enable markdown in html for home page
+  - md_in_html
+
+extra_javascript:
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+
+# Page tree
+nav:
+  - Home: README.md
