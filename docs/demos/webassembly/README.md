@@ -134,6 +134,7 @@ Module.HEAPF32 | Float32Array | float
 Module.HEAPF64 | Float64Array | double
 
 在这16MB的内存空间中，Emscripten在其上面创建了8中view(如上表)，分别对应8中数据类型。例如，`Module['HEAP8'] = new Int8Array(Module['asm']['memory'].buffer)`就在`ArrayBuffer`对象上创建了一个`HEAP8`的view。下图中，所有View的空间内存空间是一样的，由编译器确保不同变量的地址不冲突。
+
 ![emcc_mem](./images/emcc_mem.png)
 
 ### [代码实例](./code/mem)
