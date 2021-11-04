@@ -15,6 +15,7 @@
       Module = {};
       Module.onRuntimeInitialized = function () {
          console.log(Module)
+         // Print C function
          console.log(Module['asm'])
       }
       // Set up button function
@@ -24,11 +25,11 @@
          console.log(Module._PrintString(strOnStack));
          strOnHeap = allocateUTF8("Hello from JS heap");
          console.log(Module._PrintString(strOnHeap));
-         _free(strOnHeap);
+         Module._free(strOnHeap);
 
          // Get string from C to JS
          var str = UTF8ToString(Module._GetString());
-         console.log(typeof(str));
+         console.log(typeof (str));
          console.log(str);
 
          // Process Integer in C
