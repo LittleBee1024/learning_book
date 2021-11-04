@@ -1,0 +1,4 @@
+# docs/demos/webassembly
+*.wat
+*.wasm
+docs/demos/webassembly/code/**/api.js

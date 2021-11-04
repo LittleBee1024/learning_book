@@ -1,0 +1,44 @@
+<!doctype html>
+
+<html>
+
+<head>
+   <meta charset="utf-8">
+   <title>Demo</title>
+</head>
+
+<body>
+   <p>WebAssembly C Demo</p>
+   <button onclick="button()">Click Me</button>
+   <script>
+      // Set up wasm module callback function to print info
+      Module = {};
+      Module.onRuntimeInitialized = function () {
+         console.log(Module)
+         console.log(Module['asm'])
+      }
+      // Set up button function
+      function button() {
+         // Pass string from JS to C
+         strOnStack = allocateUTF8OnStack("Hello from JS statck");
+         console.log(Module._PrintString(strOnStack));
+         strOnHeap = allocateUTF8("Hello from JS heap");
+         console.log(Module._PrintString(strOnHeap));
+         _free(strOnHeap);
+
+         // Get string from C to JS
+         var str = UTF8ToString(Module._GetString());
+         console.log(typeof(str));
+         console.log(str);
+
+         // Process Integer in C
+         console.log(Module._AddInt(1, 2));
+
+         // Process Float in C
+         console.log(Module._DivideFloat(7, 2.5));
+      }
+   </script>
+   <script src="api.js"></script>
+</body>
+
+</html>

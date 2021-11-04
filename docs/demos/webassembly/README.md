@@ -6,3 +6,6 @@
 
 ## WebAssembly + Cpp
 
+## 参考
+* [Emscripten编译选项](https://emscripten.org/docs/tools_reference/emcc.html)
+

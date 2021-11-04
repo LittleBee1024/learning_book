@@ -8,7 +8,7 @@ help:
 	@echo "\tbuild"
 
 serve:
-	mkdocs serve
+	mkdocs serve --dev-addr 127.0.0.1:8888
 
 build:
 	mkdocs build
