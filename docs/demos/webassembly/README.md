@@ -3,7 +3,7 @@
 > 简单的“WebAssembly + C/Cpp”样例
 
 ## WebAssembly with C
-* [代码](https://github.com/LittleBee1024/learning_book/tree/main/docs/demos/webassembly/code/hello_c)
+* [代码示例](https://github.com/LittleBee1024/learning_book/tree/main/docs/demos/webassembly/code/hello_c)
     ![web_c](./images/web_c.png)
 * [C代码](./code/hello_c/api.c)
     * 通过`EMSCRIPTEN_KEEPALIVE`宏将C函数输出给JS代码
@@ -46,14 +46,15 @@
 
 * [HTML代码](./code/hello_c/index.html)
     * JS中字符串可以创建在堆或者栈上，在堆上创建的字符串需要手动释放
-        * 由于emcc默认不输出`malloc`和`free`，如果需要在堆上创建字符串，需要在编译时加入`-s "EXPORTED_FUNCTIONS=['_malloc', '_free']"`编译选项
+    * 由于emcc默认不输出`malloc`和`free`，如果需要在堆上创建字符串，需要在编译时加入`-s "EXPORTED_FUNCTIONS=['_malloc', '_free']"`编译选项
     ```html
     <script>
         // Set up wasm module callback function to print info
         Module = {};
         Module.onRuntimeInitialized = function () {
             console.log(Module)
-            // Print C function， malloc and free are printed here if they are exported intentionally
+            // Print C function, malloc and free can be printed here
+            // if they are exported intentionally when compiling
             console.log(Module['asm'])
         }
         // Set up button function
