@@ -94,3 +94,7 @@ extra_javascript:
 # Page tree
 nav:
   - Home: README.md
+  - Book Notes:
+    - booknotes/csapp/README.md
+  - Demos:
+    - demos/webassembly/README.md
