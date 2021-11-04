@@ -64,7 +64,7 @@
             console.log(Module._PrintString(strOnStack));
             strOnHeap = allocateUTF8("Hello from JS heap");
             console.log(Module._PrintString(strOnHeap));
-            _free(strOnHeap);
+            Module._free(strOnHeap);
 
             // Get string from C to JS
             var str = UTF8ToString(Module._GetString());
