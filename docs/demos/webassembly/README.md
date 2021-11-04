@@ -81,6 +81,42 @@
     ```
 
 ## WebAssembly with Cpp
+* [代码示例](https://github.com/LittleBee1024/learning_book/tree/main/docs/demos/webassembly/code/hello_cpp)
+    ![web_c](./images/web_cpp.png)
+* [Cpp代码](./code/hello_cpp/api.cpp)
+    * 为了防止C++的`name mangling`，所有的API都通过`extern "C"`修饰后，以C API的形式传给JS
+    * 支持C++多态，STL库
+    ```cpp
+    EMSCRIPTEN_KEEPALIVE extern "C"
+    int CppPoly()
+    {
+        std::unique_ptr<CPP::Animal> a_dog = std::make_unique<CPP::Dog>("wang wang");
+        std::unique_ptr<CPP::Animal> a_bird = std::make_unique<CPP::Bird>("zha zha");
+
+        a_dog->set_weight(10);
+        a_bird->set_weight(2);
+
+        a_dog->dump();
+        a_bird->dump();
+
+        return 1;
+    }
+
+    EMSCRIPTEN_KEEPALIVE extern "C"
+    const char* ConvertString(const char* input)
+    {
+        static std::string s_str;
+        s_str.clear();
+        s_str.append(input);
+        std::cout << "Append CPP to the string: " << s_str << std::endl;
+        s_str.append(" CPP");
+        std::cout << "Return: " << s_str << std::endl;
+        return s_str.c_str();
+    }
+    ```
+* [HTML代码](./code/hello_cpp/index.html)
+    * 用法和上面的C代码例子类似，此处不再细述
+
 
 ## 参考
 * [Emscripten编译选项](https://emscripten.org/docs/tools_reference/emcc.html)
