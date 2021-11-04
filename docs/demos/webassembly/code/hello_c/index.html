@@ -21,7 +21,7 @@
       // Set up button function
       function button() {
          // Pass string from JS to C
-         strOnStack = allocateUTF8OnStack("Hello from JS statck");
+         strOnStack = allocateUTF8OnStack("Hello from JS stack");
          console.log(Module._PrintString(strOnStack));
          strOnHeap = allocateUTF8("Hello from JS heap");
          console.log(Module._PrintString(strOnHeap));
