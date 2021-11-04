@@ -39,8 +39,8 @@ theme:
         name: Switch to light mode
   font:
     # Pick up a font from https://fonts.google.com/
-    text: Roboto
-    code: Roboto Mono
+    text: Noto Sans Simplified Chinese
+    code: Consolas
   favicon: home/logo.png
   icon:
     # Pick up a logo from https://github.com/squidfunk/mkdocs-material/tree/master/material/.icons
