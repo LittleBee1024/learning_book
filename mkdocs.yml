@@ -1,9 +1,9 @@
 # Project information
-site_name: Markdown Doc Template
+site_name: Little Bee Blog
 site_url: https://littlebee1024.github.io/learning_book/
 site_author: Little Bee
 site_description: >-
-  Create a static site from a set of Markdown files
+  A blog about technical things, such as book notes and simple demos.
 
 # Repository
 repo_name: littlebee1024/learning_book
