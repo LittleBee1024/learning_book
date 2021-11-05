@@ -94,8 +94,23 @@ The following are some of the valid targets for this Makefile:
     make[3]: Leaving directory '/home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/libso/build'
     ```
 
+### [静态库配置文件](./code/liba/src/CMakeLists.txt)
+* 通过`add_library(mylib STATIC ${SRC_CPP})`配置了静态库目标
+* 编译命令
+    ```bash
+    [ 25%] Building CXX object src/CMakeFiles/mylib.dir/hello.cpp.o
+    cd /home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/liba/build/src && /usr/bin/c++  -I/home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/liba/src -g -std=c++20 -MD -MT src/CMakeFiles/mylib.dir/hello.cpp.o -MF CMakeFiles/mylib.dir/hello.cpp.o.d -o CMakeFiles/mylib.dir/hello.cpp.o -c /home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/liba/src/hello.cpp
+    [ 50%] Linking CXX static library libmylib.a
+    cd /home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/liba/build/src && /usr/bin/cmake -P CMakeFiles/mylib.dir/cmake_clean_target.cmake
+    cd /home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/liba/build/src && /usr/bin/cmake -E cmake_link_script CMakeFiles/mylib.dir/link.txt --verbose=1
+    /usr/bin/ar qc libmylib.a CMakeFiles/mylib.dir/hello.cpp.o
+    /usr/bin/ranlib libmylib.a
+    make[3]: Leaving directory '/home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/liba/build'
+    ```
+
 
 ## 静态库工程
+静态库工程和动态工程除了在`add_library`命令中使用`STATIC`选项以外，其他和动态库工程完全一样。
 
 
 ## 自定义工程
