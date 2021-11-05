@@ -6,7 +6,7 @@ cmake_minimum_required(VERSION 3.13)
 
 # Setting a project name
 project(exec VERSION 1.0
-   DESCRIPTION "LIBSO Project"
+   DESCRIPTION "CUSTOM Project"
    LANGUAGES CXX)
 
 # set the C++ standard
@@ -23,4 +23,3 @@ message(STATUS "[ROOT] CMAKE_CXX_COMPILER ${CMAKE_CXX_COMPILER}")
 # Add Targets
 ######################
 add_subdirectory(src)
-add_subdirectory(test)

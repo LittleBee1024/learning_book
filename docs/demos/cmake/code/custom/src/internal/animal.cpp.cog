@@ -1,0 +1,36 @@
+#include <iostream>
+
+/*[[[cog
+# Prepare to get dict "animal"
+import cog
+import json
+import os
+
+folder = os.path.dirname(os.path.abspath("__file__"))
+with open("animal.json") as f:
+   animal = json.load(f)
+]]]*/
+//[[[end]]]
+
+/*[[[cog
+# Generate function definations
+for type, sound in animal.items():
+   c_code = """
+   void %s_call() {
+      std::cout << "Animal %s calls %s" << std::endl;
+   }
+   """ % (type,type, sound)
+
+   cog.out(c_code)
+]]]*/
+//[[[end]]]
+
+void all_animal_call()
+{
+/*[[[cog
+for type, _ in animal.items():
+   c_code = "%s_call();" % (type)
+   cog.outl(c_code);
+]]]*/
+//[[[end]]]
+}

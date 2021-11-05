@@ -6,7 +6,7 @@ cmake_minimum_required(VERSION 3.13)
 
 # Setting a project name
 project(exec VERSION 1.0
-   DESCRIPTION "EXEC Project"
+   DESCRIPTION "LIBA Project"
    LANGUAGES CXX)
 
 # set the C++ standard
