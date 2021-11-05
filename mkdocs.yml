@@ -99,3 +99,4 @@ nav:
     - booknotes/csapp/README.md
   - Demos:
     - demos/webassembly/README.md
+    - demos/cmake/README.md
