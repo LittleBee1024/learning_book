@@ -11,4 +11,8 @@ debug: clean
 clean:
 	@rm -rf build
 
-.PHONY: release debug clean
+web: clean
+	emcmake cmake -S . -B build
+	cmake --build ./build --verbose
+
+.PHONY: release debug clean web

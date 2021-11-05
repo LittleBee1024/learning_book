@@ -44,17 +44,17 @@ cmake通过目录下的`CMakeLists.txt`文件，将整个工程串联起来。�
     ```
 * 开启`verbose`后，可得到完整的编译链接命令
     * 编译命令
-    ```bash
-    [ 50%] Building CXX object src/CMakeFiles/EXEC.dir/main.cpp.o
-    cd /home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/exec/build/src && /usr/bin/c++   -g -Wall -Werror -Wpedantic -I. -std=c++20 -MD -MT src/CMakeFiles/EXEC.dir/main.cpp.o -MF CMakeFiles/EXEC.dir/main.cpp.o.d -o CMakeFiles/EXEC.dir/main.cpp.o -c /home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/exec/src/main.cpp
-    ```
+        ```bash
+        [ 50%] Building CXX object src/CMakeFiles/EXEC.dir/main.cpp.o
+        cd /home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/exec/build/src && /usr/bin/c++   -g -Wall -Werror -Wpedantic -I. -std=c++20 -MD -MT src/CMakeFiles/EXEC.dir/main.cpp.o -MF CMakeFiles/EXEC.dir/main.cpp.o.d -o CMakeFiles/EXEC.dir/main.cpp.o -c /home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/exec/src/main.cpp
+        ```
     * 链接命令
-    ```bash
-    [100%] Linking CXX executable EXEC
-    cd /home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/exec/build/src && /usr/bin/cmake -E cmake_link_script CMakeFiles/EXEC.dir/link.txt --verbose=1
-    /usr/bin/c++ -g -Wl,-Map=output.map,--print-memory-usage -L. CMakeFiles/EXEC.dir/main.cpp.o -o EXEC 
-    Memory region         Used Size  Region Size  %age Used
-    ```
+        ```bash
+        [100%] Linking CXX executable EXEC
+        cd /home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/exec/build/src && /usr/bin/cmake -E cmake_link_script CMakeFiles/EXEC.dir/link.txt --verbose=1
+        /usr/bin/c++ -g -Wl,-Map=output.map,--print-memory-usage -L. CMakeFiles/EXEC.dir/main.cpp.o -o EXEC 
+        Memory region         Used Size  Region Size  %age Used
+        ```
 
 ### cmake目标
 cmake配置完成后，可通过`cmake`生成对应的`Makefile`。此工程的目标有：
@@ -75,7 +75,7 @@ The following are some of the valid targets for this Makefile:
 
 ### [动态库配置文件](./code/libso/src/CMakeLists.txt)
 * 为了方便查找动态库的头文件，通过`target_include_directories`命令，将目录文件输出
-    ```
+    ```makefile
     file(GLOB_RECURSE SRC_CPP ${CMAKE_CURRENT_SOURCE_DIR} "*.cpp")
     # Set SHARED to build so library
     add_library(mylib SHARED ${SRC_CPP})
@@ -85,14 +85,14 @@ The following are some of the valid targets for this Makefile:
 * 编译命令
     * 先编译`.o`文件
     * 再将所有`.o`文件链接成`.so`文件
-    ```bash
-    [ 25%] Building CXX object src/CMakeFiles/mylib.dir/hello.cpp.o
-    cd /home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/libso/build/src && /usr/bin/c++ -Dmylib_EXPORTS -I/home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/libso/src -g -fPIC -std=c++20 -MD -MT src/CMakeFiles/mylib.dir/hello.cpp.o -MF CMakeFiles/mylib.dir/hello.cpp.o.d -o CMakeFiles/mylib.dir/hello.cpp.o -c /home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/libso/src/hello.cpp
-    [ 50%] Linking CXX shared library libmylib.so
-    cd /home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/libso/build/src && /usr/bin/cmake -E cmake_link_script CMakeFiles/mylib.dir/link.txt --verbose=1
-    /usr/bin/c++ -fPIC -g -shared -Wl,-soname,libmylib.so -o libmylib.so CMakeFiles/mylib.dir/hello.cpp.o 
-    make[3]: Leaving directory '/home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/libso/build'
-    ```
+        ```bash
+        [ 25%] Building CXX object src/CMakeFiles/mylib.dir/hello.cpp.o
+        cd /home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/libso/build/src && /usr/bin/c++ -Dmylib_EXPORTS -I/home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/libso/src -g -fPIC -std=c++20 -MD -MT src/CMakeFiles/mylib.dir/hello.cpp.o -MF CMakeFiles/mylib.dir/hello.cpp.o.d -o CMakeFiles/mylib.dir/hello.cpp.o -c /home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/libso/src/hello.cpp
+        [ 50%] Linking CXX shared library libmylib.so
+        cd /home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/libso/build/src && /usr/bin/cmake -E cmake_link_script CMakeFiles/mylib.dir/link.txt --verbose=1
+        /usr/bin/c++ -fPIC -g -shared -Wl,-soname,libmylib.so -o libmylib.so CMakeFiles/mylib.dir/hello.cpp.o 
+        make[3]: Leaving directory '/home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/libso/build'
+        ```
 
 ### [动态库测试配置文件](./code/libso/test/CMakeLists.txt)
 * 通过`target_link_libraries`命令就可以链接到动态库，由于动态库工程已经将其头文件目录`PUBLIC`输出，所以此处能找到头文件
@@ -174,25 +174,64 @@ set_target_properties(main PROPERTIES
 * 由于当前目标依赖生成的源文件，所以在编译的时候要加入头文件目录，以防止自动生成了依赖的头文件在编译时无法找到
 * 编译命令
     * 源文件自动生成命令
-    ```bash
-    [ 25%] Generate C++ code with cog python tool
-    cd /home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/custom/build/src && /usr/bin/cmake -E copy_directory /home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/custom/src/internal /home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/custom/build/src/internal
-    cd /home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/custom/build/src && make -C /home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/custom/build/src/internal
-    make[4]: Entering directory '/home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/custom/build/src/internal'
-    python3 -m cogapp -d -s " //cog generated" -o animal.cpp animal.cpp.cog
-    make[4]: Leaving directory '/home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/custom/build/src/internal'
-    ```
+        ```bash
+        [ 25%] Generate C++ code with cog python tool
+        cd /home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/custom/build/src && /usr/bin/cmake -E copy_directory /home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/custom/src/internal /home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/custom/build/src/internal
+        cd /home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/custom/build/src && make -C /home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/custom/build/src/internal
+        make[4]: Entering directory '/home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/custom/build/src/internal'
+        python3 -m cogapp -d -s " //cog generated" -o animal.cpp animal.cpp.cog
+        make[4]: Leaving directory '/home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/custom/build/src/internal'
+        ```
     * 编译链接命令
-    ```bash
-    [ 50%] Building CXX object src/CMakeFiles/main.dir/main.cpp.o
-    cd /home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/custom/build/src && /usr/bin/c++   -g -I/home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/custom/build/src/internal -std=c++20 -MD -MT src/CMakeFiles/main.dir/main.cpp.o -MF CMakeFiles/main.dir/main.cpp.o.d -o CMakeFiles/main.dir/main.cpp.o -c /home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/custom/src/main.cpp
-    [ 75%] Building CXX object src/CMakeFiles/main.dir/internal/animal.cpp.o
-    cd /home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/custom/build/src && /usr/bin/c++   -g -I/home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/custom/build/src/internal -std=c++20 -MD -MT src/CMakeFiles/main.dir/internal/animal.cpp.o -MF CMakeFiles/main.dir/internal/animal.cpp.o.d -o CMakeFiles/main.dir/internal/animal.cpp.o -c /home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/custom/build/src/internal/animal.cpp
-    [100%] Linking CXX executable main
-    cd /home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/custom/build/src && /usr/bin/cmake -E cmake_link_script CMakeFiles/main.dir/link.txt --verbose=1
-    /usr/bin/c++ -g CMakeFiles/main.dir/main.cpp.o CMakeFiles/main.dir/internal/animal.cpp.o -o main 
-    make[3]: Leaving directory '/home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/custom/build'
-    ```
+        ```bash
+        [ 50%] Building CXX object src/CMakeFiles/main.dir/main.cpp.o
+        cd /home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/custom/build/src && /usr/bin/c++   -g -I/home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/custom/build/src/internal -std=c++20 -MD -MT src/CMakeFiles/main.dir/main.cpp.o -MF CMakeFiles/main.dir/main.cpp.o.d -o CMakeFiles/main.dir/main.cpp.o -c /home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/custom/src/main.cpp
+        [ 75%] Building CXX object src/CMakeFiles/main.dir/internal/animal.cpp.o
+        cd /home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/custom/build/src && /usr/bin/c++   -g -I/home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/custom/build/src/internal -std=c++20 -MD -MT src/CMakeFiles/main.dir/internal/animal.cpp.o -MF CMakeFiles/main.dir/internal/animal.cpp.o.d -o CMakeFiles/main.dir/internal/animal.cpp.o -c /home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/custom/build/src/internal/animal.cpp
+        [100%] Linking CXX executable main
+        cd /home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/custom/build/src && /usr/bin/cmake -E cmake_link_script CMakeFiles/main.dir/link.txt --verbose=1
+        /usr/bin/c++ -g CMakeFiles/main.dir/main.cpp.o CMakeFiles/main.dir/internal/animal.cpp.o -o main 
+        make[3]: Leaving directory '/home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/custom/build'
+        ```
+
+## WebAssembly工程
+另一篇文章[“WebAssembly”](../webassembly/README.md)介绍了WebAssembly和C/C++的用法。当时的例子是用`Makefile`集成编译的。通过`emcmake`结合`cmake`命令可以方便地将`C/C++ cmake`工程编译成“WebAssembly”工程，命令如下：
+```makefile
+web: clean
+	emcmake cmake -S . -B build
+	cmake --build ./build --verbose
+```
+
+### 修改静态库工程
+通过将静态库工程的`cmake`配置命令变成`emcmake cmake`，就可直接编译成“WebAssembly”工程，可参考其[Makefile](./code/liba/Makefile)中的web目标。
+
+* 编译命令
+    * 静态库
+        ```bash
+        [ 25%] Building CXX object src/CMakeFiles/mylib.dir/hello.cpp.o
+        cd /home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/liba/build/src && /home/yuxiangw/emsdk/upstream/emscripten/em++  @CMakeFiles/mylib.dir/includes_CXX.rsp -std=c++20 -MD -MT src/CMakeFiles/mylib.dir/hello.cpp.o -MF CMakeFiles/mylib.dir/hello.cpp.o.d -o CMakeFiles/mylib.dir/hello.cpp.o -c /home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/liba/src/hello.cpp
+        [ 50%] Linking CXX static library libmylib.a
+        cd /home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/liba/build/src && /usr/bin/cmake -P CMakeFiles/mylib.dir/cmake_clean_target.cmake
+        cd /home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/liba/build/src && /usr/bin/cmake -E cmake_link_script CMakeFiles/mylib.dir/link.txt --verbose=1
+        /home/yuxiangw/emsdk/upstream/emscripten/emar qc libmylib.a CMakeFiles/mylib.dir/hello.cpp.o
+        /home/yuxiangw/emsdk/upstream/emscripten/emranlib libmylib.a
+        make[3]: Leaving directory '/home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/liba/build'
+        ```
+        * 链接命令存在于`CMakeFiles/mylib.dir/link.txt`文件，通过`emar`命令进行压缩
+            ```bash
+            /home/yuxiangw/emsdk/upstream/emscripten/emar qc libmylib.a CMakeFiles/mylib.dir/hello.cpp.o
+            /home/yuxiangw/emsdk/upstream/emscripten/emranlib libmylib.a
+            ```
+    * WASM和JS文件
+        ```bash
+        [ 75%] Building CXX object test/CMakeFiles/myTest.dir/main.cpp.o
+        cd /home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/liba/build/test && /home/yuxiangw/emsdk/upstream/emscripten/em++  @CMakeFiles/myTest.dir/includes_CXX.rsp -std=c++20 -MD -MT test/CMakeFiles/myTest.dir/main.cpp.o -MF CMakeFiles/myTest.dir/main.cpp.o.d -o CMakeFiles/myTest.dir/main.cpp.o -c /home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/liba/test/main.cpp
+        [100%] Linking CXX executable myTest.js
+        cd /home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/liba/build/test && /usr/bin/cmake -E cmake_link_script CMakeFiles/myTest.dir/link.txt --verbose=1
+        /home/yuxiangw/emsdk/upstream/emscripten/em++ @CMakeFiles/myTest.dir/objects1.rsp -o myTest.js @CMakeFiles/myTest.dir/linklibs.rsp
+        make[3]: Leaving directory '/home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/liba/build'
+        ```
+        * 同样，链接命令也存在与`CMakeFiles/myTest.dir/link.txt`文件中
 
 ## 参考
 * [cmake常见变量](https://gitlab.kitware.com/cmake/community/-/wikis/doc/cmake/Useful-Variables)
