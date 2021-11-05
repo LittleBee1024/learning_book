@@ -7,3 +7,6 @@
 ## 动态库工程
 ## 自定义工程
 
+## 参考
+* [cmake常见变量](https://gitlab.kitware.com/cmake/community/-/wikis/doc/cmake/Useful-Variables)
+* [gcc常见编译选项](https://caiorss.github.io/C-Cpp-Notes/compiler-flags-options.html)
