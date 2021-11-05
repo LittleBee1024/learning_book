@@ -2,7 +2,7 @@ all: build
 
 # require python package "cog"
 gen:
-	cd internal && python3 -m cogapp -d -s " //cog generated" -o animal.cpp animal.cpp.cog
+	make -C ./internal
 
 build: clean gen
 	g++ -c main.cpp -o main.o -I./internal
