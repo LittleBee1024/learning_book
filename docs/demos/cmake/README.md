@@ -98,7 +98,7 @@ The following are some of the valid targets for this Makefile:
 * 通过`target_link_libraries`命令就可以链接到动态库，由于动态库工程已经将其头文件目录`PUBLIC`输出，所以此处能找到头文件
     ```makefile
     target_link_libraries(myTest PRIVATE
-    mylib
+        mylib
     )
     ```
 * 编译命令
@@ -157,7 +157,7 @@ add_custom_command(
    OUTPUT ${CODEGEN_SRC}
    # Copy all files in this folder to $(CODEGEN_BINARY_DIR)
    COMMAND ${CMAKE_COMMAND} -E copy_directory
-      ${CMAKE_CURRENT_SOURCE_DIR}/internal ${CODEGEN_BINARY_DIR}
+        ${CMAKE_CURRENT_SOURCE_DIR}/internal ${CODEGEN_BINARY_DIR}
    COMMAND make -C ${CODEGEN_BINARY_DIR}
    COMMENT "Generate C++ code with cog python tool"
    VERBATIM
