@@ -16,11 +16,11 @@ add_executable(main main.cpp ${CODEGEN_SRC})
 # because this target depends on the output of internal folder, and have to set output
 # in add_custom_command. Otherwise, cmake config fails because of no source file.
 add_custom_command(
+   OUTPUT ${CODEGEN_SRC}
    # Copy all files in this folder to $(CODEGEN_BINARY_DIR)
    COMMAND ${CMAKE_COMMAND} -E copy_directory
       ${CMAKE_CURRENT_SOURCE_DIR}/internal ${CODEGEN_BINARY_DIR}
    COMMAND make -C ${CODEGEN_BINARY_DIR}
-   OUTPUT ${CODEGEN_SRC}
    COMMENT "Generate C++ code with cog python tool"
    VERBATIM
 )

@@ -1,4 +1,4 @@
-#include <animal.h>
+#include "./internal/animal.h"
 
 int main()
 {

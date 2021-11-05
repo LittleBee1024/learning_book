@@ -112,6 +112,70 @@ The following are some of the valid targets for this Makefile:
     ```
 
 ## 自定义工程
+除了常规目标(EXEC，静态库，动态库)，cmake还提供了一些命令用于用户自定义的目标：
+
+* [`add_custom_command`](https://cmake.org/cmake/help/v3.22/command/add_custom_command.html?highlight=add_custom_command)
+    * 用于产生当前目标的依赖文件，本文的例子就用此命令执行了自动生成的代码，用于当前目标的编译
+* [`add_custom_target`](https://cmake.org/cmake/help/v3.22/command/add_custom_target.html?highlight=add_custom_target)
+    * 创建一个非常规的目标。例如，我们可以用其创建一个`doxygen`目标用来生成代码文档
+* [`add_dependencies`](https://cmake.org/cmake/help/v3.22/command/add_dependencies.html?highlight=add_custom_target#add-dependencies)
+    * 建立自定义依赖关系。cmake对库依赖会自动建立依赖关系，但是如果我们想建立一个非常规的依赖关系，就需要用到此命令。例如，建立自定义目标的依赖关系
+    * 当依赖关系建立好后，系统会按照依赖关系进行按顺序编译
+
+### [自定义目标配置文件](./code/custom/src/CMakeLists.txt)
+本例的编译顺序如下，可参考简单的[Makefile](./code/custom/src/Makefile)文件：
+
+* 先通过`python`的`cog`命令自动生成CPP源代码
+* 再将`main.cpp`与生成的代码进行编译
+* 最终生成一个可执行文件
+
+自定义目标的配置文件如下：
+```makefile
+set(CODEGEN_BINARY_DIR "${CMAKE_CURRENT_BINARY_DIR}/internal")
+set(CODEGEN_SRC "${CODEGEN_BINARY_DIR}/animal.cpp")
+
+add_executable(main main.cpp ${CODEGEN_SRC})
+
+add_custom_command(
+   OUTPUT ${CODEGEN_SRC}
+   # Copy all files in this folder to $(CODEGEN_BINARY_DIR)
+   COMMAND ${CMAKE_COMMAND} -E copy_directory
+      ${CMAKE_CURRENT_SOURCE_DIR}/internal ${CODEGEN_BINARY_DIR}
+   COMMAND make -C ${CODEGEN_BINARY_DIR}
+   COMMENT "Generate C++ code with cog python tool"
+   VERBATIM
+)
+
+set_target_properties(main PROPERTIES
+   COMPILE_OPTIONS "-I${CODEGEN_BINARY_DIR}"
+   LINK_OPTIONS ""
+   RUNTIME_OUTPUT_DIRECTORY ""
+)
+```
+
+* `internal`文件夹用于代码生成，在执行前被拷贝到目标工作目录`CMAKE_CURRENT_BINARY_DIR`下
+* 由于当前目标依赖生成的源文件，所以在编译的时候要加入头文件目录，以防止自动生成了依赖的头文件在编译时无法找到
+* 编译命令
+    * 源文件自动生成命令
+    ```bash
+    [ 25%] Generate C++ code with cog python tool
+    cd /home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/custom/build/src && /usr/bin/cmake -E copy_directory /home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/custom/src/internal /home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/custom/build/src/internal
+    cd /home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/custom/build/src && make -C /home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/custom/build/src/internal
+    make[4]: Entering directory '/home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/custom/build/src/internal'
+    python3 -m cogapp -d -s " //cog generated" -o animal.cpp animal.cpp.cog
+    make[4]: Leaving directory '/home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/custom/build/src/internal'
+    ```
+    * 编译链接命令
+    ```bash
+    [ 50%] Building CXX object src/CMakeFiles/main.dir/main.cpp.o
+    cd /home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/custom/build/src && /usr/bin/c++   -g -I/home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/custom/build/src/internal -std=c++20 -MD -MT src/CMakeFiles/main.dir/main.cpp.o -MF CMakeFiles/main.dir/main.cpp.o.d -o CMakeFiles/main.dir/main.cpp.o -c /home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/custom/src/main.cpp
+    [ 75%] Building CXX object src/CMakeFiles/main.dir/internal/animal.cpp.o
+    cd /home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/custom/build/src && /usr/bin/c++   -g -I/home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/custom/build/src/internal -std=c++20 -MD -MT src/CMakeFiles/main.dir/internal/animal.cpp.o -MF CMakeFiles/main.dir/internal/animal.cpp.o.d -o CMakeFiles/main.dir/internal/animal.cpp.o -c /home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/custom/build/src/internal/animal.cpp
+    [100%] Linking CXX executable main
+    cd /home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/custom/build/src && /usr/bin/cmake -E cmake_link_script CMakeFiles/main.dir/link.txt --verbose=1
+    /usr/bin/c++ -g CMakeFiles/main.dir/main.cpp.o CMakeFiles/main.dir/internal/animal.cpp.o -o main 
+    make[3]: Leaving directory '/home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/custom/build'
+    ```
 
 ## 参考
 * [cmake常见变量](https://gitlab.kitware.com/cmake/community/-/wikis/doc/cmake/Useful-Variables)
