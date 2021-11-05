@@ -137,7 +137,12 @@ Module.HEAPF64 | Float64Array | double
 
 ![emcc_mem](./images/emcc_mem.png)
 
-### [代码实例](./code/mem)
+### 基本数据类型的传递
+基本数据类型按值传递不需要考虑内存模型，直接用JS变量就可以传递和接收数据。
+
+如果基本数据类型按指针传递，可以通过`Module.HEAP_[addr]`的方式在JS中直接获取内存的值，其中`addr`就是C代码返回的变量指针。C代码中的非局部变量都构建在`ArrayBuffer`对象上，因此JS可以通过相应的view进行访问。JS代码拿到C代码返回的内存指针后，经过偏移计算，就可以得到变量在view中的偏移。在JS中将内存内容拷贝到本地，就完成了从C代码项JS代码传数据的功能。
+
+#### [代码实例](./code/mem)
 ![web_mem](./images/web_mem.png)
 
 * [Cpp代码](./code/mem/api.cpp)
@@ -188,6 +193,61 @@ Module.HEAPF64 | Float64Array | double
             Module.HEAPF64[double_ptr >> 3] = 123456.789
             // Console output: C{g_int:13} C{g_double:123456.789000}
             Module._PrintData()
+        }
+    </script>
+    ```
+
+### 数组类型的传递
+和基本数据类型指针传递不同，数组类型传递需要知道数组大小。在JS代码中拿到数组的起始地址和长度后，将全部内容拷贝到JS本地变量中。同时，JS应该负责内存的释放。
+
+#### [代码实例](./code/mem_arr)
+![web_mem_arr](./images/web_mem_arr.png)
+
+* [Cpp代码](./code/mem_arr/api.cpp)
+    * C代码接收JS传过来的数组起始地址和数组大小，并创建了一个新的数组返回给JS
+    * 这里虽然C代码在堆上建立了一个新的数组，但是将释放的权限转交给了JS
+    ```c
+    EMSCRIPTEN_KEEPALIVE
+    int* DoubleArr(const int* buf, const int len) {
+        int* ret_buf = (int*)malloc(len * sizeof(int));
+
+        for (int i = 0; i < len; i++) {
+            //printf("[%s]: Array from JS buf[%d] = %d\n", __func__, i, buf[i]);
+            ret_buf[i] = buf[i] * 2;
+        }
+
+    return ret_buf;
+    }
+    ```
+* [HTML代码](./code/mem_arr/index.html)
+    * 从打印的结果可以看出，虽然我们释放了内存，但是每次按下按钮，构建的内存地址都是不变的，说明编译器对其做了优化。
+    ```html
+    <script>
+        // Set up button function
+        function button() {
+            const len = 10;
+            const elem_bytes = Int32Array.BYTES_PER_ELEMENT;
+            const js_arr_on_heap = Module._malloc(elem_bytes * len);
+            console.log("Address of JS buffer: " + js_arr_on_heap);
+
+            for (let i = 0; i < len; i++){
+                Module.HEAP32[js_arr_on_heap / elem_bytes + i] = i + 1;
+            }
+
+            // Pass buffer from JS to C
+            console.log(Module._SumArray(js_arr_on_heap, len));
+            // Return buffer from C to JS
+            const c_arr_on_heap = Module._DoubleArr(js_arr_on_heap, len);
+            console.log("Address of C buffer: " + c_arr_on_heap);
+
+            const data = []
+            for (let i = 0; i < len; i++) {
+                data.push(Module.HEAP32[c_arr_on_heap / elem_bytes + i]);
+            }
+            console.log(data);
+
+            Module._free(js_arr_on_heap);
+            Module._free(c_arr_on_heap);
         }
     </script>
     ```
