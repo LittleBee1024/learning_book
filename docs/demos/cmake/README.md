@@ -8,12 +8,29 @@ cmake通过目录下的`CMakeLists.txt`文件，将整个工程串联起来。�
 ### [主配置文件](./code/exec/CMakeLists.txt)
 * 主配置文件主要配置一些全局信息。例如，项目名称，C++库版本等。同时加入子一级目录。
     ```makefile
+    cmake_minimum_required(VERSION 3.13)
+
+    # Setting a project name
+    project(exec VERSION 1.0
+    DESCRIPTION "EXEC Project"
+    LANGUAGES CXX)
+
     # set the C++ standard
     set(CMAKE_CXX_STANDARD 20)
     # Use STD c++ instead of GNU
     set(CMAKE_CXX_STANDARD_REQUIRED ON)
     set(CMAKE_CXX_EXTENSIONS OFF)
+
+    message(STATUS "[ROOT] CMAKE_BINARY_DIR ${CMAKE_BINARY_DIR}")
+    message(STATUS "[ROOT] CMAKE_SOURCE_DIR ${CMAKE_SOURCE_DIR}")
+    message(STATUS "[ROOT] CMAKE_CXX_COMPILER ${CMAKE_CXX_COMPILER}")
+
+    ######################
+    # Add Targets
+    ######################
+    add_subdirectory(src)
     ```
+
 ### [Exec目标配置文件](./code/exec/src/CMakeLists.txt)
 * 为了统一，可选择`set_target_properties`命令，为此目标配置所有的编译信息
     * 编译和链接选项通过分号隔离
