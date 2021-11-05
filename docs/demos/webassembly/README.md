@@ -145,7 +145,7 @@ Module.HEAPF64 | Float64Array | double
 #### [代码实例](./code/mem)
 ![web_mem](./images/web_mem.png)
 
-* [Cpp代码](./code/mem/api.cpp)
+* [Cpp代码](./code/mem/api.c)
     * C代码中的全局变量存在于`ArrayBuffer`对象，在JS中可通过对应的View加地址访问
     * 函数返回的指针，在JS代码中对应View上的地址
     ```c
@@ -203,7 +203,7 @@ Module.HEAPF64 | Float64Array | double
 #### [代码实例](./code/mem_arr)
 ![web_mem_arr](./images/web_mem_arr.png)
 
-* [Cpp代码](./code/mem_arr/api.cpp)
+* [Cpp代码](./code/mem_arr/api.c)
     * C代码接收JS传过来的数组起始地址和数组大小，并创建了一个新的数组返回给JS
     * 这里虽然C代码在堆上建立了一个新的数组，但是将释放的权限转交给了JS
     ```c
