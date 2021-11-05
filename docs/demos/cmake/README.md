@@ -94,6 +94,9 @@ The following are some of the valid targets for this Makefile:
     make[3]: Leaving directory '/home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/libso/build'
     ```
 
+## 静态库工程
+静态库工程和动态工程除了在`add_library`命令中使用`STATIC`选项以外，其他和动态库工程完全一样。
+
 ### [静态库配置文件](./code/liba/src/CMakeLists.txt)
 * 通过`add_library(mylib STATIC ${SRC_CPP})`配置了静态库目标
 * 编译命令
@@ -107,11 +110,6 @@ The following are some of the valid targets for this Makefile:
     /usr/bin/ranlib libmylib.a
     make[3]: Leaving directory '/home/yuxiangw/GitHub/learning_book/docs/demos/cmake/code/liba/build'
     ```
-
-
-## 静态库工程
-静态库工程和动态工程除了在`add_library`命令中使用`STATIC`选项以外，其他和动态库工程完全一样。
-
 
 ## 自定义工程
 
