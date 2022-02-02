@@ -57,7 +57,7 @@ Vue最独特的特性是其非入侵性的[响应性系统](https://v3.cn.vuejs.
 
 * Vue如何跟踪变化？
     * **副作用**按照上述方法被准备好后，需要解决的问题是：Vue是如何知道哪个**副作用**，应该在何时运行，并能在需要时再次执行它？
-    * Vue会将一个组件的`data`函数返回的对象包裹在一个带有`get`和`set`处理程序的[Proxy](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy)中，Proxy 是一个对象，它包装了另一个对象，并允许你拦截对该对象的任何交互。
+    * Vue会将一个组件的`data`函数返回的对象包裹在一个带有`get`和`set`处理程序的[Proxy](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy)中，Proxy 是一个对象，它包装了另一个对象，存储为`this.$data`，并允许你拦截对该对象的任何交互。
     ```js
     const dinner = {
         meal: 'tacos'
@@ -82,8 +82,32 @@ Vue最独特的特性是其非入侵性的[响应性系统](https://v3.cn.vuejs.
             * proxy的`get`处理函数中`track`函数记录了该property和当前副作用
         * 当某个值改变时进行检测，重新运行代码来读取原始值：
             * proxy的`set`处理函数中`trigger`函数查找哪些副作用依赖于该property并执行它们
+    * 下面我们用一个组件表达响应系统`sum = val1 + val2`
+        * `data`返回的对象将被包裹在响应式代理中，并存储为`this.$data`。Property`this.val1`和`this.val2`分别是`this.$data.val1`和`this.$data.val2`的别名，因此它们通过相同的代理
+        * Vue将把`sum`的函数包裹在一个副作用中。当我们试图访问`this.sum`时，它将运行该副作用来计算数值。包裹`$data`的响应式代理将会追踪到，当副作用运行时，property`val1`和`val2`被读取了
+        ```js
+        const vm = createApp({
+        data() {
+            return {
+                val1: 2,
+                val2: 3
+            }
+        },
+        computed: {
+            sum() {
+                return this.val1 + this.val2
+            }
+        }
+        }).mount('#app')
+
+        console.log(vm.sum) // 5
+        vm.val1 = 3
+        console.log(vm.sum) // 6
+        ```
 
 * 如何让渲染响应变化？
+    * 一个组件的模板被编译成一个`render`函数，`render`函数通过`h`函数创建[VNodes](https://v3.cn.vuejs.org/guide/render-function.html#%E8%99%9A%E6%8B%9F-dom-%E6%A0%91)，描述该组件应该如何被渲染。它被包裹在一个副作用中，允许Vue在运行时跟踪被“触达”的property。如果这些property中的任何一个随后发生了变化，它将触发**副作用**再次运行，重新运行`render`函数以生成新的VNodes
+
 
 ## 参考
 * [Vue官方文档](https://v3.cn.vuejs.org/guide/introduction.html)
