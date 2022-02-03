@@ -80,6 +80,8 @@
 ## 事件传送
 
 ### [v-on和$emit实例](./code/components/emits)
+* 通过`v-bind和props`，父组件可以将数据传递到子组件；同样，通过`v-on和emits`，子组件可以传递事件到父组件
+
 
 ## 数据监控
 
