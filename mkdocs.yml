@@ -102,4 +102,4 @@ nav:
     - demos/cmake/README.md
     - Vue3:
       - demos/vue/README.md
-      - demos/vue/components.md
+      - demos/vue/components/README.md
