@@ -6,39 +6,78 @@
 ### [条件渲染v-if实例](./code/components/v-if)
 ![v-if](./images/v-if.gif)
 
-* [HTML代码](./code/components/v-if/index.html)
-    * `v-if`指令根据表达式的真假值来有条件地渲染元素
-    ```html
-    <div v-if="type === 'A'">
-        A
-    </div>
-    <div v-else-if="type === 'B'">
-        B
-    </div>
-    <div v-else-if="type === 'C'">
-        C
-    </div>
-    <div v-else>
-        Not A/B/C
-    </div>
-    ```
+* `v-if`指令根据表达式的真假值来有条件地渲染元素
+```html
+<div v-if="type === 'A'">
+    A
+</div>
+<div v-else-if="type === 'B'">
+    B
+</div>
+<div v-else-if="type === 'C'">
+    C
+</div>
+<div v-else>
+    Not A/B/C
+</div>
+```
 
 ### [循环渲染v-for实例](./code/components/v-for)
 ![v-for](./images/v-for.png)
 
-* [HTML代码](./code/components/v-for/index.html)
-    * `v-for`基于源数据多次渲染元素或模板块，必须使用特定语法`alias in expression`
-    ```html
-    <li v-for="todo in todos">
-         {{ todo.text }}
-    </li>
-    ```
+* `v-for`基于源数据多次渲染元素或模板块，必须使用特定语法`alias in expression`
+```html
+<li v-for="todo in todos">
+    {{ todo.text }}
+</li>
+```
 
-## 父组件向子组件传递数据
+## 数据传递
 
-### [v-bind和props实例](./code/components/v-bind)
+### [v-bind实例](./code/components/v-bind)
+![v-bind](./images/v-bind.gif)
 
-## 子组件向父组件传送事件
+* `v-bind`可以地绑定一个或多个attribute，或绑定一个组件prop到表达式，可以通过`:`进行缩写，详情参考[文档](https://v3.cn.vuejs.org/api/directives.html#v-bind)
+* 以下是常见的`v-bind`例子：
+```html
+<!-- 绑定 attribute -->
+<img v-bind:src="imageSrc" />
+
+<!-- 动态 attribute 名 -->
+<button v-bind:[key]="value"></button>
+
+<!-- 缩写 -->
+<img :src="imageSrc" />
+
+<!-- 动态 attribute 名缩写 -->
+<button :[key]="value"></button>
+
+<!-- 内联字符串拼接 -->
+<img :src="'/path/to/images/' + fileName" />
+
+<!-- class 绑定 -->
+<div :class="{ red: isRed }"></div>
+<div :class="[classA, classB]"></div>
+<div :class="[classA, { classB: isB, classC: isC }]"></div>
+
+<!-- style 绑定 -->
+<div :style="{ fontSize: size + 'px' }"></div>
+<div :style="[styleObjectA, styleObjectB]"></div>
+
+<!-- 绑定一个全是 attribute 的对象 -->
+<div v-bind="{ id: someProp, 'other-attr': otherProp }"></div>
+
+<!-- prop 绑定。"prop" 必须在 my-component 声明 -->
+<my-component :prop="someThing"></my-component>
+
+<!-- 将父组件的 props 一起传给子组件 -->
+<child-component v-bind="$props"></child-component>
+```
+
+### [props实例](./code/components/v-bind)
+
+
+## 事件传送
 
 ### [v-on和$emit实例](./code/components/v-on)
 
@@ -48,7 +87,7 @@
 
 ### [watch实例](./code/components/watch)
 
-## 内容分发插槽Slot
+## 内容分发
 
-### [代码实例](./code/components/slot)
+### [slot实例](./code/components/slot)
 
