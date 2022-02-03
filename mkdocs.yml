@@ -101,5 +101,5 @@ nav:
     - demos/webassembly/README.md
     - demos/cmake/README.md
     - Vue3:
-      - demos/vue/README.md
+      - demos/vue/intro/README.md
       - demos/vue/components/README.md
