@@ -79,7 +79,7 @@
 
 ## 事件传送
 
-### [v-on和$emit实例](./code/components/v-on)
+### [v-on和$emit实例](./code/components/emits)
 
 ## 数据监控
 
