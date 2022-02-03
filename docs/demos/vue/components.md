@@ -74,8 +74,8 @@
 <child-component v-bind="$props"></child-component>
 ```
 
-### [props实例](./code/components/v-bind)
-
+### [props实例](./code/components/props)
+* 我们可以在组件内定义`props`，用以接受父组件通过`v-bind`传入的数据，从而更好地实现组件的复用，所有的`prop`都使得其父子 prop 之间形成了一个**单向下行绑定**，详细例子可以参考[官方文档](https://v3.cn.vuejs.org/guide/component-props.html)
 
 ## 事件传送
 
