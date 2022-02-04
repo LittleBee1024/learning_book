@@ -1,9 +1,9 @@
 # 组件复用
 
-> 介绍`Vue3.0`中组件复用技术，所有样例可在[GitHub仓库](https://github.com/LittleBee1024/learning_book/tree/main/docs/demos/vue/code/components)中找到
+> 介绍`Vue3.0`中组件复用技术，所有样例可在[GitHub仓库](https://github.com/LittleBee1024/learning_book/tree/main/docs/demos/vue/components/code/)中找到
 
 ## 渲染控制
-### [条件渲染v-if实例](./code/components/v-if)
+### [条件渲染v-if实例](./code/v-if)
 ![v-if](./images/v-if.gif)
 
 * `v-if`指令根据表达式的真假值来有条件地渲染元素
@@ -22,7 +22,7 @@
 </div>
 ```
 
-### [循环渲染v-for实例](./code/components/v-for)
+### [循环渲染v-for实例](./code/v-for)
 ![v-for](./images/v-for.png)
 
 * `v-for`基于源数据多次渲染元素或模板块，必须使用特定语法`alias in expression`
@@ -34,7 +34,7 @@
 
 ## 数据传递
 
-### [v-bind实例](./code/components/v-bind)
+### [v-bind实例](./code/v-bind)
 ![v-bind](./images/v-bind.gif)
 
 * `v-bind`可以地绑定一个或多个attribute，或绑定一个组件prop到表达式，可以通过`:`进行缩写，详情参考[文档](https://v3.cn.vuejs.org/api/directives.html#v-bind)
@@ -74,22 +74,24 @@
 <child-component v-bind="$props"></child-component>
 ```
 
-### [props实例](./code/components/props)
+### [props实例](./code/props)
 * 我们可以在组件内定义`props`，用以接受父组件通过`v-bind`传入的数据，从而更好地实现组件的复用，所有的`prop`都使得其父子 prop 之间形成了一个**单向下行绑定**，详细例子可以参考[官方文档](https://v3.cn.vuejs.org/guide/component-props.html)
+
+### [v-model实例](./code/v-model)
 
 ## 事件传送
 
-### [v-on和$emit实例](./code/components/emits)
+### [v-on和$emit实例](./code/emits)
 * 通过`v-bind和props`，父组件可以将数据传递到子组件；同样，通过`v-on和emits`，子组件可以传递事件到父组件
 
 
 ## 数据监控
 
-### [computed实例](./code/components/computed)
+### [computed实例](./code/computed)
 
-### [watch实例](./code/components/watch)
+### [watch实例](./code/watch)
 
 ## 内容分发
 
-### [slot实例](./code/components/slot)
+### [slot实例](./code/slot)
 
