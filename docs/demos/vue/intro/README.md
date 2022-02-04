@@ -111,5 +111,37 @@ console.log(proxy.meal)
 ## 生命周期
 ![vue_lifecycle](images/vue_lifecycle.svg)
 
+### [生命周期实例](./intro/code/life_cycle)
+![life_cycle](./images/life_cycle.gif)
+
+* [JS代码](./code/life_cycle/index.js)
+    * 所有生命周期钩子的`this`上下文将自动绑定至实例中，因此可以访问组件的data、computed和methods
+    * 生命周期钩子函数会按照生命周期的执行顺序，被执行
+    ```js
+    const LifeCycle = {
+        template: `
+            <p>Life Cycle Component</p>
+        `,
+        beforeCreate() {
+            console.log('life cycle function: beforeCreate')
+        },
+        created() {
+            console.log('life cycle function: created')
+        },
+        beforeMount() {
+            console.log('life cycle function: beforeMount')
+        },
+        mounted() {
+            console.log('life cycle function: mounted')
+        },
+        beforeUnmount() {
+            console.log('life cycle function: beforeUnmount')
+        },
+        unmounted() {
+            console.log('life cycle function: unmounted')
+        }
+    }
+    ```
+
 ## 参考
 * [Vue官方文档](https://v3.cn.vuejs.org/guide/introduction.html)
