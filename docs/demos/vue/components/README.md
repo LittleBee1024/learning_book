@@ -78,6 +78,21 @@
 * 我们可以在组件内定义`props`，用以接受父组件通过`v-bind`传入的数据，从而更好地实现组件的复用，所有的`prop`都使得其父子 prop 之间形成了一个**单向下行绑定**，详细例子可以参考[官方文档](https://v3.cn.vuejs.org/guide/component-props.html)
 
 ### [v-model实例](./code/v-model)
+* 在Vue3中，自定义组件上的`v-model`相当于传递了`modelValue`prop并接收抛出的`update:modelValue`事件
+    * 下面的[例子](./code/v-model/internal)中，`CustomInput`会接受`input`事件，向父组件抛出`update:modelValue`事件，并附加input内容`$event.target.value`，其中`$event`是原始的DOM事件。这样HTML代码就可以通过`<custom-input v-model="searchText"></custom-input>`将`searchText`和`input`的内容及事件进行绑定。
+    ```js
+    const CustomInput = {
+        props: ['modelValue'],
+        emits: ['update:modelValue'],
+        template:`
+            <input
+                :value="modelValue"
+                @input="$emit('update:modelValue', $event.target.value)"
+            />
+        `
+    }
+    ```
+* [v-model实例](./code/v-model)展示了`v-model`绑定不同input组件的方式
 
 ## 事件传送
 
