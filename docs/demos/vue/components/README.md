@@ -122,6 +122,11 @@
 ## 数据监控
 
 ### [computed实例](./code/computed)
+Vue可以通过两种方式配置computed对象：
+* [组件选项](https://v3.cn.vuejs.org/api/options-data.html#computed)
+* [响应性API](https://v3.cn.vuejs.org/api/computed-watch-api.html#computed)
+    * computed接受一个`getter`函数，并根据`getter`的返回值返回一个不可变的响应式ref对象。
+
 
 ### [watch实例](./code/watch)
 

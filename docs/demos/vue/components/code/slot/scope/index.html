@@ -1,0 +1,24 @@
+<html>
+
+<head>
+   <meta charset="UTF-8">
+   <script src="https://unpkg.com/vue@next"></script>
+</head>
+
+<div id="app">
+   <div>
+      Message: {{ message }}
+      <todo-button>
+         Message: {{ message }}
+      </todo-button>
+   </div>
+   <div>
+      <todo-button action="delete">
+         Clicking here will {{ action }} an item
+      </todo-button>
+   </div>
+</div>
+
+<script src="index.js"></script>
+
+</html>
