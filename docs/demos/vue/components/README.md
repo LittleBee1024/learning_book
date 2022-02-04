@@ -135,6 +135,71 @@
 * [实例方法](https://v3.cn.vuejs.org/api/instance-methods.html#watch)
 
 ## 内容分发
+Vue通过[插槽](https://v3.cn.vuejs.org/guide/component-slots.html)分发内容。
 
-### [slot实例](./code/slot)
+### [插槽内容](./code/slot/basic)
+* 通过`<todo-button>Slot Text</todo-button>`可以向`TodoButton`分发text内容：
+```js
+const TodoButton = {
+   template: `
+      <button><slot>DefaultText</slot></button>
+   `
+}
+```
+
+### [渲染作用域](./code/slot/scope)
+* 插槽可以访问与模板其余部分相同的实例property(即相同的“作用域”)
+    * 父级模板里的所有内容都是在父级作用域中编译的
+    * 子模板里的所有内容都是在子作用域中编译的
+
+### [具名插槽](./code/slot/named)
+* 在向具名插槽提供内容的时候，我们可以在一个`<template>`元素上使用v-slot指令，并以v-slot的参数的形式提供其名称
+```js
+<base-layout>
+  <template v-slot:header>
+    <h1>Here might be a page title</h1>
+  </template>
+
+  <template v-slot:default>
+    <p>A paragraph for the main content.</p>
+    <p>And another one.</p>
+  </template>
+
+  <template v-slot:footer>
+    <p>Here's some contact info</p>
+  </template>
+</base-layout>
+```
+
+### [作用域插槽](./code/slot/props)
+要使slot的属性在父级提供的插槽内容上可用，我们可以添加一个`<slot>`元素并将其作为一个`attribute`绑定。
+
+* [JS代码](./code/slot/props/index.js)
+    * `TodoList`组件通过slot属性暴露给父级组件
+    ```js
+    const TodoList = {
+        data() {
+            return {
+                items: ['Feed a cat', 'Buy milk']
+            }
+        },
+        template: `
+            <ul>
+                <li v-for="(item, index) in items">
+                    <slot :item="item" :index="index">{{item}}</slot>
+                </li>
+            </ul>
+        `
+    }
+    ```
+
+* [HTML代码](./code/slot/props/index.html)
+    * `TodoList`的父级组件通过`v-slot:default="slotProps"`可以拿到slot所有暴露的属性
+    ```html
+    <todo-list>
+        <template v-slot:default="slotProps">
+            <span style="color:blue;">Change in parent component: {{ slotProps.item }}</span>
+        </template>
+    </todo-list>
+    ```
 
