@@ -137,7 +137,7 @@
 ## 内容分发
 Vue通过[插槽](https://v3.cn.vuejs.org/guide/component-slots.html)分发内容。
 
-### [插槽内容](./code/slot/basic)
+### [插槽内容实例](./code/slot/basic)
 * 通过`<todo-button>Slot Text</todo-button>`可以向`TodoButton`分发text内容：
 ```js
 const TodoButton = {
@@ -147,12 +147,12 @@ const TodoButton = {
 }
 ```
 
-### [渲染作用域](./code/slot/scope)
+### [渲染作用域实例](./code/slot/scope)
 * 插槽可以访问与模板其余部分相同的实例property(即相同的“作用域”)
     * 父级模板里的所有内容都是在父级作用域中编译的
     * 子模板里的所有内容都是在子作用域中编译的
 
-### [具名插槽](./code/slot/named)
+### [具名插槽实例](./code/slot/named)
 * 在向具名插槽提供内容的时候，我们可以在一个`<template>`元素上使用v-slot指令，并以v-slot的参数的形式提供其名称
 ```js
 <base-layout>
@@ -171,7 +171,7 @@ const TodoButton = {
 </base-layout>
 ```
 
-### [作用域插槽](./code/slot/props)
+### [作用域插槽实例](./code/slot/props)
 要使slot的属性在父级提供的插槽内容上可用，我们可以添加一个`<slot>`元素并将其作为一个`attribute`绑定。
 
 * [JS代码](./code/slot/props/index.js)
