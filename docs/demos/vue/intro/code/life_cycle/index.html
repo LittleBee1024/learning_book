@@ -8,8 +8,9 @@
 <body>
    <div id="app">
       <button @click="toggle">Toggle Button</button>
+      <button @click="update">Update Button</button>
       <div v-if="active">
-         <life-cycle />
+         <life-cycle :text="message" />
       </div>
       <div v-else>
          <p>Life Cycle Component is deactive</p>

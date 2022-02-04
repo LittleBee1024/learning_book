@@ -1,6 +1,7 @@
 const LifeCycle = {
+   props: ['text'],
    template: `
-      <p>Life Cycle Component</p>
+      <p>Life Cycle Component {{ text }}</p>
    `,
    beforeCreate() {
       console.log('life cycle function: beforeCreate')
@@ -46,12 +47,16 @@ const LifeCycle = {
 const RootComponent = {
    data() {
       return {
-         active: false
+         active: false,
+         message: ''
       }
    },
    methods: {
       toggle() {
          this.active = !this.active
+      },
+      update() {
+         this.message = "is updated"
       }
    }
 }
