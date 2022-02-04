@@ -134,6 +134,12 @@ console.log(proxy.meal)
         mounted() {
             console.log('life cycle function: mounted')
         },
+        beforeUpdate() {
+            console.log('life cycle function: beforeUpdate')
+        },
+        updated() {
+            console.log('life cycle function: updated')
+        },
         beforeUnmount() {
             console.log('life cycle function: beforeUnmount')
         },
