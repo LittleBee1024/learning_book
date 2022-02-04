@@ -122,13 +122,17 @@
 ## 数据监控
 
 ### [computed实例](./code/computed)
-Vue可以通过两种方式配置computed对象：
-* [组件选项](https://v3.cn.vuejs.org/api/options-data.html#computed)
-* [响应性API](https://v3.cn.vuejs.org/api/computed-watch-api.html#computed)
-    * computed接受一个`getter`函数，并根据`getter`的返回值返回一个不可变的响应式ref对象。
+我们可以用`computed`创建一个跟随响应性数据变化的对象。Vue可以通过两种方式配置computed对象，computed接受一个`getter`函数，并根据`getter`的返回值返回一个不可变的响应式ref对象：
 
+* [计算属性](https://v3.cn.vuejs.org/api/options-data.html#computed)
+* [响应性API](https://v3.cn.vuejs.org/api/computed-watch-api.html#computed)
 
 ### [watch实例](./code/watch)
+我们可以用`watch`侦听包含了`data`或`computed`property的变化，并调用相应的回调函数。Vue提供了多种方法创建watch对象：
+
+* [侦听属性](https://v3.cn.vuejs.org/api/options-data.html#watch)
+* [响应性API](https://v3.cn.vuejs.org/api/computed-watch-api.html#watch)
+* [实例方法](https://v3.cn.vuejs.org/api/instance-methods.html#watch)
 
 ## 内容分发
 
