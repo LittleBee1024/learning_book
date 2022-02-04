@@ -96,9 +96,28 @@
 
 ## 事件传送
 
-### [v-on和$emit实例](./code/emits)
-* 通过`v-bind和props`，父组件可以将数据传递到子组件；同样，通过`v-on和emits`，子组件可以传递事件到父组件
+### [v-on实例](./code/v-on)
+* [`v-on`](https://v3.cn.vuejs.org/api/directives.html#v-on)指令用于绑定事件监听器，绑定的监听器可以接受原生的DOM事件`$event`作为参数，并通过事件修饰符控制触发事件行为
+```html
+<!-- 阻止单击事件继续冒泡 -->
+<button @click.stop="say($event, 'button_clicked')">Click_With_Stop</button>
+```
 
+### [$emit实例](./code/emits)
+通过`v-bind和props`，父组件可以将数据传递到子组件；同样，通过`v-on和emits`，子组件可以抛出事件到父组件
+
+* [JS代码](docs/demos/vue/components/code/emits/index.js)
+    * `this.$emit("increment-count")`抛出了`increment-count`事件，可以通过`v-on:increment-count`绑定事件监听器
+    ```js
+    const ChildComponent = {
+    emits: ['increment-count'],
+    template: `
+        <div>
+            <button @click='this.$emit("increment-count")'>click me</button>
+        </div>
+    `
+    }
+    ```
 
 ## 数据监控
 
