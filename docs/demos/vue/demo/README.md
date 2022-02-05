@@ -1,6 +1,6 @@
 # 样例模板
 
-> 一个简单的`Vue3.0`模板，所有代码可在[GitHub仓库](https://github.com/LittleBee1024/learning_book/tree/main/docs/demos/vue/demo/code)中找到
+> 基于[Vue3.0](https://v3.cn.vuejs.org/)+[Element Plus](https://element-plus.gitee.io/zh-CN/)的模板，所有代码可在[GitHub仓库](https://github.com/LittleBee1024/learning_book/tree/main/docs/demos/vue/demo/code)中找到
 
 ## [多页面模板](./code/multi_page)
 
