@@ -138,7 +138,7 @@
 Vue通过[插槽](https://v3.cn.vuejs.org/guide/component-slots.html)分发内容。
 
 ### [插槽内容实例](./code/slot/basic)
-* 通过`<todo-button>Slot Text</todo-button>`可以向`TodoButton`分发text内容：
+* 通过`<todo-button>{{ text }}</todo-button>`可以向`TodoButton`分发父组件的text内容：
 ```js
 const TodoButton = {
    template: `
@@ -148,9 +148,17 @@ const TodoButton = {
 ```
 
 ### [渲染作用域实例](./code/slot/scope)
-* 插槽可以访问与模板其余部分相同的实例property(即相同的“作用域”)
-    * 父级模板里的所有内容都是在父级作用域中编译的
-    * 子模板里的所有内容都是在子作用域中编译的
+![slot_scope](./images/slot_scope.png)
+
+* 上图显示了插槽内容的作用域，插槽可以访问与模板其余部分相同的实例property(即相同的“作用域”)，但不能访问`<todo-button>`组件的作用域。例如，尝试访问`action`将不起作用：
+```html
+<todo-button action="delete">
+    <!-- `action`将会是undefined，因为这个内容是传递到<todo-button>，
+    而插值解析是在父组件中展开的，此时`action`的值是undefined -->
+    {{ action }} an item
+</todo-button>
+```
+
 
 ### [具名插槽实例](./code/slot/named)
 * 在向具名插槽提供内容的时候，我们可以在一个`<template>`元素上使用v-slot指令，并以v-slot的参数的形式提供其名称
