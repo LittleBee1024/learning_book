@@ -106,7 +106,7 @@
 ### [$emit实例](./code/emits)
 通过`v-bind和props`，父组件可以将数据传递到子组件；同样，通过`v-on和emits`，子组件可以抛出事件到父组件
 
-* [JS代码](docs/demos/vue/components/code/emits/index.js)
+* [JS代码](./code/emits/index.js)
     * `this.$emit("increment-count")`抛出了`increment-count`事件，可以通过`v-on:increment-count`绑定事件监听器
     ```js
     const ChildComponent = {
