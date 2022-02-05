@@ -116,7 +116,7 @@ console.log(proxy.meal)
 
 * [JS代码](./code/life_cycle/index.js)
     * 所有生命周期钩子的`this`上下文将自动绑定至实例中，因此可以访问组件的data、computed和methods
-    * 生命周期钩子函数会按照生命周期的执行顺序，被执行
+    * 生命周期钩子函数会按照生命周期的执行顺序，被执行，详情可以参考[官方文档](https://v3.cn.vuejs.org/api/options-lifecycle-hooks.html#%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E9%92%A9%E5%AD%90)
     ```js
     const LifeCycle = {
         template: `
