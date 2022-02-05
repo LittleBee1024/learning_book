@@ -1,0 +1,19 @@
+<html>
+
+<head>
+   <link rel="stylesheet" href="../../css/footer.css">
+   <script src="https://unpkg.com/vue@next"></script>
+</head>
+
+<body>
+   <div id="app">
+      <vfooter footer="Demo Footer" />
+   </div>
+
+   <script type="module">
+      import vFooter from './index.js'
+      Vue.createApp({}).component('vfooter', vFooter).mount('#app')
+   </script>
+</body>
+
+</html>

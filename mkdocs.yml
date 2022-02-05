@@ -103,3 +103,4 @@ nav:
     - Vue3:
       - demos/vue/intro/README.md
       - demos/vue/components/README.md
+      - demos/vue/demo/README.md
