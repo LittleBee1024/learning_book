@@ -42,6 +42,16 @@ cmake通过目录下的`CMakeLists.txt`文件，将整个工程串联起来。�
         RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     )
     ```
+    * 如果不想用分号隔离编译和链接选项，可以通过`separate_arguments`命令将空格转换成分号，从而选项的写法就不会那么奇怪，下面的写法和上面的的写法是相同的，但是可读性更好也更不容易出错：
+    ```makefile
+    separate_arguments(COMPILE_OPTION UNIX_COMMAND "-Wall -Werror -Wpedantic -I.")
+    separate_arguments(LINK_OPTION UNIX_COMMAND "-Wl,-Map=output.map,--print-memory-usage -L.")
+    set_target_properties(EXEC PROPERTIES
+        COMPILE_OPTIONS "${COMPILE_OPTION}"
+        LINK_OPTIONS "${LINK_OPTION}"
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+    )
+    ```
 * 开启`verbose`后，可得到完整的编译链接命令
     * 编译命令
         ```bash
