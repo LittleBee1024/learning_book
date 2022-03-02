@@ -97,6 +97,9 @@ nav:
   - Home: README.md
   - Book Notes:
     - booknotes/csapp/README.md
+    - 程序员的自我修养:
+      - booknotes/cxydzwxy/memory/README.md
+      - booknotes/cxydzwxy/concurrency/README.md
   - Demos:
     - demos/webassembly/README.md
     - demos/cmake/README.md
