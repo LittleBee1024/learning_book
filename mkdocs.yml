@@ -102,6 +102,10 @@ nav:
       - booknotes/cxydzwxy/concurrency/README.md
       - booknotes/cxydzwxy/link/README.md
       - booknotes/cxydzwxy/load/README.md
+    - Debug Hacks:
+      - booknotes/debug_hacks/basic/README.md
+      - booknotes/debug_hacks/app_debug/README.md
+      - booknotes/debug_hacks/adv_debug/README.md
   - Demos:
     - demos/webassembly/README.md
     - demos/cmake/README.md
@@ -109,3 +113,4 @@ nav:
       - demos/vue/intro/README.md
       - demos/vue/components/README.md
       - demos/vue/demo/README.md
+    - demos/gdb/README.md
