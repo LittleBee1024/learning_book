@@ -100,6 +100,8 @@ nav:
     - 程序员的自我修养:
       - booknotes/cxydzwxy/memory/README.md
       - booknotes/cxydzwxy/concurrency/README.md
+      - booknotes/cxydzwxy/link/README.md
+      - booknotes/cxydzwxy/load/README.md
   - Demos:
     - demos/webassembly/README.md
     - demos/cmake/README.md
