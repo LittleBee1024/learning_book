@@ -34,7 +34,11 @@ GDB用于程序调试，常见的操作有：
 * 设置条件断点(conditional break point)
     * `break <断点> if <条件>`
 * 设置监视点(watch point)
+    * `watch <变量/地址>`，监视变量或地址，当发生变化时暂停程序
 * 设置捕获点(catch point)
+    * `catch exception`，捕获程序的异常，当发生异常时，暂停程序
+    * `catch syscall <name>`，捕获系统调用，系统调用名字可查看"/usr/include/asm/unistd.h"
+    * `catch signal`，捕获信号的发生
 
 ## 观察状态
 
