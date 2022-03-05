@@ -43,7 +43,7 @@ GDB用于程序调试，常见的操作有：
 ### 捕获点(catch point)
 * `catch throw`，捕获C++程序的异常，当发生异常时，暂停程序
     * [实例代码](./code/catch_throw/main.cpp)被GDB捕获了异常的发生，程序被暂停后打印了backtrace
-    ```cpp
+    ```bash
     gdb -q ./main \
     -ex "catch throw" \
     -ex "run" \
