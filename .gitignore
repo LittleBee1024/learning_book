@@ -1,3 +1,10 @@
 .vscode/
 build/
 site/
+
+# C/CPP
+*.exe
+*.out
+*.app
+main
+*.o
