@@ -61,6 +61,26 @@ GDB用于程序调试，常见的操作有：
     ```
 
 * `catch syscall <name>`，捕获系统调用，系统调用名字可查看"/usr/include/asm/unistd.h"
+
+* `catch fork`，捕获`fork`调用
+    * [实例代码](./code/catch_fork/main.cpp)被GDB捕获了`fork`的调用，程序被暂停后打印了backtrace
+    ```bash
+    gdb -q ./main \
+    -ex "catch fork" \
+    -ex "run" \
+    -ex "bt"
+    Reading symbols from ./main...
+    Catchpoint 1 (fork)
+    Starting program: /home/yuxiangw/GitHub/learning_book/docs/demos/gdb/code/catch_fork/main 
+    Fork example
+
+    Catchpoint 1 (forked process 1767571), arch_fork (ctid=0x7ffff7fb2810) at ../sysdeps/unix/sysv/linux/arch-fork.h:49
+    49      ../sysdeps/unix/sysv/linux/arch-fork.h: No such file or directory.
+    #0  arch_fork (ctid=0x7ffff7fb2810) at ../sysdeps/unix/sysv/linux/arch-fork.h:49
+    #1  __libc_fork () at ../sysdeps/nptl/fork.c:76
+    #2  0x0000555555555239 in main () at main.cpp:10
+    ```
+
 * `catch signal`，捕获信号的发生
 
 ## 观察状态
