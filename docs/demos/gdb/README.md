@@ -148,8 +148,15 @@ GDB用于程序调试，常见的操作有：
 
 ## 修改状态
 
-### 改变变量的值
-* `set variable <变量>=<表达式>`
+* `set variable <变量>=<表达式>`，改变变量的值
+
+## 多线程调试
+
+* `info inferiors`，查看正在被GDB调试的进程
+* `info threads`，查看所有线程的状态信息
+* `thread <threadno>`，切换到编号为"threadno"的线程
+* `thread apply <threadno> <command>`，只让编号为"threadno"的线程执行GDB命令
+* `set scheduler-locking on`，只运行在当前线程中，不切换到他线程执行任何GDB命令
 
 ## 其他常见命令
 
