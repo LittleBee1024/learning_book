@@ -20,6 +20,8 @@ clean:
 
 debug:
 	gdb -q ./main \
-	-ex "catch throw" \
+	-ex "catch signal" \
 	-ex "run" \
+	-ex "bt" \
+	-ex "c" \
 	-ex "bt"

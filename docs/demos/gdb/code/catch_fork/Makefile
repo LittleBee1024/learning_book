@@ -1,5 +1,5 @@
 CC=g++
-CFLAGS=-g -O0 -fno-inline
+CFLAGS=-g3 -O0 -fno-inline
 LDFLAGS=
 
 SRCS=main.cpp

@@ -42,7 +42,7 @@ GDB用于程序调试，常见的操作有：
 
 ### 捕获点(catch point)
 * `catch throw`，捕获C++程序的异常，当发生异常时，暂停程序
-    * [实例代码](./code/catch_throw/main.cpp)被GDB捕获了异常的发生，程序被暂停后打印了backtrace
+    * [实例代码](./code/catch_throw/main.cpp)被GDB捕获了异常的发生
     ```bash
     gdb -q ./main \
     -ex "catch throw" \
@@ -63,7 +63,7 @@ GDB用于程序调试，常见的操作有：
 * `catch syscall <name>`，捕获系统调用，系统调用名字可查看"/usr/include/asm/unistd.h"
 
 * `catch fork`，捕获`fork`调用
-    * [实例代码](./code/catch_fork/main.cpp)被GDB捕获了`fork`的调用，程序被暂停后打印了backtrace
+    * [实例代码](./code/catch_fork/main.cpp)被GDB捕获了`fork`的调用
     ```bash
     gdb -q ./main \
     -ex "catch fork" \
@@ -82,6 +82,39 @@ GDB用于程序调试，常见的操作有：
     ```
 
 * `catch signal`，捕获信号的发生
+    * [实例代码](./code/catch_signal/main.cpp)被GDB捕获了"SIGUSR1"和"SIGCHLD"的信号
+    ```bash
+    gdb -q ./main \
+    -ex "catch signal" \
+    -ex "run" \
+    -ex "bt" \
+    -ex "c" \
+    -ex "bt"
+    Reading symbols from ./main...
+    Catchpoint 1 (standard signals)
+    Starting program: /home/yuxiangw/GitHub/learning_book/docs/demos/gdb/code/catch_signal/main 
+    Catch signal example
+    [Detaching after fork from child process 1796689]
+    This is parent process to handle SIGUSR1 signal [process PID: 1796685, signal sender PID: 1796689].
+    This is child process to send SIGUSR1 signal [process PID: 1796689, parent process PID: 1796685].
+
+    Send SIGUSR1 signal successfully.
+    Child process is Done!
+    Catchpoint 1 (signal SIGUSR1), 0x00007ffff7ea4c2a in __GI___wait4 (pid=1796689, stat_loc=0x7fffffffdbfc, 
+        options=0, usage=0x0) at ../sysdeps/unix/sysv/linux/wait4.c:27
+    27      ../sysdeps/unix/sysv/linux/wait4.c: No such file or directory.
+    #0  0x00007ffff7ea4c2a in __GI___wait4 (pid=1796689, stat_loc=0x7fffffffdbfc, options=0, usage=0x0)
+        at ../sysdeps/unix/sysv/linux/wait4.c:27
+    #1  0x000055555555533d in main () at main.cpp:27
+    Continuing.
+
+    Catchpoint 1 (signal SIGCHLD), SIGUSR1_handler (signo=0) at main.cpp:9
+    9       {
+    #0  SIGUSR1_handler (signo=0) at main.cpp:9
+    #1  <signal handler called>
+    #2  0x00007ffff7ea4c28 in __GI___wait4 (pid=1796689, stat_loc=0x7fffffffdbfc, options=0, usage=0x7ffff7ea4c2a <__GI___wait4+26>) at ../sysdeps/unix/sysv/linux/wait4.c:27
+    #3  0x000055555555533d in main () at main.cpp:27
+    ```
 
 ## 观察状态
 
