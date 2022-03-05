@@ -157,6 +157,43 @@ GDB用于程序调试，常见的操作有：
 * `thread <threadno>`，切换到编号为"threadno"的线程
 * `thread apply <threadno> <command>`，只让编号为"threadno"的线程执行GDB命令
 * `set scheduler-locking on`，只运行在当前线程中，不切换到他线程执行任何GDB命令
+    * [实例代码](./code/threads/main.cpp)创建一个主线程和四个子线程
+    ```bash
+    gdb -q ./main \
+    -ex "b signals" \
+    -ex "run" \
+    -ex "info threads" \
+    -ex "info inferiors"
+    Reading symbols from ./main...
+    Breakpoint 1 at 0x1468: file main.cpp, line 18.
+    Starting program: /home/yuxiangw/GitHub/learning_book/docs/demos/gdb/code/threads/main 
+    [Thread debugging using libthread_db enabled]
+    Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+    [New Thread 0x7ffff7a12700 (LWP 1821943)]
+    Waiting... 
+    [New Thread 0x7ffff7211700 (LWP 1821944)]
+    Waiting... 
+    [New Thread 0x7ffff6a10700 (LWP 1821945)]
+    Waiting... 
+    [New Thread 0x7ffff620f700 (LWP 1821946)]
+    [Switching to Thread 0x7ffff620f700 (LWP 1821946)]
+
+    Thread 5 "main" hit Breakpoint 1, signals () at main.cpp:18
+    18      {
+    Id   Target Id                                  Frame 
+    1    Thread 0x7ffff7a13740 (LWP 1821939) "main" __pthread_clockjoin_ex (threadid=140737347921664, 
+        thread_return=0x0, clockid=<optimized out>, abstime=<optimized out>, block=<optimized out>)
+        at pthread_join_common.c:145
+    2    Thread 0x7ffff7a12700 (LWP 1821943) "main" futex_wait_cancelable (private=<optimized out>, expected=0, 
+        futex_word=0x55555555a188 <cv+40>) at ../sysdeps/nptl/futex-internal.h:183
+    3    Thread 0x7ffff7211700 (LWP 1821944) "main" futex_wait_cancelable (private=<optimized out>, expected=0, 
+        futex_word=0x55555555a188 <cv+40>) at ../sysdeps/nptl/futex-internal.h:183
+    4    Thread 0x7ffff6a10700 (LWP 1821945) "main" futex_wait_cancelable (private=<optimized out>, expected=0, 
+        futex_word=0x55555555a188 <cv+40>) at ../sysdeps/nptl/futex-internal.h:183
+    * 5    Thread 0x7ffff620f700 (LWP 1821946) "main" signals () at main.cpp:18
+    Num  Description       Executable        
+    * 1    process 1821939   /home/yuxiangw/GitHub/learning_book/docs/demos/gdb/code/threads/main 
+    ```
 
 ## 其他常见命令
 
