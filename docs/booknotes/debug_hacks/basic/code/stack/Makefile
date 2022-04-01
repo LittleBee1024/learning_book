@@ -13,7 +13,16 @@ all: main
 	$(CC) $(CFLAGS) -c $<
 
 main: $(OBJS)
-	$(CC) $(LDFLAGS) $(OBJS) -o $@
+	$(CC) $(OBJS) $(LDFLAGS) -o $@
 
 clean:
 	@rm -rf main *.o
+
+run:
+	@./main 10
+
+debug:
+	gdb -q ./main \
+	-ex "disas main" \
+	-ex "disas sum_till_MAX"
+
