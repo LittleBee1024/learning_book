@@ -54,7 +54,7 @@ Register | Purpose                                        | Saved across calls
 
 ![frame](./images/frame.svg)
 
-每个函数都拥有自己的栈帧(stack frame)，栈帧的起始地址由`%rbp`帧指针保存，栈顶由`%rsp`栈指针保存。以["sum.c"](./code/stack/sum.c)代码为例子，`main`函数(caller)调用了`sum_till_MAX`函数(callee)，其相关汇编代码如下：
+每次函数调用都会创建自己的栈帧(stack frame)，栈帧的起始地址由`%rbp`帧指针保存，栈顶由`%rsp`栈指针保存。以["sum.c"](./code/stack/sum.c)代码为例子，`main`函数(caller)调用了`sum_till_MAX`函数(callee)，其相关汇编代码如下：
 
 * `main`函数调用处的汇编代码
     ```asm
