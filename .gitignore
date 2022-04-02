@@ -8,3 +8,5 @@ site/
 *.app
 main
 *.o
+core
+.gdb_history
