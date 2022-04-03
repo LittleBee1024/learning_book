@@ -238,7 +238,47 @@ func (a=100, b=35000, c=5, d=65 'A', e=123456789, f=3.1400001, g=299792458,
 
 ### i386
 
+在i386中，参数全部放在栈中。将上节中的代码通过`-m32`编译成[32位版本](./code/call_i386/Makefile)后，通过GDB调试，断点在`func`调用之前。此时，`func`函数的所有参数，从右到左依次被压入栈中，打印栈上内容如下：
 
+```asm
+(gdb) p *(int*)($esp+4)
+$1 = 100                                    #参数a
+(gdb) p *(long*)($esp+8)
+$2 = 35000                                  #参数b
+(gdb) p *(short*)($esp+12)
+$3 = 5                                      #参数c
+(gdb) p *(char*)($esp+16)
+$4 = 65 'A'                                 #参数d
+(gdb) p *(long long*)($esp+20)
+$5 = 123456789                              #参数e
+(gdb) printf "%.2e\n",*(float*)($esp+28)
+3.14e+00                                    #参数f
+(gdb) printf "%.3e\n",*(double*)($esp+32)
+2.998e+08                                   #参数g
+(gdb) p/x *(int*)($esp+40)
+$6 = 0x56559008                             #参数h
+(gdb) p/x *(int*)($esp+44)
+$7 = 0x5655900c                             #参数i
+(gdb) p/x *(int*)($esp+48)
+$8 = 0x56557055                             #参数j
+
+(gdb) n
+(gdb) bt
+func (a=100, b=35000, c=5, d=65 'A', e=123456789, f=3.1400001, g=299792458,
+  h=0x56559008 <v1>, i=0x5655900c <v2>, j=0x56557055 "string") at main.c:9
+```
+
+* i386中的寄存器调用
+    * i386也可以通过“fastcall”的方式，将参数放在寄存器中
+    * GCC可以通过`__attribute__((regparm(3)))`声明，使用eax，edx和ecx传递开头3各参数
+    * Linux可以使用FASTCALL和asmregparm等宏来实现
+    ```cpp
+    __attribute__((regparm(3)))
+    void func(int a, long b, short c, char d, long long e, float f, double g, int *h, float *i, char *j)
+    {
+        ...
+    }
+    ```
 
 ### C++
 
