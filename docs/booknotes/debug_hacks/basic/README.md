@@ -268,18 +268,18 @@ func (a=100, b=35000, c=5, d=65 'A', e=123456789, f=3.1400001, g=299792458,
   h=0x56559008 <v1>, i=0x5655900c <v2>, j=0x56557055 "string") at main.c:9
 ```
 
-* i386中的寄存器调用
-    * i386也可以通过“fastcall”的方式，将参数放在寄存器中
-    * GCC可以通过`__attribute__((regparm(3)))`声明，使用eax，edx和ecx传递开头3各参数
-    * Linux可以使用FASTCALL和asmregparm等宏来实现
-    ```cpp
-    __attribute__((regparm(3)))
-    void func(int a, long b, short c, char d, long long e, float f, double g, int *h, float *i, char *j)
-    {
-        ...
-    }
-    ```
+#### i386中的寄存器调用
+
+i386也可以通过“fastcall”的方式，将参数放在寄存器中。例如，GCC可以通过`__attribute__((regparm(3)))`声明，使用eax，edx和ecx传递开头3各参数。而Linux可以使用FASTCALL和asmregparm等宏来实现。
+```cpp
+__attribute__((regparm(3)))
+void func(int a, long b, short c, char d, long long e, float f, double g, int *h, float *i, char *j)
+{
+    ...
+}
+```
 
 ### C++
+
 
 
