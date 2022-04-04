@@ -281,5 +281,25 @@ void func(int a, long b, short c, char d, long long e, float f, double g, int *h
 
 ### C++
 
+C++函数在编译时会经过函数名变换(mangle)，并且对于类方法的调用，第一个参数是当前类对象的指针。例如，[例子](./code/call_cpp/main.cpp)中的`foo::func`函数，最终调用签名如下：
+```cpp
+void func(class foo *this, int x, int y)
+{
+    this->a = x;
+    this->b = y+2;
+}
+```
 
+将程序在`foo::func`函数调用前打上断点后，可得到如下寄存器的值：
+```asm
+(gdb) i r
+...
+rdx            0x1                 1                #参数y
+rsi            0x5                 5                #参数x
+rdi            0x7fffffffdc18      140737488346136  #参数this
+...
 
+(gdb) n
+(gdb) bt                                            #参数值和上面的寄存器值相同
+foo::func (this=0x7fffffffdc18, x=5, y=1) at main.cpp:13
+```
