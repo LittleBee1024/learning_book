@@ -10,3 +10,4 @@ main
 *.o
 core
 .gdb_history
+*.so
