@@ -104,8 +104,7 @@ nav:
       - booknotes/cxydzwxy/load/README.md
     - Debug Hacks:
       - booknotes/debug_hacks/basic/README.md
-      - booknotes/debug_hacks/app_debug/README.md
-      - booknotes/debug_hacks/adv_debug/README.md
+      - booknotes/debug_hacks/advance/README.md
   - Demos:
     - demos/webassembly/README.md
     - demos/cmake/README.md
