@@ -55,7 +55,9 @@
 例如，一个动态库在编译时假设装载目标地址是0x1000，但实际装载地址是0x4000，那么动态库中所有绝对地址引用都需要加上0x3000的偏移量。
 
 ### 地址无关代码
-装载时重定位技术的最大缺点是，需要根据装载地址的不同，在装载时修改指令。而**地址无关代码(PIC, Position-independent Code)**不需要因为装载地址的改变而改变。其基本思想是把指令中那些需要被修改的部分分离出来，跟数据部分放在一起。多个进程之间共享不变的指令部分，而各自拥有可变数据部分。
+装载时重定位技术的最大缺点是，需要根据装载地址的不同，在装载时修改指令。
+
+**地址无关代码(PIC, Position-independent Code)**解决了此问题。其基本思想是把指令中那些需要被修改的部分分离出来，跟数据部分放在一起。多个进程之间共享不变的指令部分，而各自拥有可变数据部分。GCC编译时，`-fPIC`编译选项指定了编译出的代码为地址无关代码，在编译动态共享库时，需要加上此选项。
 
 我们把共享对象模块中的地址引用按照是否跨模块分成：模块内部引用和模块外部引用，按照不同的引用方式又可分为指令引用和数据访问，如[代码](./code/fPIC/lib_outer.c)所示的四种情况：
 ```cpp
@@ -76,7 +78,43 @@ void foo()
 }
 ```
 
-* 模块内部调用或跳转
-* 模块内部数据访问
-* 模块间数据访问
-* 模块间调用或跳转
+* 模块内数据访问`a`和模块间数据访问`b`
+    * 对于模块内数据访问，直接用相对地址即可得到存储位置
+    * 对于模块间数据访问，需要全局偏移表(Global Offset Table, GOT)的帮助。例如，`b`的GOT地址是`0xf7fc102c`，该地址指向`b`真正的地址，并且在装载时才能确定
+    ```asm
+    (gdb) disas bar
+    Dump of assembler code for function bar:
+        0x00007ffff7fc3159 <+0>:     endbr64 
+        0x00007ffff7fc315d <+4>:     push   %rbp
+        0x00007ffff7fc315e <+5>:     mov    %rsp,%rbp
+        0x00007ffff7fc3161 <+8>:     movl   $0x1,0x2ed1(%rip)        # 0x7ffff7fc603c <a>
+        0x00007ffff7fc316b <+18>:    mov    0x2e6e(%rip),%rax        # 0x7ffff7fc5fe0
+        0x00007ffff7fc3172 <+25>:    movl   $0x2,(%rax)
+
+    # 打印a变量地址0x7ffff7fc603c对应的内容
+    (gdb) p/x *0x7ffff7fc603c
+    $1 = 0x1
+
+    # 打印b变量地址0x7ffff7fc5fe0对应的内容
+    (gdb) p/x *0x7ffff7fc5fe0
+    $2 = 0xf7fc102c
+    ```
+* 模块内调用`bar`和模块间调用`ext`
+    * 不同于书中的描述，在GCC-11中，模块内部调用和模块间调用并无差别，都利用了[延迟绑定PLT](#plt)技术
+    ```asm
+    (gdb) disas foo
+    Dump of assembler code for function foo:
+        0x00007ffff7fc31a0 <+0>:     endbr64 
+        0x00007ffff7fc31a4 <+4>:     push   %rbp
+        0x00007ffff7fc31a5 <+5>:     mov    %rsp,%rbp
+        0x00007ffff7fc31a8 <+8>:     mov    $0x0,%eax
+        0x00007ffff7fc31ad <+13>:    callq  0x7ffff7fc3090 <ext@plt>
+        0x00007ffff7fc31b2 <+18>:    mov    $0x0,%eax
+        0x00007ffff7fc31b7 <+23>:    callq  0x7ffff7fc3070 <bar@plt>
+        0x00007ffff7fc31bc <+28>:    nop
+        0x00007ffff7fc31bd <+29>:    pop    %rbp
+        0x00007ffff7fc31be <+30>:    retq
+    ```
+
+## 延迟绑定(PLT)
+
