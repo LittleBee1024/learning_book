@@ -11,3 +11,5 @@ main
 core
 .gdb_history
 *.so
+program1
+program2

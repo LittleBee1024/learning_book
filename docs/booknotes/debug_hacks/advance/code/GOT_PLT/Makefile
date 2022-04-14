@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-g3 -O0 -fno-inline -fPIC
+CFLAGS=-g3 -O0 -fno-inline
 LDFLAGS=-L. -lfoo
 
 SRCS=main.c
@@ -17,6 +17,9 @@ all: clean main
 
 main: foo $(OBJS)
 	$(CC) $(OBJS) $(LDFLAGS) -o $@
+
+$(OBJS2): %.o: %.c
+	$(CC) -fPIC -shared $(CFLAGS) -c $<
 
 foo: $(OBJS2)
 	$(CC) -fPIC -shared $(OBJS2) -o lib$@.so
