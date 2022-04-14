@@ -38,5 +38,6 @@ run:
 	@env LD_LIBRARY_PATH=. ./program2
 
 debug:
-	env LD_LIBRARY_PATH=. gdb -q ./main \
-	-ex 'start' 
+	env LD_LIBRARY_PATH=. gdb -q ./program1 \
+	-ex 'start' \
+	-ex 'i proc mapping'
