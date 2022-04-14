@@ -100,8 +100,10 @@ nav:
     - 程序员的自我修养:
       - booknotes/cxydzwxy/memory/README.md
       - booknotes/cxydzwxy/concurrency/README.md
-      - 编译和链接:
-        - booknotes/cxydzwxy/compile_link/dynamic_link/README.md
+      - booknotes/cxydzwxy/compile/README.md
+      - 链接:
+        - booknotes/cxydzwxy/link/static/README.md
+        - booknotes/cxydzwxy/link/dynamic/README.md
       - booknotes/cxydzwxy/load/README.md
     - Debug Hacks:
       - booknotes/debug_hacks/basic/README.md
