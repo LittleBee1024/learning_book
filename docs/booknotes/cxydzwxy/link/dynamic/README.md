@@ -118,3 +118,14 @@ void foo()
 
 ## 延迟绑定(PLT)
 
+由于动态链接存在GOT定位，一般比静态链接要慢一些。延迟绑定(Lazy Binding)技术就是为了提高动态链接运行时的效率而提出的。其基本思想就是当函数第一次被用到时才进行绑定(符号查找、重定位等)，如果没有用到则不进行绑定。
+
+ELF使用PLT(Procedure Linkage Table)来实现延迟绑定。例如，我们想通过PLT跳转到`bar`函数，首先跳转到PLT中对应的结构`bar@plt`，其实现大致如下(根据GCC的版本不同，实现可能会不同)：
+```asm
+bar@plt:
+jmp *(bar@GOT)  # 通过GOT间接跳转，如果GOT未被配置，将继续下面的语句；如果GOT已配置，跳转至bar函数
+push n          # 以下代码是将bar的地址填入bar@GOT中，n是bar这个符号在重定位表".rel.plt"中的下标
+push moduleID   # 模块ID
+jump _dl_runtime_resolve # 通过链接器函数完成符号解析和重定位
+```
+
