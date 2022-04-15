@@ -146,6 +146,19 @@ Contents of section .rodata:
 
 `.rodata`段保存只读数据，如例子中的字符串：`%d\n`，三个字符的[ASCII码](https://ascii.cl/)分别是：0x25，0x64，0x0A，对应于上面的25640a00。
 
-#### BSS段
+#### 其他段
+常用段名 | 说明
+--- | ---
+.comment | 存放的是编译器版本信息，比如字符串："GCC: (Ubuntu 11.1.0-1ubuntu1~20.04) 11.1.0"
+.debug | 调试信息，在编译的时候加上-g，可以出现相关段
+.dynamic | 动态链接信息
+.hash | 符号哈希表
+.line | 调试时的行号表
+.note | 额外的编译信息，比如程序的公司名、发布版本号等
+.strtab | String Table字符串表，用于存储ELF文件中用到的各种字符串
+.symtab | Symbol Table符号表
+.shstrtab | Section String Table段名表
+.plt .got | 动态链接的跳转表和全局入口表
+.init .fini | 程序初始化与终结代码段，出现在C++代码中
 
 
