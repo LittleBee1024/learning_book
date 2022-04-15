@@ -13,3 +13,6 @@ core
 *.so
 program1
 program2
+
+*.i
+*.s
