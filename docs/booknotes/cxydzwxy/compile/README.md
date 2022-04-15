@@ -24,5 +24,20 @@ C语言生成一个可执行文件需要4个步骤：
         * `3`，表示接下来的内容来自系统头文件，某些警告将被忽略
         * `4`，表示接下来的内容按C代码处理，即被`extern "C"`修饰
 
+### 编译
+编译过程就是把预处理完的文件进行一系列词法分析、语法分析、语义分析以及优化后产生相应的汇编代码文件，其命令是：`gcc -S main.i -o main.s`。
 
+### 汇编
+汇编器将汇编代码转变成机器可执行的指令，称为目标文件(Object File)。我们可以调用汇编器`as`完成，也可以通过GCC命令完成。
+
+* `as main.s -o main.o`
+* `gcc -c main.s -o main.o`
+
+### 链接
+GCC命令`gcc main.o -o main`，可根据目标文件，生成可执行文件。此命令底层是依赖链接器`ld`完成的，其完整命令如下：
+```sh
+ld -static /usr/lib/x86_64-linux-gnu/crt1.o /usr/lib/x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/9/crtbeginT.o \
+	-L/usr/lib/gcc/x86_64-linux-gnu/9 -L/usr/lib -L/lib main.o --start-group -lgcc -lgcc_eh -lc --end-group /usr/lib/gcc/x86_64-linux-gnu/9/crtend.o /usr/lib/x86_64-linux-gnu/crtn.o \
+	-o main
+```
 
