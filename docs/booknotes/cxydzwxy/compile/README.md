@@ -161,4 +161,93 @@ Contents of section .rodata:
 .plt .got | 动态链接的跳转表和全局入口表
 .init .fini | 程序初始化与终结代码段，出现在C++代码中
 
+#### 自定义段
+在全局变量或函数之前加上`__attribute__((section("name")))`属性就可以把相应的变量或函数放到以"name"作为段名的段中。如：
+```cpp
+// 将`global`全局变量放入"FOO"段名中
+__attribute__((section("FOO"))) int global = 42;
+// 将`foo`函数放入"BAR"段名中
+__attribute__((section("BAR"))) void foo()
+{
+}
+```
 
+### ELF文件结构
+前面我们通过`objdump`工具，大致了解了目标文件中常见的段。接下来我们来详细地看看ELF目标文件的结构。ELF目标文件主要包括：
+
+* ELF文件头(ELF Header)
+    * 在文件最前部，描述整个文件的基本属性，比如ELF文件版本、目标机器型号、程序入口地址等
+* 各个段的内容
+    * ELF文件的主体内容
+* 段表(Section Header)
+    * 描述了ELF文件包含的所有段的信息，比如每个段的段名、段的长度、在文件中的偏移、读写权限及段的其他属性
+
+`readelf -h main.o`命令会读取"main.o"的ELF文件头，并打印如下信息：
+```sh
+ELF Header:
+  Magic:   7f 45 4c 46 02 01 01 00 00 00 00 00 00 00 00 00 
+  Class:                             ELF64
+  Data:                              2's complement, little endian
+  Version:                           1 (current)
+  OS/ABI:                            UNIX - System V
+  ABI Version:                       0
+  Type:                              REL (Relocatable file)
+  Machine:                           Advanced Micro Devices X86-64
+  Version:                           0x1
+  Entry point address:               0x0
+  Start of program headers:          0 (bytes into file)
+  Start of section headers:          1176 (bytes into file)
+  Flags:                             0x0
+  Size of this header:               64 (bytes)
+  Size of program headers:           0 (bytes)
+  Number of program headers:         0
+  Size of section headers:           64 (bytes)
+  Number of section headers:         14
+  Section header string table index: 13
+```
+
+`readelf -S main.o`命令会读取"main.o"的段表，并打印如下信息：
+```sh
+There are 14 section headers, starting at offset 0x498:
+
+Section Headers:
+  [Nr] Name              Type             Address           Offset
+       Size              EntSize          Flags  Link  Info  Align
+  [ 0]                   NULL             0000000000000000  00000000
+       0000000000000000  0000000000000000           0     0     0
+  [ 1] .text             PROGBITS         0000000000000000  00000040
+       0000000000000064  0000000000000000  AX       0     0     1
+  [ 2] .rela.text        RELA             0000000000000000  00000378
+       0000000000000078  0000000000000018   I      11     1     8
+  [ 3] .data             PROGBITS         0000000000000000  000000a4
+       0000000000000008  0000000000000000  WA       0     0     4
+  [ 4] .bss              NOBITS           0000000000000000  000000ac
+       0000000000000008  0000000000000000  WA       0     0     4
+  [ 5] .rodata           PROGBITS         0000000000000000  000000ac
+       0000000000000004  0000000000000000   A       0     0     1
+  [ 6] .comment          PROGBITS         0000000000000000  000000b0
+       000000000000002c  0000000000000001  MS       0     0     1
+  [ 7] .note.GNU-stack   PROGBITS         0000000000000000  000000dc
+       0000000000000000  0000000000000000           0     0     1
+  [ 8] .note.gnu.propert NOTE             0000000000000000  000000e0
+       0000000000000020  0000000000000000   A       0     0     8
+  [ 9] .eh_frame         PROGBITS         0000000000000000  00000100
+       0000000000000058  0000000000000000   A       0     0     8
+  [10] .rela.eh_frame    RELA             0000000000000000  000003f0
+       0000000000000030  0000000000000018   I      11     9     8
+  [11] .symtab           SYMTAB           0000000000000000  00000158
+       00000000000001b0  0000000000000018          12    12     8
+  [12] .strtab           STRTAB           0000000000000000  00000308
+       000000000000006d  0000000000000000           0     0     1
+  [13] .shstrtab         STRTAB           0000000000000000  00000420
+       0000000000000074  0000000000000000           0     0     1
+Key to Flags:
+  W (write), A (alloc), X (execute), M (merge), S (strings), I (info),
+  L (link order), O (extra OS processing required), G (group), T (TLS),
+  C (compressed), x (unknown), o (OS specific), E (exclude),
+  l (large), p (processor specific)
+```
+
+结合上面打印的信息，我们可以画出"main.o"文件的结构如下:
+
+![obj_section_detail](./images/obj_section_detail.svg)
