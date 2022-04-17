@@ -129,3 +129,65 @@ push moduleID   # 模块ID
 jump _dl_runtime_resolve # 通过链接器函数完成符号解析和重定位
 ```
 
+### PLT相关的段
+ELF将GOT拆分成两个表：
+
+* ".got"段 - 用来保存全局变量引用的地址
+* ".got.plt"段 - 用来保存外部函数引用的地址
+
+在["fPIC例子"](./code/fPIC/lib_outer.c)中，用`objdump -D libouter.so`命令打印".got"和".got.plt"段的内容如下：
+```asm
+Disassembly of section .got:
+
+0000000000003fd8 <.got>:
+        ...
+
+Disassembly of section .got.plt:
+
+0000000000004000 <_GLOBAL_OFFSET_TABLE_>:
+    4000:       18 3e                   sbb    %bh,(%rsi)
+        ...
+    4016:       00 00                   add    %al,(%rax)
+    4018:       30 10                   xor    %dl,(%rax)
+    401a:       00 00                   add    %al,(%rax)
+    401c:       00 00                   add    %al,(%rax)
+    401e:       00 00                   add    %al,(%rax)
+    4020:       40 10 00                adc    %al,(%rax)
+    4023:       00 00                   add    %al,(%rax)
+    4025:       00 00                   add    %al,(%rax)
+    4027:       00 50 10                add    %dl,0x10(%rax)
+    402a:       00 00                   add    %al,(%rax)
+    402c:       00 00                   add    %al,(%rax)
+        ...
+```
+其中，".got"段的范围是：0x3fd8-0x4000，".got.plt"段的范围是：0x4000-0x4038
+
+* `0x3fe0`是全局变量`b`在".got"段的位置，`bar`函数中变量`b`的地址就是此位置
+    ```asm
+    0000000000001159 <bar>:
+        1159:       f3 0f 1e fa             endbr64 
+        115d:       55                      push   %rbp
+        115e:       48 89 e5                mov    %rsp,%rbp
+        1161:       c7 05 d1 2e 00 00 01    movl   $0x1,0x2ed1(%rip)        # 403c <a>
+        1168:       00 00 00 
+        116b:       48 8b 05 6e 2e 00 00    mov    0x2e6e(%rip),%rax        # 3fe0 <b>
+        1172:       c7 00 02 00 00 00       movl   $0x2,(%rax)
+        1178:       48 8b 05 61 2e 00 00    mov    0x2e61(%rip),%rax        # 3fe0 <b>
+        117f:       8b 10                   mov    (%rax),%edx
+        ...
+    ```
+* `0x4028`是外部函数`ext`在".got.plt"段的位置，`ext@plt`就是跳转到此位置
+    ```asm
+    0000000000001090 <ext@plt>:
+        1090:       f3 0f 1e fa             endbr64 
+        1094:       f2 ff 25 8d 2f 00 00    bnd jmpq *0x2f8d(%rip)        # 4028 <ext>
+        109b:       0f 1f 44 00 00          nopl   0x0(%rax,%rax,1)
+    ```
+
+## 动态链接相关的段
+### ".interp"段
+### ".dynamic"段
+### 动态符号表
+### 动态链接重定位表
+
+
