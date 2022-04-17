@@ -328,3 +328,21 @@ void *memset (void *, int, size_t);
 }
 #endif
 ```
+
+### 弱符号与强符号
+我们经常会遇到符号重定义的错误。例如，目标文件A和目标文件B都定义了一个全局变量global，则链接时会报错：
+```sh
+b.o: multiple definition of `global`
+a.o: first defined here
+```
+
+符号的定义分为**强符号(Strong Symbol)**定义和**弱符号(Weak Symbol)**定义。通过GCC修饰符`__attribute__((weak))`可以定义弱符号，包括弱全局变量和弱函数。例如，["weak.c"](./code/strong_weak_sym/weak.c)定义了弱变量`bar`和弱函数`foo`，
+```cpp
+int __attribute__((weak)) bar = 3;
+
+void __attribute__((weak)) foo(int a, int b)
+{
+   printf("weak version foo(%d, %d) with bar %d, sizeof(bar) = %zu\n", a, b, bar, sizeof(bar));
+}
+```
+当没有编译目标中没有强符号["strong.c"](./code/strong_weak_sym/strong.c)，使用弱符号的定义。当存在强符号时，使用强符号的定义。
