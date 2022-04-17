@@ -298,3 +298,33 @@ Text End 0x555555555285 0x555555555285 0x555555555285
 Data End 0x555555558010 0x555555558010
 Executable End 0x555555558018 0x555555558018
 ```
+
+### C++符号修饰
+为了支持C++函数重载，命名空间等复杂的特性，人们发明了符号修饰(Name Decoration)和符号改编(Name Mangling)机制。
+
+函数签名 | 修饰后名称(符号名)
+--- | ---
+int func(int) | _Z4funci
+float func(float) | _Z4funcf
+int C::func(int) | _ZN1C4funcEi
+int C::C2::func(int) | _ZN1C2C24funcEi
+int N::func(int) | _ZN1N4funcEi
+int N::C::func(int) | _ZN1N1C4funcEi
+
+上表显示了[例子](./code/cpp_sym/main.cpp)中，不同函数的符号名。以`_Z`开头，后面紧跟`N`，然后是各名称空间和类的名字，每个名字前是名字字符串长度，再以`E`结尾。参数列表紧跟在`E`后面。`c++filt`工具可以用来解析被修饰过的名称。
+
+### extern "C"
+
+C++用`extern "C"`关键字来声明或定义一个C的符号。修饰后，C++的名称修饰机制将不会起作用。常见的写法如下:
+
+```cpp
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+void *memset (void *, int, size_t);
+
+#ifdef __cplusplus
+}
+#endif
+```
