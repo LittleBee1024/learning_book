@@ -122,7 +122,7 @@ Idx Name          Size      VMA               LMA               File off  Algn
 
 #### 代码段
 
-通过`objdump -x -d main.o`可得到各段的内容，并打印反汇编内容。例如，下面就是大小为0x64的`.text`段的二进制编码。通过反汇编可知，这些二进制编码就是`func1`和`main`函数的指令。
+通过`objdump -s -d main.o`可得到各段的内容，并打印反汇编内容。例如，下面就是大小为0x64的`.text`段的二进制编码。通过反汇编可知，这些二进制编码就是`func1`和`main`函数的指令。
 ```asm
 Contents of section .text:
  0000 f30f1efa 554889e5 4883ec10 897dfc8b  ....UH..H....}..
@@ -251,3 +251,50 @@ Key to Flags:
 结合上面打印的信息，我们可以画出"main.o"文件的结构如下:
 
 ![obj_section_detail](./images/obj_section_detail.svg)
+
+## 链接的接口--符号
+每个目标文件都会有一个相应的**符号表(Symbol Table)**，记录了目标文件中所用到的所有符号。符号除了是常见的函数和变量外，还有可能是其他类型。通过`nm`工具可以查看目标文件中的符号。
+
+```sh
+$ nm main.o
+0000000000000000 T func1                    # T, in text section
+0000000000000000 D global_init_var          # D, in data section
+                 U _GLOBAL_OFFSET_TABLE_    # U, undefined
+0000000000000000 B global_uninit_var        # B, in BSS data section
+000000000000002b T main
+                 U printf
+0000000000000004 d static_var.1             # d, in data section
+0000000000000004 b static_var2.0            # b, in BSS data section
+```
+
+* 常见的符号类型
+    * 内部全局符号 - 定义在本目标文件的全局符号，可以被其他目标文件引用
+    * 外部全局符号 - 在本目标文件中引用的全局符号，却没有定义在本目标文件
+    * 段名 - 由编译器产生，它的值就是该段的起始地址
+    * 局部符号 - 只在编译单元内部可见
+    * 行号信息 - 目标文件指令与源代码行的对应关系
+
+### 特殊符号
+当用ld作为链接器产生可执行文件时，它会为我们定义很多特殊的符号，例如：
+
+* __executable_start - 程序的起始地址
+* etext, _etext, __etext - 代码段结束地址
+* edata, _edata - 数据段结束地址
+* end, _end - 程序结束地址
+
+通过GDB调试相关[代码](./code/ld_sym/main.c)，可得到如下信息。其中，起始地址`0x555555554000`和结束地址`0x555555558018`，分别映射在了相应的虚拟地址空间中。
+```asm
+Mapped address spaces:
+
+        Start Addr           End Addr       Size     Offset objfile
+    0x555555554000     0x555555555000     0x1000        0x0 /home/yuxiangw/GitHub/learning_book/docs/booknotes/cxydzwxy/compile/code/ld_sym/main
+    0x555555555000     0x555555556000     0x1000     0x1000 /home/yuxiangw/GitHub/learning_book/docs/booknotes/cxydzwxy/compile/code/ld_sym/main
+    0x555555556000     0x555555557000     0x1000     0x2000 /home/yuxiangw/GitHub/learning_book/docs/booknotes/cxydzwxy/compile/code/ld_sym/main
+    0x555555557000     0x555555558000     0x1000     0x2000 /home/yuxiangw/GitHub/learning_book/docs/booknotes/cxydzwxy/compile/code/ld_sym/main
+    0x555555558000     0x555555559000     0x1000     0x3000 /home/yuxiangw/GitHub/learning_book/docs/booknotes/cxydzwxy/compile/code/ld_sym/main
+
+Executable Start 0x555555554000
+Text End 0x555555555285 0x555555555285 0x555555555285
+Data End 0x555555558010 0x555555558010
+Executable End 0x555555558018 0x555555558018
+```
