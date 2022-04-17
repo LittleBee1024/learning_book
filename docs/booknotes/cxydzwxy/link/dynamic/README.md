@@ -185,9 +185,50 @@ Disassembly of section .got.plt:
     ```
 
 ## 动态链接相关的段
+
+在动态链接中，操作系统会先加载动态链接器(Dynamic Linker)，将控制权交给动态链接器的入口地址。当动态链接器得到控制权之后，它开始执行一系列自身的初始化操作，然后根据当前的环境参数，开始对可执行文件进行动态链接工作。当所有动态链接工作完成后，动态链接器会将控制权转交到可执行文件的入口地址，程序开始正式执行。
+
 ### ".interp"段
+
+在动态链接的ELF可执行文件中，有一个专门的段叫做".interp"段，指定了动态链接器的位置。通过`objdump -s main`命令，打印".interp"段如下，
+```sh
+Contents of section .interp:
+ 0318 2f6c6962 36342f6c 642d6c69 6e75782d  /lib64/ld-linux-
+ 0328 7838362d 36342e73 6f2e3200           x86-64.so.2.
+```
+其中，`/lib64/ld-linux-x86-64.so.2`是一个软链接，指向动态链接器共享对象的位置。
+
 ### ".dynamic"段
+
+".dynamic"段保存了动态链接器所需要的基本信息，比如依赖于哪些共享对象、动态链接器符号表的位置、动态链接重定位表的位置、共享对象初始化代码的地址等。
+
+`readelf -d libouter.so`命令可查看libouter.so的"dynamic"段，其内容如下：
+```sh
+$ readelf -d libouter.so
+Dynamic section at offset 0x2e08 contains 25 entries:
+  Tag        Type                         Name/Value
+ 0x0000000000000001 (NEEDED)             Shared library: [libinner.so]
+ 0x0000000000000001 (NEEDED)             Shared library: [libc.so.6]
+ 0x000000000000000c (INIT)               0x1000
+ 0x000000000000000d (FINI)               0x11c0
+ 0x0000000000000019 (INIT_ARRAY)         0x3df8
+ 0x000000000000001b (INIT_ARRAYSZ)       8 (bytes)
+ ...
+```
+
+`ldd libouter.so`命令可查看libouter.so所依赖的动态库，其内容如下：
+```sh
+$ ldd libouter.so 
+    linux-vdso.so.1 (0x00007fffd7fd9000)
+    libinner.so => not found
+    libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f4f1ce6b000)
+    /lib64/ld-linux-x86-64.so.2 (0x00007f4f1d07a000)
+```
+
 ### 动态符号表
+
+
+
 ### 动态链接重定位表
 
 

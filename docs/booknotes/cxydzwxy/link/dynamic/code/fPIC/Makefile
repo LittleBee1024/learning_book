@@ -25,7 +25,7 @@ $(OBJS2) $(OBJS3): %.o: %.c
 	$(CC) -fPIC -shared $(CFLAGS) -c $<
 
 outer: $(OBJS2)
-	$(CC) -fPIC -shared $(OBJS2) -o lib$@.so
+	$(CC) -fPIC -shared $(OBJS2) -L. -linner -o lib$@.so
 
 inner: $(OBJS3)
 	$(CC) -fPIC -shared $(OBJS3) -o lib$@.so
@@ -38,4 +38,5 @@ run:
 
 debug:
 	env LD_LIBRARY_PATH=. gdb -q ./main \
-	-ex 'start'
+	-ex 'start' \
+	-ex 'i proc mapping'
