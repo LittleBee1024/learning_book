@@ -8,7 +8,7 @@
 程序和动态链接库之间的链接工作是由动态链接器完成的。不同于静态链接器，动态链接器把链接过程从程序装载前推迟到了装载的时候。这种方法称为延迟绑定(Lazy Binding)，虽然损失了一些运行时的性能，但是提高了灵活性。
 
 ### 简单的例子
-[示例“simple”](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/link/dynamic/code/simple)中的两个可执行文件`program1`和`program2`都动态链接到了动态共享对象`libfoo.so`。当程序模块`program1.c`被编译成`program1.o`时，编译器不知道`foobar()`函数的地址。当链接器将`program1.o`链接成可执行文件时，通过函数符号信息，链接器可判断`foobar()`的性质，
+[例子"simple"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/link/dynamic/code/simple)中的两个可执行文件`program1`和`program2`都动态链接到了动态共享对象`libfoo.so`。当程序模块`program1.c`被编译成`program1.o`时，编译器不知道`foobar()`函数的地址。当链接器将`program1.o`链接成可执行文件时，通过函数符号信息，链接器可判断`foobar()`的性质，
 
 * 如果`foobar()`是一个定义在其他静态目标模块中的函数，那么链接器将会按照静态链接的规则，将`program1.o`中的foobar地址引用重定位
 * 如果`foobar()`是一个定义在某个动态共享对象中的函数，那么链接器就会将这个符号的引用标记位一个动态链接的符号，不对它进行地址重定位，把这个过程留到装载时再进行
@@ -135,7 +135,7 @@ ELF将GOT拆分成两个表：
 * ".got"段 - 用来保存全局变量引用的地址
 * ".got.plt"段 - 用来保存外部函数引用的地址
 
-在前面的[例子](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/link/dynamic/code/secondary_dep)中，用`objdump -D libouter.so`命令打印".got"和".got.plt"段的内容如下：
+在[例子"secondary_dep"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/link/dynamic/code/secondary_dep)中，用`objdump -D libouter.so`命令打印".got"和".got.plt"段的内容如下：
 ```asm
 Disassembly of section .got:
 
@@ -336,7 +336,7 @@ $ readelf -S libouter.so | grep got
 
 如果两个不同的模块定义了同一个符号，那么后加入全局符号表的符号会被忽略，称为共享对象的**全局符号介入(Global Symbol Interpose)**。
 
-在[例子](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/link/dynamic/code/sym_interpose)中，b1.so依赖a1.so，b2.so依赖a2.so，a1.so和a2.so定义了相同的函数`a()`。动态链接器按照广度优先的顺序进行装载时，首先是main，然后是b1.so、b2.so、a1.so，最后是a2.so。因此，a2.so的`a()`函数被忽略。
+在[例子"sym_interpose"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/link/dynamic/code/sym_interpose)中，b1.so依赖a1.so，b2.so依赖a2.so，a1.so和a2.so定义了相同的函数`a()`。动态链接器按照广度优先的顺序进行装载时，首先是main，然后是b1.so、b2.so、a1.so，最后是a2.so。因此，a2.so的`a()`函数被忽略。
 
 ### 重定位和初始化
 
@@ -378,7 +378,7 @@ Linux规定共享库的文件名规则如下：`libname.so.x.y.z`
 ### SONAME
 SONAME是共享对象的真实名字，通过`-Wl,-soname,<soname>`在编译时填入共享库，可通过命令`objdump -p <lib> | grep SONAME`或`readelf -d libfoo.so | grep SONAME`查看。
 
-如果一个共享库存在SONAME，那么无论共享库自身的文件名如何改变，在链接时都会使用SONAME。如果一个共享库没有设置SONAME，链接时会使用文件名。如[例子](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/link/dynamic/code/soname)中的`libfoo.so`设置了SONAME。因此即使重命名共享库为`libbar.so`，再用`-lbar`链接，最终生成的可执行文件还是要求链接到`libfoo.so`。
+如果一个共享库存在SONAME，那么无论共享库自身的文件名如何改变，在链接时都会使用SONAME。如果一个共享库没有设置SONAME，链接时会使用文件名。如[例子"soname"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/link/dynamic/code/soname)中的`libfoo.so`设置了SONAME。因此即使重命名共享库为`libbar.so`，再用`-lbar`链接，最终生成的可执行文件还是要求链接到`libfoo.so`。
 
 在Linux系统中，SONAME用于统一标识兼容的共享库：
 
@@ -398,7 +398,7 @@ GCC的提供了不同的方法指定链接的共享库：
 * `-Wl,-static`参数
     * 指定查找静态库，通过`-Wl,-Bdynamic`恢复成动态库查找
 
-如下的[例子](./code/linkname/Makefile)提供了指定共享库的不同方法：
+如下的[例子"linkname"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/link/dynamic/code/linkname)提供了指定共享库的不同方法：
 
 ```makefile
 # 链接当前目录下的动态库libfoo.so
