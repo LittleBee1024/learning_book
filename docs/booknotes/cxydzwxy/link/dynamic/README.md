@@ -313,6 +313,44 @@ $ readelf -S libouter.so | grep got
 * 动态链接器所需要的一些辅助信息组(Auxiliary Vector)
     * AT_ENTRY是程序入口地址，即".text"段的起始地址，也是`_start`函数的地址
 
+```cpp
+int main(int argc, char** argv, char** environ)
+{
+   uint64_t* p = (uint64_t*)argv;
+   printf("Argument count: %ld\n", *(p - 1));
+   assert(argc == *(p - 1));
+
+   int i = 0;
+   for (; i < *(p - 1); i++)
+   {
+      printf("Argument %d : %s\n", i, (char *)(*(p + i)));
+   }
+
+   p += i;
+   p++; // skip 0;
+   assert((void*)environ == (void*)p);
+
+   printf("Environment: \n");
+   while(*p)
+   {
+      printf("\t%s\n", (char *)(*p));
+      p++;
+   }
+   p++; // skip 0;
+
+   printf("Auxiliary Vectors:\n");
+   Elf64_auxv_t* aux = (Elf64_auxv_t*)p;
+   while(aux->a_type != AT_NULL)
+   {
+      // Type is defined in /usr/include/x86_64-linux-gnu/bits/auxv.h
+      printf("\tType: %02ld, Value: %lx\n", aux->a_type, aux->a_un.a_val);
+      aux++;
+   }
+
+   return 0;
+}
+```
+
 ## 动态链接的步骤和实现
 
 动态链接的步骤基本上分三步：
@@ -347,7 +385,10 @@ $ readelf -S libouter.so | grep got
 如果进程的可执行文件也有".init"段，动态链接器不会执行它，因为可执行文件的".init"段和".finit"段是由程序初始化部分代码负责执行的。
 
 ## 显式运行时链接
-[示例代码](./code/dlopen/main.c)展示了如何动态装载库(Dynamic Loading Library)。下面的代码动态加载`libm.so.6`共享对象后，并运行库中的`sin`函数：
+[示例代码](./code/dlopen/main.c)展示了如何动态装载库(Dynamic Loading Library)：
+
+* 动态加载`libm.so.6`共享对象
+* 运行库中的`sin`函数
 ```cpp
 int main(void)
 {

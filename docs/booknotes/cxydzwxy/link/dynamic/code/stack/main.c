@@ -18,7 +18,7 @@ int main(int argc, char** argv, char** environ)
    p++; // skip 0;
    assert((void*)environ == (void*)p);
 
-   printf("Environmane: \n");
+   printf("Environment: \n");
    while(*p)
    {
       printf("\t%s\n", (char *)(*p));
