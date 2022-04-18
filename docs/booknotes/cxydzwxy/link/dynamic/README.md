@@ -388,6 +388,34 @@ SONAME是共享对象的真实名字，通过`-Wl,-soname,<soname>`在编译时�
     * 比如，一个共享库`/ib/libfoo.so.2.6.1`，那么存在一个软链接`/lib/libfoo.so.2`
 
 ### 链接名
+GCC的提供了不同的方法指定链接的共享库：
 
+* `-l<link_name>`参数
+    * 指定需要链接的共享库`lib<link_name>.so`
+* `-l:<filename>`参数
+    * 通过文件名指定共享库，参考[LD手册](https://sourceware.org/binutils/docs-2.18/ld/Options.html)
+* 全路径指定
+* `-Wl,-static`参数
+    * 指定查找静态库，通过`-Wl,-Bdynamic`恢复成动态库查找
+
+如下的[例子](./code/linkname/Makefile)提供了指定共享库的不同方法：
+
+```makefile
+# 链接当前目录下的动态库libfoo.so
+main: clean foo $(OBJS)
+	$(CC) $(OBJS) -L. -lfoo -o main
+
+# 链接当前目录下的动态库libfoo.so
+main2: clean foo $(OBJS)
+	$(CC) $(OBJS) -L. -l:libfoo.so -o main
+
+# 链接当前目录下的动态库libfoo.so
+main3: clean foo $(OBJS)
+	$(CC) $(OBJS) $(PWD)/libfoo.so -o main
+
+# 链接当前目录下的静态库libfoo.a
+main_static: clean foo_static $(OBJS)
+	$(CC) $(OBJS) -L. -Wl,-static -lfoo -Wl,-Bdynamic -o main
+```
 
 
