@@ -305,5 +305,12 @@ $ readelf -S libouter.so | grep got
 * R_X86_64_RELATIVE类型
     * 不同于前面的类型，是对绝对地址引用的重定位，又称基址重置(Rebasing)
 
+### 进程堆栈初始化信息
+[示例代码](./code/stack/main.c)可以打印进程开始执行时栈上的信息，包括：
+
+* 进程参数`argv`
+* 环境变量`environ`
+* 动态链接器所需要的一些辅助信息组(Auxiliary Vector)
+    * AT_ENTRY是程序入口地址，即".text"段的起始地址，也是`_start`函数的地址
 
 
