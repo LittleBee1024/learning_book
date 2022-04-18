@@ -311,7 +311,7 @@ int C::C2::func(int) | _ZN1C2C24funcEi
 int N::func(int) | _ZN1N4funcEi
 int N::C::func(int) | _ZN1N1C4funcEi
 
-上表显示了[例子](./code/cpp_sym/main.cpp)中，不同函数的符号名。以`_Z`开头，后面紧跟`N`，然后是各名称空间和类的名字，每个名字前是名字字符串长度，再以`E`结尾。参数列表紧跟在`E`后面。`c++filt`工具可以用来解析被修饰过的名称。
+上表显示了[代码](./code/cpp_sym/main.cpp)中，不同函数的符号名。以`_Z`开头，后面紧跟`N`，然后是各名称空间和类的名字，每个名字前是名字字符串长度，再以`E`结尾。参数列表紧跟在`E`后面。`c++filt`工具可以用来解析被修饰过的名称。
 
 ### extern "C"
 
