@@ -385,7 +385,7 @@ int main(int argc, char** argv, char** environ)
 如果进程的可执行文件也有".init"段，动态链接器不会执行它，因为可执行文件的".init"段和".finit"段是由程序初始化部分代码负责执行的。
 
 ## 显式运行时链接
-[示例代码](./code/dlopen/main.c)展示了如何动态装载库(Dynamic Loading Library)：
+下面的[代码](./code/dlopen/main.c)展示了如何动态装载库(Dynamic Loading Library)：
 
 * 动态加载`libm.so.6`共享对象
 * 运行库中的`sin`函数
