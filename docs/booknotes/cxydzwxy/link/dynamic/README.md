@@ -439,7 +439,7 @@ GCC的提供了不同的方法指定链接的共享库：
 * `-Wl,-static`参数
     * 指定查找静态库，通过`-Wl,-Bdynamic`恢复成动态库查找
 
-如下的[例子"linkname"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/link/dynamic/code/linkname)提供了指定共享库的不同方法：
+[例子"linkname"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/link/dynamic/code/linkname)提供了指定共享库的不同方法：
 
 ```makefile
 # 链接当前目录下的动态库libfoo.so
