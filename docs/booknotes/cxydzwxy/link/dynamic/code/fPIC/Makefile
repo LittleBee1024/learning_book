@@ -18,10 +18,11 @@ all: clean inner outer main
 %.o:%.c
 	$(CC) $(CFLAGS) -c $<
 
-# "-Xlinker -rpath ." sets SO search folder, to find a1.so and a2.so
-# can also use LD_LIBRARY_PATH env to specify search folder
+# "-Xlinker -rpath ." or "-Wl,-rpath=."
+#   to set lib search folder as current folder, to find a1.so and a2.so
+# Or also use LD_LIBRARY_PATH env to specify search folder
 main: $(OBJS)
-	$(CC) $(OBJS) $(LDFLAGS) -o $@ -Xlinker -rpath .
+	$(CC) $(OBJS) $(LDFLAGS) -o $@ -Wl,-rpath=.
 
 $(OBJS2) $(OBJS3): %.o: %.c
 	$(CC) -fPIC -shared $(CFLAGS) -c $<
