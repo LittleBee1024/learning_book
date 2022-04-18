@@ -1,6 +1,6 @@
 # 动态链接
 
-> [《程序员的自我修养--链接、装载与库》 - 俞甲子，石凡，潘爱民](https://1drv.ms/b/s!AkcJSyT7tq80cUuHb2eRcJkkBjM?e=YUwBqB)，第七章的读书笔记，本文中的所有代码可在[GitHub仓库](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/link/dynamic/code)中找到
+> [《程序员的自我修养--链接、装载与库》 - 俞甲子，石凡，潘爱民](https://1drv.ms/b/s!AkcJSyT7tq80cUuHb2eRcJkkBjM?e=YUwBqB)，第七、八章的读书笔记，本文中的所有代码可在[GitHub仓库](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/link/dynamic/code)中找到
 
 ## 基本实现
 在Linux系统中，ELF动态链接文件被称为动态共享对象(DSO, Dynamic Shared Objects)，简称**共享对象**，它们一般都是以".so"为扩展名的一些文件。
@@ -347,7 +347,7 @@ $ readelf -S libouter.so | grep got
 如果进程的可执行文件也有".init"段，动态链接器不会执行它，因为可执行文件的".init"段和".finit"段是由程序初始化部分代码负责执行的。
 
 ## 显式运行时链接
-[示例代码](./code/dlopen/main.c)展示了如何动态装载库(Dynamic Loading Library)，下面的代码动态加载`libm.so.6`共享对象后，并运行库中的`sin`函数：
+[示例代码](./code/dlopen/main.c)展示了如何动态装载库(Dynamic Loading Library)。下面的代码动态加载`libm.so.6`共享对象后，并运行库中的`sin`函数：
 ```cpp
 int main(void)
 {
@@ -361,6 +361,33 @@ int main(void)
    return 0;
 }
 ```
+
+## Linux共享库的组织
+
+### 共享库版本
+Linux规定共享库的文件名规则如下：`libname.so.x.y.z`
+
+* name - 库的名字
+* x - 主版本号
+    * 不同主版本号的库之间时不兼容的
+* y - 次版本号
+    * 增加一些新的接口符号，且保持原来的符号不变
+* z - 发布版本号
+    * 一些错误的修正、性能的改进等，并不添加任何新的接口，也不对接口进行更改
+
+### SONAME
+SONAME是共享对象的真实名字，通过`-Wl,-soname,<soname>`在编译时填入共享库，可通过命令`objdump -p <lib> | grep SONAME`或`readelf -d libfoo.so | grep SONAME`查看。
+
+如果一个共享库存在SONAME，那么无论共享库自身的文件名如何改变，在链接时都会使用SONAME。如果一个共享库没有设置SONAME，链接时会使用文件名。如[例子](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/link/dynamic/code/soname)中的`libfoo.so`设置了SONAME。因此即使重命名共享库为`libbar.so`，再用`-lbar`链接，最终生成的可执行文件还是要求链接到`libfoo.so`。
+
+在Linux系统中，SONAME用于统一标识兼容的共享库：
+
+* SONAME只保留主版本号，规定了共享库的接口(共享库名字和主版本号可以保证兼容性)
+    * 比如，一个共享库叫做`libfoo.so.2.6.1`，那么它的SO-NAME是`libfoo.so.2`
+* 系统会为每各共享库在它所在的目录创建一个跟SO-NAME相同的并且指向它的软链接
+    * 比如，一个共享库`/ib/libfoo.so.2.6.1`，那么存在一个软链接`/lib/libfoo.so.2`
+
+### 链接名
 
 
 
