@@ -338,3 +338,12 @@ $ readelf -S libouter.so | grep got
 
 在[例子](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/link/dynamic/code/sym_interpose)中，b1.so依赖a1.so，b2.so依赖a2.so，a1.so和a2.so定义了相同的函数`a()`。动态链接器按照广度优先的顺序进行装载时，首先是main，然后是b1.so、b2.so、a1.so，最后是a2.so。因此，a2.so的`a()`函数被忽略。
 
+### 重定位和初始化
+
+装载完所有共享对象后，动态链接器已经拥有了进程的全局符号表，因此开始遍历可执行文件和每个共享对象的重定位表，将它们的GOT/PLT中的每个需要重定位的位置进行修正。
+
+重定位完成后，如果某个共享对象有".init"段，那么动态链接器会执行".init"段中的代码，用以实现共享对象特有的初始化过程。比如最常见的，共享对象中的C++的全局/静态对象的构造就需要通过".init"来初始化。相应地，".finit"段会在进程退出时执行，实现全局对象析构之类的操作。
+
+如果进程的可执行文件也有".init"段，动态链接器不会执行它，因为可执行文件的".init"段和".finit"段是由程序初始化部分代码负责执行的。
+
+
