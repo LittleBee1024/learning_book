@@ -124,7 +124,7 @@ ELF使用PLT(Procedure Linkage Table)来实现延迟绑定。例如，我们想�
 ```asm
 bar@plt:
 jmp *(bar@GOT)  # 通过GOT间接跳转，如果GOT未被配置，将继续下面的语句；如果GOT已配置，跳转至bar函数
-push n          # 以下代码是将bar的地址填入bar@GOT中，n是bar这个符号在重定位表".rel.plt"中的下标
+push n          # 以下代码是将bar的地址填入bar@GOT中，n是bar这个符号在重定位表".rela.plt"中的下标
 push moduleID   # 模块ID
 jump _dl_runtime_resolve # 通过链接器函数完成符号解析和重定位
 ```
@@ -227,8 +227,82 @@ $ ldd libouter.so
 
 ### 动态符号表
 
+类似于静态链接的符号表".symtab"，动态链接有一个叫动态符号表".dynsym"段，用于保存动态链接模块之间的符号**导入导出**关系，模块私有变量则不保存。但".symtab"段往往保存所有符号。
 
+类似于静态链接的符号字符串表".strtab"段，动态链接有一个叫动态符号字符串表".dynstr"段，用于保存动态链接相关符号名的字符串。同时为了加快运行时符号的查找过程，还有辅助的符号哈希表".hash"段。
+
+命令`readelf --dyn-syms libouter.so`可查看动态符号表".dynsym"段：
+```sh
+$ readelf --dyn-syms libouter.so 
+
+Symbol table '.dynsym' contains 10 entries:
+   Num:    Value          Size Type    Bind   Vis      Ndx Name
+     0: 0000000000000000     0 NOTYPE  LOCAL  DEFAULT  UND 
+     1: 0000000000000000     0 NOTYPE  WEAK   DEFAULT  UND _ITM_deregisterTMCloneTab
+     2: 0000000000000000     0 OBJECT  GLOBAL DEFAULT  UND b
+     3: 0000000000000000     0 FUNC    GLOBAL DEFAULT  UND printf@GLIBC_2.2.5 (2)
+     4: 0000000000000000     0 NOTYPE  WEAK   DEFAULT  UND __gmon_start__
+     5: 0000000000000000     0 FUNC    GLOBAL DEFAULT  UND ext
+     6: 0000000000000000     0 NOTYPE  WEAK   DEFAULT  UND _ITM_registerTMCloneTable
+     7: 0000000000000000     0 FUNC    WEAK   DEFAULT  UND __cxa_finalize@GLIBC_2.2.5 (2)
+     8: 0000000000001159    71 FUNC    GLOBAL DEFAULT   14 bar
+     9: 00000000000011a0    31 FUNC    GLOBAL DEFAULT   14 foo
+```
+
+命令`readelf -sD libouter.so`可以查看动态符号的哈希表：
+```sh
+$ readelf -sD libouter.so 
+
+Symbol table of `.gnu.hash` for image:
+  Num Buc:    Value          Size   Type   Bind Vis      Ndx Name
+    8   0: 0000000000001159    71 FUNC    GLOBAL DEFAULT  14 bar
+    9   1: 00000000000011a0    31 FUNC    GLOBAL DEFAULT  14 foo
+```
 
 ### 动态链接重定位表
+
+共享对象需要重定位的主要原因时导入符号的存在。无论是可执行文件或共享对象，一旦依赖于其他共享对象，那么它的代码或数据中就会有对于导入符号的引用。在编译时这些导入符号的地址未知。在静态链接中，这些未知的地址引用在链接时被修正。但是在动态链接中，导入符号的地址在运行时才确定，所以需要在运行时将这些导入符号的引用修正，即需要重定位。
+
+对于使用PIC技术的可执行文件或共享对象，虽然它们的代码段不需要重定位(因为地址无关)，但是数据段还包含了绝对地址的引用，因为代码段中绝对地址相关的部分被分离了出来，变成了GOT，而GOT实际上是数据段的一部分。除了GOT以外，数据段还可能包含绝对地址引用。
+
+类似于静态链接中的代码段重定位表".rela.text"段，和数据段的重定位表".rela.data"段，动态链接也有动态代码段重定位表".rela.plt"段，和动态数据段重定位表".rela.dyn"。
+
+* ".rela.dyn"是对数据引用的修正，它所修正的位置位于".got"以及数据段。
+* ".rela.plt"段是对函数引用的修正，它所修正的位置位于".got.plt"。
+
+命令`readelf -r libouter.so`可查看重定位表：
+```sh
+$ readelf -r libouter.so 
+
+Relocation section '.rela.dyn' at offset 0x4c8 contains 8 entries:
+  Offset          Info           Type           Sym. Value    Sym. Name + Addend
+000000003df8  000000000008 R_X86_64_RELATIVE                    1150
+000000003e00  000000000008 R_X86_64_RELATIVE                    1110
+000000004030  000000000008 R_X86_64_RELATIVE                    4030
+000000003fd8  000100000006 R_X86_64_GLOB_DAT 0000000000000000 _ITM_deregisterTMClone + 0
+000000003fe0  000200000006 R_X86_64_GLOB_DAT 0000000000000000 b + 0
+000000003fe8  000400000006 R_X86_64_GLOB_DAT 0000000000000000 __gmon_start__ + 0
+000000003ff0  000600000006 R_X86_64_GLOB_DAT 0000000000000000 _ITM_registerTMCloneTa + 0
+000000003ff8  000700000006 R_X86_64_GLOB_DAT 0000000000000000 __cxa_finalize@GLIBC_2.2.5 + 0
+
+Relocation section '.rela.plt' at offset 0x588 contains 3 entries:
+  Offset          Info           Type           Sym. Value    Sym. Name + Addend
+000000004018  000800000007 R_X86_64_JUMP_SLO 0000000000001159 bar + 0
+000000004020  000300000007 R_X86_64_JUMP_SLO 0000000000000000 printf@GLIBC_2.2.5 + 0
+000000004028  000500000007 R_X86_64_JUMP_SLO 0000000000000000 ext + 0
+
+$ readelf -S libouter.so | grep got
+  [12] .plt.got          PROGBITS         0000000000001060  00001060
+  [22] .got              PROGBITS         0000000000003fd8  00002fd8
+  [23] .got.plt          PROGBITS         0000000000004000  00003000
+```
+* R_X86_64_JUMP_SLO类型
+    * 对".got.plt"段的重定位，被修正的位置只需要直接填入符号的地址
+    * 以`printf`重定位为例，当动态链接器需要进行重定位时，它先查找`printf`位于`libc.so`的地址(假设为0x08801234)。那么链接器就会将这个地址填入到".got.plt"中的偏移`0x4020`的位置中。
+* R_X86_64_GLOB_DAT类型
+    * 对".got"端的重定位，过程和R_X86_64_JUMP_SLO类型类似
+* R_X86_64_RELATIVE类型
+    * 不同于前面的类型，是对绝对地址引用的重定位，又称基址重置(Rebasing)
+
 
 
