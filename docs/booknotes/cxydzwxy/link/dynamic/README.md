@@ -313,4 +313,28 @@ $ readelf -S libouter.so | grep got
 * 动态链接器所需要的一些辅助信息组(Auxiliary Vector)
     * AT_ENTRY是程序入口地址，即".text"段的起始地址，也是`_start`函数的地址
 
+## 动态链接的步骤和实现
+
+动态链接的步骤基本上分三步：
+
+* 启动动态链接器本身
+* 装载所有需要的共享对象
+* 重定位和初始化
+
+### 动态链接器自举
+
+动态链接器有两个要求：
+
+* 动态链接器本身不可以依赖于其他任何共享对象
+    * 不使用任何系统库、运行库
+* 动态链接器本身所需要的全局和静态变量的重定位工作由它本身完成
+    * 由一段非常精巧的代码完成，称为自举(Bootstrap)
+
+### 装载共享对象
+
+完成基本自举以后，动态链接器将可执行文件和链接器本身的符号表合并到一个符号表中，我们称之为**全局符号表(Global Symbol Table)**。然后根据".dynamic"段中的`DT_NEEDED`加载所需共享对象。当一个新的共享对象被装载进来后，它的符号表会被合并到全局符号表中。
+
+如果两个不同的模块定义了同一个符号，那么后加入全局符号表的符号会被忽略，称为共享对象的**全局符号介入(Global Symbol Interpose)**。
+
+在[例子](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/link/dynamic/code/sym_interpose)中，b1.so依赖a1.so，b2.so依赖a2.so，a1.so和a2.so定义了相同的函数`a()`。动态链接器按照广度优先的顺序进行装载时，首先是main，然后是b1.so、b2.so、a1.so，最后是a2.so。因此，a2.so的`a()`函数被忽略。
 
