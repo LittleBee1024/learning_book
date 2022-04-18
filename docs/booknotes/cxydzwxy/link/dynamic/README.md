@@ -59,7 +59,7 @@
 
 **地址无关代码(PIC, Position-independent Code)**解决了此问题。其基本思想是把指令中那些需要被修改的部分分离出来，跟数据部分放在一起。多个进程之间共享不变的指令部分，而各自拥有可变数据部分。GCC编译时，`-fPIC`编译选项指定了编译出的代码为地址无关代码，在编译动态共享库时，需要加上此选项。
 
-我们把共享对象模块中的地址引用按照是否跨模块分成：模块内部引用和模块外部引用，按照不同的引用方式又可分为指令引用和数据访问，如[代码](./code/fPIC/lib_outer.c)所示的四种情况：
+我们把共享对象模块中的地址引用按照是否跨模块分成：模块内部引用和模块外部引用，按照不同的引用方式又可分为指令引用和数据访问，如[代码](./code/secondary_dep/lib_outer.c)所示的四种情况：
 ```cpp
 static int a;
 extern int b;
@@ -135,7 +135,7 @@ ELF将GOT拆分成两个表：
 * ".got"段 - 用来保存全局变量引用的地址
 * ".got.plt"段 - 用来保存外部函数引用的地址
 
-在["fPIC例子"](./code/fPIC/lib_outer.c)中，用`objdump -D libouter.so`命令打印".got"和".got.plt"段的内容如下：
+在前面的[例子](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/link/dynamic/code/secondary_dep)中，用`objdump -D libouter.so`命令打印".got"和".got.plt"段的内容如下：
 ```asm
 Disassembly of section .got:
 
