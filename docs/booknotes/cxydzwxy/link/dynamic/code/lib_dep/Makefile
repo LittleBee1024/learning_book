@@ -45,5 +45,10 @@ main_so4: clean inner outer_inner_so
 
 # same as main_so3
 main_so5: clean inner outer_inner_so
+	gcc -o main main.c -L. -louter -Xlinker -rpath .
+	env LD_LIBRARY_PATH=. ./main
+
+# same as main_so3
+main_so6: clean inner outer_inner_so
 	export LD_LIBRARY_PATH=. && gcc -o main main.c -L. -louter
 	env LD_LIBRARY_PATH=. ./main
