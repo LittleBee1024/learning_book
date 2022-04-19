@@ -78,7 +78,7 @@ void foo()
 }
 ```
 
-由于编译器的优化作用，我们需要通过间接依赖的[例子"secondary_dep"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/link/dynamic/code/secondary_dep)才能达到模块间数据访问的效果。如果是直接依赖的[例子"got"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/link/dynamic/code/got)，都被优化成了模块内的数据访问。
+由于编译器的优化作用，我们需要通过间接依赖的[例子"secondary_dep"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/link/dynamic/code/secondary_dep)才能达到模块间数据访问的效果。如果是直接依赖的[例子"direct_dep"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/link/dynamic/code/direct_dep)，都被优化成了模块内的数据访问。
 
 * [实例](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/link/dynamic/code/secondary_dep) - 模块内数据访问`a`和模块间数据访问`b`
     * 对于模块内数据访问，直接用相对地址即可得到存储位置
@@ -111,7 +111,7 @@ void foo()
     (gdb) p/x &b
     $4 = 0x7ffff7db902c
     ```
-* [实例](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/link/dynamic/code/got) - 模块内调用`bar`和模块间调用`ext`
+* [实例](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/link/dynamic/code/direct_dep) - 模块内调用`bar`和模块间调用`ext`
     * 模块内函数`bar`直接使用真实的地址
     * 模块间函数`ext`调用利用了[延迟绑定PLT](#plt)技术，函数调用需经过：ext@plt -> ext@got.plt -> 真正的地址`0x7ffff7fc3119`
     ```asm
