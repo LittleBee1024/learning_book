@@ -42,4 +42,4 @@ run:
 debug:
 	env LD_LIBRARY_PATH=. gdb -q ./main \
 	-ex 'start' \
-	-ex 'i proc mapping'
+	-ex 'disas bar'

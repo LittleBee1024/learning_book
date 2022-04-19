@@ -59,7 +59,7 @@
 
 **地址无关代码(PIC, Position-independent Code)**解决了此问题。其基本思想是把指令中那些需要被修改的部分分离出来，跟数据部分放在一起。多个进程之间共享不变的指令部分，而各自拥有可变数据部分。GCC编译时，`-fPIC`编译选项指定了编译出的代码为地址无关代码，在编译动态共享库时，需要加上此选项。
 
-我们把共享对象模块中的地址引用按照是否跨模块分成：模块内部引用和模块外部引用，按照不同的引用方式又可分为指令引用和数据访问，如[代码](./code/secondary_dep/lib_outer.c)所示的四种情况：
+我们把共享对象模块中的地址引用按照是否跨模块分成：模块内部引用和模块外部引用，按照不同的引用方式又可分为指令引用和数据访问，存在如下所示的四种情况：
 ```cpp
 static int a;
 extern int b;
@@ -78,9 +78,11 @@ void foo()
 }
 ```
 
-* 模块内数据访问`a`和模块间数据访问`b`
+由于编译器的优化作用，我们需要通过间接依赖的[例子"secondary_dep"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/link/dynamic/code/secondary_dep)才能达到模块间数据访问的效果。如果是直接依赖的[例子"got"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/link/dynamic/code/got)，都被优化成了模块内的数据访问。
+
+* [实例](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/link/dynamic/code/secondary_dep) - 模块内数据访问`a`和模块间数据访问`b`
     * 对于模块内数据访问，直接用相对地址即可得到存储位置
-    * 对于模块间数据访问，需要全局偏移表(Global Offset Table, GOT)的帮助。例如，`b`正真的地址是`0x7ffff7db902c`，该地址存于GOT地址`0x7ffff7fc5fe0`中
+    * 对于模块间数据访问，需要全局偏移表(Global Offset Table, GOT)的帮助。例如，`b`真正的地址是`0x7ffff7db902c`，该地址存于GOT地址`0x7ffff7fc5fe0`中
     ```asm
     (gdb) disas bar
     Dump of assembler code for function bar:
@@ -109,51 +111,40 @@ void foo()
     (gdb) p/x &b
     $4 = 0x7ffff7db902c
     ```
-* 模块内调用`bar`和模块间调用`ext`
-    * 不同于书中的描述，在GCC-11中，模块内部调用和模块间调用并无差别，都利用了[延迟绑定PLT](#plt)技术
-    * 完成延迟绑定后，`ext`函数调用经过了：ext@plt -> ext@got.plt -> 真正的地址`0x7ffff7db6119`
-    * 完成延迟绑定后，`bar`函数调用经过了：bar@plt -> bar@got.plt -> 真正的地址`0x7ffff7fc3159`
+* [实例](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/link/dynamic/code/got) - 模块内调用`bar`和模块间调用`ext`
+    * 模块内函数`bar`直接使用真实的地址
+    * 模块间函数`ext`调用利用了[延迟绑定PLT](#plt)技术，函数调用需经过：ext@plt -> ext@got.plt -> 真正的地址`0x7ffff7fc3119`
     ```asm
     (gdb) disas foo
     Dump of assembler code for function foo:
-        0x00007ffff7fc31a0 <+0>:     endbr64 
-        0x00007ffff7fc31a4 <+4>:     push   %rbp
-        0x00007ffff7fc31a5 <+5>:     mov    %rsp,%rbp
-        0x00007ffff7fc31a8 <+8>:     mov    $0x0,%eax
-        0x00007ffff7fc31ad <+13>:    callq  0x7ffff7fc3090 <ext@plt>
-        0x00007ffff7fc31b2 <+18>:    mov    $0x0,%eax
-        0x00007ffff7fc31b7 <+23>:    callq  0x7ffff7fc3070 <bar@plt>
-        0x00007ffff7fc31bc <+28>:    nop
-        0x00007ffff7fc31bd <+29>:    pop    %rbp
-        0x00007ffff7fc31be <+30>:    retq
+        0x00005555555551a0 <+0>:     endbr64 
+        0x00005555555551a4 <+4>:     push   %rbp
+        0x00005555555551a5 <+5>:     mov    %rsp,%rbp
+        0x00005555555551a8 <+8>:     mov    $0x0,%eax
+        0x00005555555551ad <+13>:    callq  0x555555555070 <ext@plt>
+        0x00005555555551b2 <+18>:    mov    $0x0,%eax
+        0x00005555555551b7 <+23>:    callq  0x555555555169 <bar>
+        0x00005555555551bc <+28>:    nop
+        0x00005555555551bd <+29>:    pop    %rbp
+        0x00005555555551be <+30>:    retq
+
+    (gdb) info sym &bar
+    bar in section .text of /home/yuxiangw/GitHub/learning_book/docs/booknotes/cxydzwxy/link/dynamic/code/got/main
+    (gdb) p/x &bar
+    $1 = 0x555555555169
 
     # 打印ext@plt
-    (gdb) x/3i 0x7ffff7fc3090
-        0x7ffff7fc3090 <ext@plt>:    endbr64 
-        0x7ffff7fc3094 <ext@plt+4>:  bnd jmpq *0x2f8d(%rip)        # 0x7ffff7fc6028 <ext@got.plt>
-        0x7ffff7fc309b <ext@plt+11>: nopl   0x0(%rax,%rax,1)
+    (gdb) x/3i 0x555555555070
+        0x555555555070 <ext@plt>:    endbr64 
+        0x555555555074 <ext@plt+4>:  bnd jmpq *0x2f55(%rip)        # 0x555555557fd0 <ext@got.plt>
+        0x55555555507b <ext@plt+11>: nopl   0x0(%rax,%rax,1)
     # 打印ext@got.plt
-    (gdb) p/x *(uint64_t *)0x7ffff7fc6028
-    $1 = 0x7ffff7db6119
+    (gdb) p/x *(uint64_t *)0x555555557fd0
+    $2 = 0x7ffff7fc3119
     (gdb) info sym &ext
-    ext in section .text of ./libinner.so
-    # ext函数的地址和ext@got.plt内容相同
+    ext in section .text of ./libfoo.so
     (gdb) p/x &ext
-    $2 = 0x7ffff7db6119
-
-    # 打印bar@plt
-    (gdb) x/3i 0x7ffff7fc3070
-        0x7ffff7fc3070 <bar@plt>:    endbr64 
-        0x7ffff7fc3074 <bar@plt+4>:  bnd jmpq *0x2f9d(%rip)        # 0x7ffff7fc6018 <bar@got.plt>
-        0x7ffff7fc307b <bar@plt+11>: nopl   0x0(%rax,%rax,1)
-    # 打印bar@got.plt
-    (gdb) p/x *(uint64_t *)0x7ffff7fc6018
-    $3 = 0x7ffff7fc3159
-    (gdb) info sym &bar
-    bar in section .text of ./libouter.so
-    # bar函数的地址和bar@got.plt内容相同
-    (gdb) p/x &bar
-    $4 = 0x7ffff7fc3159
+    $3 = 0x7ffff7fc3119
     ```
 
 ## 延迟绑定(PLT)
