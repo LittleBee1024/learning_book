@@ -46,6 +46,13 @@ theme:
     # Pick up a logo from https://github.com/squidfunk/mkdocs-material/tree/master/material/.icons
     logo: material/bee
 
+plugins:
+  - search:
+      lang:
+          - en
+          - ja
+      separator: '[\s\-\.]+'
+
 # Customization
 extra:
   social:
