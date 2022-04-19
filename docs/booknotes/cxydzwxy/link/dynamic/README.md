@@ -490,4 +490,60 @@ main_static: clean foo_static $(OBJS)
 	$(CC) $(OBJS) -L. -Wl,-static -lfoo -Wl,-Bdynamic -o main
 ```
 
+## 共享库的查找过程
+
+默认情况下，动态链接器会依次在`/etc/ld.so.cache`，`/lib`和`/user/lib`目录下寻找共享库。其中，`/etc/ld.so.cache`是由`ldconfig`工具为了加速共享库寻找过程，根据`/etc/ld.so.conf`规定的目录建立的临时缓存。
+
+除了默认情况，Linux系统还提供了许多其他的方法，用来改变动态链接器装载共享库的路径。[例子"lib_dep"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/link/dynamic/code/lib_dep/Makefile)展示了多种不同的方法，用来指定共享库的搜索路径：
+```makefile
+inner:
+	gcc -shared -fPIC lib_inner.c -o libinner.so
+
+outer_alone_so:
+	gcc -shared -fPIC lib_outer.c -o libouter.so
+
+outer_inner_so:
+	gcc -shared -fPIC lib_outer.c -L. -linner -o libouter.so
+
+# libouter.so does not know libinner.so
+main_so: clean inner outer_alone_so
+	gcc -o main main.c -L. -louter -linner
+	env LD_LIBRARY_PATH=. ./main
+
+# executable without libinner.so, use LD_PRELOAD to run
+main_so2: clean inner outer_alone_so
+	gcc -o main main.c -L. -louter -Wl,--allow-shlib-undefined
+	env LD_PRELOAD=./libinner.so LD_LIBRARY_PATH=. ./main
+
+# libouter.so knows libinner.so
+main_so3: clean inner outer_inner_so
+	gcc -o main main.c -L. -louter -Wl,-rpath-link=.
+	env LD_LIBRARY_PATH=. ./main
+
+# same as main_so3
+main_so4: clean inner outer_inner_so
+	gcc -o main main.c -L. -louter -Wl,-rpath=.
+	env LD_LIBRARY_PATH=. ./main
+
+# same as main_so3
+main_so5: clean inner outer_inner_so
+	gcc -o main main.c -L. -louter -Xlinker -rpath .
+	env LD_LIBRARY_PATH=. ./main
+
+# same as main_so3
+main_so6: clean inner outer_inner_so
+	export LD_LIBRARY_PATH=. && gcc -o main main.c -L. -louter
+	env LD_LIBRARY_PATH=. ./main
+```
+
+* 编译期间 - 指定链接时的搜索路径
+    * `-Wl,-rpath-link=<path>`
+    * `-Wl,-rpath=<path>`
+    * `-Xlinker -rpath <path>`
+    * `export LD_LIBRARY_PATH=<path>`
+* 运行期间
+    * `export LD_LIBRARY_PATH=<path>` - 指定运行时的搜索路径
+    * `LD_PRELOAD=<lib_path>` - 预先装载共享库
+
+
 
