@@ -47,6 +47,7 @@ theme:
     logo: material/bee
 
 plugins:
+  # Chinese search has an issue, using ja instead https://github.com/mkdocs/mkdocs/issues/2509#issuecomment-882689383
   - search:
       lang:
           - en
