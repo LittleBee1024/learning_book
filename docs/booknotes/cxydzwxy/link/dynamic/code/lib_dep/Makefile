@@ -29,6 +29,11 @@ main_so: clean inner outer_alone_so
 	gcc -o main main.c -L. -louter -linner
 	env LD_LIBRARY_PATH=. ./main
 
+# "-rpath" specifies the library path, so "ldd main" does not report "not found"
+main_so1: clean inner outer_alone_so
+	gcc -o main main.c -L. -louter -linner -Wl,-rpath=.
+	env LD_LIBRARY_PATH=. ./main
+
 # executable without libinner.so, use LD_PRELOAD to run
 main_so2: clean inner outer_alone_so
 	gcc -o main main.c -L. -louter -Wl,--allow-shlib-undefined

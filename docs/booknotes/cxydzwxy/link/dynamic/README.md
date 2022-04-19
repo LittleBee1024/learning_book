@@ -511,6 +511,11 @@ main_so: clean inner outer_alone_so
 	gcc -o main main.c -L. -louter -linner
 	env LD_LIBRARY_PATH=. ./main
 
+# "-rpath" specifies the library path, so "ldd main" does not report "not found"
+main_so1: clean inner outer_alone_so
+	gcc -o main main.c -L. -louter -linner -Wl,-rpath=.
+	env LD_LIBRARY_PATH=. ./main
+
 # executable without libinner.so, use LD_PRELOAD to run
 main_so2: clean inner outer_alone_so
 	gcc -o main main.c -L. -louter -Wl,--allow-shlib-undefined
@@ -539,9 +544,11 @@ main_so6: clean inner outer_inner_so
 
 * 编译期间 - 指定链接时的搜索路径
     * `-Wl,-rpath-link=<path>`
-    * `-Wl,-rpath=<path>`
-    * `-Xlinker -rpath <path>`
+        * 不影响运行期间的搜索路径
+    * `-Wl,-rpath=<path>`和`-Xlinker -rpath <path>`
+        * `-rpath`选项会影响运行期间的搜索路径，`ldd`会从此选项指定的目录种寻找
     * `export LD_LIBRARY_PATH=<path>`
+        * 不影响运行期间的搜索路径
 * 运行期间
     * `export LD_LIBRARY_PATH=<path>` - 指定运行时的搜索路径
     * `LD_PRELOAD=<lib_path>` - 预先装载共享库
