@@ -94,16 +94,20 @@ void foo()
     # 打印变量a的地址0x7ffff7fc603c内容
     (gdb) p/x *0x7ffff7fc603c
     $1 = 0x1
+    (gdb) info sym &a
+    a in section .bss of ./libouter.so
+    # 变量a无须经过GOT映射
+    (gdb) p/x &a
+    $2 = 0x7ffff7fc603c
 
     # 打印变量b的GOT地址0x7ffff7fc5fe0内容
     (gdb) p/x *(uint64_t *)0x7ffff7fc5fe0
-    $2 = 0x7ffff7db902c
-
+    $3 = 0x7ffff7db902c
     (gdb) info sym &b
     b in section .bss of ./libinner.so
     # 变量b的地址和GOT地址0x7ffff7fc5fe0的内容相同
     (gdb) p/x &b
-    $3 = 0x7ffff7db902c
+    $4 = 0x7ffff7db902c
     ```
 * 模块内调用`bar`和模块间调用`ext`
     * 不同于书中的描述，在GCC-11中，模块内部调用和模块间调用并无差别，都利用了[延迟绑定PLT](#plt)技术
