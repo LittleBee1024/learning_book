@@ -546,7 +546,7 @@ main_so6: clean inner outer_inner_so
     * `export LD_LIBRARY_PATH=<path>` - 指定运行时的搜索路径
     * `LD_PRELOAD=<lib_path>` - 预先装载共享库
 
-## 调试动态链接器
+### 调试动态链接器
 
 环境变量`LD_DEBUG`可以打开动态链接器的调试功能，`LD_DEBUG`可以设置成如下值：
 
