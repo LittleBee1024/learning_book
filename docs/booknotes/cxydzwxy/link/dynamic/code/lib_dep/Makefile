@@ -18,6 +18,11 @@ main_a: clean inner outer_a
 	gcc -o main main.c libouter.a -L. -linner
 	env LD_LIBRARY_PATH=. ./main
 
+# same as main_a2
+main_a2: clean inner outer_a
+	gcc -o main main.c -L. -Wl,-static -louter -Wl,-Bdynamic -linner
+	env LD_LIBRARY_PATH=. ./main
+
 # libouter.so does not know libinner.so
 main_so: clean inner outer_so
 	gcc -o main main.c -L. -louter -linner
