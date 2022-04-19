@@ -81,8 +81,8 @@ void foo()
 由于编译器的优化作用，我们需要通过间接依赖的[例子"secondary_dep"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/link/dynamic/code/secondary_dep)才能达到模块间数据访问的效果。如果是直接依赖的[例子"direct_dep"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/link/dynamic/code/direct_dep)，都被优化成了模块内的数据访问。
 
 * [实例"secondary_dep"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/link/dynamic/code/secondary_dep) - 模块内数据访问`a`和模块间数据访问`b`
-    * 对于模块内数据访问，直接用相对地址即可得到存储位置
-    * 对于模块间数据访问，需要全局偏移表(Global Offset Table, GOT)的帮助。例如，`b`真正的地址是`0x7ffff7db902c`，该地址存于GOT地址`0x7ffff7fc5fe0`中
+    * 对于模块内数据访问，直接用相对地址即可得到存储位置。例如，变量`a`的地址`0x7ffff7fc603c`在`bar`函数中直接被引用
+    * 对于模块间数据访问，需要全局偏移表(Global Offset Table, GOT)的帮助。例如，`b`真正的地址是`0x7ffff7db902c`，该地址存于GOT地址`0x7ffff7fc5fe0`中，`bar`函数引用的时GOT地址`0x7ffff7fc5fe0`
     ```asm
     (gdb) disas bar
     Dump of assembler code for function bar:
@@ -113,7 +113,7 @@ void foo()
     ```
 * [实例"direct_dep"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/link/dynamic/code/direct_dep) - 模块内调用`bar`和模块间调用`ext`
     * 模块内函数`bar`直接使用真实的地址
-    * 模块间函数`ext`调用利用了[延迟绑定PLT](#plt)技术，函数调用需经过：ext@plt -> ext@got.plt -> 真正的地址`0x7ffff7fc3119`
+    * 模块间函数`ext`的调用利用了[延迟绑定PLT](#plt)技术，函数调用需经过：`ext@plt` -> `ext@got.plt` -> 真正的地址`0x7ffff7fc3119`
     ```asm
     (gdb) disas foo
     Dump of assembler code for function foo:
@@ -219,6 +219,8 @@ Disassembly of section .got.plt:
 
 在动态链接中，操作系统会先加载动态链接器(Dynamic Linker)，将控制权交给动态链接器的入口地址。当动态链接器得到控制权之后，它开始执行一系列自身的初始化操作，然后根据当前的环境参数，开始对可执行文件进行动态链接工作。当所有动态链接工作完成后，动态链接器会将控制权转交到可执行文件的入口地址，程序开始正式执行。
 
+下面结合[例子"secondary_dep"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/link/dynamic/code/secondary_dep)，介绍动态链接相关的段。
+
 ### ".interp"段
 
 在动态链接的ELF可执行文件中，有一个专门的段叫做".interp"段，指定了动态链接器的位置。通过`objdump -s main`命令，打印".interp"段如下，
@@ -258,9 +260,9 @@ $ ldd libouter.so
 
 ### 动态符号表
 
-类似于静态链接的符号表".symtab"，动态链接有一个叫动态符号表".dynsym"段，用于保存动态链接模块之间的符号**导入导出**关系，模块私有变量则不保存。但".symtab"段往往保存所有符号。
+".dynsym"段是动态链接的动态符号表，类似于静态链接的符号表".symtab"，用于保存动态链接模块之间的符号**导入导出**关系，模块私有变量则不保存。但".symtab"段往往保存所有符号。
 
-类似于静态链接的符号字符串表".strtab"段，动态链接有一个叫动态符号字符串表".dynstr"段，用于保存动态链接相关符号名的字符串。同时为了加快运行时符号的查找过程，还有辅助的符号哈希表".hash"段。
+".dynstr"段是动态链接的动态符号字符串表，类似于静态链接的符号字符串表".strtab"段，用于保存动态链接相关符号名的字符串。同时为了加快运行时符号的查找过程，还有辅助的符号哈希表".hash"段。
 
 命令`readelf --dyn-syms libouter.so`可查看动态符号表".dynsym"段：
 ```sh
@@ -292,9 +294,9 @@ Symbol table of `.gnu.hash` for image:
 
 ### 动态链接重定位表
 
-共享对象需要重定位的主要原因时导入符号的存在。无论是可执行文件或共享对象，一旦依赖于其他共享对象，那么它的代码或数据中就会有对于导入符号的引用。在编译时这些导入符号的地址未知。在静态链接中，这些未知的地址引用在链接时被修正。但是在动态链接中，导入符号的地址在运行时才确定，所以需要在运行时将这些导入符号的引用修正，即需要重定位。
+共享对象需要重定位的主要原因是导入符号的存在。无论是可执行文件还是共享对象，一旦依赖于其他共享对象，那么它的代码或数据中就会有对于导入符号的引用。在编译时这些导入符号的地址未知。在静态链接中，这些未知的地址引用在链接时被修正。但是在动态链接中，导入符号的地址在运行时才确定，所以需要在运行时将这些导入符号的引用修正，即需要重定位。
 
-对于使用PIC技术的可执行文件或共享对象，虽然它们的代码段不需要重定位(因为地址无关)，但是数据段还包含了绝对地址的引用，因为代码段中绝对地址相关的部分被分离了出来，变成了GOT，而GOT实际上是数据段的一部分。除了GOT以外，数据段还可能包含绝对地址引用。
+对于使用PIC技术的可执行文件或共享对象，虽然它们的代码段不需要重定位(因为地址无关)，但是数据段还包含了绝对地址的引用。因为代码段中绝对地址相关的部分被分离了出来，变成了GOT，而GOT实际上是数据段的一部分。除了GOT以外，数据段还可能包含绝对地址引用。
 
 类似于静态链接中的代码段重定位表".rela.text"段和数据段的重定位表".rela.data"段，动态链接也有动态代码段重定位表".rela.plt"段和动态数据段重定位表".rela.dyn"。
 
@@ -336,8 +338,24 @@ $ readelf -S libouter.so | grep got
 * R_X86_64_RELATIVE类型
     * 不同于前面的类型，是对绝对地址引用的重定位，又称基址重置(Rebasing)
 
-### 进程堆栈初始化信息
-[示例代码](./code/stack/main.c)可以打印进程开始执行时栈上的信息，包括：
+## 动态链接的步骤和实现
+
+动态链接的步骤基本上分三步：
+
+* 启动动态链接器本身
+* 装载所有需要的共享对象
+* 重定位和初始化
+
+### 动态链接器自举
+
+动态链接器有两个要求：
+
+* 动态链接器本身不可以依赖于其他任何共享对象
+    * 不使用任何系统库、运行库
+* 动态链接器本身所需要的全局和静态变量的重定位工作由它本身完成
+    * 由一段非常精巧的代码完成，称为自举(Bootstrap)
+
+当程序启动时，通过栈给动态链接器传递参数，下面的[代码](./code/stack/main.c)可以打印进程开始执行时栈上的信息，包括：
 
 * 进程参数`argv`
 * 环境变量`environ`
@@ -382,23 +400,6 @@ int main(int argc, char** argv, char** environ)
 }
 ```
 
-## 动态链接的步骤和实现
-
-动态链接的步骤基本上分三步：
-
-* 启动动态链接器本身
-* 装载所有需要的共享对象
-* 重定位和初始化
-
-### 动态链接器自举
-
-动态链接器有两个要求：
-
-* 动态链接器本身不可以依赖于其他任何共享对象
-    * 不使用任何系统库、运行库
-* 动态链接器本身所需要的全局和静态变量的重定位工作由它本身完成
-    * 由一段非常精巧的代码完成，称为自举(Bootstrap)
-
 ### 装载共享对象
 
 完成基本自举以后，动态链接器将可执行文件和链接器本身的符号表合并到一个符号表中，我们称之为**全局符号表(Global Symbol Table)**。然后根据".dynamic"段中的`DT_NEEDED`加载所需共享对象。当一个新的共享对象被装载进来后，它的符号表会被合并到全局符号表中。
@@ -415,8 +416,8 @@ int main(int argc, char** argv, char** environ)
 
 如果进程的可执行文件也有".init"段，动态链接器不会执行它，因为可执行文件的".init"段和".finit"段是由程序初始化部分代码负责执行的。
 
-## 显式运行时链接
-下面的[代码](./code/dlopen/main.c)展示了如何动态装载库(Dynamic Loading Library)：
+### 显式运行时链接
+共享对象不仅可以通过动态链接库自动导入，也可以运行时手动导入。下面的[代码](./code/dlopen/main.c)展示了如何动态装载库(Dynamic Loading Library)：
 
 * 动态加载`libm.so.6`共享对象
 * 运行库中的`sin`函数
