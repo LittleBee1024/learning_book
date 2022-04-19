@@ -1,3 +1,4 @@
+# Refer to: http://www.kaizou.org/2015/01/linux-libraries.html
 clean:
 	@rm -rf *.so *.o *.a main
 
@@ -52,3 +53,6 @@ main_so5: clean inner outer_inner_so
 main_so6: clean inner outer_inner_so
 	export LD_LIBRARY_PATH=. && gcc -o main main.c -L. -louter
 	env LD_LIBRARY_PATH=. ./main
+
+debug:
+	env LD_DEBUG=libs LD_LIBRARY_PATH=. ./main

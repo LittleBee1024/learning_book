@@ -545,5 +545,53 @@ main_so6: clean inner outer_inner_so
     * `export LD_LIBRARY_PATH=<path>` - 指定运行时的搜索路径
     * `LD_PRELOAD=<lib_path>` - 预先装载共享库
 
+## 调试动态链接器
 
+环境变量`LD_DEBUG`可以打开动态链接器的调试功能，`LD_DEBUG`可以设置成如下值：
 
+LD_DEBUG的值 | 功能描述
+--- | ---
+libs | 显示共享库的搜索路径
+reloc | 显示从定位过程
+files | 显示处理输入文件的过程
+symbols | 显示符号表查找过程
+bindings | 显示动态链接的符号绑定过程
+versions | 显示符号的版本依赖关系
+scopes | 显示范围信息
+all | 显示以上所有信息
+statistics | 显示动态链接过程中的各种统计信息
+unused | 显示没有使用到的共享库
+help | 显示帮助信息
+
+例如，下面的例子通过`LD_DEBUG=libs`，找到了可执行文件`main`依赖的两个共享库的位置：
+
+* ./libfoo.so
+* /lib/x86_64-linux-gnu/libc.so.6
+
+```sh
+$ env LD_DEBUG=libs LD_LIBRARY_PATH=. ./main
+    438736:     find library=libfoo.so [0]; searching
+    438736:      search path=./tls/haswell/x86_64:./tls/haswell:./tls/x86_64:./tls:./haswell/x86_64:./haswell:./x86_64:.           (LD_LIBRARY_PATH)
+    438736:       trying file=./tls/haswell/x86_64/libfoo.so
+    438736:       trying file=./tls/haswell/libfoo.so
+    438736:       trying file=./tls/x86_64/libfoo.so
+    438736:       trying file=./tls/libfoo.so
+    438736:       trying file=./haswell/x86_64/libfoo.so
+    438736:       trying file=./haswell/libfoo.so
+    438736:       trying file=./x86_64/libfoo.so
+    438736:       trying file=./libfoo.so
+    438736:
+    438736:     find library=libc.so.6 [0]; searching
+    438736:      search path=./tls/haswell/x86_64:./tls/haswell:./tls/x86_64:./tls:./haswell/x86_64:./haswell:./x86_64:.           (LD_LIBRARY_PATH)
+    438736:       trying file=./tls/haswell/x86_64/libc.so.6
+    438736:       trying file=./tls/haswell/libc.so.6
+    438736:       trying file=./tls/x86_64/libc.so.6
+    438736:       trying file=./tls/libc.so.6
+    438736:       trying file=./haswell/x86_64/libc.so.6
+    438736:       trying file=./haswell/libc.so.6
+    438736:       trying file=./x86_64/libc.so.6
+    438736:       trying file=./libc.so.6
+    438736:      search cache=/etc/ld.so.cache
+    438736:       trying file=/lib/x86_64-linux-gnu/libc.so.6
+    ...
+```
