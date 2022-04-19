@@ -28,8 +28,12 @@ main_so2: clean inner outer_so2
 	gcc -o main main.c -L. -louter -Wl,-rpath-link=.
 	env LD_LIBRARY_PATH=. ./main
 
-# same as main_so22
-main_so22: clean inner outer_so2
+# same as main_so2
+main_so21: clean inner outer_so2
 	gcc -o main main.c -L. -louter -Wl,-rpath=.
 	env LD_LIBRARY_PATH=. ./main
 
+# same as main_so2
+main_so22: clean inner outer_so2
+	export LD_LIBRARY_PATH=. && gcc -o main main.c -L. -louter
+	env LD_LIBRARY_PATH=. ./main
