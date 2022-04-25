@@ -82,3 +82,36 @@ fstat(1, {st_mode=S_IFCHR|0620, st_rdev=makedev(0x88, 0x3), ...}) = 0
 write(1, "Error!\n", 7Error!)                 = 7
 ...
 ```
+
+### 结合GDB详细调查
+通过`strace -i`可以查看系统调用的地址，因此可以在此地址上用GDB断点调试。为了让每次运行的地址保持不变，需要通过`setarch -R`命令，关闭[地址空间布局随机化](https://stackoverflow.com/questions/17044529/how-to-debug-with-strace-i-when-everytime-address-is-different)(Address Space Layout Randomization, ASLR)功能。
+
+例如，[例子"strace"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/debug_hacks/advance/code/strace)，在关闭地址空间布局随机化后，`openat`的地址是`0x7ffff7ecfd1b`。通过GDB断点命令`b *0x7ffff7ecfd1b`，可知此位置是"open64.c:48"。从而，可以很方便地在strace相关的位置打上断点。
+
+```bash
+strace$ setarch -R
+$ strace -i ./main
+...
+[00007ffff7ed625b] brk(0x55555557a000)  = 0x55555557a000
+[00007ffff7ecfd1b] openat(AT_FDCWD, "/etc/shadow", O_RDONLY) = -1 EACCES (Permission denied)
+[00007ffff7ecf4f9] fstat(1, {st_mode=S_IFCHR|0620, st_rdev=makedev(0x88, 0x3), ...}) = 0
+[00007ffff7ed0057] write(1, "Error!\n", 7Error!) = 7
+...
+
+$ gdb ./main
+(gdb) start
+Temporary breakpoint 1 at 0x1169: file main.c, line 5.
+Starting program: /home/yuxiangw/GitHub/learning_book/docs/booknotes/debug_hacks/advance/code/strace/main 
+
+Temporary breakpoint 1, main () at main.c:5
+5       {
+(gdb) b *0x7ffff7ecfd1b
+Breakpoint 2 at 0x7ffff7ecfd1b: file ../sysdeps/unix/sysv/linux/open64.c, line 48.
+(gdb) c
+Continuing.
+
+Breakpoint 2, 0x00007ffff7ecfd1b in __libc_open64 (file=0x555555556006 "/etc/shadow", oflag=0)
+    at ../sysdeps/unix/sysv/linux/open64.c:48
+48      ../sysdeps/unix/sysv/linux/open64.c: No such file or directory.
+```
+
