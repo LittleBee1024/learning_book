@@ -55,4 +55,30 @@ $1 = 0x7ffff7fc30f9
 (gdb) p/x &foo
 $2 = 0x7ffff7fc30f9
 ```
- 
+
+## strace
+
+`strace`能够跟踪进程使用的系统调用，并显示其内容。例如，下面的[代码](./code/strace/main.c)会因为没有文件权限而出错。
+
+```cpp
+int main(void)
+{
+   FILE *fp;
+   fp = fopen("/etc/shadow", "r");
+   if (fp == NULL)
+   {
+      printf("Error!\n");
+      return EXIT_FAILURE;
+   }
+   return EXIT_SUCCESS;
+}
+```
+
+利用`strace ./main`，可找到出错的原因：
+```bash
+...
+openat(AT_FDCWD, "/etc/shadow", O_RDONLY) = -1 EACCES (Permission denied)
+fstat(1, {st_mode=S_IFCHR|0620, st_rdev=makedev(0x88, 0x3), ...}) = 0
+write(1, "Error!\n", 7Error!)                 = 7
+...
+```

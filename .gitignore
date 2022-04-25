@@ -17,3 +17,5 @@ program2
 *.i
 *.s
 *.a
+
+*.log
