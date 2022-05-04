@@ -130,3 +130,54 @@ Symbol table '.symtab' contains 14 entries:
   40100f:       00 00 00 
   401012:       b8 00 00 00 00          mov    $0x0,%eax
 ```
+
+## C++链接问题
+### 重复代码消除
+C++编译器在很多时候会产生重复的代码，比如模板(Template)，外部内联函数(Extern Inline Function)和虚函数表(Virtual Function Table)都有可能在不同的编译单元里生成相同的代码。
+
+例如，当一个模板在多个编译单元同时实例化成相同的类型的时候，会生成重复的代码。编译器会将每个模板的实例代码都单独存放在一个段里，每个段只包含一个模板实例。链接器在最终链接的时候可以区分这些相同的模板实例段，然后将他们合并入最后的代码段。
+
+同样，定义在头文件中的类方法，会出现在多个编译单元中，但在最终链接时被消除合并。在[例子"cpp_link"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/link/staic/code/)中，`foo.h`中定义了`Foo::foo()`方法：
+```cpp
+class Foo
+{
+public:
+   void foo()
+   {
+      printf("foo\n");
+   }
+   void bar();
+};
+```
+编译后，在`obj1.o`，`obj2.o`，`main.o`三个编译单元中都存在相同的段`.text._ZN3Foo3foo`，并且`_ZN3Foo3fooEv`符号类型都是弱类型`WEAK`。但是在最终的可执行文件`main`中，`_ZN3Foo3fooEv`被合并到`.text`段中。
+```bash
+> readelf -S obj1.o
+...
+[ 7] .text._ZN3Foo3foo PROGBITS         0000000000000000  0000006a
+       0000000000000022  0000000000000000 AXG       0     0     2
+...
+> readelf -s obj1.o
+...
+12: 0000000000000000    34 FUNC    WEAK   DEFAULT    7 _ZN3Foo3fooEv
+...
+> readelf -s main
+...
+70: 0000000000001186    34 FUNC    WEAK   DEFAULT   16 _ZN3Foo3fooEv
+...
+> objdump -D main
+...
+0000000000001186 <_ZN3Foo3fooEv>:
+    1186:       f3 0f 1e fa             endbr64
+    118a:       55                      push   %rbp
+    118b:       48 89 e5                mov    %rsp,%rbp
+    118e:       48 83 ec 10             sub    $0x10,%rsp
+    1192:       48 89 7d f8             mov    %rdi,-0x8(%rbp)
+    1196:       48 8d 05 6b 0e 00 00    lea    0xe6b(%rip),%rax        # 2008 <_IO_stdin_used+0x8>
+    119d:       48 89 c7                mov    %rax,%rdi
+    11a0:       e8 ab fe ff ff          callq  1050 <puts@plt>
+    11a5:       90                      nop
+    11a6:       c9                      leaveq
+    11a7:       c3                      retq
+...
+```
+
