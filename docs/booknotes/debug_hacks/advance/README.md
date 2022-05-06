@@ -86,10 +86,10 @@ write(1, "Error!\n", 7Error!)                 = 7
 ### 结合GDB详细调查
 通过`strace -i`可以查看系统调用的地址，因此可以在此地址上用GDB断点调试。为了让每次运行的地址保持不变，需要通过`setarch -R`命令，关闭[地址空间布局随机化](https://stackoverflow.com/questions/17044529/how-to-debug-with-strace-i-when-everytime-address-is-different)(Address Space Layout Randomization, ASLR)功能。
 
-例如，[例子"strace"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/debug_hacks/advance/code/strace)，在关闭地址空间布局随机化后，`openat`的地址是`0x7ffff7ecfd1b`。通过GDB断点命令`b *0x7ffff7ecfd1b`，可知此位置是"open64.c:48"。从而，可以很方便地在strace相关的位置打上断点。
+例如，[例子"strace"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/debug_hacks/advance/code/strace)，通过命令`setarch -R`关闭地址空间布局随机化后，`openat`的地址是`0x7ffff7ecfd1b`。通过GDB断点命令`b *0x7ffff7ecfd1b`，可知此位置是"open64.c:48"。从而，可以很方便地在strace相关的位置打上断点。
 
 ```bash
-strace$ setarch -R
+$ setarch -R
 $ strace -i ./main
 ...
 [00007ffff7ed625b] brk(0x55555557a000)  = 0x55555557a000

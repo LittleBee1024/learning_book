@@ -263,7 +263,7 @@ SECTIONS
 }
 ```
 
-通过`ld -static -T main.lds -o main main.o`命令，可生成可执行文件`main`。其段信息如下：
+通过`ld -static -T main.lds -o main main.o`命令，可生成可执行文件`main`。脚本中的`SIZEOF_HEADERS`等于`0x120`，所以`.note.gnu.property`段的VMA等于`0x400120`。通过GDB打印运行时的地址空间，发现进程`main`被加载到`0x400000~0x401000`页，和链接脚本一致。
 ```asm
 > objdump -h main
 
@@ -279,6 +279,16 @@ Idx Name          Size      VMA               LMA               File off  Algn
                   CONTENTS, ALLOC, LOAD, CODE
   3 .data.rel.local 00000008  0000000000400230  0000000000400230  00000230  2**3
                   CONTENTS, ALLOC, LOAD, DATA
+
+> make debug
+Mapped address spaces:
+
+          Start Addr           End Addr       Size     Offset objfile
+            0x400000           0x401000     0x1000        0x0 /home/yuxiangw/GitHub/learning_book/docs/booknotes/cxydzwxy/link/static/code/tiny_hello_64/main
+      0x7ffff7ff9000     0x7ffff7ffd000     0x4000        0x0 [vvar]
+      0x7ffff7ffd000     0x7ffff7fff000     0x2000        0x0 [vdso]
+      0x7ffffffde000     0x7ffffffff000    0x21000        0x0 [stack]
+  0xffffffffff600000 0xffffffffff601000     0x1000        0x0 [vsyscall]
 ```
 
 ### ld链接脚本语法
