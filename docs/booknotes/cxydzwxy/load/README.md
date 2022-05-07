@@ -126,5 +126,132 @@ F3 | 0x0000_3000 ~ 0x0000_3FFF
 
 ## 进程虚拟空间分布
 
+ELF文件中，段的权限往往只有为数不多的几种组合，基本上是三种：
+
+* 以代码段为代表的权限为可读可执行的段
+* 以数据段和BSS段为代表的权限为可读可写的段
+* 以只读数据段为代表的权限为只读的段
+
+为了有效利用内存，可将相同权限的段合并到一起当作一个段进行页映射。一个或多个属性类似的"Section"组成一个"Segment"，一个"Segment"在装载的时候只有一个对应的VMA，这样就可减少页面内部碎片，从而节省空间。
+
+* 从"Section"的角度来看ELF文件是**链接视图**(Linking View)
+    * `readelf -S <elf>`可查看Section
+* 从"Segment"的角度来看是**执行视图**(Execution View)。
+    * `readelf -l <elf>`可擦好看Segment
+
+[例子"segment"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/load/code/segment)展示了一个简单的可执行文件两种视图的关系：
+
+* 32个"Section"被按照段属性被分成了10个"Segment"
+* 4个"LOAD"类型的"Segment"是需要被加载的，其他的诸如"NOTE"，"TLS", "GNU_STACK"都是在装载时起辅助作用的
+    * 其中，第二个"LOAD"类型为可读可执行的部分，包括了代码段`.text`段
+
+```asm
+> readelf -S main
+There are 32 section headers, starting at offset 0xd4588:
+Section Headers:
+  [Nr] Name              Type             Address           Offset
+       Size              EntSize          Flags  Link  Info  Align
+  [ 0]                   NULL             0000000000000000  00000000
+       0000000000000000  0000000000000000           0     0     0
+  [ 1] .note.gnu.propert NOTE             0000000000400270  00000270
+       0000000000000020  0000000000000000   A       0     0     8
+  [ 2] .note.gnu.build-i NOTE             0000000000400290  00000290
+       0000000000000024  0000000000000000   A       0     0     4
+  [ 3] .note.ABI-tag     NOTE             00000000004002b4  000002b4
+       0000000000000020  0000000000000000   A       0     0     4
+  [ 4] .rela.plt         RELA             00000000004002d8  000002d8
+       0000000000000240  0000000000000018  AI       0    20     8
+  [ 5] .init             PROGBITS         0000000000401000  00001000
+       000000000000001b  0000000000000000  AX       0     0     4
+  [ 6] .plt              PROGBITS         0000000000401020  00001020
+       0000000000000180  0000000000000000  AX       0     0     16
+  [ 7] .text             PROGBITS         00000000004011a0  000011a0
+       0000000000091ec0  0000000000000000  AX       0     0     16
+  [ 8] __libc_freeres_fn PROGBITS         0000000000493060  00093060
+       0000000000001ca0  0000000000000000  AX       0     0     16
+  [ 9] .fini             PROGBITS         0000000000494d00  00094d00
+       000000000000000d  0000000000000000  AX       0     0     4
+  [10] .rodata           PROGBITS         0000000000495000  00095000
+       000000000001bd04  0000000000000000   A       0     0     32
+  [11] .stapsdt.base     PROGBITS         00000000004b0d04  000b0d04
+       0000000000000001  0000000000000000   A       0     0     1
+  [12] .eh_frame         PROGBITS         00000000004b0d08  000b0d08
+       000000000000a604  0000000000000000   A       0     0     8
+  [13] .gcc_except_table PROGBITS         00000000004bb30c  000bb30c
+       00000000000000b1  0000000000000000   A       0     0     1
+  [14] .tdata            PROGBITS         00000000004bd0c0  000bc0c0
+       0000000000000020  0000000000000000 WAT       0     0     8
+  [15] .tbss             NOBITS           00000000004bd0e0  000bc0e0
+       0000000000000040  0000000000000000 WAT       0     0     8
+  [16] .init_array       INIT_ARRAY       00000000004bd0e0  000bc0e0
+       0000000000000010  0000000000000008  WA       0     0     8
+  [17] .fini_array       FINI_ARRAY       00000000004bd0f0  000bc0f0
+       0000000000000010  0000000000000008  WA       0     0     8
+  [18] .data.rel.ro      PROGBITS         00000000004bd100  000bc100
+       0000000000002df4  0000000000000000  WA       0     0     32
+  [19] .got              PROGBITS         00000000004bfef8  000beef8
+       00000000000000f0  0000000000000000  WA       0     0     8
+  [20] .got.plt          PROGBITS         00000000004c0000  000bf000
+       00000000000000d8  0000000000000008  WA       0     0     8
+  [21] .data             PROGBITS         00000000004c00e0  000bf0e0
+       0000000000001a50  0000000000000000  WA       0     0     32
+  [22] __libc_subfreeres PROGBITS         00000000004c1b30  000c0b30
+       0000000000000048  0000000000000000  WA       0     0     8
+  [23] __libc_IO_vtables PROGBITS         00000000004c1b80  000c0b80
+       00000000000006a8  0000000000000000  WA       0     0     32
+  [24] __libc_atexit     PROGBITS         00000000004c2228  000c1228
+       0000000000000008  0000000000000000  WA       0     0     8
+  [25] .bss              NOBITS           00000000004c2240  000c1230
+       0000000000001718  0000000000000000  WA       0     0     32
+  [26] __libc_freeres_pt NOBITS           00000000004c3958  000c1230
+       0000000000000028  0000000000000000  WA       0     0     8
+  ...
+Key to Flags:
+  W (write), A (alloc), X (execute), M (merge), S (strings), I (info),
+  L (link order), O (extra OS processing required), G (group), T (TLS),
+  C (compressed), x (unknown), o (OS specific), E (exclude),
+  l (large), p (processor specific)
+
+> readelf -l main
+There are 10 program headers, starting at offset 64
+Program Headers:
+  Type           Offset             VirtAddr           PhysAddr
+                 FileSiz            MemSiz              Flags  Align
+  LOAD           0x0000000000000000 0x0000000000400000 0x0000000000400000
+                 0x0000000000000518 0x0000000000000518  R      0x1000
+  LOAD           0x0000000000001000 0x0000000000401000 0x0000000000401000
+                 0x0000000000093d0d 0x0000000000093d0d  R E    0x1000
+  LOAD           0x0000000000095000 0x0000000000495000 0x0000000000495000
+                 0x00000000000263bd 0x00000000000263bd  R      0x1000
+  LOAD           0x00000000000bc0c0 0x00000000004bd0c0 0x00000000004bd0c0
+                 0x0000000000005170 0x00000000000068c0  RW     0x1000
+  NOTE           0x0000000000000270 0x0000000000400270 0x0000000000400270
+                 0x0000000000000020 0x0000000000000020  R      0x8
+  NOTE           0x0000000000000290 0x0000000000400290 0x0000000000400290
+                 0x0000000000000044 0x0000000000000044  R      0x4
+  TLS            0x00000000000bc0c0 0x00000000004bd0c0 0x00000000004bd0c0
+                 0x0000000000000020 0x0000000000000060  R      0x8
+  GNU_PROPERTY   0x0000000000000270 0x0000000000400270 0x0000000000400270
+                 0x0000000000000020 0x0000000000000020  R      0x8
+  GNU_STACK      0x0000000000000000 0x0000000000000000 0x0000000000000000
+                 0x0000000000000000 0x0000000000000000  RW     0x10
+  GNU_RELRO      0x00000000000bc0c0 0x00000000004bd0c0 0x00000000004bd0c0
+                 0x0000000000002f40 0x0000000000002f40  R      0x1
+ Section to Segment mapping:
+  Segment Sections...
+   00     .note.gnu.property .note.gnu.build-id .note.ABI-tag .rela.plt 
+   01     .init .plt .text __libc_freeres_fn .fini 
+   02     .rodata .stapsdt.base .eh_frame .gcc_except_table 
+   03     .tdata .init_array .fini_array .data.rel.ro .got .got.plt .data __libc_subfreeres __libc_IO_vtables __libc_atexit .bss __libc_freeres_ptrs 
+   04     .note.gnu.property 
+   05     .note.gnu.build-id .note.ABI-tag 
+   06     .tdata .tbss 
+   07     .note.gnu.property 
+   08     
+   09     .tdata .init_array .fini_array .data.rel.ro .got 
+```
+
+由于只有可执行文件需要加载，因此只有可执行文件有程序头表`Program Headers`，目标文件中没有。根据程序头表中的"VirtAddr"，"MemSiz"以及系统的页大小，就可用推断出各段运行时在虚拟内存中的位置。
+
 ## 内核装载ELF过程
 

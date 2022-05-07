@@ -8,6 +8,11 @@ main: clean
 	gcc -c -fno-builtin main.c
 	gcc -T main.lds -o main main.o -Wl,--verbose
 
+# 和main效果一样，https://gcc.gnu.org/onlinedocs/gcc/Link-Options.html#index-static
+main1: clean
+	gcc -c -fno-builtin main.c
+	gcc -static -o main main.o -Wl,--verbose
+
 # 默认编译方式，使用地址空间布局随机化，__executable_start指定为零
 # PROVIDE (__executable_start = SEGMENT_START("text-segment", 0)); . = SEGMENT_START("text-segment", 0) + SIZEOF_HEADERS;
 main2: clean
