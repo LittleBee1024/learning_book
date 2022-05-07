@@ -257,7 +257,36 @@ Program Headers:
 
 ### 堆和栈
 
+操作系统通过使用VMA来堆进程的地址空间进行管理。操作系统给进程空间划分出一个个VMA来管理进程的虚拟空间。基本原则是将相同权限属性的、有相同映像文件的映射成一个VMA。一个进程基本上可用分为如下几种VMA区域：
 
+* 代码VMA，权限只读、可执行；有映像文件
+* 数据VMA，权限可读写、可执行；有映像文件
+* 堆VMA，权限可读写、可执行；无映像文件，匿名，可向上扩展
+* 栈VMA，权限可读写、不可执行；无映像文件，匿名，可向下扩展
+
+在Linux下，我们可通过`cat /proc/<pid>/maps`来查看进程的虚拟空间分布：
+
+```asm
+> cat /proc/<pid>/maps
+00400000-00401000 r--p 00000000 08:05 4589838                            ./main
+00401000-00495000 r-xp 00001000 08:05 4589838                            ./main
+00495000-004bc000 r--p 00095000 08:05 4589838                            ./main
+004bd000-004c0000 r--p 000bc000 08:05 4589838                            ./main
+004c0000-004c3000 rw-p 000bf000 08:05 4589838                            ./main
+004c3000-004c4000 rw-p 00000000 00:00 0 
+014e2000-01505000 rw-p 00000000 00:00 0                                  [heap]
+7ffda9035000-7ffda9056000 rw-p 00000000 00:00 0                          [stack]
+7ffda912d000-7ffda9131000 r--p 00000000 00:00 0                          [vvar]
+7ffda9131000-7ffda9133000 r-xp 00000000 00:00 0                          [vdso]
+ffffffffff600000-ffffffffff601000 --xp 00000000 00:00 0                  [vsyscall]
+
+> ls -i ./main
+4589838 ./main
+```
+
+除了前面几个VMA映射到了可执行文件`main`外（可执行文件的inode是4589838），其他的VMA的文件节点都是0，表示匿名虚拟内存区域(Anonymous Virtual Memory Area)。其中有两个区域分别是堆(Heap)和栈(Stack)，他们的大小分别是140KB和132KB。并且他们的大小随着程序的运行，会动态变换。[例子"max_malloc"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/load/code/max_malloc)可以打印当前系统`malloc`可以申请的最大堆数量。
+
+上面映射到可执行文件的VMA，到`0x004c3000`就结束了，小于"Segment"中LOAD类型的最大值`0x004C3980`。这是因为操作系统对`.bss`段和`__libc_freeres_ptrs`段做了特殊处理，他们被直接映射到了堆中。
 
 ## 内核装载ELF过程
 
