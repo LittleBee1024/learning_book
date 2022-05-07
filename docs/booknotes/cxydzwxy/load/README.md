@@ -27,7 +27,7 @@
 
 ![vm_48bit](./images/vm_48bit.png)
 
-[例子"vm_addr"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/load/code/vm_addr)通过打印`__executable_start`变量的值，查看进程被加载的起始地址。默认情况下，gcc会利用ASLR，随机进程的加载地址。因此，需要手动指定链接脚本(`-T`)，以固定进程加载地址，便于观察。例子中的链接脚本[main.lds](./code/vm_addr/main.lds)和默认链接脚本`ld -verbose`一致，指定了加载地址`.`：
+[例子"vm_addr"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/load/code/vm_addr)通过打印`__executable_start`变量的值，查看进程被加载的起始地址。默认情况下，gcc会利用ASLR，随机进程的加载地址。因此，需要加入链接选项`-static`或者手动指定链接脚本(`-T`)，以固定进程加载地址，便于观察。例子中的链接脚本[main.lds](./code/vm_addr/main.lds)和默认链接脚本`ld -verbose`一致，指定了加载地址`.`：
 ```cpp
 ...
 SECTIONS
@@ -126,6 +126,8 @@ F3 | 0x0000_3000 ~ 0x0000_3FFF
 
 ## 进程虚拟空间分布
 
+### ELF链接视图和执行视图
+
 ELF文件中，段的权限往往只有为数不多的几种组合，基本上是三种：
 
 * 以代码段为代表的权限为可读可执行的段
@@ -141,7 +143,7 @@ ELF文件中，段的权限往往只有为数不多的几种组合，基本上�
 
 [例子"segment"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/load/code/segment)展示了一个简单的可执行文件两种视图的关系：
 
-* 32个"Section"被按照段属性被分成了10个"Segment"
+* 32个"Section"根据段的属性被分成了10个"Segment"
 * 4个"LOAD"类型的"Segment"是需要被加载的，其他的诸如"NOTE"，"TLS", "GNU_STACK"都是在装载时起辅助作用的
     * 其中，第二个"LOAD"类型为可读可执行的部分，包括了代码段`.text`段
 
@@ -252,6 +254,10 @@ Program Headers:
 ```
 
 由于只有可执行文件需要加载，因此只有可执行文件有程序头表`Program Headers`，目标文件中没有。根据程序头表中的"VirtAddr"，"MemSiz"以及系统的页大小，就可用推断出各段运行时在虚拟内存中的位置。
+
+### 堆和栈
+
+
 
 ## 内核装载ELF过程
 
