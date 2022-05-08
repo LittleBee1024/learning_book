@@ -95,6 +95,18 @@ PPid:   47895
 [PID 56244, TID 56244] Parent process end
 ```
 
+### 写时复制
+
+Linux产生一个新任务的速度是非常快的，因为新任务不是复制原任务的内存空间，而是和原任务一起共享一个**写时复制**(Copy on Write, COW)的内存空间。所谓写时复制，指的是两个任务可以同时自由地读取内存，但任意一个任务试图对内存进行修改时，内存就会复制一份提供给修改方单独使用，以免影响到其他的任务使用。
+
+例如，进程A创建了进程B，最初它们共享相同的内存页。由于创建前后内存并没有变化，所以进程B的创建非常迅速。
+
+![cow1](./images/cow1.png)
+
+此时，进程A需要修改页面Z中的内容，一个新的页面Z的拷贝会被创建，进程A就单独拥有此页面。从而，进程A对页面Z的任何修改都不会影响进程B。详情可参考[文档](https://www.studytonight.com/operating-system/copyonwrite-in-operating-system)。
+
+![cow2](./images/cow2.png)
+
 ## 线程同步
 ### 信号量(Semaphore)
 ### 互斥量(Mutex)
