@@ -203,3 +203,6 @@ GDB用于程序调试，常见的操作有：
 * `info proc`，打印进程信息
 * `info proc mappings`，查看进程的内存映射，即显示进程对应的/proc/<PID>/maps的信息
 * `disas /s <函数/地址>`，查看汇编代码，其中`/s`表示同时显示source+assembly代码
+
+## 参考
+* ["GDB的用户手册"](https://sourceware.org/gdb/current/onlinedocs/gdb/Command-and-Variable-Index.html#Command-and-Variable-Index)
