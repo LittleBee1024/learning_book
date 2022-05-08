@@ -32,8 +32,20 @@ fork | 复制当前进程
 exec | 使用新的可执行映像覆盖当前可执行映像
 clone | 创建新任务并从指定位置开始执行，根据参数选项的不同，既可用于创建进程，也可用于创建线程
 
-### clone进程
+### fork进程
+[例子"fork"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/concurrency/code/fork)利用系统调用`fork`创建了一个新进程：
+```cpp
+pid_t pid = fork();
+```
 
+`fork`出的子进程和父进程各自拥有不同的PID，并且不共享变量，因此子进程对`buf`的修改不会影响父进程的内容：
+```bash
+> ./main 
+[PID 57469, TID 57469] Child sees buf = "hello from parent"
+[PID 57468, TID 57468] Child exited with status 0, buf = "hello from parent"
+```
+
+### clone进程
 [例子"clone"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/concurrency/code/clone)利用系统调用`clone`创建了一个新进程：
 
 ```cpp
