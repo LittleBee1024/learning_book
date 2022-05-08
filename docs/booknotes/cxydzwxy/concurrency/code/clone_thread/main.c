@@ -29,6 +29,9 @@ int main()
    int thread_pid;
 
    printf("Creating new thread...\n");
+   // When a CLONE_THREAD thread terminates, the thread that created it is not sent a SIGCHLD
+   // (or other termination) signal; nor can the status of such a thread be obtained using
+   // wait(2). (The thread is said to be detached.)
    thread_pid = clone(&func, (char *)child_stack + STACK_SIZE, CLONE_THREAD | CLONE_SIGHAND | CLONE_FS | CLONE_VM | CLONE_FILES, NULL);
    printf("Done! Thread pid: %d\n", thread_pid);
 

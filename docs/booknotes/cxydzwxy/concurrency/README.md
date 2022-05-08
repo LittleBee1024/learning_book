@@ -24,17 +24,64 @@
 --- | ---
 1.局部变量<br/> 2.函数的参数<br/> 3.TLS数据<br/> | 1.全局变量<br/> 2.堆上的数据<br/> 3.函数里的静态变量<br/> 4.程序代码，任何线程都有权力读取并执行任何代码<br/> 5.打开的文件，A线程打开的文件可以由B线程读写
 
-### 创建过程
-
 从Linux内核角度，进程和线程的区别仅仅是可访问的资源不同，其自身的结构是类似的，都是一个任务，详情可参考[文档](https://eli.thegreenplace.net/2018/launching-linux-threads-and-processes-with-clone/)。在Linux下，以下方法可以创建一个新的任务：
 
 系统调用 | 作用
 --- | ---
 fork | 复制当前进程
 exec | 使用新的可执行映像覆盖当前可执行映像
-clone | 创建新任务并从指定位置开始执行，根据参数选项的不同，即可用于创建进程，也可用于创建线程
+clone | 创建新任务并从指定位置开始执行，根据参数选项的不同，既可用于创建进程，也可用于创建线程
 
+### clone进程
 
+[例子"clone"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/concurrency/code/clone)利用系统调用`clone`创建了一个新进程：
+
+```cpp
+unsigned long flags = 0;
+if (argc > 1 && !strcmp(argv[1], "vm"))
+{
+    flags |= CLONE_VM;
+}
+
+clone(child_func, stack + STACK_SIZE, flags | SIGCHLD, buf)
+```
+
+程序默认设置了`SIGCHLD`选项，因此父进程可以收到子进程结束的信息，从而等到子进程结束再退出。程序可以选择是否设置`CLONE_VM`选项。如果设置了`CLONE_VM`，则两个进程共享内存空间。因此，子进程对`buf`的修改，在父进程中可见，打印结果如下：
+
+```bash
+> ./main 
+[PID 55486, TID 55486] Child sees buf = "hello from parent"
+[PID 55485, TID 55485] Child exited with status 0, buf = "hello from parent"
+
+> ./main vm
+[PID 55517, TID 55517] Child sees buf = "hello from parent"
+[PID 55516, TID 55516] Child exited with status 0, buf = "hello from child"
+```
+
+### clone线程
+
+[例子"clone_thread"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/concurrency/code/clone_thread)创建了一个新线程：
+
+```cpp
+clone(&func, (char *)child_stack + STACK_SIZE, CLONE_THREAD | CLONE_SIGHAND | CLONE_FS | CLONE_VM | CLONE_FILES, NULL);
+```
+
+`CLONE_THREAD`选项创建的新任务和调用进程拥有相同的PID，因此它更像一个线程，可以直接在新任务上打GDB的断点(无须`set follow-fork-mode child`)。无论是查看`/proc/self/status`信息，还是打印PID和TID，都显示新建的任务更接近一个线程，而不是进程：
+```bash
+> ./main
+This process pid: 56244, tid: 56244
+Creating new thread...
+Done! Thread pid: 56245
+Looking into /proc/self/status...
+...
+Tgid:   56244
+Ngid:   0
+Pid:    56244
+PPid:   47895
+...
+[PID 56244, TID 56245] Terminating func...
+[PID 56244, TID 56244] Parent process end
+```
 
 ## 线程同步
 ### 信号量(Semaphore)
