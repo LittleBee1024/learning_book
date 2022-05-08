@@ -290,3 +290,15 @@ ffffffffff600000-ffffffffff601000 --xp 00000000 00:00 0                  [vsysca
 
 ## 内核装载ELF过程
 
+Linux通过系统调用`execve()`进行ELF的装载过程，系统调用`execve()`的使用方法可参考[例子"minibash"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/load/code/minibash)，这里不再细述。
+
+在内核中，系统调用`execve()`会先检查文件头，确定文件类型后，调用相应的装载函数。如，`load_elf_binary()`用于导入ELF文件，它的主要步骤是：
+
+* 检查ELF文件的有效性，比如魔数、程序头表中的段(Segment)的数量
+* 寻找动态链接的`.interp`段，设置动态链接器路径
+* 根据ELF可执行文件的程序头表的描述，堆ELF文件进行映射，比如代码、数据、只读数据等
+* 初始化ELF进程环境
+* 将`execve()`系统调用的返回地址修改成ELF可执行文件的入口点
+    * 静态链接的ELF可执行文件，入口是ELF文件的文件头中的`e_entry`所指的地址
+    * 动态链接的ELF可执行文件，入口是动态链接器
+
