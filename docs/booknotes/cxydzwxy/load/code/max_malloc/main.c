@@ -11,14 +11,15 @@ int main()
    {
       for (count = 1; ; count++)
       {
-         void *block = malloc(max + blocksize[i] * count);
+         void *block = malloc(max + blocksize[i]);
          if (block)
          {
-            max = max + blocksize[i] * count;
+            max = max + blocksize[i];
             free(block);
          }
          else
          {
+            printf("[%d, %d] Failed to malloc size %luB\n", i, count, max + blocksize[i]);
             break;
          }
       }
