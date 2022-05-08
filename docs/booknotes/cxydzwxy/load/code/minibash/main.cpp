@@ -30,6 +30,7 @@ int main()
       else
       {
          printf("fork error %d\n", pid);
+         return -1;
       }
    }
    return 0;
