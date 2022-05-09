@@ -126,7 +126,7 @@ int pthread_join(pthread_t thread, void** retval);
 void pthread_exit(void* retval);
 ```
 
-[例子"nptl_thread"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/concurrency/code/nptl_thread)展示了如何通过NPTL线程库创建线程，向线程传递参数，并接收线程返回的结果。
+[例子"nptl_thread"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/concurrency/code/nptl_thread)展示了如何通过NPTL线程库创建线程，向线程传递参数，并接收线程返回的结果：
 ```cpp
 struct thread_info
 {                       /* Used as argument to thread_start() */
@@ -193,7 +193,7 @@ int pthread_mutex_trylock(pthread_mutex_t* mutex);
 int pthread_mutex_unlock(pthread_mutex_t* mutex);
 ```
 
-[例子"con_th/mutex"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/concurrency/code/con_th/mutex)利用互斥量，同步了两个线程的执行顺序。
+[例子"con_th/mutex"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/concurrency/code/con_th/mutex)利用互斥量，同步了两个线程的执行顺序：
 ```cpp
 pthread_mutex_t lock;
 
@@ -265,7 +265,7 @@ int sem_trywait(sem_t* sem);
 int sem_post(sem_t* sem);
 ```
 
-[例子"con_th/binary_sem"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/concurrency/code/con_th/binary_sem)利用二元信号量，同步了两个线程的执行顺序，效果和“互斥量”的例子相同。
+[例子"con_th/binary_sem"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/concurrency/code/con_th/binary_sem)利用二元信号量，同步了两个线程的执行顺序，效果和“互斥量”的例子相同：
 
 ```cpp
 sem_t sem;
@@ -343,7 +343,7 @@ int pthread_cond_signal(pthread_cond_t* cond);
 int pthread_cond_wait(pthread_cond_t* cond, pthread_mutex_t* mutex);
 ```
 
-[例子"con_th/cond"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/concurrency/code/con_th/cond)利用条件变量，用一个线程触发另外两个线程开始运行。
+[例子"con_th/cond"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/concurrency/code/con_th/cond)利用条件变量，用一个线程触发另外两个线程开始运行：
 
 ```cpp
 pthread_mutex_t lock;
@@ -434,9 +434,45 @@ IPC | System V | POSIX
 
 ### 互斥量(Mutex)
 
+POSIX提供了对互斥量的操作，要使互斥量在进程中生效，需要满足两点：
+
+* 互斥量需要定义在进程间能共享的位置，如共享内存中
+* 互斥量属性需要配置为`PTHREAD_PROCESS_SHARED`(1)，默认是`PTHREAD_PROCESS_PRIVATE`(0)
+
+[例子"con_proc/mutex_posix"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/concurrency/code/con_proc/mutex_posix)利用互斥量，同步了两个进程的执行顺序：
+```cpp
+// 1.在匿名共享内存上创建互斥量
+shm_lock = (pthread_mutex_t*) mmap(NULL, sizeof(pthread_mutex_t), PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANON, -1, 0);
+
+// 2.配置互斥量的属性为PTHREAD_PROCESS_SHARED
+pthread_mutexattr_t attr;
+pthread_mutexattr_init(&attr);
+pthread_mutexattr_setpshared(&attr, PTHREAD_PROCESS_SHARED);
+pthread_mutex_init(shm_lock, &attr);
+pthread_mutexattr_destroy(&attr);
+```
+
 ### 信号量(Semaphore)
 
 ### 条件变量(Condition Variable)
+
+POSIX提供了对信号量的操作，要使信号量在进程中生效，和互斥量一样，也需要满足两点：
+
+* 信号量需要定义在进程间能共享的位置，如共享内存中
+* 信号量属性需要配置为`PTHREAD_PROCESS_SHARED`(1)，默认是`PTHREAD_PROCESS_PRIVATE`(0)
+
+[例子"con_proc/cond_posix"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/concurrency/code/con_proc/cond_posix)利用了条件变量，用主进程触发另外两个子进程开始运行：
+```cpp
+// 1.在匿名共享内存上创建条件变量
+shm_cond = (pthread_cond_t*) mmap(NULL, sizeof(pthread_cond_t), PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANON, -1, 0);
+
+// 2.配置条件变量的属性为PTHREAD_PROCESS_SHARED
+pthread_condattr_t cond_attr;
+pthread_condattr_init(&cond_attr);
+pthread_condattr_setpshared(&cond_attr, PTHREAD_PROCESS_SHARED);
+pthread_cond_init(shm_cond, &cond_attr);
+pthread_condattr_destroy(&cond_attr);
+```
 
 ### 文件锁(File Lock)
 
