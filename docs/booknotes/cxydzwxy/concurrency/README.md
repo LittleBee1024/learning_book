@@ -201,10 +201,10 @@ void *thread_start(void *arg)
 {
    pthread_mutex_lock(&lock);
 
-   struct thread_info *tinfo = arg;
-   printf("Job %d has started\n", tinfo->thread_num);
+   pthread_t id = pthread_self();
+   printf("[Thread %ld] Entered..\n", id);
    sleep(1);
-   printf("Job %d has finished\n", tinfo->thread_num);
+   printf("[Thread %ld] Just Exiting...\n", id);
 
    pthread_mutex_unlock(&lock);
 
@@ -215,27 +215,24 @@ int main(void)
 {
    pthread_mutex_init(&lock, NULL);
 
-   for (int tnum = 0; tnum < NUM_THREADS; tnum++)
-   {
-      tinfo[tnum].thread_num = tnum + 1;
-      pthread_create(&tinfo[tnum].thread_id, NULL, &thread_start, &tinfo[tnum]);
-   }
+   pthread_t t1, t2;
+   pthread_create(&t1, NULL, thread_start, NULL);
+   pthread_create(&t2, NULL, thread_start, NULL);
 
-   for (int tnum = 0; tnum < NUM_THREADS; tnum++)
-   {
-      pthread_join(tinfo[tnum].thread_id, NULL);
-   }
+   pthread_join(t1, NULL);
+   pthread_join(t2, NULL);
 
    pthread_mutex_destroy(&lock);
+
    return 0;
 }
 ```
 ```bash
 > ./main 
-Job 2 has started
-Job 2 has finished
-Job 1 has started
-Job 1 has finished
+[Thread 139949549393664] Entered..
+[Thread 139949549393664] Just Exiting...
+[Thread 139949557786368] Entered..
+[Thread 139949557786368] Just Exiting...
 ```
 
 ### 信号量(Semaphore)
