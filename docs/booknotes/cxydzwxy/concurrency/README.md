@@ -434,7 +434,7 @@ IPC | System V | POSIX
 
 ### 互斥量(Mutex)
 
-POSIX提供了对互斥量的操作，要使互斥量在进程中生效，需要满足两点：
+POSIX提供了对进程互斥量的操作，要使互斥量在进程中生效，需要满足两点：
 
 * 互斥量需要定义在进程间能共享的位置，如共享内存中
 * 互斥量属性需要配置为`PTHREAD_PROCESS_SHARED`(1)，默认是`PTHREAD_PROCESS_PRIVATE`(0)
@@ -452,11 +452,9 @@ pthread_mutex_init(shm_lock, &attr);
 pthread_mutexattr_destroy(&attr);
 ```
 
-### 信号量(Semaphore)
-
 ### 条件变量(Condition Variable)
 
-POSIX提供了对信号量的操作，要使信号量在进程中生效，和互斥量一样，也需要满足两点：
+POSIX提供了对进程信号量的操作，要使信号量在进程中生效，和互斥量一样，也需要满足两点：
 
 * 信号量需要定义在进程间能共享的位置，如共享内存中
 * 信号量属性需要配置为`PTHREAD_PROCESS_SHARED`(1)，默认是`PTHREAD_PROCESS_PRIVATE`(0)
@@ -473,6 +471,11 @@ pthread_condattr_setpshared(&cond_attr, PTHREAD_PROCESS_SHARED);
 pthread_cond_init(shm_cond, &cond_attr);
 pthread_condattr_destroy(&cond_attr);
 ```
+
+### 信号量(Semaphore)
+和互斥量，条件变量一样，POSIX也提供了对进程信号量的操作，也需要创建在共享位置且设置成进程共享，可参考[例子"con_proc/sem_posix"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/concurrency/code/con_proc/sem_posix)。
+
+同时，"System V"也提供了一组API，用于操作进程信号量。
 
 ### 文件锁(File Lock)
 
