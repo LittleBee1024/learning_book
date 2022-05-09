@@ -114,7 +114,7 @@ NPTL(Native POSIX Threads Library)线程库提供了线程相关的各种API，�
 
 // 创建线程
 //  thread - 线程标识，用于后续对线程的操作
-//  attr - 线程属性，NULL表示默认属性，可通过pthread_attr_init()等属性函数获取自定义属性值
+//  attr - 线程属性，NULL表示默认属性，可结合pthread_attr_init()等属性函数配置自定义属性值
 int pthread_create(pthread_t* thread, const pthread_attr_t* attr, void*(*stat_routine)(void*), void* arg);
 
 // 同步线程
@@ -164,11 +164,79 @@ int main(void)
     ...
 }
 ```
+```bash
+> ./main 
+[Thread_2, num_140071691572992] Thread processing done
+[Thread_1, num_140071699965696] Thread processing done
+Joined with thread 1; Return value from thread is [1]
+Joined with thread 2; Return value from thread is [2]
+```
 
 ## 线程同步
 
 ### 互斥量(Mutex)
+互斥量是最常见的线程同步机制，资源仅同时允许一个线程访问，并且获取和释放互斥量的线程必须是同一个线程。NPTL线程库提供了如下对互斥量操作的API：
 
+```cpp
+// 初始化互斥量
+//  mutex - 一个可全局访问的`pthread_mutex_t`互斥锁
+//  mutexattr - 互斥锁属性，NULL表示默认属性，可结合pthread_mutexattr_init()等属性函数配置自定义属性
+//              例如，默认情况下，互斥锁是不能跨进程共享的，通过pthread_mutexattr_setpshared()可设置跨进程共享互斥锁
+int pthread_mutex_init(pthread_mutex_t* mutex, const pthread_mutexattr_t* mutexattr);
+
+// 销毁互斥量
+int pthread_mutex_destroy(pthread_mutex_t* mutex);
+
+// 获取/释放互斥量
+int pthread_mutex_lock(pthread_mutex_t* mutex);
+int pthread_mutex_trylock(pthread_mutex_t* mutex);
+int pthread_mutex_unlock(pthread_mutex_t* mutex);
+```
+
+[例子"con_th/mutex"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/concurrency/code/con_th/mutex)利用互斥量，同步了两个线程的执行顺序。
+```cpp
+pthread_mutex_t lock;
+
+void *thread_start(void *arg)
+{
+   pthread_mutex_lock(&lock);
+
+   struct thread_info *tinfo = arg;
+   printf("Job %d has started\n", tinfo->thread_num);
+   sleep(1);
+   printf("Job %d has finished\n", tinfo->thread_num);
+
+   pthread_mutex_unlock(&lock);
+
+   return NULL;
+}
+
+int main(void)
+{
+   pthread_mutex_init(&lock, NULL);
+
+   for (int tnum = 0; tnum < NUM_THREADS; tnum++)
+   {
+      tinfo[tnum].thread_num = tnum + 1;
+      pthread_create(&tinfo[tnum].thread_id, NULL, &thread_start, &tinfo[tnum]);
+   }
+
+   for (int tnum = 0; tnum < NUM_THREADS; tnum++)
+   {
+      pthread_join(tinfo[tnum].thread_id, NULL);
+   }
+
+   pthread_mutex_destroy(&lock);
+   return 0;
+}
+```
+```bash
+> ./main 
+Job 2 has started
+Job 2 has finished
+Job 1 has started
+Job 1 has finished
+```
 
 ### 信号量(Semaphore)
 
@@ -183,9 +251,9 @@ int main(void)
 
 
 ## 进程同步
+### Shared memory
 ### 文件锁
 ### 管道
 ### 信号量(Semaphore)
-### Shared memory
 ### Socket
 ### Signal
