@@ -415,6 +415,23 @@ int main(void)
 
 ## 进程同步
 
+前面线程同步的方法(互斥量，信号量，条件变量)，都可以应用于进程同步，可参考下面的例子：
+
+* 互斥量["mutex_posix"](./code/con_proc/mutex_posix/main.c)
+* 信号量["sem_posix"](./code/con_proc/sem_posix/main.c)
+* 条件变量["cond_posix"](./code/con_proc/cond_posix/main.c)
+
+Linux系统的进程间通信有两种类型，分别是`POSIX`和`System V`，下表展示了这两种的类的区别，详情参考[文档](https://www.tutorialspoint.com/inter_process_communication/inter_process_communication_system_v_posix.htm)：
+
+IPC | System V | POSIX
+--- | --- | ---
+描述 | 1983年由AT&T创建，包括三种IPC机制：共享内存，消息队列和信号量 | 由IEEE制定，也包括了这三种IPC机制
+共享内存 | `shmget()`, `shmat()`, `shmdt()`, `shmctl()` | `shm_open()`, `mmap()`, `shm_unlink()`
+消息队列 | `msgget()`, `msgsnd()`, `msgrcv()`, `msgctl()` | `mq_open()`, `mq_send()`, `mq_receive()`, `mq_unlink()`
+信号量 | `semget()`, `semop()`, `semctl()` | 具名: `sem_open()`, `sem_close()`, `sem_post()`, `sem_wait()`<br/> 匿名: `sem_init()`, `sem_destroy()`, `sem_post()`, `sem_wait()`
+互斥量 | 无 |  `pthread_mutex_lock()`, `pthread_mutex_unlock()`
+条件变量 | 无 |  `pthread_cond_wait()`, `pthread_cond_broadcast()`， `pthread_cond_signal()`
+
 ### 互斥量(Mutex)
 
 ### 信号量(Semaphore)
@@ -423,7 +440,7 @@ int main(void)
 
 ### 文件锁
 
-## 进程通讯
+## 进程通信
 
 ### 共享内存(Shared memory)
 ### 信号(Signal)
