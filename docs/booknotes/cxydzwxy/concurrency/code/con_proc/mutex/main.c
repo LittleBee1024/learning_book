@@ -35,7 +35,7 @@ void parent_start()
 int main(void)
 {
    // init shared lock at anoymous shared memory
-   shm_lock = (pthread_mutex_t*) mmap(NULL, getpagesize(), PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANON, -1, 0);
+   shm_lock = (pthread_mutex_t*) mmap(NULL, sizeof(pthread_mutex_t), PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANON, -1, 0);
 
    pthread_mutexattr_t attr;
    pthread_mutexattr_init(&attr);
