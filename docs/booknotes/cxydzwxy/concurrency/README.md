@@ -310,10 +310,6 @@ int main(void)
 
 [例子"con_th/counting_sem_posix"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/concurrency/code/con_th/counting_sem_posix)利用多元信号量，实现了“生产者/消费者”模型，详情可参考[代码](./code/con_th/counting_sem_posix/main.c)，这里不做系数。
 
-
-### 临界区(Critical Section)
-
-
 ### 读写锁(Read-Write Lock)
 
 
