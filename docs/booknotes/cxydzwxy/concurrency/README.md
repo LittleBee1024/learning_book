@@ -32,6 +32,18 @@ fork | 复制当前进程
 exec | 使用新的可执行映像覆盖当前可执行映像
 clone | 创建新任务并从指定位置开始执行，根据参数选项的不同，既可用于创建进程，也可用于创建线程
 
+### 写时复制
+
+Linux产生一个新任务的速度是非常快的，因为新任务不是复制原任务的内存空间，而是和原任务一起共享一个**写时复制**(Copy on Write, COW)的内存空间。所谓写时复制，指的是两个任务可以同时自由地读取内存，但任意一个任务试图对内存进行修改时，内存就会复制一份提供给修改方单独使用，以免影响到其他的任务使用。
+
+例如，进程A创建了进程B，最初它们共享相同的内存页。由于创建前后内存并没有变化，所以进程B的创建非常迅速。
+
+![cow1](./images/cow1.png)
+
+此时，进程A需要修改页面Z中的内容，一个新的页面Z的拷贝会被创建，进程A就单独拥有此页面。从而，进程A对页面Z的任何修改都不会影响进程B。详情可参考[文档](https://www.studytonight.com/operating-system/copyonwrite-in-operating-system)。
+
+![cow2](./images/cow2.png)
+
 ### fork进程
 [例子"fork"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/concurrency/code/fork)利用系统调用`fork`创建了一个新进程：
 ```cpp
@@ -95,23 +107,82 @@ PPid:   47895
 [PID 56244, TID 56244] Parent process end
 ```
 
-### 写时复制
+### 线程库NPTL
+NPTL(Native POSIX Threads Library)线程库提供了线程相关的各种API，方便用户进行线程的创建、同步、销毁等。
+```cpp
+#include <pthread.h>
 
-Linux产生一个新任务的速度是非常快的，因为新任务不是复制原任务的内存空间，而是和原任务一起共享一个**写时复制**(Copy on Write, COW)的内存空间。所谓写时复制，指的是两个任务可以同时自由地读取内存，但任意一个任务试图对内存进行修改时，内存就会复制一份提供给修改方单独使用，以免影响到其他的任务使用。
+// 创建线程
+//  thread - 线程标识，用于后续对线程的操作
+//  attr - 线程属性，NULL表示默认属性，可通过pthread_attr_init()等属性函数获取自定义属性值
+int pthread_create(pthread_t* thread, const pthread_attr_t* attr, void*(*stat_routine)(void*), void* arg);
 
-例如，进程A创建了进程B，最初它们共享相同的内存页。由于创建前后内存并没有变化，所以进程B的创建非常迅速。
+// 同步线程
+//  retval - 目标线程返回的退出信息
+int pthread_join(pthread_t thread, void** retval);
 
-![cow1](./images/cow1.png)
+// 结束线程
+//  retval - 向线程调用者传递的退出信息指针
+void pthread_exit(void* retval);
+```
 
-此时，进程A需要修改页面Z中的内容，一个新的页面Z的拷贝会被创建，进程A就单独拥有此页面。从而，进程A对页面Z的任何修改都不会影响进程B。详情可参考[文档](https://www.studytonight.com/operating-system/copyonwrite-in-operating-system)。
+[例子"nptl_thread"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/concurrency/code/nptl_thread)展示了如何通过NPTL线程库创建线程，向线程传递参数，并接收线程返回的结果。
+```cpp
+struct thread_info
+{                       /* Used as argument to thread_start() */
+   pthread_t thread_id; /* ID returned by pthread_create() */
+   int thread_num;      /* Application-defined thread # */
+   int ret;             /* Return value */
+};
 
-![cow2](./images/cow2.png)
+void *thread_start(void *arg)
+{
+   struct thread_info *tinfo = arg;
+
+   printf("[Thread_%d, num_%ld] Thread processing done\n", tinfo->thread_num, tinfo->thread_id);
+   tinfo->ret = tinfo->thread_num;
+   pthread_exit(&tinfo->ret);
+}
+
+int main(void)
+{
+    ...
+    for (int tnum = 0; tnum < NUM_THREADS; tnum++)
+    {
+        tinfo[tnum].thread_num = tnum + 1;
+        int rc = pthread_create(&tinfo[tnum].thread_id, NULL, &thread_start, &tinfo[tnum]);
+        if (rc != 0)
+            perror("pthread_create");
+    }
+
+    void *res;
+    for (int tnum = 0; tnum < NUM_THREADS; tnum++)
+    {
+        int rc = pthread_join(tinfo[tnum].thread_id, &res);
+        if (rc != 0)
+            perror("pthread_join");
+
+        printf("Joined with thread %d; Return value from thread is [%d]\n",
+                tinfo[tnum].thread_num, *(int *)res);
+        // free res if the res is allocated by the thread
+    }
+    ...
+}
+```
 
 ## 线程同步
 ### 信号量(Semaphore)
+
+
 ### 互斥量(Mutex)
+
+
 ### 临界区(Critical Section)
+
+
 ### 读写锁(Read-Write Lock)
+
+
 ### 条件变量(Condition Variable)
 
 
