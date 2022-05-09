@@ -18,8 +18,10 @@ main: $(OBJS)
 clean:
 	@rm -rf main *.o
 
+# Check semaphore value:
+#  ipcs -s -i <semid>
+#  cat /proc/sysvipc/sem
 debug:
 	gdb -q ./main \
-	-ex "set follow-fork-mode child" \
 	-ex "start" \
-	-ex "bt"
+	-ex "shell ipcs -s"

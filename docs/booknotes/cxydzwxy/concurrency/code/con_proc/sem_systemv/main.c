@@ -27,7 +27,9 @@ void pv(int sem_id, int op)
    semop(sem_id, &sem_b, 1);
 }
 
-void child_process(int semid)
+int semid; // System V semaphore ID
+
+void child_process()
 {
    printf("[Child PID %d] Entered..\n", getpid());
 
@@ -38,7 +40,7 @@ void child_process(int semid)
    pv(semid, 1);
 }
 
-void parent_process(int semid)
+void parent_process()
 {
    printf("[Parent PID %d] Entered..\n", getpid());
 
@@ -53,8 +55,9 @@ int main()
 {
    key_t key = ftok(".", 'a');
    assert(key != -1);
+   printf("sem (0x%x) is created\n", key);
 
-   int semid = semget(key, 1, 0666 | IPC_CREAT);
+   semid = semget(key, 1, 0666 | IPC_CREAT);
    assert(key != -1);
 
    union semun arg;
@@ -64,14 +67,16 @@ int main()
    pid_t pid = fork();
    if (pid == 0)
    {
-      child_process(semid);
+      child_process();
       return 0;
    }
 
    assert(pid > 0);
-   parent_process(semid);
+   parent_process();
 
    wait(NULL);
+   //remove sem
+   semctl(semid, 0, IPC_RMID, arg);
 
    return 0;
 }

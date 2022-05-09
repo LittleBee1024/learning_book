@@ -475,7 +475,138 @@ pthread_condattr_destroy(&cond_attr);
 ### 信号量(Semaphore)
 和互斥量，条件变量一样，POSIX也提供了对进程信号量的操作，也需要创建在共享位置且设置成进程共享，可参考[例子"con_proc/sem_posix"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/concurrency/code/con_proc/sem_posix)。
 
-同时，"System V"也提供了一组API，用于操作进程信号量。
+同时，"System V"也提供了一组API，用于操作信号量集：
+```cpp
+#include <sys/sem.h>
+
+// 创建/获取一个信号量集
+//  key - 全局唯一的标识，可通过`ftok()`系统调用生成
+//  num_sems - 指定信号量集中，信号的数目
+//  sem_flags - 除了常规的权限设置外，还可以设置IPC_CREAT，表示创建新的信号集
+//  返回信号量集的标识符
+int semget(key_t key, int num_sems, int sem_flags);
+
+// 获取/释放信号量
+//  sem_id - semget()返回的标识
+//  sem_ops - 对信号集的操作
+//  num_sem_ops - sem_ops中元素的个数
+int semop(int sem_id, struct sembuf* sem_ops, size_t num_sem_ops);
+struct sembuf
+{
+    unsigned short int sem_num; // 信号量集中的信号量的编号，0表示信号量集中的第一个信号量
+    short int sem_op;           // 改变信号量的值，大于零表示释放sem_op个信号量，反之要获取信号量
+    short int sem_flg;          // IPC_NOWAIT - 无论操作是否成功，立即返回
+                                // SEM_UNDO - 当进程退出时取消正在进程的semop操作
+};
+
+// 用命令控制信号量集
+//  IPC_RMID命令 - 移除信号量集
+int semctl(int sem_id, int sem_num, int command, ...);
+// 命令参数
+union semun
+{
+    int val;                // 用于SETVAL命令
+    struct semid_ds* buf;   // 用于IPC_STAT和IPC_SET命令
+    unsigned short* array;  // 用于GETALL和SETALL命令
+    struct seminfo* __buf;  // 用于IPC_INFO命令
+};
+```
+
+[例子"con_proc/sem_systemv"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/concurrency/code/con_proc/sem_systemv)利用"System V"的信号量集操作，同步了两个进程的执行顺序，效果和上面POSIX的例子相同：
+```cpp
+// semun is not defined in "sys/sem.h"
+union semun
+{
+   int val;              /* used for SETVAL only */
+   struct semid_ds *buf; /* used for IPC_STAT and IPC_SET */
+   ushort *array;        /* used for GETALL and SETALL */
+   struct seminfo* __buf;
+};
+
+// op为-1时执行P操作，op为1时执行V操作
+void pv(int sem_id, int op)
+{
+   struct sembuf sem_b;
+   sem_b.sem_num = 0;
+   sem_b.sem_op = op;
+   sem_b.sem_flg = SEM_UNDO;
+   semop(sem_id, &sem_b, 1);
+}
+
+int semid; // System V semaphore ID
+
+void child_process()
+{
+   printf("[Child PID %d] Entered..\n", getpid());
+
+   pv(semid, -1);
+   // critical section
+   sleep(1);
+   printf("[Child PID %d] Just Exiting...\n", getpid());
+   pv(semid, 1);
+}
+
+void parent_process()
+{
+   printf("[Parent PID %d] Entered..\n", getpid());
+
+   pv(semid, -1);
+   // critical section
+   sleep(1);
+   printf("[Parent PID %d] Just Exiting...\n", getpid());
+   pv(semid, 1);
+}
+
+int main()
+{
+   // 创建/打开信号量集(".", 'a')
+   key_t key = ftok(".", 'a');
+   semid = semget(key, 1, 0666 | IPC_CREAT);
+
+   // 设置信号量的值为1
+   union semun arg;
+   arg.val = 1;
+   semctl(semid, 0, SETVAL, arg);
+
+   pid_t pid = fork();
+   if (pid == 0)
+   {
+      child_process();
+      return 0;
+   }
+   parent_process();
+   wait(NULL);
+
+   // 删除信号量
+   semctl(semid, 0, IPC_RMID, arg);
+
+   return 0;
+}
+```
+```bash
+> ./main
+[Parent PID 101834] Entered..
+[Child PID 101835] Entered..
+[Parent PID 101834] Just Exiting...
+[Child PID 101835] Just Exiting...
+```
+
+`ipcs -s -i <semid>`命令可以查看某个"System V"信号量集的详细信息，包括创建时间，创建进程，当前值等信息。也可以打印`/proc/sysvipc/sem`的内容，查看所有信号量集的信息：
+```bash
+> ipcs -s -i 1
+Semaphore Array semid=1
+uid=1000         gid=1000        cuid=1000       cgid=1000
+mode=0666, access_perms=0666
+nsems = 1
+otime = Not set                   
+ctime = Mon May  9 20:48:09 2022  
+semnum     value      ncount     zcount     pid
+0          1          0          0          103565
+
+> cat /proc/sysvipc/sem
+       key      semid perms      nsems   uid   gid  cuid  cgid      otime      ctime
+1627720036          1   666          1  1000  1000  1000  1000          0 1652100489
+```
 
 ### 文件锁(File Lock)
 
