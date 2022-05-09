@@ -62,6 +62,8 @@ extra:
       link: https://github.com/littlebee1024
     - icon: fontawesome/brands/docker
       link: https://hub.docker.com/r/littlebee1024
+    - icon: material/email
+      link: mailto:littlebee1024@outlook.com
 
 # Extensions
 markdown_extensions:
