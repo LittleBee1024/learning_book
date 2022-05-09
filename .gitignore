@@ -19,3 +19,5 @@ program2
 *.a
 
 *.log
+*.tmp
+*.lock

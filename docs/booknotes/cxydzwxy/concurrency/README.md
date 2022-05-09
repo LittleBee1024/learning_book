@@ -608,9 +608,11 @@ semnum     value      ncount     zcount     pid
 1627720036          1   666          1  1000  1000  1000  1000          0 1652100489
 ```
 
-### 文件锁(File Lock)
-
 ### 共享内存(Shared memory)
+
+### 消息队列(Message Queues)
+
+### 文件锁(File Lock)
 ### 信号(Signal)
 ### 管道(Pipe)
 ### 套接字(Socket)
