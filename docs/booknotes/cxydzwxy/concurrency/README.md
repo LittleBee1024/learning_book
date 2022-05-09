@@ -150,18 +150,13 @@ int main(void)
     for (int tnum = 0; tnum < NUM_THREADS; tnum++)
     {
         tinfo[tnum].thread_num = tnum + 1;
-        int rc = pthread_create(&tinfo[tnum].thread_id, NULL, &thread_start, &tinfo[tnum]);
-        if (rc != 0)
-            perror("pthread_create");
+        pthread_create(&tinfo[tnum].thread_id, NULL, &thread_start, &tinfo[tnum]);
     }
 
     void *res;
     for (int tnum = 0; tnum < NUM_THREADS; tnum++)
     {
-        int rc = pthread_join(tinfo[tnum].thread_id, &res);
-        if (rc != 0)
-            perror("pthread_join");
-
+        pthread_join(tinfo[tnum].thread_id, &res);
         printf("Joined with thread %d; Return value from thread is [%d]\n",
                 tinfo[tnum].thread_num, *(int *)res);
         // free res if the res is allocated by the thread
@@ -171,10 +166,11 @@ int main(void)
 ```
 
 ## 线程同步
-### 信号量(Semaphore)
-
 
 ### 互斥量(Mutex)
+
+
+### 信号量(Semaphore)
 
 
 ### 临界区(Critical Section)

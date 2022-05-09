@@ -1,7 +1,7 @@
-#include <stdio.h>
-#include <string.h>
 #include <pthread.h>
+#include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 #include <errno.h>
 
@@ -23,29 +23,38 @@
    }
 
 struct thread_info
-{                       /* Used as argument to thread_start() */
-   pthread_t thread_id; /* ID returned by pthread_create() */
-   int thread_num;      /* Application-defined thread # */
-   int ret;             /* Return value */
+{
+   pthread_t thread_id;
+   int thread_num;
 };
+
+pthread_mutex_t lock;
 
 void *thread_start(void *arg)
 {
-   struct thread_info *tinfo = arg;
+   pthread_mutex_lock(&lock);
 
-   printf("[Thread_%d, num_%ld] Thread processing done\n", tinfo->thread_num, tinfo->thread_id);
-   tinfo->ret = tinfo->thread_num;
-   pthread_exit(&tinfo->ret);
+   struct thread_info *tinfo = arg;
+   printf("Job %d has started\n", tinfo->thread_num);
+   sleep(1);
+   printf("Job %d has finished\n", tinfo->thread_num);
+
+   pthread_mutex_unlock(&lock);
+
+   return NULL;
 }
 
 int main(void)
 {
+   int rc = 0;
+   rc = pthread_mutex_init(&lock, NULL);
+   ASSERT_EN(rc, "Failed to pthread_mutex_init");
+
    // Allocate memory for pthread_create() arguments.
    const int NUM_THREADS = 2;
    struct thread_info *tinfo = malloc(NUM_THREADS * sizeof(*tinfo));
    ASSERT(tinfo != NULL, "Failed to malloc");
 
-   int rc = 0;
    for (int tnum = 0; tnum < NUM_THREADS; tnum++)
    {
       tinfo[tnum].thread_num = tnum + 1;
@@ -53,18 +62,14 @@ int main(void)
       ASSERT_EN(rc, "Failed to pthread_create");
    }
 
-   void *res;
    for (int tnum = 0; tnum < NUM_THREADS; tnum++)
    {
-      rc = pthread_join(tinfo[tnum].thread_id, &res);
+      rc = pthread_join(tinfo[tnum].thread_id, NULL);
       ASSERT_EN(rc, "Failed to pthread_join");
-
-      printf("Joined with thread %d; Return value from thread is [%d]\n",
-             tinfo[tnum].thread_num, *(int *)res);
-      // free res if the res is allocated by the thread
    }
 
-   free(tinfo);
+   rc = pthread_mutex_destroy(&lock);
+   ASSERT_EN(rc, "Failed to pthread_mutex_destroy");
 
    return 0;
 }
