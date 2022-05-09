@@ -426,6 +426,6 @@ int main(void)
 ## 进程通讯
 
 ### 共享内存(Shared memory)
+### 信号(Signal)
 ### 管道(Pipe)
 ### 套接字(Socket)
-### 信号(Signal)
