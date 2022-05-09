@@ -309,7 +309,7 @@ int main(void)
 [Thread 139963362178816] Just Exiting...
 ```
 
-[例子"con_th/counting_sem_posix"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/concurrency/code/con_th/counting_sem_posix)利用多元信号量，实现了“生产者/消费者”模型，详情可参考[代码](./code/con_th/counting_sem_posix/main.c)，这里不做系数。
+[例子"con_th/counting_sem_posix"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/concurrency/code/con_th/counting_sem_posix)利用多元信号量，实现了“生产者/消费者”模型，详情可参考[代码](./code/con_th/counting_sem_posix/main.c)，这里不做细述。
 
 ### 条件变量(Condition Variable)
 条件变量类似于一个栅栏。对于条件变量，线程可以有两种操作：
