@@ -179,9 +179,9 @@ Joined with thread 2; Return value from thread is [2]
 
 ```cpp
 // 初始化互斥量
-//  mutex - 一个可全局访问的`pthread_mutex_t`互斥锁
-//  mutexattr - 互斥锁属性，NULL表示默认属性，可结合pthread_mutexattr_init()等属性函数配置自定义属性
-//              例如，默认情况下，互斥锁是不能跨进程共享的，通过pthread_mutexattr_setpshared()可设置跨进程共享互斥锁
+//  mutex - 一个可全局访问的`pthread_mutex_t`互斥量
+//  mutexattr - 互斥量属性，NULL表示默认属性，可结合pthread_mutexattr_init()等属性函数配置自定义属性
+//              例如，默认情况下，互斥量是不能跨进程共享的，通过pthread_mutexattr_setpshared()可设置跨进程共享互斥量
 int pthread_mutex_init(pthread_mutex_t* mutex, const pthread_mutexattr_t* mutexattr);
 
 // 销毁互斥量
@@ -247,6 +247,7 @@ POSIX标准规定了操作信号量的一组接口，如下：
 ```cpp
 #include <semaphore.h>
 // 初始化一个未命名的信号量
+//  sem - 一个可以全局访问的信号量
 //  pshared - 0表示个信号量是当前进程的局部信号量，否则该信号量就可以在多个进程之间共享
 //            和互斥量一样，信号量也可以配置为进程间共享，同时要求信号量要位于共享内存中
 //  value - 信号量的初始值，1表示二元信号量
@@ -310,11 +311,107 @@ int main(void)
 
 [例子"con_th/counting_sem_posix"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/concurrency/code/con_th/counting_sem_posix)利用多元信号量，实现了“生产者/消费者”模型，详情可参考[代码](./code/con_th/counting_sem_posix/main.c)，这里不做系数。
 
-### 读写锁(Read-Write Lock)
-
-
 ### 条件变量(Condition Variable)
+条件变量类似于一个栅栏。对于条件变量，线程可以有两种操作：
 
+* 等待条件变量
+    * 一个条件变量可以被多个线程等待
+* 唤醒条件变量
+    * 某个或所有等待此条件变量的线程都会被唤醒并继续运行
+
+条件变量需要互斥量的配合使用，保证等待/唤醒条件变量的动作是互斥的。因此，条件变量可以让**许多线程一起等待某个事件的发生**，当事件发生时，所有的线程可以一起恢复执行。
+
+```cpp
+#include <pthread.h>
+
+// 初始条件变量
+//  cond - 一个可以全局访问的`pthread_cond_t`条件变量
+//  cond_attr - 条件变量属性，NULL表示默认属性，和互斥量类似，也有相关函数配置属性
+int pthread_cond_init(pthread_cond_t* cond, const pthread_condattr_t* cond_attr);
+
+// 销毁条件变量
+int pthread_cond_destroy(pthread_cond_t* cond);
+
+// 以广播的方式唤醒所有的等待目标条件变量的线程
+int pthread_cond_broadcast(pthread_cond_t* cond);
+// 用于唤醒一个等待目标条件变量的线程，至于哪个线程被唤醒，取决于线程的优先级和调度策略
+int pthread_cond_signal(pthread_cond_t* cond);
+
+// 用于等待目标条件变量，mutex用于保护条件变量的互斥量
+// 在调用前，必须确保互斥量mutex已经加锁。在函数执行时，限把调用线程翻入条件变量的等待队列中，然后将互斥量解锁
+// 当函数成功返回时，互斥量将再次被上锁
+int pthread_cond_wait(pthread_cond_t* cond, pthread_mutex_t* mutex);
+```
+
+[例子"con_th/cond"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/concurrency/code/con_th/cond)利用条件变量，用一个线程触发另外两个线程开始运行。
+
+```cpp
+pthread_mutex_t lock;
+pthread_cond_t cond;
+int started = 0;
+
+void *thread_run(void *arg)
+{
+   pthread_mutex_lock(&lock);
+
+   pthread_t id = pthread_self();
+   printf("[Thread %ld] Entered..\n", id);
+
+   if (!started)
+      pthread_cond_wait(&cond, &lock);
+
+   printf("[Thread %ld] Just Exiting...\n", id);
+
+   pthread_mutex_unlock(&lock);
+
+   return NULL;
+}
+
+void *thread_trigger(void *arg)
+{
+   pthread_mutex_lock(&lock);
+
+   pthread_t id = pthread_self();
+   printf("[Thread %ld] Start Trigger...\n", id);
+   started = 1;
+   pthread_cond_broadcast(&cond);
+   printf("[Thread %ld] End Trigger...\n", id);
+
+   pthread_mutex_unlock(&lock);
+   return NULL;
+}
+
+int main(void)
+{
+   pthread_mutex_init(&lock, NULL);
+   pthread_cond_init(&cond, NULL);
+
+   pthread_t run_t0, run_t1;
+   pthread_t trigger_t;
+   pthread_create(&run_t0, NULL, thread_run, NULL);
+   pthread_create(&run_t1, NULL, thread_run, NULL);
+   sleep(1);
+   pthread_create(&trigger_t, NULL, thread_trigger, NULL);
+
+   pthread_join(trigger_t, NULL);
+   pthread_join(run_t0, NULL);
+   pthread_join(run_t1, NULL);
+
+   pthread_cond_destroy(&cond);
+   pthread_mutex_destroy(&lock);
+
+   return 0;
+}
+```
+```bash
+> ./main 
+[Thread 139980016891648] Entered..
+[Thread 139980025284352] Entered..
+[Thread 139980008498944] Start Trigger...
+[Thread 139980008498944] End Trigger...
+[Thread 139980016891648] Just Exiting...
+[Thread 139980025284352] Just Exiting...
+```
 
 ## 进程同步
 ### Shared memory
