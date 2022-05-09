@@ -481,7 +481,7 @@ pthread_condattr_destroy(&cond_attr);
 
 Linux系统的进程间通信有两种类型，分别是"POSIX"和"System V"。"System V"提供了三种常见的进程通信的方法：
 
-* 信号量
+* 信号量集
 * 共享内存
 * 消息队列
 
@@ -496,8 +496,8 @@ IPC | System V | POSIX
 互斥量 | 无 |  `pthread_mutex_lock()`, `pthread_mutex_unlock()`
 条件变量 | 无 |  `pthread_cond_wait()`, `pthread_cond_broadcast()`， `pthread_cond_signal()`
 
-### 信号量(Semaphore)
-"System V"提供了一组API，用于操作信号量集：
+### 信号量集(Semaphores)
+"System V"提供了一组API，用于操作多个信号量(信号量集)：
 ```cpp
 #include <sys/sem.h>
 
@@ -599,7 +599,7 @@ int main()
    parent_process();
    wait(NULL);
 
-   // 删除信号量
+   // 删除信号量集
    semctl(semid, 0, IPC_RMID, arg);
 
    return 0;
