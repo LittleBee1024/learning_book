@@ -20,6 +20,6 @@ clean:
 
 debug:
 	gdb -q ./main \
-	-ex "set follow-fork-mode child" \
-	-ex "start" \
-	-ex "bt"
+	-ex "b parent_start" \
+	-ex "r" \
+	-ex "n"
