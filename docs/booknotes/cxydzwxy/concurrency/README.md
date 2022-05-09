@@ -172,7 +172,7 @@ Joined with thread 1; Return value from thread is [1]
 Joined with thread 2; Return value from thread is [2]
 ```
 
-## 线程同步
+## 线程间同步
 
 ### 互斥量(Mutex)
 互斥量是最常见的线程同步机制，资源仅同时允许一个线程访问，并且获取和释放互斥量的线程必须是同一个线程。NPTL线程库提供了如下对互斥量操作的API：
@@ -413,20 +413,9 @@ int main(void)
 [Thread 139980025284352] Just Exiting...
 ```
 
-## 进程通信
+## 进程间同步
 
-Linux系统的进程间通信有两种类型，分别是`POSIX`和`System V`，下表展示了这两种的类的区别，详情参考[文档](https://www.tutorialspoint.com/inter_process_communication/inter_process_communication_system_v_posix.htm)：
-
-IPC | System V | POSIX
---- | --- | ---
-描述 | 1983年由AT&T创建，包括三种IPC机制：共享内存，消息队列和信号量 | 由IEEE制定，也包括了这三种IPC机制
-共享内存 | `shmget()`, `shmat()`, `shmdt()`, `shmctl()` | `shm_open()`, `mmap()`, `shm_unlink()`
-消息队列 | `msgget()`, `msgsnd()`, `msgrcv()`, `msgctl()` | `mq_open()`, `mq_send()`, `mq_receive()`, `mq_unlink()`
-信号量 | `semget()`, `semop()`, `semctl()` | 具名: `sem_open()`, `sem_close()`, `sem_post()`, `sem_wait()`<br/> 匿名: `sem_init()`, `sem_destroy()`, `sem_post()`, `sem_wait()`
-互斥量 | 无 |  `pthread_mutex_lock()`, `pthread_mutex_unlock()`
-条件变量 | 无 |  `pthread_cond_wait()`, `pthread_cond_broadcast()`， `pthread_cond_signal()`
-
-前面线程同步的方法(互斥量，信号量，条件变量)，都可以应用于进程同步，可参考下面的例子：
+前面线程同步的方法(互斥量，信号量，条件变量)，都是POSIX标准提供的API。它们不仅可以作用于线程，也可以应用于进程，可参考下面的例子：
 
 * 互斥量["mutex_posix"](./code/con_proc/mutex_posix/main.c)
 * 信号量["sem_posix"](./code/con_proc/sem_posix/main.c)
@@ -452,12 +441,28 @@ pthread_mutex_init(shm_lock, &attr);
 pthread_mutexattr_destroy(&attr);
 ```
 
-### 条件变量(Condition Variable)
+### 信号量(Semaphore)
 
 POSIX提供了对进程信号量的操作，要使信号量在进程中生效，和互斥量一样，也需要满足两点：
 
 * 信号量需要定义在进程间能共享的位置，如共享内存中
-* 信号量属性需要配置为`PTHREAD_PROCESS_SHARED`(1)，默认是`PTHREAD_PROCESS_PRIVATE`(0)
+* 初始化信号量时，`pshared`选项设置为1
+
+[例子"con_proc/sem_posix"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/concurrency/code/con_proc/sem_posix)利用二元信号量，同步了两个进程的执行顺序，效果和“互斥量”的例子相同：
+```cpp
+// 1.在匿名共享内存上创建信号量
+sem = (sem_t *)mmap(NULL, sizeof(sem_t), PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_SHARED, -1, 0);
+
+// 2.初始化信号量，参数2是`pshared`，将其设置为1就可在进程间共享信号量
+sem_init(sem, 1, 1);
+```
+
+### 条件变量(Condition Variable)
+
+POSIX提供了对进程条件变量的操作，要使条件变量在进程中生效，和互斥量一样，也需要满足两点：
+
+* 条件变量需要定义在进程间能共享的位置，如共享内存中
+* 条件变量属性需要配置为`PTHREAD_PROCESS_SHARED`(1)，默认是`PTHREAD_PROCESS_PRIVATE`(0)
 
 [例子"con_proc/cond_posix"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/concurrency/code/con_proc/cond_posix)利用了条件变量，用主进程触发另外两个子进程开始运行：
 ```cpp
@@ -472,10 +477,27 @@ pthread_cond_init(shm_cond, &cond_attr);
 pthread_condattr_destroy(&cond_attr);
 ```
 
-### 信号量(Semaphore)
-和互斥量，条件变量一样，POSIX也提供了对进程信号量的操作，也需要创建在共享位置且设置成进程共享，可参考[例子"con_proc/sem_posix"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/concurrency/code/con_proc/sem_posix)。
+## "System V"进程间通信
 
-同时，"System V"也提供了一组API，用于操作信号量集：
+Linux系统的进程间通信有两种类型，分别是"POSIX"和"System V"。"System V"提供了三种常见的进程通信的方法：
+
+* 信号量
+* 共享内存
+* 消息队列
+
+下表展示了"POSIX"和"System V"的区别，详情参考[文档](https://www.tutorialspoint.com/inter_process_communication/inter_process_communication_system_v_posix.htm)：
+
+IPC | System V | POSIX
+--- | --- | ---
+描述 | 1983年由AT&T创建，包括三种IPC机制：共享内存，消息队列和信号量 | 由IEEE制定，也包括了这三种IPC机制
+信号量 | `semget()`, `semop()`, `semctl()` | 具名: `sem_open()`, `sem_close()`, `sem_post()`, `sem_wait()`<br/> 匿名: `sem_init()`, `sem_destroy()`, `sem_post()`, `sem_wait()`
+共享内存 | `shmget()`, `shmat()`, `shmdt()`, `shmctl()` | `shm_open()`, `mmap()`, `shm_unlink()`
+消息队列 | `msgget()`, `msgsnd()`, `msgrcv()`, `msgctl()` | `mq_open()`, `mq_send()`, `mq_receive()`, `mq_unlink()`
+互斥量 | 无 |  `pthread_mutex_lock()`, `pthread_mutex_unlock()`
+条件变量 | 无 |  `pthread_cond_wait()`, `pthread_cond_broadcast()`， `pthread_cond_signal()`
+
+### 信号量(Semaphore)
+"System V"提供了一组API，用于操作信号量集：
 ```cpp
 #include <sys/sem.h>
 
@@ -612,7 +634,13 @@ semnum     value      ncount     zcount     pid
 
 ### 消息队列(Message Queues)
 
+## 其他进程间通信
+
 ### 文件锁(File Lock)
+
 ### 信号(Signal)
+
 ### 管道(Pipe)
+
 ### 套接字(Socket)
+
