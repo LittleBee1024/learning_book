@@ -453,7 +453,7 @@ POSIX提供了对进程信号量的操作，要使信号量在进程中生效，
 // 1.在匿名共享内存上创建信号量
 sem = (sem_t *)mmap(NULL, sizeof(sem_t), PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_SHARED, -1, 0);
 
-// 2.初始化信号量，参数2是`pshared`，将其设置为1就可在进程间共享信号量
+// 2.初始化信号量，第二个参数是`pshared`，将其设置为1就可在进程间共享信号量
 sem_init(sem, 1, 1);
 ```
 
