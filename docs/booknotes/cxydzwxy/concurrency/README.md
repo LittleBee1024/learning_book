@@ -265,7 +265,7 @@ int sem_trywait(sem_t* sem);
 int sem_post(sem_t* sem);
 ```
 
-[例子"con_th/binary_sem_posix"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/concurrency/code/con_th/binary_sem_posix)利用二元信号量，同步了两个线程的执行顺序，效果和“互斥量”的例子相同。
+[例子"con_th/binary_sem"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/concurrency/code/con_th/binary_sem)利用二元信号量，同步了两个线程的执行顺序，效果和“互斥量”的例子相同。
 
 ```cpp
 sem_t sem;
@@ -309,7 +309,7 @@ int main(void)
 [Thread 139963362178816] Just Exiting...
 ```
 
-[例子"con_th/counting_sem_posix"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/concurrency/code/con_th/counting_sem_posix)利用多元信号量，实现了“生产者/消费者”模型，详情可参考[代码](./code/con_th/counting_sem_posix/main.c)，这里不做细述。
+[例子"con_th/counting_sem"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/concurrency/code/con_th/counting_sem)利用多元信号量，实现了“生产者/消费者”模型，详情可参考[代码](./code/con_th/counting_sem/main.c)，这里不做细述。
 
 ### 条件变量(Condition Variable)
 条件变量类似于一个栅栏。对于条件变量，线程可以有两种操作：
@@ -414,9 +414,18 @@ int main(void)
 ```
 
 ## 进程同步
-### Shared memory
-### 文件锁
-### 管道
+
+### 互斥量(Mutex)
+
 ### 信号量(Semaphore)
-### Socket
-### Signal
+
+### 条件变量(Condition Variable)
+
+### 文件锁
+
+## 进程通讯
+
+### 共享内存(Shared memory)
+### 管道(Pipe)
+### 套接字(Socket)
+### 信号(Signal)
