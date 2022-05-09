@@ -13,7 +13,7 @@ void *thread_start(void *arg)
    pthread_t id = pthread_self();
    printf("[Thread %ld] Entered..\n", id);
 
-   // creitical section
+   // critical section
    sleep(1);
 
    // signal

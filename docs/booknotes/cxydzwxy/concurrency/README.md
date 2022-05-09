@@ -236,6 +236,79 @@ int main(void)
 ```
 
 ### 信号量(Semaphore)
+相较于互斥量，信号量更加灵活。信号量分为：
+
+* 二元信号量 (Binary Semaphore)
+    * 初始值为1的信号量，只有占用/非占用两种状态，不同于互斥量的地方是：信号量的获取和释放不要求是同一个线程
+* 多源信号量 (Counting Semaphore)
+    * 一个初始值为N的信号量，允许N个线程并发访问
+
+POSIX标准规定了操作信号量的一组接口，如下：
+```cpp
+#include <semaphore.h>
+// 初始化一个未命名的信号量
+//  pshared - 0表示个信号量是当前进程的局部信号量，否则该信号量就可以在多个进程之间共享
+//            和互斥量一样，信号量也可以配置为进程间共享，同时要求信号量要位于共享内存中
+//  value - 信号量的初始值，1表示二元信号量
+int sem_init(sem_t* sem, int pshared, unsigned int value);
+
+// 销毁信号量
+int sem_destroy(sem_t* sem);
+
+// 以原子操作的方式将信号量的值减1，如果信号量的值为0，则阻塞
+int sem_wait(sem_t* sem);
+// 不阻塞，如果信号量为0，返回-1，并设置errno为EAGAIN
+int sem_trywait(sem_t* sem);
+
+// 以原子操作的方式将信号量的值加1
+int sem_post(sem_t* sem);
+```
+
+[例子"con_th/binary_sem_posix"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/concurrency/code/con_th/binary_sem_posix)利用二元信号量，同步了两个线程的执行顺序，效果和“互斥量”的例子相同。
+
+```cpp
+sem_t sem;
+
+void *thread_start(void *arg)
+{
+   // wait
+   sem_wait(&sem);
+
+   pthread_t id = pthread_self();
+   printf("[Thread %ld] Entered..\n", id);
+
+   // critical section
+   sleep(1);
+
+   // signal
+   printf("[Thread %ld] Just Exiting...\n", id);
+   sem_post(&sem);
+
+   return NULL;
+}
+
+int main(void)
+{
+   sem_init(&sem, 0, 1);
+   pthread_t t1, t2;
+   pthread_create(&t1, NULL, thread_start, NULL);
+   pthread_create(&t2, NULL, thread_start, NULL);
+   pthread_join(t1, NULL);
+   pthread_join(t2, NULL);
+   sem_destroy(&sem);
+
+   return 0;
+}
+```
+```bash
+> ./main 
+[Thread 139963370571520] Entered..
+[Thread 139963370571520] Just Exiting...
+[Thread 139963362178816] Entered..
+[Thread 139963362178816] Just Exiting...
+```
+
+[例子"con_th/counting_sem_posix"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/concurrency/code/con_th/counting_sem_posix)利用多元信号量，实现了“生产者/消费者”模型，详情可参考[代码](./code/con_th/counting_sem_posix/main.c)，这里不做系数。
 
 
 ### 临界区(Critical Section)
