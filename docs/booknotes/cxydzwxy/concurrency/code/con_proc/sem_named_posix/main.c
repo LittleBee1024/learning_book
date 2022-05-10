@@ -34,7 +34,7 @@ void parent_process()
 
 int main()
 {
-   sem = sem_open("hello", O_RDWR | O_CREAT, 0644, 1);
+   sem = sem_open("/hello", O_RDWR | O_CREAT, 0644, 1);
    if (sem == SEM_FAILED)
    {
       perror("sem_open");
@@ -59,7 +59,7 @@ int main()
    sem_close(sem);
 
    // remove /dev/shm/sem.hello
-   // sem_unlink("hello");
+   // sem_unlink("/hello");
 
    return 0;
 }

@@ -477,9 +477,9 @@ pthread_cond_init(shm_cond, &cond_attr);
 pthread_condattr_destroy(&cond_attr);
 ```
 
-## "System V"进程间通信
+## 三种进程间通信
 
-Linux系统的进程间通信有两种类型，分别是"POSIX"和"System V"。"System V"提供了三种常见的进程通信的方法：
+Linux系统的进程间通信有两种类型，分别是"POSIX"和"System V"，且提供了三种常见的进程通信的方法：
 
 * 信号量集
 * 共享内存
@@ -496,7 +496,76 @@ IPC | System V | POSIX
 互斥量 | 无 |  `pthread_mutex_lock()`, `pthread_mutex_unlock()`
 条件变量 | 无 |  `pthread_cond_wait()`, `pthread_cond_broadcast()`， `pthread_cond_signal()`
 
-### 信号量集(Semaphores)
+### 信号量(Semaphore)
+
+#### POSIX
+"POSIX"提供了两组API操作信号量：
+
+* 匿名信号量，参考前面的[例子"con_proc/sem_posix"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/concurrency/code/con_proc/sem_posix)
+* 具名信号量的，如下：
+
+```cpp
+#include <semaphore.h>
+
+// 创建/打开信号量"name"
+//  name - 信号量名称，信号量会创建为：/dev/shm/sem.<name>
+//  oflag, mode - 和创建文件时的选项相同
+//  value - 信号量的初始值
+sem_t *sem_open(const char *name, int oflag, mode_t mode, unsigned int value);
+// 关闭信号量，进程将释放信号量
+int sem_close(sem_t *sem);
+
+// 释放信号量
+int sem_post(sem_t *sem);
+// 获取信号量
+int sem_wait(sem_t *sem);
+
+// 获取信号量的值
+int sem_getvalue(sem_t *restrict sem, int *restrict sval);
+
+// 删除信号量
+//  name - 信号量名称，/dev/shm文件夹中对应的文件被删除
+int sem_unlink(const char *name);
+```
+
+[例子"con_proc/sem_named_posix"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/concurrency/code/con_proc/sem_named_posix)利用具名信号量，同步了两个进程的执行顺序，效果和前面的例子相同：
+```cpp
+int main()
+{
+   // 创建或打开"/dev/shm/sem.hello"
+   sem = sem_open("/hello", O_RDWR | O_CREAT, 0644, 1);
+   int val = 0;
+   sem_getvalue(sem, &val);
+   printf("sem value = %d\n", val);
+
+   pid_t pid = fork();
+   if (pid == 0)
+   {
+      child_process();
+      return 0;
+   }
+
+   assert(pid > 0);
+   parent_process();
+
+   wait(NULL);
+
+   sem_close(sem);
+   // 删除"/dev/shm/sem.hello"
+   sem_unlink("/hello");
+   return 0;
+}
+```
+```bash
+> ./main
+sem value = 1
+[Parent PID 126225] Entered..
+[Parent PID 126225] Just Exiting...
+[Child PID 126226] Entered..
+[Child PID 126226] Just Exiting...
+```
+
+#### System V
 "System V"提供了一组API，用于操作多个信号量(信号量集)：
 ```cpp
 #include <sys/sem.h>
