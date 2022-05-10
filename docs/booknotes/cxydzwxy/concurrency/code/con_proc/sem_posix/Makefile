@@ -7,13 +7,13 @@ OBJS=$(SRCS:.c=.o)
 
 .PHONY: clean main debug
 
-all: main
+all: clean main
 
 %.o:%.c
 	$(CC) $(CFLAGS) -c $<
 
 main: $(OBJS)
-	$(CC) $(LDFLAGS) $(OBJS) -o $@
+	$(CC) $(OBJS) $(LDFLAGS) -o $@
 
 clean:
 	@rm -rf main *.o
