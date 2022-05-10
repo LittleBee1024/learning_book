@@ -734,7 +734,6 @@ key        semid      owner      perms      nsems
 0x61050964 6          yuxiangw   666        1
 
 > ipcs -s -i 6
-
 Semaphore Array semid=6
 uid=1000         gid=1000        cuid=1000       cgid=1000
 mode=0666, access_perms=0666
@@ -950,6 +949,100 @@ change_time=Tue May 10 13:17:19 2022
 ### 消息队列(Message Queues)
 
 #### POSIX
+
+"POSIX"提供了一组操作消息队列的API：
+```cpp
+#include <mqueue.h>
+
+// 创建/打开消息队列
+//  name - 消息队列名称，会在系统中创建：/dev/mqueue/<name>
+//  oflag, mode - 和创建文件时的选项相同
+//  attr - 消息队列属性，包括最大消息数，最大消息长度等。如果是NULL，使用默认属性
+//  返回消息队列标识
+mqd_t mq_open(const char *name, int oflag, mode_t mode, struct mq_attr *attr);
+
+// 获取消息队列属性
+int mq_getattr(mqd_t mqdes, struct mq_attr *attr);
+// 消息队列属性内容
+struct mq_attr {
+   long mq_flags;       /* Flags: 0 or O_NONBLOCK */
+   long mq_maxmsg;      /* Max. # of messages on queue */
+   long mq_msgsize;     /* Max. message size (bytes) */
+   long mq_curmsgs;     /* # of messages currently in queue */
+};
+
+// 发送消息至消息队列
+//  mqdes - mq_open()返回的标识
+//  msg_ptr, msg_len - 发送端缓存指针和大小，msg_len长度不能大于消息队列属性中的最大消息长度`mq_msgsize`
+//  msg_prio - 发送优先级
+int mq_send(mqd_t mqdes, const char *msg_ptr, size_t msg_len, unsigned int msg_prio);
+
+// 从消息队列接收消息
+//  mqdes - mq_open()返回的标识
+//  msg_ptr, msg_len - 接收端缓存指针和大小，msg_len长度不能小于消息队列属性中的最大消息长度`mq_msgsize`
+//  msg_prio - 接收优先级
+ssize_t mq_receive(mqd_t mqdes, char *msg_ptr, size_t msg_len, unsigned int *msg_prio);
+
+// 关闭消息队列
+int mq_close(mqd_t mqdes);
+
+// 删除消息队列
+int mq_unlink(const char *name);
+
+// 注册一次动作，在消息队列不为空时被触发，可参考例子：./code/con_proc/msg_posix/mq_notify.c
+int mq_notify(mqd_t mqdes, const struct sigevent *sevp);
+```
+
+[例子"con_proc/msg_posix"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/concurrency/code/con_proc/msg_posix)利用"POSIX"的消息队列操作，在子进程中成功读取了父进程向消息队列传入的"Hello World"，可通过`cat /dev/mqueue/<name>`查看消息队列的信息：
+```cpp
+#define QUEUE_NAME "/my_msq_test"
+#define MAX_SIZE 1024
+const char buf[] = "Hello World";
+
+void read_data()
+{
+   mqd_t mq = mq_open(QUEUE_NAME, O_RDONLY);
+
+   struct mq_attr attr;
+   mq_getattr(mq, &attr);
+   char rcvbuf[attr.mq_msgsize];
+   int bytes = mq_receive(mq, rcvbuf, attr.mq_msgsize, NULL);
+
+   printf("Number of bytes of the messages in the queue is %d\n", bytes);
+   printf("Read from message queue: %s\n", rcvbuf);
+
+  mq_close(mq);
+}
+
+int main(int argc, char *argv[])
+{
+   mqd_t mq = mq_open(QUEUE_NAME, O_CREAT | O_RDWR, 0644, NULL);
+   printf("msq(%d) /dev/mqueue%s is created\n", mq, QUEUE_NAME);
+
+   mq_send(mq, buf, sizeof(buf), 0);
+   mq_close(mq);
+
+   pid_t pid = fork();
+   if (pid == 0)
+   {
+      read_data();
+      return 0;
+   }
+
+   wait(NULL);
+   // mq_unlink(QUEUE_NAME);
+   return 0;
+}
+```
+```bash
+> ./main 
+msq(3) /dev/mqueue/my_msq_test is created
+Number of bytes of the messages in the queue is 12
+Read from message queue: Hello World
+
+> cat /dev/mqueue/my_msq_test 
+QSIZE:0          NOTIFY:0     SIGNO:0     NOTIFY_PID:0
+```
 
 #### System V
 

@@ -16,7 +16,10 @@ main: $(OBJS)
 	$(CC) $(OBJS) $(LDFLAGS) -o $@
 
 clean:
-	@rm -rf main *.o
+	@rm -rf main *.o *.out
+
+notify:
+	$(CC) mq_notify.c $(LDFLAGS)
 
 # ls /dev/shm
 debug:
