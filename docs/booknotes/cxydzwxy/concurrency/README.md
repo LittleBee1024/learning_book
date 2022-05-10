@@ -621,6 +621,15 @@ union semun
     unsigned short* array;  // 用于GETALL和SETALL命令
     struct seminfo* __buf;  // 用于IPC_INFO命令
 };
+
+// 信号量创建的内核结构
+struct semid_ds
+{
+   struct ipc_perm sem_perm; // 信号量的操作权限
+   unsigned long int sem_nsems; // 该信号量集中的信号量数目
+   time_t sem_otime; // 最后一次调用semop的时间
+   time_t sem_ctime; // 最后一次调用semctl的时间
+};
 ```
 
 [例子"con_proc/sem_systemv"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/concurrency/code/con_proc/sem_systemv)利用"System V"的信号量集操作，同步了两个进程的执行顺序，效果和上面POSIX的例子相同：
@@ -827,6 +836,115 @@ Hello World
 ```
 
 #### System V
+
+"System V"也提供了一组API，用于操作共享内存：
+```cpp
+#include <sys/shm.h>
+
+// 创建/获取一个共享内存
+//  key - 全局唯一的标识，可通过`ftok()`系统调用生成
+//  size - 共享内存大小，如果共享内存已经存在，这个参数无效
+//  shmflg - 除了常规的权限设置外，还可以设置IPC_CREAT，表示创建新的共享内存
+//  返回共享内存的标识符
+int shmget(key_t key, size_t size, int shmflg);
+
+// 映射共享内存到用户空间
+//  shmid - shmget()返回的标识
+//  shmaddr - 如果为NULL，由操作系统选择被关联的地址
+//  shmflg - 可配置是否只读等
+//  返回被关联到的地址
+void *shmat(int shmid, const void *shmaddr, int shmflg);
+
+// 将共享内存从进程地址空间分离
+int shmdt(const void* shm_addr);
+
+// 用命令控制信号量集
+//  IPC_RMID命令 - 移除共享内存
+//  IPC_STAT命令 - 获取共享内存信息，如内存大小
+int shmctl(int shm_id, int command, struct shmid_ds* buf);
+
+// 共享内存创建的内核数据结构
+struct shmid_ds
+{
+   struct ipc_perm shm_perm;   // 操作权限
+   size_t shm_segsz;           // 共享内存大小
+   __time_t shm_atime;         // 最后一次调用shmat的时间
+   __time_t shm_dtime;         // 最后一次调用shmdt的时间
+   __time_t shm_ctime;         // 最后一次调用shmctl的时间
+   __pid_t shm_cpid;           // 创建者PID
+   __pid_t shm_lpid;           // 最后一次执行shmat或shmdt操作的进程的PID
+   shmatt_t shm_nattach;       // 目前关联到此共享内存的进程数量
+};
+```
+
+[例子"con_proc/shm_systemv"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/concurrency/code/con_proc/shm_systemv)利用"System V"的共享内存操作，在子进程中成功读取了父进程向共享内存中写入的"Hello World"，同样也可以用用`ipcs -m`命令查看系统由"System V"创建的共享内存：
+
+```cpp
+#define PATHNAME "."
+#define PROJ_ID 'a'
+
+#define SHMSZ 27
+const char buf[] = "Hello World";
+
+void read_data()
+{
+   key_t key = ftok(PATHNAME, PROJ_ID);
+   int shmid = shmget(key, 0, 0444);
+
+   struct shmid_ds buf;
+   int res = shmctl(shmid, IPC_STAT, &buf);
+   const size_t shm_size = buf.shm_segsz;
+   printf("The size of shard memory is %zu bytes\n", shm_size);
+
+   void *addr = shmat(shmid, NULL, 0);
+   char data[shm_size];
+   memcpy(data, addr, shm_size);
+   printf("Read from shared memory: \"%s\"\n", data);
+   shmdt(addr);
+}
+
+int main(void)
+{
+   key_t key = ftok(PATHNAME, PROJ_ID);
+   assert(key != -1);
+   int shmid = shmget(key, SHMSZ, 0666 | IPC_CREAT);
+   assert(shmid != -1);
+   printf("shm key (0x%x), shm id (%d) is created\n", key, shmid);
+
+   void *addr = shmat(shmid, NULL, 0);
+   memcpy(addr, buf, sizeof(buf));
+
+   pid_t pid = fork();
+   if (pid == 0)
+   {
+      read_data();
+      return 0;
+   }
+
+   assert(pid > 0);
+   wait(NULL);
+
+   int rc = shmdt(addr);
+   // shmctl(shmid, IPC_RMID, NULL);
+
+   return 0;
+}
+```
+```bash
+> ./main 
+shm key (0x61050984), shm id (18) is created
+The size of shard memory is 27 bytes
+Read from shared memory: "Hello World"
+
+> ipcs -m -i 18
+Shared memory Segment shmid=18
+uid=1000        gid=1000        cuid=1000       cgid=1000
+mode=0666       access_perms=0666
+bytes=27        lpid=147243     cpid=144649     nattch=0
+att_time=Tue May 10 13:40:48 2022  
+det_time=Tue May 10 13:40:48 2022  
+change_time=Tue May 10 13:17:19 2022 
+```
 
 ### 消息队列(Message Queues)
 
