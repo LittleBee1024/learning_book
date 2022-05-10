@@ -10,9 +10,9 @@ void *thread_start(void *arg)
    pthread_mutex_lock(&lock);
 
    pthread_t id = pthread_self();
-   printf("[Thread %ld] Entered..\n", id);
+   printf("[Thread %ld] Critical section start...\n", id);
    sleep(1);
-   printf("[Thread %ld] Just Exiting...\n", id);
+   printf("[Thread %ld] Critical section end...\n", id);
 
    pthread_mutex_unlock(&lock);
 

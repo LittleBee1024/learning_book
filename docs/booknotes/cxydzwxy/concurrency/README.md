@@ -202,9 +202,9 @@ void *thread_start(void *arg)
    pthread_mutex_lock(&lock);
 
    pthread_t id = pthread_self();
-   printf("[Thread %ld] Entered..\n", id);
+   printf("[Thread %ld] Critical section start...\n", id);
    sleep(1);
-   printf("[Thread %ld] Just Exiting...\n", id);
+   printf("[Thread %ld] Critical section end...\n", id);
 
    pthread_mutex_unlock(&lock);
 
@@ -229,10 +229,10 @@ int main(void)
 ```
 ```bash
 > ./main 
-[Thread 139949549393664] Entered..
-[Thread 139949549393664] Just Exiting...
-[Thread 139949557786368] Entered..
-[Thread 139949557786368] Just Exiting...
+[Thread 139968003606272] Critical section start...
+[Thread 139968003606272] Critical section end...
+[Thread 139968011998976] Critical section start...
+[Thread 139968011998976] Critical section end...
 ```
 
 ### 信号量(Semaphore)
