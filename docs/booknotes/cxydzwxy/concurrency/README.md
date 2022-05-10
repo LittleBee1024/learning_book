@@ -640,7 +640,7 @@ struct semid_ds
 };
 ```
 
-[例子"con_proc/sem_systemv"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/concurrency/code/con_proc/sem_systemv)利用"System V"的信号量集操作，同步了两个进程的执行顺序，效果和上面POSIX的例子相同：
+[例子"con_proc/sem_systemv"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/concurrency/code/con_proc/sem_systemv)利用"System V"的信号量集操作，同步了两个进程的执行顺序，效果和上面POSIX的例子相同。可通过`ipcs -s`查看系统由"System V"创建的信号量集，也可以通过打印`/proc/sysvipc/sem`查看信号量集：
 ```cpp
 #define PATHNAME "." // the file must refer to an existing, accessible file
 #define PROJ_ID 'a'
@@ -731,10 +731,7 @@ sem key (0x61050964), sem id (6) is created
 [Parent PID 137766] Critical section end...
 [Child PID 137767] Critical section start...
 [Child PID 137767] Critical section end...
-```
 
-`ipcs -s`可查看系统现存的用"System V"创建的信号量集。如果上面的程序没有通过`semctl()`的`IPC_RMID`删除信号量，可通过`ipcs -s -i <semid>`命令，查看此信号量集的详细信息，包括创建时间，创建进程，当前值等信息。也可以通过打印`/proc/sysvipc/sem`的内容，查看所有信号量集的信息：
-```bash
 > ipcs -s
 ------ Semaphore Arrays --------
 key        semid      owner      perms      nsems     
@@ -867,7 +864,7 @@ int shmdt(const void* shm_addr);
 
 // 用命令控制信号量集
 //  IPC_RMID命令 - 移除共享内存
-//  IPC_STAT命令 - 获取共享内存信息，如内存大小
+//  IPC_STAT命令 - 获取共享内存信息`shmid_ds`，如内存大小
 int shmctl(int shm_id, int command, struct shmid_ds* buf);
 
 // 共享内存创建的内核数据结构
@@ -884,7 +881,7 @@ struct shmid_ds
 };
 ```
 
-[例子"con_proc/shm_systemv"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/concurrency/code/con_proc/shm_systemv)利用"System V"的共享内存操作，在子进程中成功读取了父进程向共享内存中写入的"Hello World"，同样也可以用用`ipcs -m`命令查看系统由"System V"创建的共享内存：
+[例子"con_proc/shm_systemv"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/concurrency/code/con_proc/shm_systemv)利用"System V"的共享内存操作，在子进程中成功读取了父进程向共享内存中写入的"Hello World"，同样也可以用用`ipcs -m`命令查看系统由"System V"创建的共享内存，也可以通过打印`/proc/sysvipc/shm`查共享内存：
 
 ```cpp
 #define PATHNAME "."
@@ -1052,6 +1049,140 @@ QSIZE:0          NOTIFY:0     SIGNO:0     NOTIFY_PID:0
 ```
 
 #### System V
+"System V"也提供了一组API，用于操作消息队列：
+```cpp
+#include <sys/msg.h>
+
+// 创建/获取一个消息队列
+//  key - 全局唯一的标识，可通过`ftok()`系统调用生成
+//  msgflg - 除了常规的权限设置外，还可以设置IPC_CREAT，表示创建新的共消息队列
+//  返回消息队列的标识符
+int msgget(key_t key, int msgflg);
+
+// 发送消息至消息队列
+//  msqid - msgget()返回的标识
+//  msg_ptr - 指向准备发送的消息，指针类型必须包含消息类型，如下：
+//    struct msgbuf
+//    {
+//      long mtype;           // 消息类型，要求大于零，在接收的时候用到
+//      char mtext[MAXSIZE];  // 消息数据缓存
+//    };
+//  msg_sz - 消息数据部分(mtext)的长度
+//  msgflg - 控制发送行为，如果没有指定`IPC_NOWAIT`，队列满了，此函数阻塞
+int msgsnd(int msqid, const void* msg_ptr, size_t msg_sz, int msgflg);
+
+// 从消息队列接收消息
+//  msqid - msgget()返回的标识
+//  msg_ptr - 用于存储接收的消息
+//  msg_sz - 指的是消息数据部分的长度
+//  msgtype - 指定接收何种类型的消息，
+//    等于0，读取消息队列中的第一个消息
+//    大于0，读取消息队列中第一个类型为`msgtype`的消息
+//    小于0，读取消息队列中第一个类型值比`msgtype`的绝对值小的消息
+//  msgflg - 控制函数行为
+//    IPC_NOWAIT：如果消息队列中没有消息，立即返回并设置errno为ENOMSG
+//    MSG_EXCEPT：如果msgtype大于0，则接收消息队列中第一个非msgtype类型的消息
+//    MSG_NOERROR：如果消息数据部分的长度超过了msg_sz，就将它截断
+int msgrcv(int msqid, void* msg_ptr, size_t msg_sz, long int msgtype, int msgflg);
+
+// 用命令控制消息队列
+//  IPC_RMID命令 - 移除消息队列
+//  IPC_STAT命令 - 获取消息队列信息`msqid_ds`，如消息队列中已有的字节数
+int msgctl(int msqid, int command, struct msqid_ds* buf);
+
+// 消息队列创建的内核数据结构
+struct msqid_ds
+{
+   struct ipc_perm msg_perm;   // 操作权限
+   time_t msg_stime;           // 最后一次调用msgsnd的时间
+   time_t msg_rtime;           // 最后一次调用msgrcv的时间
+   time_t msg_ctime;           // 最后一次被修改的时间
+   unsigned long __msg_cbytes; // 消息队列中已有的字节数
+   msgqnum_t msg_qnum;         // 消息队列中已有的消息数
+   msglen_t msg_qbytes;        // 消息队列允许的最大字节数
+   pid_t msg_lspid;            // 最后执行msgsnd的进程的PID
+   pit_t msg_lrpid;            // 最后执行msgrcv的进程的PID
+};
+```
+[例子"con_proc/msg_systemv"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/concurrency/code/con_proc/msg_systemv)利用"System V"的消息队列操作，在子进程中成功读取了父进程向消息队列传入的"Hello World"，可通过`ipcs -q`查看系统由"System V"创建的消息队列，也可以通过打印`/proc/sysvipc/msg`查看消息队列：
+```cpp
+#define PATHNAME "."
+#define PROJ_ID 'a'
+#define MAXSIZE 128
+
+#define USER_MESSAGE_TYPE 1
+typedef struct my_msgbuf
+{
+   long mtype;
+   char mtext[MAXSIZE];
+} my_msgbuf;
+
+void read_msg()
+{
+   key_t key = ftok(PATHNAME, PROJ_ID);
+   int msqid = msgget(key, 0444);
+
+   struct msqid_ds buf;
+   msgctl(msqid, IPC_STAT, &buf);
+   printf("Number of messages in the queue is %lu\n", buf.msg_qnum);
+   const size_t data_bytes = buf.__msg_cbytes;
+   printf("Number of bytes of the messages in the queue is %zu\n", data_bytes);
+
+   struct my_msgbuf rcvbuffer;
+   msgrcv(msqid, &rcvbuffer, data_bytes, USER_MESSAGE_TYPE, 0);
+   printf("Read from message queue (message type %ld): %s\n", rcvbuffer.mtype, rcvbuffer.mtext);
+   return;
+}
+
+int main()
+{
+   key_t key = ftok(PATHNAME, PROJ_ID);
+   int msqid = msgget(key, IPC_CREAT | 0666);
+   printf("msq key(0x%x), msq id(%d) is created\n", key, msqid);
+
+   my_msgbuf sbuf;
+   sbuf.mtype = USER_MESSAGE_TYPE;
+   const char data[] = "Hello World";
+   memcpy(sbuf.mtext, data, sizeof(data));
+   msgsnd(msqid, &sbuf, sizeof(data), IPC_NOWAIT);
+
+   pid_t pid = fork();
+   if (pid == 0)
+   {
+      read_msg();
+      return 0;
+   }
+
+   wait(NULL);
+   // msgctl(msqid, IPC_RMID, NULL);
+   return 0;
+}
+```
+```bash
+> ./main 
+msq key(0x61050989), msq id(12) is created
+Number of messages in the queue is 1
+Number of bytes of the messages in the queue is 12
+Read from message queue (message type 1): Hello World
+
+> ipcs -q
+------ Message Queues --------
+key        msqid      owner      perms      used-bytes   messages    
+0x61050989 12         yuxiangw   666        0            0
+
+> ipcs -q -i 12
+Message Queue msqid=12
+uid=1000        gid=1000        cuid=1000       cgid=1000       mode=0666
+cbytes=0        qbytes=16384    qnum=0  lspid=158821    lrpid=158822
+send_time=Tue May 10 19:28:57 2022  
+rcv_time=Tue May 10 19:28:57 2022  
+change_time=Tue May 10 16:42:06 2022
+
+> cat /proc/sysvipc/msg 
+       key      msqid perms      cbytes       qnum lspid lrpid   uid   gid  cuid  cgid      stime      rtime      ctime
+1627720073         12   666           0          0 158821 158822  1000  1000  1000  1000 1652182137 1652182137 1652172126
+```
+
 
 ## 其他进程间通信
 
