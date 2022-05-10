@@ -62,7 +62,7 @@ int main()
    wait(NULL);
 
    // remove /dev/shm/sem.sem_test
-   sem_unlink(FILE_PATH);
+   // sem_unlink(FILE_PATH);
 
    return 0;
 }

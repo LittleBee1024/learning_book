@@ -516,7 +516,7 @@ int sem_getvalue(sem_t *restrict sem, int *restrict sval);
 int sem_unlink(const char *name);
 ```
 
-[例子"con_proc/sem_named_posix"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/concurrency/code/con_proc/sem_named_posix)利用具名信号量，同步了两个进程的执行顺序，效果和前面的例子相同：
+[例子"con_proc/sem_named_posix"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/concurrency/code/con_proc/sem_named_posix)利用具名信号量，同步了两个进程的执行顺序，效果和前面的例子相同。如果没有调用`sem_unlink()`删除共享的具名信号量，在`/dev/shm`目录下，会留存一个`sem.`开头的文件：
 ```cpp
 #define FILE_PATH "/sem_test"
 
@@ -570,7 +570,7 @@ int main()
    wait(NULL);
 
    // remove /dev/shm/sem.sem_test
-   sem_unlink(FILE_PATH);
+   // sem_unlink(FILE_PATH);
    return 0;
 }
 ```
@@ -581,9 +581,10 @@ sem value = 1
 [Parent PID 131519] Critical section end...
 [Child PID 131520] Critical section start...
 [Child PID 131520] Critical section end...
-```
 
-如果没有调用`sem_unlink()`删除共享的具名信号量，在`/dev/shm`目录下，会留存一个`sem.`开头的文件。
+> ls -l /dev/shm
+-rw-r--r-- 1 yuxiangw yuxiangw  32 5月  10 17:20 sem.sem_test
+```
 
 #### System V
 "System V"提供了一组API，用于操作多个信号量(信号量集)：
