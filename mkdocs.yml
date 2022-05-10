@@ -56,6 +56,9 @@ plugins:
 
 # Customization
 extra:
+  analytics:
+    provider: google
+    property: G-G2RFHH3DL4
   social:
     # Pick up a logo from https://github.com/squidfunk/mkdocs-material/tree/master/material/.icons
     - icon: fontawesome/brands/github
