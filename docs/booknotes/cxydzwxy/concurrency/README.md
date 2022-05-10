@@ -481,7 +481,7 @@ pthread_condattr_destroy(&cond_attr);
 
 Linux系统的进程间通信有两种类型，分别是"POSIX"和"System V"，且提供了三种常见的进程通信的方法：
 
-* 信号量集
+* 信号量
 * 共享内存
 * 消息队列
 
