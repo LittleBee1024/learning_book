@@ -623,6 +623,9 @@ union semun
 
 [例子"con_proc/sem_systemv"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/concurrency/code/con_proc/sem_systemv)利用"System V"的信号量集操作，同步了两个进程的执行顺序，效果和上面POSIX的例子相同：
 ```cpp
+#define PATHNAME "." // the file must refer to an existing, accessible file
+#define PROJ_ID 'a'
+
 // semun is not defined in "sys/sem.h"
 union semun
 {
@@ -642,10 +645,12 @@ void pv(int sem_id, int op)
    semop(sem_id, &sem_b, 1);
 }
 
-int semid; // System V semaphore ID
-
 void child_process()
 {
+   key_t key = ftok(PATHNAME, PROJ_ID);
+   int semid = semget(key, 1, 0666);
+   assert(semid != -1);
+
    pv(semid, -1);
 
    printf("[Child PID %d] Critical section start...\n", getpid());
@@ -657,6 +662,10 @@ void child_process()
 
 void parent_process()
 {
+   key_t key = ftok(PATHNAME, PROJ_ID);
+   int semid = semget(key, 1, 0666);
+   assert(semid != -1);
+
    pv(semid, -1);
 
    printf("[Parent PID %d] Critical section start...\n", getpid());
@@ -668,9 +677,13 @@ void parent_process()
 
 int main()
 {
-   // 创建/打开信号量集(".", 'a')
-   key_t key = ftok(".", 'a');
-   semid = semget(key, 1, 0666 | IPC_CREAT);
+   // 创建/打开信号量集(PATHNAME, PROJ_ID)
+   key_t key = ftok(PATHNAME, PROJ_ID);
+   assert(key != -1);
+   int semid = semget(key, 1, 0666 | IPC_CREAT);
+   assert(semid != -1);
+
+   printf("sem key (0x%x), sem id (%d) is created\n", key, semid);
 
    // 设置信号量的值为1
    union semun arg;
@@ -694,11 +707,11 @@ int main()
 ```
 ```bash
 > ./main
-sem (0x61050964) is created
-[Parent PID 134825] Critical section start...
-[Parent PID 134825] Critical section end...
-[Child PID 134826] Critical section start...
-[Child PID 134826] Critical section end...
+sem key (0x61050964), sem id (6) is created
+[Parent PID 137766] Critical section start...
+[Parent PID 137766] Critical section end...
+[Child PID 137767] Critical section start...
+[Child PID 137767] Critical section end...
 ```
 
 `ipcs -s -i <semid>`命令可以查看某个"System V"信号量集的详细信息，包括创建时间，创建进程，当前值等信息。也可以打印`/proc/sysvipc/sem`的内容，查看所有信号量集的信息：

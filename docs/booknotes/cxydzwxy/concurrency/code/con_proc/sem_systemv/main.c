@@ -8,6 +8,9 @@
 #include <sys/ipc.h>
 #include <sys/sem.h>
 
+#define PATHNAME "." // the file must refer to an existing, accessible file
+#define PROJ_ID 'a'
+
 // semun is not defined in "sys/sem.h"
 union semun
 {
@@ -27,10 +30,12 @@ void pv(int sem_id, int op)
    semop(sem_id, &sem_b, 1);
 }
 
-int semid; // System V semaphore ID
-
 void child_process()
 {
+   key_t key = ftok(PATHNAME, PROJ_ID);
+   int semid = semget(key, 1, 0666);
+   assert(semid != -1);
+
    pv(semid, -1);
 
    printf("[Child PID %d] Critical section start...\n", getpid());
@@ -42,6 +47,10 @@ void child_process()
 
 void parent_process()
 {
+   key_t key = ftok(PATHNAME, PROJ_ID);
+   int semid = semget(key, 1, 0666);
+   assert(semid != -1);
+
    pv(semid, -1);
 
    printf("[Parent PID %d] Critical section start...\n", getpid());
@@ -53,12 +62,12 @@ void parent_process()
 
 int main()
 {
-   key_t key = ftok(".", 'a');
+   key_t key = ftok(PATHNAME, PROJ_ID);
    assert(key != -1);
-   printf("sem (0x%x) is created\n", key);
+   int semid = semget(key, 1, 0666 | IPC_CREAT);
+   assert(semid != -1);
 
-   semid = semget(key, 1, 0666 | IPC_CREAT);
-   assert(key != -1);
+   printf("sem key (0x%x), sem id (%d) is created\n", key, semid);
 
    union semun arg;
    arg.val = 1;
