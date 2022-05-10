@@ -272,19 +272,14 @@ sem_t sem;
 
 void *thread_start(void *arg)
 {
-   // wait
    sem_wait(&sem);
 
    pthread_t id = pthread_self();
-   printf("[Thread %ld] Entered..\n", id);
-
-   // critical section
+   printf("[Thread %ld] Critical section start...\n", id);
    sleep(1);
+   printf("[Thread %ld] Critical section end...\n", id);
 
-   // signal
-   printf("[Thread %ld] Just Exiting...\n", id);
    sem_post(&sem);
-
    return NULL;
 }
 
@@ -300,13 +295,6 @@ int main(void)
 
    return 0;
 }
-```
-```bash
-> ./main 
-[Thread 139963370571520] Entered..
-[Thread 139963370571520] Just Exiting...
-[Thread 139963362178816] Entered..
-[Thread 139963362178816] Just Exiting...
 ```
 
 [例子"con_th/counting_sem"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/concurrency/code/con_th/counting_sem)利用多元信号量，实现了“生产者/消费者”模型，详情可参考[代码](./code/con_th/counting_sem/main.c)，这里不做细述。

@@ -7,19 +7,14 @@ sem_t sem;
 
 void *thread_start(void *arg)
 {
-   // wait
    sem_wait(&sem);
 
    pthread_t id = pthread_self();
-   printf("[Thread %ld] Entered..\n", id);
-
-   // critical section
+   printf("[Thread %ld] Critical section start...\n", id);
    sleep(1);
+   printf("[Thread %ld] Critical section end...\n", id);
 
-   // signal
-   printf("[Thread %ld] Just Exiting...\n", id);
    sem_post(&sem);
-
    return NULL;
 }
 
