@@ -48,8 +48,8 @@ void read_data()
    assert(res != -1);
 
    // shm_open cleanup
-   res = shm_unlink(FILE_PATH);
-   assert(res != -1);
+   // res = shm_unlink(FILE_PATH);
+   // assert(res != -1);
 }
 
 int main(int argc, char *argv[])
@@ -71,6 +71,10 @@ int main(int argc, char *argv[])
    // place data into memory
    memcpy(addr, buf, sizeof(buf));
 
+   // mmap cleanup
+   res = munmap(addr, FILE_SIZE);
+   assert(res != -1);
+
    pid_t pid = fork();
    if (pid == 0)
    {
@@ -81,13 +85,8 @@ int main(int argc, char *argv[])
    assert(pid > 0);
    wait(NULL);
 
-   // mmap cleanup
-   printf("munmap in parent process\n");
-   res = munmap(addr, FILE_SIZE);
-   assert(res != -1);
-
-   // unlink in child process, no need unlink here, munmap is enough
-   // shm_unlink(FILE_PATH);
+   // res = shm_unlink(FILE_PATH);
+   // assert(res != -1);
 
    return 0;
 }
