@@ -646,23 +646,23 @@ int semid; // System V semaphore ID
 
 void child_process()
 {
-   printf("[Child PID %d] Entered..\n", getpid());
-
    pv(semid, -1);
-   // critical section
+
+   printf("[Child PID %d] Critical section start...\n", getpid());
    sleep(1);
-   printf("[Child PID %d] Just Exiting...\n", getpid());
+   printf("[Child PID %d] Critical section end...\n", getpid());
+
    pv(semid, 1);
 }
 
 void parent_process()
 {
-   printf("[Parent PID %d] Entered..\n", getpid());
-
    pv(semid, -1);
-   // critical section
+
+   printf("[Parent PID %d] Critical section start...\n", getpid());
    sleep(1);
-   printf("[Parent PID %d] Just Exiting...\n", getpid());
+   printf("[Parent PID %d] Critical section end...\n", getpid());
+
    pv(semid, 1);
 }
 
@@ -694,27 +694,33 @@ int main()
 ```
 ```bash
 > ./main
-[Parent PID 101834] Entered..
-[Child PID 101835] Entered..
-[Parent PID 101834] Just Exiting...
-[Child PID 101835] Just Exiting...
+sem (0x61050964) is created
+[Parent PID 134825] Critical section start...
+[Parent PID 134825] Critical section end...
+[Child PID 134826] Critical section start...
+[Child PID 134826] Critical section end...
 ```
 
 `ipcs -s -i <semid>`命令可以查看某个"System V"信号量集的详细信息，包括创建时间，创建进程，当前值等信息。也可以打印`/proc/sysvipc/sem`的内容，查看所有信号量集的信息：
 ```bash
-> ipcs -s -i 1
-Semaphore Array semid=1
+> ipcs -s
+------ Semaphore Arrays --------
+key        semid      owner      perms      nsems     
+0x61050964 3          yuxiangw   666        1
+
+> ipcs -s -i 3
+Semaphore Array semid=3
 uid=1000         gid=1000        cuid=1000       cgid=1000
 mode=0666, access_perms=0666
 nsems = 1
-otime = Not set                   
-ctime = Mon May  9 20:48:09 2022  
+otime = Tue May 10 12:01:52 2022  
+ctime = Tue May 10 12:01:50 2022  
 semnum     value      ncount     zcount     pid
-0          1          0          0          103565
+0          1          0          0          135049
 
 > cat /proc/sysvipc/sem
        key      semid perms      nsems   uid   gid  cuid  cgid      otime      ctime
-1627720036          1   666          1  1000  1000  1000  1000          0 1652100489
+1627720036          3   666          1  1000  1000  1000  1000 1652155312 1652155310
 ```
 
 ### 共享内存(Shared memory)

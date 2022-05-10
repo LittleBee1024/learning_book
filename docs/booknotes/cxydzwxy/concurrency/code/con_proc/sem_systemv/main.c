@@ -31,23 +31,23 @@ int semid; // System V semaphore ID
 
 void child_process()
 {
-   printf("[Child PID %d] Entered..\n", getpid());
-
    pv(semid, -1);
-   // critical section
+
+   printf("[Child PID %d] Critical section start...\n", getpid());
    sleep(1);
-   printf("[Child PID %d] Just Exiting...\n", getpid());
+   printf("[Child PID %d] Critical section end...\n", getpid());
+
    pv(semid, 1);
 }
 
 void parent_process()
 {
-   printf("[Parent PID %d] Entered..\n", getpid());
-
    pv(semid, -1);
-   // critical section
+
+   printf("[Parent PID %d] Critical section start...\n", getpid());
    sleep(1);
-   printf("[Parent PID %d] Just Exiting...\n", getpid());
+   printf("[Parent PID %d] Critical section end...\n", getpid());
+
    pv(semid, 1);
 }
 
@@ -76,7 +76,7 @@ int main()
 
    wait(NULL);
    //remove sem
-   semctl(semid, 0, IPC_RMID, arg);
+   //semctl(semid, 0, IPC_RMID, arg);
 
    return 0;
 }

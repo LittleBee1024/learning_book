@@ -13,7 +13,7 @@ all: main
 	$(CC) $(CFLAGS) -c $<
 
 main: $(OBJS)
-	$(CC) $(LDFLAGS) $(OBJS) -o $@
+	$(CC) $(OBJS) $(LDFLAGS) -o $@
 
 clean:
 	@rm -rf main *.o
