@@ -10,24 +10,22 @@ sem_t *sem;
 void child_process()
 {
    sem_wait(sem);
-   printf("[Child PID %d] Entered..\n", getpid());
 
-   // critical section
+   printf("Child process has started\n");
    sleep(1);
+   printf("Child process has finished\n");
 
-   printf("[Child PID %d] Just Exiting...\n", getpid());
    sem_post(sem);
 }
 
 void parent_process()
 {
    sem_wait(sem);
-   printf("[Parent PID %d] Entered..\n", getpid());
 
-   // critical section
+   printf("Parent process has started\n");
    sleep(1);
+   printf("Parent process has finished\n");
 
-   printf("[Parent PID %d] Just Exiting...\n", getpid());
    sem_post(sem);
 }
 
