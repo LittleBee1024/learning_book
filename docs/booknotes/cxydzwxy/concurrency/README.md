@@ -490,7 +490,7 @@ IPC | System V | POSIX
 "POSIX"提供了两组API操作信号量：
 
 * 匿名信号量，参考前面的[例子"con_proc/sem_posix"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/concurrency/code/con_proc/sem_posix)
-* 具名信号量的，如下：
+* 具名信号量，API如下：
 
 ```cpp
 #include <semaphore.h>
@@ -582,6 +582,8 @@ sem value = 1
 [Child PID 131520] Critical section start...
 [Child PID 131520] Critical section end...
 ```
+
+如果没有调用`sem_unlink()`删除共享的具名信号量，在`/dev/shm`目录下，会留存一个`sem.`开头的文件。
 
 #### System V
 "System V"提供了一组API，用于操作多个信号量(信号量集)：
@@ -700,7 +702,7 @@ int main()
    wait(NULL);
 
    // 删除信号量集
-   semctl(semid, 0, IPC_RMID, arg);
+   // semctl(semid, 0, IPC_RMID, arg);
 
    return 0;
 }
@@ -714,26 +716,27 @@ sem key (0x61050964), sem id (6) is created
 [Child PID 137767] Critical section end...
 ```
 
-`ipcs -s -i <semid>`命令可以查看某个"System V"信号量集的详细信息，包括创建时间，创建进程，当前值等信息。也可以打印`/proc/sysvipc/sem`的内容，查看所有信号量集的信息：
+`ipcs -s`可查看系统现存的用"System V"创建的信号量集。如果上面的程序没有通过`semctl()`的`IPC_RMID`删除信号量，可通过`ipcs -s -i <semid>`命令，查看此信号量集的详细信息，包括创建时间，创建进程，当前值等信息。也可以通过打印`/proc/sysvipc/sem`的内容，查看所有信号量集的信息：
 ```bash
 > ipcs -s
 ------ Semaphore Arrays --------
 key        semid      owner      perms      nsems     
-0x61050964 3          yuxiangw   666        1
+0x61050964 6          yuxiangw   666        1
 
-> ipcs -s -i 3
-Semaphore Array semid=3
+> ipcs -s -i 6
+
+Semaphore Array semid=6
 uid=1000         gid=1000        cuid=1000       cgid=1000
 mode=0666, access_perms=0666
 nsems = 1
-otime = Tue May 10 12:01:52 2022  
-ctime = Tue May 10 12:01:50 2022  
-semnum     value      ncount     zcount     pid
-0          1          0          0          135049
+otime = Tue May 10 12:16:39 2022  
+ctime = Tue May 10 12:16:37 2022  
+semnum     value      ncount     zcount     pid       
+0          1          0          0          138697  
 
-> cat /proc/sysvipc/sem
+> cat /proc/sysvipc/sem 
        key      semid perms      nsems   uid   gid  cuid  cgid      otime      ctime
-1627720036          3   666          1  1000  1000  1000  1000 1652155312 1652155310
+1627720036          6   666          1  1000  1000  1000  1000 1652156199 1652156197
 ```
 
 ### 共享内存(Shared memory)
