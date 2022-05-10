@@ -741,7 +741,98 @@ semnum     value      ncount     zcount     pid
 
 ### 共享内存(Shared memory)
 
+#### POSIX
+
+"POSIX"提供了`shm_open()`和`shm_unlink()`，用于创建/删除共享内存。再结合`mmap()`，将共享内存映射到用户空间，就可以实现在不同进程间共享内存了。
+
+```cpp
+#include <sys/mman.h>
+
+// 创建/打开共享内存"name"
+//  name - 共享内存名称，会创建：/dev/shm/<name>
+//  oflag, mode - 和创建文件时的选项相同
+//  返回文件描述符
+int shm_open(const char *name, int oflag, mode_t mode);
+
+// 删除共享内存
+int shm_unlink(const char *name);
+
+// 利用ftruncate修改共享内存的大小
+int ftruncate(int fd, off_t length);
+
+// 利用mmap访问共享内存
+void *mmap(void *addr, size_t length, int prot, int flags, int fd, off_t offset);
+int munmap(void *addr, size_t length);
+```
+
+[例子"con_proc/shm_posix"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/concurrency/code/con_proc/shm_posix)利用"POSIX"的共享内存操作，在子进程中成功读取了父进程向共享内存中写入的"Hello World"：
+
+```cpp
+#define FILE_PATH "/my_shm_test"
+#define FILE_SIZE 512
+const char buf[] = "Hello World";
+
+void read_data()
+{
+   int fd = shm_open(FILE_PATH, O_RDONLY, S_IRUSR | S_IWUSR);
+
+   struct stat st;
+   fstat(fd, &st);
+   const size_t shm_size = st.st_size;
+   printf("The size of shard memory is %zu bytes\n", shm_size);
+
+   void *addr = mmap(NULL, shm_size, PROT_READ, MAP_SHARED, fd, 0);
+   char data[shm_size];
+   memcpy(data, addr, shm_size);
+   printf("Read from shared memory: \"%s\"\n", data);
+   munmap(addr, FILE_SIZE);
+
+   // shm_unlink(FILE_PATH);
+}
+
+int main(int argc, char *argv[])
+{
+   int fd = shm_open(FILE_PATH, O_RDWR | O_CREAT, S_IRUSR | S_IWUSR);
+   ftruncate(fd, FILE_SIZE);
+
+   void *addr = mmap(NULL, FILE_SIZE, PROT_WRITE, MAP_SHARED, fd, 0);
+   memcpy(addr, buf, sizeof(buf));
+   munmap(addr, FILE_SIZE);
+
+   pid_t pid = fork();
+   if (pid == 0)
+   {
+      read_data();
+      return 0;
+   }
+
+   wait(NULL);
+
+   // shm_unlink(FILE_PATH);
+   return 0;
+}
+```
+```bash
+> ./main 
+The size of shard memory is 512 bytes
+Read from shared memory: "Hello World"
+
+# 共享内存的大小为512字节
+> ll /dev/shm/my_shm_test 
+-rw------- 1 yuxiangw yuxiangw 512 5月  10 12:51 /dev/shm/my_shm_test
+
+# 共享内存的内容为"Hello World"
+> cat /dev/shm/my_shm_test
+Hello World
+```
+
+#### System V
+
 ### 消息队列(Message Queues)
+
+#### POSIX
+
+#### System V
 
 ## 其他进程间通信
 
