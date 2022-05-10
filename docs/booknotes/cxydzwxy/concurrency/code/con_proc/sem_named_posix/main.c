@@ -6,35 +6,38 @@
 #include <assert.h>
 #include <sys/wait.h>
 
-sem_t *sem;
+#define FILE_PATH "/sem_test"
 
 void child_process()
 {
+   sem_t *sem = sem_open(FILE_PATH, O_RDWR);
    sem_wait(sem);
-   printf("[Child PID %d] Entered..\n", getpid());
 
-   // critical section
+   printf("[Child PID %d] Critical section start...\n", getpid());
    sleep(1);
+   printf("[Child PID %d] Critical section end...\n", getpid());
 
-   printf("[Child PID %d] Just Exiting...\n", getpid());
    sem_post(sem);
+   sem_close(sem);
 }
 
 void parent_process()
 {
+   sem_t *sem = sem_open(FILE_PATH, O_RDWR);
    sem_wait(sem);
-   printf("[Parent PID %d] Entered..\n", getpid());
 
-   // critical section
+   printf("[Parent PID %d] Critical section start...\n", getpid());
    sleep(1);
+   printf("[Parent PID %d] Critical section end...\n", getpid());
 
-   printf("[Parent PID %d] Just Exiting...\n", getpid());
    sem_post(sem);
+   sem_close(sem);
 }
 
 int main()
 {
-   sem = sem_open("/hello", O_RDWR | O_CREAT, 0644, 1);
+   // create /dev/shm/sem.sem_test
+   sem_t *sem = sem_open(FILE_PATH, O_RDWR | O_CREAT, 0644, 1);
    if (sem == SEM_FAILED)
    {
       perror("sem_open");
@@ -44,6 +47,7 @@ int main()
    int rc = sem_getvalue(sem, &val);
    assert(rc == 0);
    printf("sem value = %d\n", val);
+   sem_close(sem);
 
    pid_t pid = fork();
    if (pid == 0)
@@ -56,10 +60,9 @@ int main()
    parent_process();
 
    wait(NULL);
-   sem_close(sem);
 
-   // remove /dev/shm/sem.hello
-   // sem_unlink("/hello");
+   // remove /dev/shm/sem.sem_test
+   sem_unlink(FILE_PATH);
 
    return 0;
 }

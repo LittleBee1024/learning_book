@@ -530,13 +530,45 @@ int sem_unlink(const char *name);
 
 [例子"con_proc/sem_named_posix"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/concurrency/code/con_proc/sem_named_posix)利用具名信号量，同步了两个进程的执行顺序，效果和前面的例子相同：
 ```cpp
+#define FILE_PATH "/sem_test"
+
+void child_process()
+{
+   sem_t *sem = sem_open(FILE_PATH, O_RDWR);
+   sem_wait(sem);
+
+   printf("[Child PID %d] Critical section start...\n", getpid());
+   sleep(1);
+   printf("[Child PID %d] Critical section end...\n", getpid());
+
+   sem_post(sem);
+   sem_close(sem);
+}
+
+void parent_process()
+{
+   sem_t *sem = sem_open(FILE_PATH, O_RDWR);
+   sem_wait(sem);
+
+   printf("[Parent PID %d] Critical section start...\n", getpid());
+   sleep(1);
+   printf("[Parent PID %d] Critical section end...\n", getpid());
+
+   sem_post(sem);
+   sem_close(sem);
+}
+
 int main()
 {
-   // 创建或打开"/dev/shm/sem.hello"
-   sem = sem_open("/hello", O_RDWR | O_CREAT, 0644, 1);
+   // create /dev/shm/sem.sem_test
+   sem_t *sem = sem_open(FILE_PATH, O_RDWR | O_CREAT, 0644, 1);
+   assert(sem != SEM_FAILED);
+
    int val = 0;
    sem_getvalue(sem, &val);
    printf("sem value = %d\n", val);
+
+   sem_close(sem);
 
    pid_t pid = fork();
    if (pid == 0)
@@ -547,22 +579,20 @@ int main()
 
    assert(pid > 0);
    parent_process();
-
    wait(NULL);
 
-   sem_close(sem);
-   // 删除"/dev/shm/sem.hello"
-   sem_unlink("/hello");
+   // remove /dev/shm/sem.sem_test
+   sem_unlink(FILE_PATH);
    return 0;
 }
 ```
 ```bash
 > ./main
 sem value = 1
-[Parent PID 126225] Entered..
-[Parent PID 126225] Just Exiting...
-[Child PID 126226] Entered..
-[Child PID 126226] Just Exiting...
+[Parent PID 131519] Critical section start...
+[Parent PID 131519] Critical section end...
+[Child PID 131520] Critical section start...
+[Child PID 131520] Critical section end...
 ```
 
 #### System V
