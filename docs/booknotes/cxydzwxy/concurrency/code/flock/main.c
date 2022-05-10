@@ -6,11 +6,11 @@
 #include <sys/file.h>
 #include <assert.h>
 
-// lock file file description
-int fd;
+#define LOCK_FILE "lock_file.lock"
 
 void child_start()
 {
+   int fd = open(LOCK_FILE, O_RDONLY);
    int rc = flock(fd, LOCK_EX);
    assert(rc == 0);
 
@@ -20,10 +20,12 @@ void child_start()
 
    rc = flock(fd, LOCK_UN);
    assert(rc == 0);
+   close(fd);
 }
 
 void parent_start()
 {
+   int fd = open(LOCK_FILE, O_RDONLY);
    int rc = flock(fd, LOCK_EX);
    assert(rc == 0);
 
@@ -33,14 +35,14 @@ void parent_start()
 
    rc = flock(fd, LOCK_UN);
    assert(rc == 0);
+   close(fd);
 }
 
 int main(void)
 {
-   fd = open("lock_file.lock", O_RDWR | O_CREAT, 0666);
-   if (fd <= 0)
-      perror("open");
+   int fd = open(LOCK_FILE, O_RDONLY | O_CREAT, 0666);
    assert(fd > 0);
+   close(fd);
 
    pid_t pid = fork();
    if (pid == 0)
@@ -51,8 +53,6 @@ int main(void)
 
    parent_start();
    wait(NULL);
-
-   close(fd);
 
    return 0;
 }

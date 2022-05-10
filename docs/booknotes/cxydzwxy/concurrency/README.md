@@ -472,7 +472,7 @@ pthread_cond_init(shm_cond, &cond_attr);
 pthread_condattr_destroy(&cond_attr);
 ```
 
-## 三种进程间通信
+## 三种进程间通信方法
 
 Linux系统的进程间通信有两种类型，分别是"POSIX"和"System V"，且提供了三种常见的进程通信的方法：
 
@@ -1183,9 +1183,75 @@ change_time=Tue May 10 16:42:06 2022
 1627720073         12   666           0          0 158821 158822  1000  1000  1000  1000 1652182137 1652182137 1652172126
 ```
 
-## 其他进程间通信
+## 其他进程间通信方法
 
 ### 文件锁(File Lock)
+
+文件锁提供了另一种进程间同步的方法：
+```cpp
+// 获取/释放文件锁
+//  fd - 打开的文件描述符
+//  operation - 操作类型：
+//    LOCK_SH: 共享锁，多个进程可以使用同一把锁，常被用作读共享锁
+//    LOCK_EX: 排他锁，同时只允许一个进程使用，常被用作写锁
+//    LOCK_UN: 释放锁
+int flock(int fd, int operation);
+```
+
+[例子"flock"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/concurrency/code/flock)利用`flock()`同步了两个进程的执行顺序：
+```cpp
+#define LOCK_FILE "lock_file.lock"
+
+void child_start()
+{
+   int fd = open(LOCK_FILE, O_RDONLY);
+   flock(fd, LOCK_EX);
+
+   printf("Child process has started\n");
+   sleep(1);
+   printf("Child process has finished\n");
+
+   flock(fd, LOCK_UN);
+   close(fd);
+}
+
+void parent_start()
+{
+   int fd = open(LOCK_FILE, O_RDONLY);
+   flock(fd, LOCK_EX);
+
+   printf("Parent process has started\n");
+   sleep(1);
+   printf("Parent process has finished\n");
+
+   flock(fd, LOCK_UN);
+   close(fd);
+}
+
+int main(void)
+{
+   // 创建一个普通文件
+   int fd = open(LOCK_FILE, O_RDONLY | O_CREAT, 0666);
+   close(fd);
+
+   pid_t pid = fork();
+   if (pid == 0)
+   {
+      child_start();
+      return 0;
+   }
+   parent_start();
+   wait(NULL);
+   return 0;
+}
+```
+```bash
+> ./main 
+Child process has started
+Child process has finished
+Parent process has started
+Parent process has finished
+```
 
 ### 信号(Signal)
 
