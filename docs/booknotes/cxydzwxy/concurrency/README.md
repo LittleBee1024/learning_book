@@ -296,6 +296,13 @@ int main(void)
    return 0;
 }
 ```
+```bash
+> ./main 
+[Thread 140373155976960] Critical section start...
+[Thread 140373155976960] Critical section end...
+[Thread 140373164369664] Critical section start...
+[Thread 140373164369664] Critical section end...
+```
 
 [例子"con_th/counting_sem"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/concurrency/code/con_th/counting_sem)利用多元信号量，实现了“生产者/消费者”模型，详情可参考[代码](./code/con_th/counting_sem/main.c)，这里不做细述。
 
