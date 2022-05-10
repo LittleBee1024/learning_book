@@ -56,6 +56,8 @@ plugins:
 
 # Customization
 extra:
+  # Google Search Console: https://search.google.com/search-console
+  # Account: littlebee1024@outlook.com
   analytics:
     provider: google
     property: G-G2RFHH3DL4
