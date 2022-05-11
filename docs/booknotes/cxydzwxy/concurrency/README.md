@@ -1253,9 +1253,90 @@ Parent process has started
 Parent process has finished
 ```
 
-### 信号(Signal)
-
 ### 管道(Pipe)
+```cpp
+#include <unistd.h>
 
-### 套接字(Socket)
+int pipe(int fd[2]);
+```
+
+`pipe()`函数可以创建一个管道，以实现进程间通信。一个管道包括两个文件描述符：
+
+* `fd[0]`读文件描述符
+   * 如果所有进程的管道写文件描述符被关闭，`read`读文件描述符返回零。否则默认情况下，如果管道为空会一直阻塞
+* `fd[1]`写文件描述符
+   * 如果所有进程的管道读文件描述符被关闭，`write`写文件描述符会触发`SIGPIPE`信号
+
+[例子"pipe"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/concurrency/code/flock/pipe)创建了一个管道，一个进程往管道中写入数据，另一个进程从管道中读出数据：
+
+```cpp
+#define MSGSIZE 16
+const char *msg1 = "hello, world #1";
+const char *msg2 = "hello, world #2";
+
+void write_data(int write_fd)
+{
+   printf("Parent Task Starts\n");
+
+   // write will trigger SIGPIPE signal if all read fd is closed
+   int nbytes = write(write_fd, msg1, MSGSIZE);
+   printf("parent process wrote %d bytes to child process: %s\n", nbytes, msg1);
+   nbytes = write(write_fd, msg2, MSGSIZE);
+   printf("parent process wrote %d bytes to child process: %s\n", nbytes, msg2);
+
+   printf("Parent Task Ends\n");
+}
+
+void read_data(int read_fd)
+{
+   printf("Child Task Starts\n");
+
+   char inbuf[MSGSIZE];
+   int nbytes = 0;
+
+   // read will return zero if all write fd is closed
+   while ((nbytes = read(read_fd, inbuf, MSGSIZE)) > 0)
+      printf("child process read %d bytes to from parent process: %s\n", nbytes, inbuf);
+
+   printf("Child Task Ends\n");
+}
+
+int main(int argc, char **argv)
+{
+   int fd[2];
+   pipe(fd);
+   int read_fd = fd[0];
+   int write_fd = fd[1];
+
+   pid_t pid = fork();
+   if (pid == 0)
+   {
+      close(write_fd);
+
+      read_data(read_fd);
+      close(read_fd);
+      return 0;
+   }
+
+   close(read_fd);
+   sleep(1);
+
+   write_data(write_fd);
+   close(write_fd);
+
+   wait(NULL);
+   return 0;
+}
+```
+```bash
+> ./main 
+Child Task Starts
+Parent Task Starts
+parent process wrote 16 bytes to child process: hello, world #1
+parent process wrote 16 bytes to child process: hello, world #2
+Parent Task Ends
+child process read 16 bytes to from parent process: hello, world #1
+child process read 16 bytes to from parent process: hello, world #2
+Child Task Ends
+```
 
