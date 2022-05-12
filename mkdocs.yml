@@ -126,6 +126,7 @@ nav:
       - booknotes/hplsp/tcp_ip/README.md
       - booknotes/hplsp/multi_io/README.md
       - booknotes/hplsp/adv_io/README.md
+      - booknotes/hplsp/signal/README.md
     - booknotes/csapp/README.md
   - Demos:
     - demos/webassembly/README.md
