@@ -6,7 +6,7 @@
 #include <errno.h>
 #include <stdlib.h>
 
-#define TEST_HOSTNAME "www.google.com"
+#define TEST_HOSTNAME "www.baidu.com"
 #define TEST_IP "142.250.194.100"
 
 void test_getaddrinfo()

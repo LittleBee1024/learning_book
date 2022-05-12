@@ -107,23 +107,22 @@ int main()
 
 ### 名字与地址的转换
 
+Linux提供了`getaddrinfo()`和`getnameinfo()`用于主机名和IP地址之间的转换：
 ```cpp
 #include <netdb.h>
 
 // 根据主机名/服务名，获得主机或者服务的地址信息，是对`gethostbyname`和`getservbyname`的封装
 //  hints - 可设置ai_flags, ai_family, ai_socktype, ai_protocol，其他必须为NULL
+//  res - 返回的查询结果，由于一个主机名可能对应多个IP地址，因此res是一个链表
 int getaddrinfo(const char *restrict node,
     const char *restrict service,
     const struct addrinfo *restrict hints,
     struct addrinfo **restrict res);
+
 // 销毁`getaddrinfo`返回的res
 void freeaddrinfo(struct addrinfo *res);
 
-// 根据主机/服务地址信息，获得以字符串表示的主机/服务名，是对`gethostbyaddr`和`getservbyport`的封装
-int getnameinfo(const struct sockaddr *restrict addr, socklen_t addrlen,
-    char *restrict host, socklen_t hostlen,
-    char *restrict serv, socklen_t servlen, int flags);
-
+// hints和返回结果的结构
 struct addrinfo
 {
     int ai_flags;       // 控制`hints`行为，如配置为`AI_CANONNAME`，会返回主机名
@@ -135,4 +134,66 @@ struct addrinfo
     struct sockaddr* ai_addr;
     struct addrinfo* ai_next;
 };
+
+// 根据主机/服务地址信息，获得以字符串表示的主机/服务名，是对`gethostbyaddr`和`getservbyport`的封装
+int getnameinfo(const struct sockaddr *restrict addr, socklen_t addrlen,
+    char *restrict host, socklen_t hostlen,
+    char *restrict serv, socklen_t servlen, int flags);
+```
+
+[例子"addr_name"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/hplsp/sock_base/code/addr_name)利用上面的函数，完成了主机名和IP地址之间的转换：
+```cpp
+#define TEST_HOSTNAME "www.baidu.com"
+#define TEST_IP "142.250.194.100"
+
+void test_getaddrinfo()
+{
+   printf("[getaddrinfo]: %s\n", TEST_HOSTNAME);
+
+   struct addrinfo hints;
+   struct addrinfo *result;
+
+   memset(&hints, 0, sizeof(struct addrinfo));
+   hints.ai_flags = AI_CANONNAME;
+   hints.ai_family = AF_INET;
+   hints.ai_socktype = SOCK_STREAM;
+
+   getaddrinfo(TEST_HOSTNAME, NULL, &hints, &result);
+
+   printf("  Host name: %s\n", result->ai_canonname);
+   printf("  Address type: %s\n", (result->ai_family == AF_INET) ? "AF_INET" : "Unknown");
+   char str[INET_ADDRSTRLEN];
+   printf("  Address(es): ");
+   for (struct addrinfo *rp = result; rp != NULL; rp = rp->ai_next)
+   {
+      struct sockaddr_in *p_sockaddr = (struct sockaddr_in *)rp->ai_addr;
+      inet_ntop(rp->ai_family, &(p_sockaddr->sin_addr), str, INET_ADDRSTRLEN);
+      printf(" %s", str);
+   }
+   printf("\n");
+
+   freeaddrinfo(result);
+}
+
+void test_getnameinfo()
+{
+   struct sockaddr_in sa;
+   memset(&sa, 0, sizeof(sa));
+   sa.sin_family = AF_INET;
+   inet_aton(TEST_IP, &(sa.sin_addr));
+
+   printf("[getnameinfo]: %s\n", inet_ntoa(sa.sin_addr));
+   char host[NI_MAXHOST];
+   int rc = getnameinfo((struct sockaddr *)&sa, sizeof(struct sockaddr), host, NI_MAXHOST, nullptr, 0, NI_NAMEREQD);
+   printf("  Host name: %s\n", host);
+}
+```
+```bash
+> ./main 
+[getaddrinfo]: www.baidu.com
+  Host name: www.wshifen.com
+  Address type: AF_INET
+  Address(es):  104.193.88.77 104.193.88.123
+[getnameinfo]: 142.250.194.100
+  Host name: del12s04-in-f4.1e100.net
 ```
