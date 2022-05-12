@@ -56,7 +56,7 @@ struct in_addr
 };
 ```
 
-人们习惯用字符串来表示IP地址，下面的函数可用于用点分十进制字符串表示的IPv4地址和用网络字节序整数表示的IPv4地址之间的转换：
+人们习惯用字符串来表示IP地址，下面的函数可用于“用点分十进制字符串表示的IPv4地址”和“用网络字节序整数表示的IPv4地址”之间的转换：
 ```cpp
 #include <arpa/inet.h>
 
@@ -197,3 +197,5 @@ void test_getnameinfo()
 [getnameinfo]: 142.250.194.100
   Host name: del12s04-in-f4.1e100.net
 ```
+
+
