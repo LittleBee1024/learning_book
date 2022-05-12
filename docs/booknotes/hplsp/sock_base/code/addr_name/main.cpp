@@ -3,8 +3,11 @@
 #include <arpa/inet.h>
 #include <string.h>
 #include <assert.h>
+#include <errno.h>
+#include <stdlib.h>
 
-#define TEST_HOSTNAME "www.baidu.com"
+#define TEST_HOSTNAME "www.google.com"
+#define TEST_IP "142.250.194.100"
 
 void test_getaddrinfo()
 {
@@ -33,14 +36,30 @@ void test_getaddrinfo()
       printf(" %s", str);
    }
    printf("\n");
+
+   freeaddrinfo(result);
 }
 
-void test_gethostbyname()
+void test_getnameinfo()
 {
-   printf("[gethostbyname]: %s\n", TEST_HOSTNAME);
+   struct sockaddr_in sa;
+   memset(&sa, 0, sizeof(sa));
+   sa.sin_family = AF_INET;
+   inet_aton(TEST_IP, &(sa.sin_addr));
 
-   hostent *h = gethostbyname(TEST_HOSTNAME);
+   printf("[getnameinfo]: %s\n", inet_ntoa(sa.sin_addr));
+   char host[NI_MAXHOST];
+   int rc = getnameinfo((struct sockaddr *)&sa, sizeof(struct sockaddr), host, NI_MAXHOST, nullptr, 0, NI_NAMEREQD);
+   if (rc != 0)
+   {
+      printf("[Error] %s. Please change TEST_IP.\n", gai_strerror(rc));
+      exit(EXIT_FAILURE);
+   }
+   printf("  Host name: %s\n", host);
+}
 
+void _dump_hostent(hostent *h)
+{
    printf("  Host name: %s\n", h->h_name);
 
    printf("  Alias(es): ");
@@ -57,10 +76,30 @@ void test_gethostbyname()
    printf("\n");
 }
 
+void test_gethostbyname()
+{
+   printf("[gethostbyname]: %s\n", TEST_HOSTNAME);
+   hostent *h = gethostbyname(TEST_HOSTNAME);
+   _dump_hostent(h);
+}
+
+void test_gethostbyaddr()
+{
+   struct in_addr addr;
+   inet_aton(TEST_IP, &(addr));
+   printf("[gethostbyaddr]: %s\n", inet_ntoa(addr));
+   hostent *h = gethostbyaddr((const char *)&addr, sizeof(addr), AF_INET);
+   // If fails, please check "h_errno", maybe it is because an unknown host or a misconfigured DNS
+   assert(h != NULL);
+   _dump_hostent(h);
+}
+
 int main()
 {
    test_getaddrinfo();
-   test_gethostbyname();
+   test_getnameinfo();
 
+   test_gethostbyname();
+   test_gethostbyaddr();
    return 0;
 }

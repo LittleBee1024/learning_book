@@ -116,9 +116,11 @@ int getaddrinfo(const char *restrict node,
     const char *restrict service,
     const struct addrinfo *restrict hints,
     struct addrinfo **restrict res);
+// 销毁`getaddrinfo`返回的res
+void freeaddrinfo(struct addrinfo *res);
 
 // 根据主机/服务地址信息，获得以字符串表示的主机/服务名，是对`gethostbyaddr`和`getservbyport`的封装
-int getnameinfo(const struct sockaddr *restrict addr,socklen_t addrlen,
+int getnameinfo(const struct sockaddr *restrict addr, socklen_t addrlen,
     char *restrict host, socklen_t hostlen,
     char *restrict serv, socklen_t servlen, int flags);
 
@@ -132,20 +134,5 @@ struct addrinfo
     char* ai_canonname; // 主机的别名
     struct sockaddr* ai_addr;
     struct addrinfo* ai_next;
-};
-
-// 根据主机名获得主机的地址，推荐用`getaddrinfo`
-struct hostent *gethostbyname(const char *name);
-
-// 根据主机地址信息获得主机名，推荐用`getnameinfo`
-struct hostent *gethostbyaddr(const void *addr, socklen_t len, int type);
-
-struct hostent
-{
-    char* h_name;           //主机名
-    char** h_aliases;       //主机别名，有可能有多个
-    int h_addrtype;         //地址族
-    int h_length;           //地址长度
-    char** h_addr_list;     //按网络字节序列出的主机IP地址列表
 };
 ```
