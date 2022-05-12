@@ -111,7 +111,6 @@ extra_javascript:
 nav:
   - Home: README.md
   - Book Notes:
-    - booknotes/csapp/README.md
     - 程序员的自我修养:
       - booknotes/cxydzwxy/concurrency/README.md
       - booknotes/cxydzwxy/compile/README.md
@@ -122,6 +121,12 @@ nav:
     - Debug Hacks:
       - booknotes/debug_hacks/basic/README.md
       - booknotes/debug_hacks/advance/README.md
+    - Linux高性能服务器编程:
+      - booknotes/hplsp/sock_base/README.md
+      - booknotes/hplsp/sock_tcp/README.md
+      - booknotes/hplsp/multi_io/README.md
+      - booknotes/hplsp/adv_io/README.md
+    - booknotes/csapp/README.md
   - Demos:
     - demos/webassembly/README.md
     - demos/cmake/README.md
