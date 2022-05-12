@@ -154,7 +154,7 @@ void test_getaddrinfo()
    struct addrinfo *result;
 
    memset(&hints, 0, sizeof(struct addrinfo));
-   hints.ai_flags = AI_CANONNAME;
+   hints.ai_flags = AI_CANONNAME; // 配置返回主机名到第一个结果中，否则不返回主机名
    hints.ai_family = AF_INET;
    hints.ai_socktype = SOCK_STREAM;
 
