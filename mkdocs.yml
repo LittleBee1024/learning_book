@@ -123,6 +123,7 @@ nav:
       - booknotes/debug_hacks/advance/README.md
     - Linux高性能服务器编程:
       - booknotes/hplsp/socket/README.md
+      - booknotes/hplsp/tcp_ip/README.md
       - booknotes/hplsp/multi_io/README.md
       - booknotes/hplsp/adv_io/README.md
     - booknotes/csapp/README.md
