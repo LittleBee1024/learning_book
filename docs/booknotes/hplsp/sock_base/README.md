@@ -184,7 +184,7 @@ void test_getnameinfo()
 
    printf("[getnameinfo]: %s\n", inet_ntoa(sa.sin_addr));
    char host[NI_MAXHOST];
-   int rc = getnameinfo((struct sockaddr *)&sa, sizeof(struct sockaddr), host, NI_MAXHOST, nullptr, 0, NI_NAMEREQD);
+   getnameinfo((struct sockaddr *)&sa, sizeof(struct sockaddr), host, NI_MAXHOST, nullptr, 0, NI_NAMEREQD);
    printf("  Host name: %s\n", host);
 }
 ```
