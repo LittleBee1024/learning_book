@@ -1,6 +1,6 @@
 # 套接字基础
 
-> [《Linux高性能服务器编程》 - 游双 ](https://1drv.ms/b/s!AkcJSyT7tq80c1DmkdcxK7oScvQ)的第5章，以及[《UNIX网络编程卷1》](https://1drv.ms/b/s!AkcJSyT7tq80dP1Vghbg7qb9uts)的第3、4、7、11章的读书笔记，本文中的所有代码可在[GitHub仓库](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/hplsp/sock_base/code)中找到
+> [《Linux高性能服务器编程》 - 游双 ](https://1drv.ms/b/s!AkcJSyT7tq80c1DmkdcxK7oScvQ)的第5章，以及[《UNIX网络编程卷1》](https://1drv.ms/b/s!AkcJSyT7tq80dP1Vghbg7qb9uts)的第3、4、7、11章的读书笔记，本文中的所有代码可在[GitHub仓库](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/hplsp/socket/code)中找到
 
 ## 套接字地址
 大多数套接字都需要一个指向套接字地址结构的指针作为参数。每个协议都定义了它自己的套接字地址结构：
@@ -76,7 +76,7 @@ int inet_pton(int af, const char* src, void* dst);
 const char* inet_ntop(int af, const void* src, char* dst, socklen_t cnt);
 ```
 
-[例子"addr_conv"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/hplsp/sock_base/code/addr_conv)利用上面的函数，完成了IPv4字符串地址和网络字节地址的转换：
+[例子"addr_conv"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/hplsp/socket/code/addr_conv)利用上面的函数，完成了IPv4字符串地址和网络字节地址的转换：
 ```cpp
 #define IP_STR "192.0.2.33"
 
@@ -141,7 +141,7 @@ int getnameinfo(const struct sockaddr *restrict addr, socklen_t addrlen,
     char *restrict serv, socklen_t servlen, int flags);
 ```
 
-[例子"addr_name"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/hplsp/sock_base/code/addr_name)利用上面的函数，完成了主机名和IP地址之间的转换：
+[例子"addr_name"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/hplsp/socket/code/addr_name)利用上面的函数，完成了主机名和IP地址之间的转换：
 ```cpp
 #define TEST_HOSTNAME "www.baidu.com"
 #define TEST_IP "142.250.194.100"
