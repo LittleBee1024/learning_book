@@ -17,7 +17,7 @@ void test_getaddrinfo()
    struct addrinfo *result;
 
    memset(&hints, 0, sizeof(struct addrinfo));
-   hints.ai_flags = AI_CANONNAME;
+   hints.ai_flags = AI_CANONNAME; // set to return ai_canonname in the result
    hints.ai_family = AF_INET;
    hints.ai_socktype = SOCK_STREAM;
 
