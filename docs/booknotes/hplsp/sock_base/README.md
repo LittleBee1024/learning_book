@@ -40,3 +40,68 @@ struct sockaddr_storage
 
 ![sockaddr](./images/sockaddr.png)
 
+
+### IPv4 socket地址
+TCP/IPv4协议族的socket地址结构`sockaddr_in`如下：
+```cpp
+struct sockaddr_in
+{
+    sa_family_t sin_family; // 地址族：AF_INET
+    u_int16_t sin_port;     // 端口号，要用网络字节序(大端)表示
+    struct in_addr sin_addr;// IPv4地址结构体
+};
+
+struct in_addr
+{
+    u_int32_t s_addr;       // IPv4地址，要用网络字节序(大端)表示
+};
+```
+
+人们习惯用字符串来表示IP地址，下面的函数可用于用点分十进制字符串表示的IPv4地址和用网络字节序整数表示的IPv4地址之间的转换：
+```cpp
+#include <arpa/inet.h>
+
+// 将用点分十进制字符串的IPv4地址转换为网络字节序整数表示的地址
+in_addr_t inet_addr(const char* strptr);
+
+// 和inet_addr功能一样，但将结果存于inp指向的结构中，成功返回1
+int inet_aton(const char* cp, struct in_addr* inp);
+
+// 将网络字节序整数表示的IPv4地址转化为用点分十进制字符串的IPv4地址
+char* inet_ntoa(struct in_addr in);
+
+// inet_aton的通用版本，也可用于IPv6的地址转换
+int inet_pton(int af, const char* src, void* dst);
+
+// inet_ntoa的通用版本，也可用于IPv6的地址转换，成功返回指向dst的指针
+const char* inet_ntop(int af, const void* src, char* dst, socklen_t cnt);
+```
+
+[例子"addr_conv"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/hplsp/sock_base/code/addr_conv)利用上面的函数，完成了IPv4字符串地址和网络字节地址的转换：
+```cpp
+#define IP_STR "192.0.2.33"
+
+int main()
+{
+   struct sockaddr_in sa;
+   char str[INET_ADDRSTRLEN];
+
+   memset(&sa, 0, sizeof(sa));
+   inet_pton(AF_INET, IP_STR, &(sa.sin_addr));
+   inet_ntop(AF_INET, &(sa.sin_addr), str, INET_ADDRSTRLEN);
+   printf("[inet_pton/inet_ntop] convert between %d and %s\n", sa.sin_addr.s_addr, str);
+
+   memset(&sa, 0, sizeof(sa));
+   inet_aton(IP_STR, &(sa.sin_addr));
+   // ip指向inet_ntoa内部的一个静态变量，因此inet_ntoa不可重入
+   char* ip = inet_ntoa(sa.sin_addr);
+   printf("[inet_addr/inet_aton/inet_ntoa] convert between %d(%d) and %s\n", inet_addr(IP_STR), sa.sin_addr.s_addr, ip);
+
+   return 0;
+}
+```
+```bash
+> ./main 
+[inet_pton/inet_ntop] convert between 553779392 and 192.0.2.33
+[inet_addr/inet_aton/inet_ntoa] convert between 553779392(553779392) and 192.0.2.33
+```
