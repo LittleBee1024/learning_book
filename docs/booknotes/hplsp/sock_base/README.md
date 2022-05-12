@@ -40,7 +40,6 @@ struct sockaddr_storage
 
 ![sockaddr](./images/sockaddr.png)
 
-
 ### IPv4 socket地址
 TCP/IPv4协议族的socket地址结构`sockaddr_in`如下：
 ```cpp
@@ -101,7 +100,52 @@ int main()
 }
 ```
 ```bash
-> ./main 
+> ./main
 [inet_pton/inet_ntop] convert between 553779392 and 192.0.2.33
 [inet_addr/inet_aton/inet_ntoa] convert between 553779392(553779392) and 192.0.2.33
+```
+
+### 名字与地址的转换
+
+```cpp
+#include <netdb.h>
+
+// 根据主机名/服务名，获得主机或者服务的地址信息，是对`gethostbyname`和`getservbyname`的封装
+//  hints - 可设置ai_flags, ai_family, ai_socktype, ai_protocol，其他必须为NULL
+int getaddrinfo(const char *restrict node,
+    const char *restrict service,
+    const struct addrinfo *restrict hints,
+    struct addrinfo **restrict res);
+
+// 根据主机/服务地址信息，获得以字符串表示的主机/服务名，是对`gethostbyaddr`和`getservbyport`的封装
+int getnameinfo(const struct sockaddr *restrict addr,socklen_t addrlen,
+    char *restrict host, socklen_t hostlen,
+    char *restrict serv, socklen_t servlen, int flags);
+
+struct addrinfo
+{
+    int ai_flags;       // 控制`hints`行为，如配置为`AI_CANONNAME`，会返回主机名
+    int ai_family;      // 地址簇，AF_INET/AF_INET5/AF_UNIX
+    int ai_socktype;    // 服务类型，SOCK_STREAM/SOCK_DGRAM
+    int ai_protocol;    // 网络协议，通常为零，需要和`ai_family`的值配套
+    socklen_t ai_addrlen;
+    char* ai_canonname; // 主机的别名
+    struct sockaddr* ai_addr;
+    struct addrinfo* ai_next;
+};
+
+// 根据主机名获得主机的地址，推荐用`getaddrinfo`
+struct hostent *gethostbyname(const char *name);
+
+// 根据主机地址信息获得主机名，推荐用`getnameinfo`
+struct hostent *gethostbyaddr(const void *addr, socklen_t len, int type);
+
+struct hostent
+{
+    char* h_name;           //主机名
+    char** h_aliases;       //主机别名，有可能有多个
+    int h_addrtype;         //地址族
+    int h_length;           //地址长度
+    char** h_addr_list;     //按网络字节序列出的主机IP地址列表
+};
 ```
