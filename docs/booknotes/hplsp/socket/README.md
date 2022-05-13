@@ -202,7 +202,7 @@ void test_getnameinfo()
 
 ![tcp_socket](./images/tcp_socket.png)
 
-如上图所示，客户端和服务端经过一些列的socket API调用，最终各自拥有了一个可以读写的文件描述符。此后，就可以通过`read/write`函数像访问文件一样，进程数据的传输。在服务端不仅创建了一个和客户端连接的socket，还打开了一个监听socket，用于监听新的客户端连接。
+如上图所示，客户端和服务端经过一些列的socket API调用，最终各自拥有了一个可以读写的文件描述符。此后，就可以通过`read/write`函数像访问文件一样，在客户端和服务器之间进行数据的传输。同时，服务端不仅创建了一个和客户端连接的socket，还打开了一个监听socket，用于监听新的客户端连接。
 
 [例子"tcp_sc"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/hplsp/socket/code/tcp_sc)实现了客户端向服务端传递"Hello World"字符串的功能：
 
