@@ -105,6 +105,6 @@ tcp[tcpflags] | `tcpdump -nn "tcp[tcpflags] & (tcp-syn|tcp-ack) != 0"` | 特定�
     > nc -q 1 10.207.83.17 1234
     ```
 
-用`wireshark`软件直接打开`tcpdump`的输出结果`normal.pcap`：
+用`wireshark`软件直接打开`tcpdump`的输出结果`normal.pcap`，其中显示的`Seq`和`Ack`是`wireshark`做过优化后的相对值：
 ![tcpdump_normal](./images/tcpdump_normal.png)
 
