@@ -69,3 +69,42 @@
 * MSS (Max Segment Size)
     * 除去IP和TCP头部之后，一个网络包所能容纳的TCP数据的最大长度
 
+## tcpdump实战
+
+tcpdump选项 | 示例 | 说明
+--- | --- | ---
+-i | `tcpdump -i eth0` | 指定网卡，any表示所有网卡
+-nn | `tcpdump -nn` | 不解析IP地址和端口号的名称
+-c | `tcpdump -c 5` | 限制要抓取的网络包的个数
+-w | `tcpdump -w file.pcap` | 保存到文件中，可用`wireshark`打开
+host, src host, dst host | `tcpdump -nn host 192.168.1.100` | 主机过滤
+port, src port, dst port | `tcpdump -nn port 80` | 端口过滤
+ip, ip6, arp, tcp, udp, icmp | `tcpdump -nn tcp` | 协议过滤
+and, or, not | `tcpdump -nn host 192.168.1.100 and port 80` | 逻辑表达式
+tcp[tcpflags] | `tcpdump -nn "tcp[tcpflags] & (tcp-syn|tcp-ack) != 0"` | 特定状态的TCP包
+
+### 正常连接/断开实验
+
+[例子"tcpdump/normal"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/hplsp/tcp_ip/code/tcpdump/normal)中包含了实验脚本`Makefile`和实验结果`normal.pcap`：
+
+=== "Server"
+
+    ```bash
+    # 在远端的机器上通过`nc`命令启动一个TCP服务，假设其IP是10.207.83.17，端口是1234
+    > nc -lk -p 1234
+    ```
+
+=== "Client"
+
+    ```bash
+    # 在近端的机器上启动tcpdump监控，假设网卡名称是：ens33
+    > sudo tcpdump -i ens33 tcp and host 10.207.83.17 and port 1234 -w normal.pcap
+    ```
+    ```bash
+    # 在近端的机器上通过`nc`命令连接服务器，并通过`Ctrl+D`直接退出
+    > nc -q 1 10.207.83.17 1234
+    ```
+
+用`wireshark`软件直接打开`tcpdump`的输出结果`normal.pcap`：
+![tcpdump_normal](./images/tcpdump_normal.png)
+
