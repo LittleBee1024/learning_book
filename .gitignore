@@ -21,3 +21,6 @@ program2
 *.log
 *.tmp
 *.lock
+
+server
+client

@@ -198,4 +198,111 @@ void test_getnameinfo()
   Host name: del12s04-in-f4.1e100.net
 ```
 
+## TCP套接字
 
+![tcp_socket](./images/tcp_socket.png)
+
+如上图所示，客户端和服务端经过一些列的socket API调用，最终各自拥有了一个可以读写的文件描述符。此后，就可以通过`read/write`函数像访问文件一样，进程数据的传输。在服务端不仅创建了一个和客户端连接的socket，还打开了一个监听socket，用于监听新的客户端连接。
+
+[例子"tcp_sc"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/hplsp/socket/code/tcp_sc)实现了客户端向服务端传递"Hello World"字符串的功能：
+
+=== "Server"
+
+    ```cpp
+    int main(int argc, char *argv[])
+    {
+        ...
+        printf("[Server] Start server at %s:%d\n", ip, port);
+
+        struct sockaddr_in address;
+        bzero(&address, sizeof(address));
+        address.sin_family = AF_INET;
+        inet_pton(AF_INET, ip, &address.sin_addr);
+        address.sin_port = htons(port);
+
+        // 1. create server socket
+        int sock = socket(AF_INET, SOCK_STREAM, 0);
+        // 2. bind server socket to the address and port
+        bind(sock, (struct sockaddr *)&address, sizeof(address));
+        // 3. listen at client's connection
+        listen(sock, 5);
+
+        struct sockaddr_in client;
+        socklen_t client_len = sizeof(client);
+        printf("[Server] Waiting for connection...\n");
+        // 4. accept a connection from client, and create connection socket
+        int connfd = accept(sock, (struct sockaddr *)&client, &client_len);
+        printf("[Server] Connection %d is created\n", connfd);
+
+        // 5. read/write with connection socket
+        char buffer[BUFFER_SIZE];
+        memset(buffer, '\0', BUFFER_SIZE);
+        printf("[Server] Dump data from client...\n");
+        while (1)
+        {
+            int n_bytes = read(connfd, buffer, BUFFER_SIZE - 1);
+            if (n_bytes == 0)
+            {
+                printf("\n[Server] Remote client socket was closed\n");
+                break;
+            }
+            for (int i = 0; i < n_bytes; i++)
+                printf("%c", buffer[i]);
+        }
+
+        printf("[Server] Close connection %d and listen socket %d\n", connfd, sock);
+        close(connfd);
+        close(sock);
+        return 0;
+    }
+    ```
+
+    ```bash
+    > ./server 127.0.0.1 1234
+    [Server] Start server at 127.0.0.1:1234
+    [Server] Waiting for connection...
+    [Server] Connection 4 is created
+    [Server] Dump data from client...
+    Hello World
+    [Server] Remote client socket was closed
+    [Server] Close connection socket 4 and listen socket 3
+    ```
+
+=== "Client"
+
+    ```cpp
+    int main(int argc, char *argv[])
+    {
+        ...
+        printf("[Client] Connect to server %s:%d\n", ip, port);
+
+        sockaddr_in server_address;
+        bzero(&server_address, sizeof(server_address));
+        server_address.sin_family = AF_INET;
+        inet_pton(AF_INET, ip, &server_address.sin_addr);
+        server_address.sin_port = htons(port);
+
+        // 1. create client socket
+        int sock = socket(AF_INET, SOCK_STREAM, 0);
+        // 2. connect to server address and port
+        connect(sock, (struct sockaddr *)&server_address, sizeof(server_address));
+        printf("[Client] Connected socket %d to the server\n", sock);
+
+        // 3. read/write with the client socket
+        char buffer[] = "Hello World";
+        printf("[Client] Send '%s' to server\n", buffer);
+        send(sock, buffer, sizeof(buffer), 0);
+
+        printf("[Client] Close the socket %d\n", sock);
+        close(sock);
+        return 0;
+    }
+    ```
+
+    ```bash
+    > ./client 127.0.0.1 1234
+    [Client] Connect to server 127.0.0.1:1234
+    [Client] Connected socket 3 to the server
+    [Client] Send 'Hello World' to server
+    [Client] Close the socket 3
+    ```

@@ -82,7 +82,10 @@ markdown_extensions:
   # Block configure
   - pymdownx.highlight
   - pymdownx.inlinehilite
+  # Enable content tabs
   - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
   # Enable footnote feature
   - footnotes
   # Enable tilde character(~) for delete and subscript
