@@ -108,6 +108,14 @@ tcp[tcpflags] | `tcpdump -nn "tcp[tcpflags] & (tcp-syn|tcp-ack) != 0"` | 特定�
 客户端连接到服务器后，直接通过`Ctrl+D`退出。`tcpdump`工具在客户端抓取三次握手和四次挥手的TCP包，并记录在`normal.pcap`文件中。用`wireshark`软件直接打开`tcpdump`的输出结果`normal.pcap`，其中显示的`Seq`和`Ack`是`wireshark`做过优化后的相对值：
 ![tcpdump_normal](./images/tcpdump_normal.png)
 
+### 数据传输实验
+
+[例子"tcpdump/normal"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/hplsp/tcp_ip/code/tcpdump/normal)的方法同样可以获取客户端和服务端之间的数据传输包。下图中除了正常的连接同步包以外，还多了两个`PSH+ACK`包，一个是客户端向服务端发送的数据，另一个是服务端向客户端发送的数据：
+![tcpdump_transfer](./images/tcpdump_transfer.png)
+
+`PSH+ACK`包中长度`Len`取决于需要传递的数据的大小。例如，客户端向服务端传递的"hello"字符串需要6个字节，其中包括最后一个换行符`\n`。下图是客户端向服务端发送的`PSH+ACK`包的二进制码：
+![psh_packet](./images/psh_packet.png)
+
 ### 第一次握手失败
 
 为了模拟TCP第一次握手`SYN`丢包的情况，可利用`iptables`的`INPUT`规则在服务端过滤掉客户端输入的包，`iptables`相关命令可参考[文档](https://www.jianshu.com/p/ed001ae61c58)。网络包进入主机后的顺序如下：
