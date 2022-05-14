@@ -85,7 +85,7 @@ tcp[tcpflags] | `tcpdump -nn "tcp[tcpflags] & (tcp-syn|tcp-ack) != 0"` | 特定�
 
 ### 正常连接/断开实验
 
-[例子"tcpdump/normal"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/hplsp/tcp_ip/code/tcpdump/normal)中包含了实验脚本`Makefile`和实验结果`normal.pcap`：
+[例子"tcpdump/normal"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/hplsp/tcp_ip/code/tcpdump/normal)模拟了三次握手和四次挥手，其中包含了实验脚本`Makefile`和实验结果`normal.pcap`：
 
 === "Server"
 
@@ -115,7 +115,7 @@ tcp[tcpflags] | `tcpdump -nn "tcp[tcpflags] & (tcp-syn|tcp-ack) != 0"` | 特定�
 * 进来的顺序: Wire -> NIC -> tcpdump -> iptables(INPUT规则)
 * 出去的顺序: iptables(OUTPUT规则) -> tcpdump -> NIC -> Wire
 
-[例子"tcpdump/1st_handshake"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/hplsp/tcp_ip/code/tcpdump/1st_handshake)中包含了实验脚本`Makefile`和实验结果`1st_syn_fail.pcap`：
+[例子"tcpdump/1st_handshake"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/hplsp/tcp_ip/code/tcpdump/1st_handshake)模拟了第一次握手失败，中包含了实验脚本`Makefile`和实验结果`1st_syn_fail.pcap`：
 
 === "Server"
 
@@ -141,4 +141,30 @@ tcp[tcpflags] | `tcpdump -nn "tcp[tcpflags] & (tcp-syn|tcp-ack) != 0"` | 特定�
 
 ![tcpdump_1st_syn_fail](./images/tcpdump_1st_syn_fail.png)
 
+### 第二次握手失败
 
+[例子"tcpdump/2nd_handshake"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/hplsp/tcp_ip/code/tcpdump/2nd_handshake)模拟了第二次握手失败，其中包含了实验脚本`Makefile`和实验结果`2nd_syn_fail.pcap`：
+
+=== "Server"
+
+    ```bash
+    # 在远端的机器上通过`nc`命令启动一个TCP服务，假设其IP是10.207.83.17，端口是1234
+    > nc -lk -p 1234
+    ```
+
+=== "Client"
+
+    ```bash
+    # 在近端的机器上启动tcpdump监控，假设网卡名称是：ens33
+    > sudo tcpdump -i ens33 tcp and host 10.207.83.17 and port 1234 -w 2nd_syn_fail.pcap
+    ```
+    ```bash
+    # 在近端的机器上利用`iptables`工具过滤掉来自服务器的包
+    > sudo iptables -I INPUT -s 10.207.83.17 -j DROP
+    # 在近端的机器上通过`nc`命令连接服务器，由于无法收到服务器的SYN+ACK包，服务器会一直重传SYN+ACK包
+    > nc -q 1 10.207.83.17 1234
+    ```
+
+由于客户端过滤了服务端发来的`SYN+ACK`包，服务端由于没有收到对`SYN+ACK`包的回复，会认为`SYN+ACK`包丢失，然后超时重传`SYN+ACK`包，同时服务端重传`SYN+ACK`包的次数由`/proc/sys/net/ipv4/tcp_synack_retries`指定：
+
+![tcpdump_2nd_syn_fail](./images/tcpdump_2nd_syn_fail.png)
