@@ -110,7 +110,7 @@ tcp[tcpflags] | `tcpdump -nn "tcp[tcpflags] & (tcp-syn|tcp-ack) != 0"` | 特定�
 
 ### 数据传输实验
 
-[例子"tcpdump/normal"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/hplsp/tcp_ip/code/tcpdump/normal)的方法同样可以获取客户端和服务端之间的数据传输包。下图中除了正常的连接同步包以外，还多了两个`PSH+ACK`包，一个是客户端向服务端发送的数据，另一个是服务端向客户端发送的数据：
+[例子"tcpdump/normal"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/hplsp/tcp_ip/code/tcpdump/normal)的方法同样可以获取客户端和服务端之间的数据传输包。`transfer.pcap`记录的数据包括了，客户端向服务端发送"hello"字符串，服务端向客户端发送"world"字符串，因此下图中除了正常的连接同步包以外，还多了两个`PSH+ACK`包：
 ![tcpdump_transfer](./images/tcpdump_transfer.png)
 
 `PSH+ACK`包中长度`Len`取决于需要传递的数据的大小。例如，客户端向服务端传递的"hello"字符串需要6个字节，其中包括最后一个换行符`\n`。下图是客户端向服务端发送的`PSH+ACK`包的二进制码：
