@@ -108,3 +108,37 @@ tcp[tcpflags] | `tcpdump -nn "tcp[tcpflags] & (tcp-syn|tcp-ack) != 0"` | 特定�
 用`wireshark`软件直接打开`tcpdump`的输出结果`normal.pcap`，其中显示的`Seq`和`Ack`是`wireshark`做过优化后的相对值：
 ![tcpdump_normal](./images/tcpdump_normal.png)
 
+### 第一次握手失败
+
+为了模拟TCP第一次握手`SYN`丢包的情况，可利用`iptables`的`INPUT`规则在服务端过滤掉客户端输入的包，`iptables`相关命令可参考[文档](https://www.jianshu.com/p/ed001ae61c58)。网络包进入主机后的顺序如下：
+
+* 进来的顺序: Wire -> NIC -> tcpdump -> iptables(INPUT规则)
+* 出去的顺序: iptables(OUTPUT规则) -> tcpdump -> NIC -> Wire
+
+[例子"tcpdump/1st_handshake"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/hplsp/tcp_ip/code/tcpdump/1st_handshake)中包含了实验脚本`Makefile`和实验结果`1st_syn_fail.pcap`：
+
+=== "Server"
+
+    ```bash
+    # 在远端的机器上利用`iptables`工具过滤掉端口1234的包
+    > sudo iptables -A INPUT -p tcp --destination-port 1234 -j DROP
+    # 在远端的机器上通过`nc`命令启动一个TCP服务，假设其IP是10.207.83.17，端口是1234
+    > nc -lk -p 1234
+    ```
+
+=== "Client"
+
+    ```bash
+    # 在近端的机器上启动tcpdump监控，假设网卡名称是：ens33
+    > sudo tcpdump -i ens33 tcp and host 10.207.83.17 and port 1234 -w 1st_syn_fail.pcap
+    ```
+    ```bash
+    # 在近端的机器上通过`nc`命令连接服务器，由于无法连接服务器，一段时间后会自行退出
+    > nc -q 1 10.207.83.17 1234
+    ```
+
+由于服务端过滤了客户端发来的`SYN`包，客户端发起了`SYN`包后，一直没有收到服务端的`ACK`包，所以一直会超时重传，并且每次RTO超时时间是不同的(如下图)，同时客户端重传次数由`/proc/sys/net/ipv4/tcp_syn_retries`指定：
+
+![tcpdump_1st_syn_fail](./images/tcpdump_1st_syn_fail.png)
+
+
