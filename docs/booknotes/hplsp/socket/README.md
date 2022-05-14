@@ -306,3 +306,26 @@ void test_getnameinfo()
     [Client] Send 'Hello World' to server
     [Client] Close the socket 3
     ```
+
+### socket调用和三次握手
+
+["TCP/IP协议"](../tcp_ip/README.md)一文中介绍了TCP连接的“三次握手”过程。那么，通过`socket API`创建TCP连接的过程和“三次握手”的对应关系是如何的？函数调用过程中socket的状态又是怎么变化的？下图给出了答案：
+
+![socket_state](./images/socket_state.png)
+
+“三次握手”过程发生在`connect()`和`accept()`的阻塞调用过程中：
+
+* `connect()`的调用发起第一次握手动作，并将客户端socket状态变为`SYN_SENT`状态
+* `accept()`接收到第一次握手动作后，会创建一个`SYN_RCVD`状态的服务端socket到由内核维护的`SYN`队列中，并发送第二次握手动作
+* `connect()`收到第二次握手动作后，将客户端socket状态变为`ESTABLISHED`，并发送第三次握手动作
+* `accept()`收到第三次握手动作后，将服务端socket从`SYN`队列中取出，放入`ACCEPT`队列中，并将状态变成`ESTABLISHED`
+* 最后应用程序从`ACCEPT`队列中取出已完成连接的服务端socket
+
+![accept](./images/accept.png)
+
+上图是从Linux内核的角度，看`accept()`创建服务端连接的过程。在TCP三次握手的时候，Linux内核会维护两个队列（详情可参考[文档](https://mp.weixin.qq.com/s/2qN0ulyBtO2I67NB_RnJbg)）：
+
+* 半连接队列，也称`SYN`队列
+    * 最大长度由`/proc/sys/net/ipv4/tcp_max_syn_backlog`决定
+* 全连接队列，也称`ACCEPT`队列
+    * 最大长度由`listen()`的第二个参数`backlog`决定
