@@ -35,3 +35,8 @@ run_server:
 run_client:
 	./client 127.0.0.1 1234
 
+debug:
+	gdb -q ./client \
+	-ex "b client.cpp:30" \
+	-ex "run 127.0.0.1 1234 "
+

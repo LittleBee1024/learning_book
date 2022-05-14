@@ -329,3 +329,23 @@ void test_getnameinfo()
     * 最大长度由`/proc/sys/net/ipv4/tcp_max_syn_backlog`决定
 * 全连接队列，也称`ACCEPT`队列
     * 最大长度由`listen()`的第二个参数`backlog`决定
+
+通过对[例子"tcp_sc"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/hplsp/socket/code/tcp_sc)的调试，我们可以得到客户端`connect()`调用前后套接字的状态：
+
+* 客户端`connect()`调用前
+    * 服务端阻塞在`accept()`调用，只存在一个服务端的`LISTEN Socket`(port:1234)
+* 客户端`connect()`调用后
+    * 客户端创建了一个`ESTABLISHED Socket`(port:38192)
+    * 服务端创建了一个`ESTABLISHED Socket`(port:1234)
+
+```bash
+# client connect调用之前，只存在一个监听socket
+> sudo netstat -ntap | grep -e 'server' -e 'client'
+tcp        0      0 127.0.0.1:1234          0.0.0.0:*               LISTEN      12773/./server 
+
+# client connect调用之后，多了两个ESTABLISHED状态的socket
+> sudo netstat -ntap | grep -e 'server' -e 'client'
+tcp        0      0 127.0.0.1:1234          0.0.0.0:*               LISTEN      12773/./server      
+tcp        0      0 127.0.0.1:1234          127.0.0.1:38192         ESTABLISHED 12773/./server      
+tcp        0      0 127.0.0.1:38192         127.0.0.1:1234          ESTABLISHED 13720/client
+```
