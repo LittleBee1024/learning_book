@@ -198,7 +198,9 @@ void test_getnameinfo()
   Host name: del12s04-in-f4.1e100.net
 ```
 
-## TCP套接字
+## 套接字编程
+
+### TCP套接字
 
 ![tcp_socket](./images/tcp_socket.png)
 
@@ -307,7 +309,7 @@ void test_getnameinfo()
     [Client] Close the socket 3
     ```
 
-### socket调用和三次握手
+### socket连接和三次握手
 
 ["TCP/IP协议"](../tcp_ip/README.md)一文中介绍了TCP连接的“三次握手”过程。那么，通过`socket API`创建TCP连接的过程和“三次握手”的对应关系是如何的？函数调用过程中socket的状态又是怎么变化的？下图给出了答案：
 
