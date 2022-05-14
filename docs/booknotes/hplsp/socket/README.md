@@ -208,7 +208,7 @@ void test_getnameinfo()
 
 === "Server"
 
-    ```cpp
+    ```cpp hl_lines="13 15 17 23 32 43 44"
     int main(int argc, char *argv[])
     {
         ...
@@ -270,7 +270,7 @@ void test_getnameinfo()
 
 === "Client"
 
-    ```cpp
+    ```cpp hl_lines="13 15 21 24"
     int main(int argc, char *argv[])
     {
         ...
