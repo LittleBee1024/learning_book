@@ -1,3 +1,4 @@
+// https://www.ibm.com/docs/en/i/7.1?topic=designs-example-nonblocking-io-select
 #include <sys/select.h>
 #include <stdio.h>
 #include <stdlib.h>
