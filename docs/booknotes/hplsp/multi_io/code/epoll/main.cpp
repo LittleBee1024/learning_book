@@ -1,5 +1,4 @@
-// https://www.ibm.com/docs/en/i/7.4?topic=designs-using-poll-instead-select
-#include <poll.h>
+#include <sys/epoll.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/time.h>
@@ -12,7 +11,7 @@
 #include <ctype.h>
 #include <sys/ioctl.h>
 
-#define MAX_POLL_FD 5
+#define MAX_EVENTS 5
 
 int main(int argc, char *argv[])
 {
@@ -46,32 +45,33 @@ int main(int argc, char *argv[])
    rc = listen(listen_fd, 5);
    assert(rc != -1);
 
-   struct pollfd fds[MAX_POLL_FD];
-   memset(fds, 0, sizeof(fds));
-   fds[0].fd = listen_fd;
-   fds[0].events = POLLIN;
-   int nfds = 1;
-   int timeout = 60 * 1000; // milliseconds
+   int epoll_fd = epoll_create1(0);
+   assert(epoll_fd > 0);
+   struct epoll_event event, events[MAX_EVENTS];
+   event.events = EPOLLIN;
+   event.data.fd = listen_fd;
+   rc = epoll_ctl(epoll_fd, EPOLL_CTL_ADD, listen_fd, &event);
+   assert(rc != -1);
+
+   int timeout = 10 * 1000; // milliseconds
    char buf[1024];
    while (true)
    {
-      printf("Waiting on poll()...\n");
-      rc = poll(fds, nfds, timeout);
-      assert(rc >= 0);
-      if (rc == 0)
+      printf("Waiting on epoll()...\n");
+      int event_count = epoll_wait(epoll_fd, events, MAX_EVENTS, timeout);
+      assert(event_count >= 0);
+      if (event_count == 0)
       {
          printf("[Server] poll() timeout, end program\n");
          break;
       }
 
-      int current_size = nfds;
-      for (int i = 0; i < current_size; ++i)
+      for (int i = 0; i < event_count; ++i)
       {
-         printf("[Server] fds[%d].fd = %d, fds[%d].revents = 0x%x\n", i, fds[i].fd, i, fds[i].revents);
-         if (fds[i].revents == 0)
-            continue;
+         printf("[Server] Event 0x%x of %d events from file descriptor %d\n",
+            events[i].events, event_count, events[i].data.fd);
 
-         if ((fds[i].fd == listen_fd) && (fds[i].revents & POLLIN))
+         if ((events[i].data.fd == listen_fd) && (events[i].events & EPOLLIN))
          {
             printf("[Server] Listening socket is readable\n");
 
@@ -82,45 +82,44 @@ int main(int argc, char *argv[])
             printf("[Server] New incoming connection %d, ip: %s, port: %d\n",
                    conn_fd, inet_ntoa(client.sin_addr), ntohs(client.sin_port));
 
-            fds[nfds].fd = conn_fd;
-            fds[nfds].events = POLLIN;
-            nfds++;
+            event.data.fd = conn_fd;
+            event.events = EPOLLIN;
+            rc = epoll_ctl(epoll_fd, EPOLL_CTL_ADD, conn_fd, &event);
+            assert(rc != -1);
          }
-         else if (fds[i].revents & POLLIN)
+         else if (events[i].events & EPOLLIN)
          {
-            printf("[Server] Connection socket %d is readable\n", fds[i].fd);
+            printf("[Server] Connection socket %d is readable\n", events[i].data.fd);
 
             memset(buf, '\0', sizeof(buf));
-            int n_bytes = recv(fds[i].fd, buf, sizeof(buf) - 1, 0);
+            int n_bytes = recv(events[i].data.fd, buf, sizeof(buf) - 1, 0);
             assert(n_bytes >= 0);
             if (n_bytes == 0)
             {
-               printf("[Server] Remote client was closed, so close connection %d\n", fds[i].fd);
-               close(fds[i].fd);
-               fds[i] = fds[nfds - 1];
-               nfds--;
-               break;
+               printf("[Server] Remote client was closed, so close connection %d\n", events[i].data.fd);
+               rc = epoll_ctl(epoll_fd, EPOLL_CTL_DEL, events[i].data.fd, nullptr);
+               assert(rc != -1);
+               close(events[i].data.fd);
+               continue;
             }
 
-            printf("[Server] Get %d bytes from connection %d : %s\n", n_bytes, fds[i].fd, buf);
+            printf("[Server] Get %d bytes from connection %d : %s\n", n_bytes, events[i].data.fd, buf);
             for (int j = 0; j < n_bytes; j++)
                buf[j] = toupper(buf[j]);
-            rc = send(fds[i].fd, buf, n_bytes, 0);
+            rc = send(events[i].data.fd, buf, n_bytes, 0);
             assert(rc != -1);
          }
          else
          {
-            printf("[Server] Receive unexpected event 0x%x", fds[i].revents);
+            printf("[Server] Receive unexpected event 0x%x", events[i].data.fd);
             assert(0);
          }
       }
    }
 
-   for (int i = 0; i < nfds; i++)
-   {
-      if (fds[i].fd > 0)
-         close(fds[i].fd);
-   }
+   close(epoll_fd);
+   // TODO: close connection file descriptor, which needs a list to manintain the open connection file desciptor
+   close(listen_fd);
 
    return 0;
 }
