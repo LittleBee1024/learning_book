@@ -9,22 +9,7 @@
 #include <assert.h>
 #include <arpa/inet.h>
 #include <ctype.h>
-
-void _setReuseAddr(int fd)
-{
-   int reuse = 1;
-   int rc = setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &reuse, sizeof(reuse));
-   assert(rc != -1);
-}
-
-int _setNonBlocking(int fd)
-{
-   int old_option = fcntl(fd, F_GETFL);
-   int new_option = old_option | O_NONBLOCK;
-   int rc = fcntl(fd, F_SETFL, new_option);
-   assert(rc != -1);
-   return old_option;
-}
+#include <sys/ioctl.h>
 
 int main(int argc, char *argv[])
 {
@@ -45,10 +30,14 @@ int main(int argc, char *argv[])
 
    int listen_fd = socket(PF_INET, SOCK_STREAM, 0);
    assert(listen_fd >= 0);
-   _setReuseAddr(listen_fd);
-   _setNonBlocking(listen_fd);
 
-   int rc = bind(listen_fd, (struct sockaddr *)&address, sizeof(address));
+   int on = 1;
+   int rc = setsockopt(listen_fd, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on));
+   assert(rc != -1);
+   rc = ioctl(listen_fd, FIONBIO, (char *)&on);
+   assert(rc != -1);
+
+   rc = bind(listen_fd, (struct sockaddr *)&address, sizeof(address));
    assert(rc != -1);
 
    rc = listen(listen_fd, 5);
@@ -60,7 +49,7 @@ int main(int argc, char *argv[])
 
    int max_fd = listen_fd;
    struct timeval timeout;
-   char buf[80];
+   char buf[1024];
    fd_set read_fds;
    FD_ZERO(&read_fds);
    while (true)
@@ -93,21 +82,20 @@ int main(int argc, char *argv[])
                printf("[Server] New incoming connection %d, ip: %s, port: %d\n",
                       conn_fd, inet_ntoa(client.sin_addr), ntohs(client.sin_port));
 
-               _setNonBlocking(conn_fd);
                FD_SET(conn_fd, &read_fds_copy);
                if (conn_fd > max_fd)
                   max_fd = conn_fd;
             }
             else
             {
-               printf("[Server] Descriptor %d is readable\n", i);
+               printf("[Server] Connection socket %d is readable\n", i);
 
                memset(buf, '\0', sizeof(buf));
                int n_bytes = recv(i, buf, sizeof(buf) - 1, 0);
                assert(n_bytes >= 0);
                if (n_bytes == 0)
                {
-                  printf("[Server] Connection closed\n");
+                  printf("[Server] Remote client was closed, so close connection %d\n", i);
                   close(i);
                   FD_CLR(i, &read_fds_copy);
                   if (i == max_fd)
@@ -118,7 +106,7 @@ int main(int argc, char *argv[])
                   break;
                }
 
-               printf("[Server] Get %d bytes from client %d : %s\n", n_bytes, i, buf);
+               printf("[Server] Get %d bytes from connection %d : %s\n", n_bytes, i, buf);
                for (int j = 0; j < n_bytes; j++)
                   buf[j] = toupper(buf[j]);
                rc = send(i, buf, n_bytes, 0);
