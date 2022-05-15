@@ -53,7 +53,7 @@ int main(int argc, char *argv[])
    rc = epoll_ctl(epoll_fd, EPOLL_CTL_ADD, listen_fd, &event);
    assert(rc != -1);
 
-   int timeout = 10 * 1000; // milliseconds
+   int timeout = 60 * 1000; // milliseconds
    char buf[1024];
    while (true)
    {
