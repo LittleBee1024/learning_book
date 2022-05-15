@@ -6,7 +6,13 @@
 
 ![io_multiplex](./images/io_multiplex.png)
 
-Linux提供了`select()`，`poll()`，`epoll()`三个函数，用于监控文件描述符上发生的事件，实现IO复用。其中，`select()`，`poll()`是类UNIX系统都提供的，而`epoll()`是Linux独有的。
+Linux提供了`select()`，`poll()`，`epoll()`三个函数，用于监控文件描述符上发生的事件，实现IO复用。其中，`select()`，`poll()`是类UNIX系统都提供的，而`epoll()`是Linux独有的。三者的区别如下：
+
+系统调用 | select | poll | epoll
+--- | --- | --- | ---
+事件集合 | 监听可读、可写及异常三种事件 | 统一处理所有事件类型 | 内核通过一个事件表管理事件
+索引就绪事件时间复杂度 | O(n) | O(n) | O(1)
+工作模式 | 电平触发LT | 电平触发LT | 电平触发LT/边沿触发ET
 
 下面通过三个例子，分别介绍这三个函数的使用方法。这三个例子可同时处理新的客户端网络连接和多个客户端输入，并将客户端传来的字符串转换成大写后回传给客户端：
 
@@ -180,6 +186,158 @@ int main(int argc, char *argv[])
     ```
 
 ### poll
+
+```cpp
+#include <poll.h>
+
+// 在指定时间内轮询一定数量的文件描述符，以测试其中是否有就绪者
+//  fds - 一个pollfd结构类的数组，可指定我们感兴趣的事件
+//  nfds - fds数组的有效长度
+int poll(struct pollfd* fds, nfds_t nfds, int timeout);
+
+struct pollfd {
+    int   fd;         // 监听的文件描述符
+    short events;     // 监听的事件类型，常见的类型有：POLLIN, POLLOUT, POLLHUP
+    short revents;    // 发生的事件
+};
+```
+
+[例子"poll"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/hplsp/multi_io/code/select)利用`poll()`函数，完成了对客户端连接和客户端输入的监听。和`select()`函数一样，`poll()`调用返回后，用户也需要遍历所有文件描述符，找到感兴趣的文件描述符后，进行处理。不过再次调用`poll()`的时候，如果要监听的文件描述符和事件类型都没有变化，无需重新配置`fds`参数。
+
+```cpp title="server.cpp" hl_lines="24 32 38 52"
+int main(int argc, char *argv[])
+{
+   ...
+
+   int listen_fd = socket(PF_INET, SOCK_STREAM, 0);
+
+   int on = 1;
+   setsockopt(listen_fd, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on));
+   ioctl(listen_fd, FIONBIO, (char *)&on);
+
+   bind(listen_fd, (struct sockaddr *)&address, sizeof(address));
+   listen(listen_fd, 5);
+
+   struct pollfd fds[MAX_POLL_FD];
+   memset(fds, 0, sizeof(fds));
+   fds[0].fd = listen_fd;
+   fds[0].events = POLLIN;
+   int nfds = 1;
+   int timeout = 60 * 1000; // milliseconds
+   char buf[1024];
+   while (true)
+   {
+      printf("Waiting on poll()...\n");
+      rc = poll(fds, nfds, timeout);
+      if (rc == 0)
+      {
+         printf("[Server] poll() timeout, end program\n");
+         break;
+      }
+
+      int current_size = nfds;
+      for (int i = 0; i < current_size; ++i)
+      {
+         printf("[Server] fds[%d].fd = %d, fds[%d].revents = 0x%x\n", i, fds[i].fd, i, fds[i].revents);
+         if (fds[i].revents == 0)
+            continue;
+
+         if ((fds[i].fd == listen_fd) && (fds[i].revents & POLLIN))
+         {
+            printf("[Server] Listening socket is readable\n");
+
+            struct sockaddr_in client;
+            socklen_t client_addrlength = sizeof(client);
+            int conn_fd = accept(listen_fd, (struct sockaddr *)&client, &client_addrlength);
+            printf("[Server] New incoming connection %d, ip: %s, port: %d\n",
+                   conn_fd, inet_ntoa(client.sin_addr), ntohs(client.sin_port));
+
+            fds[nfds].fd = conn_fd;
+            fds[nfds].events = POLLIN;
+            nfds++;
+         }
+         else if (fds[i].revents & POLLIN)
+         {
+            printf("[Server] Connection socket %d is readable\n", fds[i].fd);
+
+            memset(buf, '\0', sizeof(buf));
+            int n_bytes = recv(fds[i].fd, buf, sizeof(buf) - 1, 0);
+            if (n_bytes == 0)
+            {
+               printf("[Server] Remote client was closed, so close connection %d\n", fds[i].fd);
+               close(fds[i].fd);
+               fds[i] = fds[nfds - 1];
+               nfds--;
+               break;
+            }
+
+            printf("[Server] Get %d bytes from connection %d : %s\n", n_bytes, fds[i].fd, buf);
+            for (int j = 0; j < n_bytes; j++)
+               buf[j] = toupper(buf[j]);
+            send(fds[i].fd, buf, n_bytes, 0);
+         }
+         else
+         {
+            printf("[Server] Receive unexpected event 0x%x", fds[i].revents);
+            assert(0);
+         }
+      }
+   }
+
+   for (int i = 0; i < nfds; i++)
+   {
+      if (fds[i].fd > 0)
+         close(fds[i].fd);
+   }
+
+   return 0;
+}
+```
+
+同样的方法，用两个客户端测试服务器，得到如下信息：
+
+=== "Server"
+
+    ```bash
+    > ./main 127.0.0.1 1234
+    Waiting on poll()...
+    [Server] Listening socket is readable
+    [Server] New incoming connection 4, ip: 127.0.0.1, port: 58686
+    Waiting on poll()...
+    [Server] Listening socket is readable
+    [Server] New incoming connection 5, ip: 127.0.0.1, port: 58756
+    Waiting on poll()...
+    [Server] Connection socket 4 is readable
+    [Server] Get 6 bytes from connection 4 : hello
+
+    Waiting on poll()...
+    [Server] Connection socket 5 is readable
+    [Server] Get 6 bytes from connection 5 : world
+
+    Waiting on poll()...
+    [Server] Connection socket 4 is readable
+    [Server] Remote client was closed, so close connection 4
+    Waiting on poll()...
+    [Server] Connection socket 5 is readable
+    [Server] Remote client was closed, so close connection 5
+    Waiting on poll()...
+    [Server] poll() timeout, end program
+    ```
+
+=== "Client"
+
+    ```bash
+    # 客户端1连接服务器，发送"hello"后`Ctrl+D`退出
+    > nc -q 1 127.0.0.1 1234
+    hello
+    HELLO
+    ```
+    ```bash
+    # 客户端1连接服务器，发送"world"后`Ctrl+D`退出
+    > nc -q 1 127.0.0.1 1234
+    world
+    WORLD
+    ```
 
 ### epoll
 

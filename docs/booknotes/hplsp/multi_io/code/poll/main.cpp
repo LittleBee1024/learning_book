@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
       int current_size = nfds;
       for (int i = 0; i < current_size; ++i)
       {
-         printf("[Server] fds[%d].fd = %d, fds[%d].revents = 0x%x\n", i, fds[i].fd, i, fds[i].revents);
+         //printf("[Server] fds[%d].fd = %d, fds[%d].revents = 0x%x\n", i, fds[i].fd, i, fds[i].revents);
          if (fds[i].revents == 0)
             continue;
 
