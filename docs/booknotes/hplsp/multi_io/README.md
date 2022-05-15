@@ -6,6 +6,12 @@
 
 ![io_multiplex](./images/io_multiplex.png)
 
+Linux提供了`select()`，`poll()`，`epoll()`三个函数，用于监控文件描述符上发生的事件，实现IO复用。其中，`select()`，`poll()`是类UNIX系统都提供的，而`epoll()`是Linux独有的。
+
+下面通过三个例子，分别介绍这三个函数的使用方法。这三个例子可同时处理新的客户端网络连接和多个客户端输入，并将客户端传来的字符串转换成大写后回传给客户端：
+
+![io_multiplex_examples](./images/io_multiplex_examples.png)
+
 ### select
 
 ### poll
