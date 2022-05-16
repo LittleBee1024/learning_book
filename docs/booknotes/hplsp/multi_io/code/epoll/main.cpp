@@ -68,8 +68,8 @@ int main(int argc, char *argv[])
 
       for (int i = 0; i < event_count; ++i)
       {
-         printf("[Server] Event 0x%x of %d events from file descriptor %d\n",
-            events[i].events, event_count, events[i].data.fd);
+         // printf("[Server] Event 0x%x of %d events from file descriptor %d\n",
+         //   events[i].events, event_count, events[i].data.fd);
 
          if ((events[i].data.fd == listen_fd) && (events[i].events & EPOLLIN))
          {
@@ -118,7 +118,7 @@ int main(int argc, char *argv[])
    }
 
    close(epoll_fd);
-   // TODO: close connection file descriptor, which needs a list to manintain the open connection file desciptor
+   // TODO: close connection file descriptor, which needs a list to maintain the open connection file descriptor
    close(listen_fd);
 
    return 0;

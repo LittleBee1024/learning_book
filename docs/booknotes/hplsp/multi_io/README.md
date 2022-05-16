@@ -195,14 +195,25 @@ int main(int argc, char *argv[])
 //  nfds - fds数组的有效长度
 int poll(struct pollfd* fds, nfds_t nfds, int timeout);
 
+// 此数据用于指定用户感兴趣的事件，同时内核返回发生的事件给用户，具体事件见下表
 struct pollfd {
-    int   fd;         // 监听的文件描述符
-    short events;     // 监听的事件类型，常见的类型有：POLLIN, POLLOUT, POLLHUP
-    short revents;    // 发生的事件
+    int   fd;         // 输入，监听的文件描述符
+    short events;     // 输入，监听的事件类型，常见的类型有：POLLIN, POLLOUT, POLLHUP
+    short revents;    // 输出，发生的事件，由内核修改
 };
 ```
 
-[例子"poll"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/hplsp/multi_io/code/select)利用`poll()`函数，完成了对客户端连接和客户端输入的监听。和`select()`函数一样，`poll()`调用返回后，用户也需要遍历所有文件描述符，找到感兴趣的文件描述符后，进行处理。不过再次调用`poll()`的时候，如果要监听的文件描述符和事件类型都没有变化，无需重新配置`fds`参数。
+事件 | 描述 | 说明
+--- | --- | ---
+POLLIN | 数据可读 | 包括优先数据`MSG_OOB`
+POLLOUT | 数据可写 | 包括优先数据`MSG_OOB`
+POLLRDHUP | TCP连接被对方关闭，或者对方关闭了写操作 | Linux内核2.6.17引入
+POLLERR | 错误 | 由内核管理，用户不能作为输入配置
+POLLHUP | 写端被关闭后，读端上将收到POLLHUP事件| 由内核管理，用户不能作为输入配置
+POLLNVAL | 文件描述符没有打开 | 由内核管理，用户不能作为输入配置
+
+
+[例子"poll"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/hplsp/multi_io/code/select)利用`poll()`函数，完成了对客户端连接和客户端输入的监听。和`select()`函数一样，`poll()`调用返回后，用户也需要遍历所有文件描述符，找到感兴趣的文件描述符后，进行处理。同时再次调用`poll()`的时候，需要重新传入所有文件描述符。
 
 ```cpp title="server.cpp" hl_lines="24 32 38 52"
 int main(int argc, char *argv[])
@@ -340,4 +351,172 @@ int main(int argc, char *argv[])
     ```
 
 ### epoll
+
+```cpp
+#include <sys/epoll.h>
+
+// 创建epoll的文件描述符
+//  size - 已经无需，置零即可
+int epoll_create(int size);
+
+// 操作epoll的内核事件表，以在内核事件表中监听/删除某文件描述符
+//  epfd - `epoll_create()`返回的文件描述符
+//  op - 指定操作类型
+//  fd - 要操作的文件描述符
+int epoll_ctl(int epfd, int op, int fd, struct epoll_event *event);
+
+// epoll事件
+//  events - 描述事件类型，基本和poll相同
+struct epoll_event
+{
+    __uint32_t events; //epoll事件
+    epoll_data_t data; //用户数据
+};
+
+// 用于存储用户数据的联合体，只能选择其中一项使用
+//  fd - 指定事件所从属的目标文件描述符
+//  ptr - 用于指定与fd相关的用户数据，一种更灵活传递数据的方式
+typedef union epoll_data
+{
+    void* ptr;
+    int fd;
+    uint32_t u32;
+    uint64_t u64;
+} epoll_data_t;
+
+// 在一段超时时间内等待一组文件描述符上的事件
+//  events - 内核返回的就绪事件，只包含就绪事件，因此无需用户自己遍历寻找感兴趣的事件
+int epoll_wait(int epfd, struct epoll_event* events, int maxevents, int timeout);
+```
+
+[例子"epoll"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/hplsp/multi_io/code/select)利用`epoll()`函数，完成了对客户端连接和客户端输入的监听。不同于`select()`和`poll()`调用，用户无需自己遍历文件描述符，寻找感兴趣的事件。`epoll()`函数只返回用户感兴趣的就绪事件，提高了索引效率。
+
+```cpp title="server.cpp" hl_lines="13 17 24 31 48"
+int main(int argc, char *argv[])
+{
+   ...
+   int listen_fd = socket(PF_INET, SOCK_STREAM, 0);
+
+   int on = 1;
+   setsockopt(listen_fd, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on));
+   ioctl(listen_fd, FIONBIO, (char *)&on);
+
+   bind(listen_fd, (struct sockaddr *)&address, sizeof(address));
+   listen(listen_fd, 5);
+
+   int epoll_fd = epoll_create1(0);
+   struct epoll_event event, events[MAX_EVENTS];
+   event.events = EPOLLIN;
+   event.data.fd = listen_fd;
+   epoll_ctl(epoll_fd, EPOLL_CTL_ADD, listen_fd, &event);
+
+   int timeout = 60 * 1000; // milliseconds
+   char buf[1024];
+   while (true)
+   {
+      printf("Waiting on epoll()...\n");
+      int event_count = epoll_wait(epoll_fd, events, MAX_EVENTS, timeout);
+      if (event_count == 0)
+      {
+         printf("[Server] poll() timeout, end program\n");
+         break;
+      }
+
+      for (int i = 0; i < event_count; ++i)
+      {
+         printf("[Server] Event 0x%x of %d events from file descriptor %d\n",
+            events[i].events, event_count, events[i].data.fd);
+
+         if ((events[i].data.fd == listen_fd) && (events[i].events & EPOLLIN))
+         {
+            printf("[Server] Listening socket is readable\n");
+
+            struct sockaddr_in client;
+            socklen_t client_addrlength = sizeof(client);
+            int conn_fd = accept(listen_fd, (struct sockaddr *)&client, &client_addrlength);
+            printf("[Server] New incoming connection %d, ip: %s, port: %d\n",
+                   conn_fd, inet_ntoa(client.sin_addr), ntohs(client.sin_port));
+
+            event.data.fd = conn_fd;
+            event.events = EPOLLIN;
+            epoll_ctl(epoll_fd, EPOLL_CTL_ADD, conn_fd, &event);
+         }
+         else if (events[i].events & EPOLLIN)
+         {
+            printf("[Server] Connection socket %d is readable\n", events[i].data.fd);
+
+            memset(buf, '\0', sizeof(buf));
+            int n_bytes = recv(events[i].data.fd, buf, sizeof(buf) - 1, 0);
+            if (n_bytes == 0)
+            {
+               printf("[Server] Remote client was closed, so close connection %d\n", events[i].data.fd);
+               epoll_ctl(epoll_fd, EPOLL_CTL_DEL, events[i].data.fd, nullptr);
+               close(events[i].data.fd);
+               continue;
+            }
+
+            printf("[Server] Get %d bytes from connection %d : %s\n", n_bytes, events[i].data.fd, buf);
+            for (int j = 0; j < n_bytes; j++)
+               buf[j] = toupper(buf[j]);
+            send(events[i].data.fd, buf, n_bytes, 0);
+         }
+         else
+         {
+            printf("[Server] Receive unexpected event 0x%x", events[i].data.fd);
+            assert(0);
+         }
+      }
+   }
+
+   close(epoll_fd);
+   close(listen_fd);
+
+   return 0;
+}
+```
+
+同样的方法，用两个客户端测试服务器，得到如下信息：
+
+=== "Server"
+
+    ```bash
+    > ./main 127.0.0.1 1234
+    Waiting on epoll()...
+    [Server] Listening socket is readable
+    [Server] New incoming connection 5, ip: 127.0.0.1, port: 36564
+    Waiting on epoll()...
+    [Server] Listening socket is readable
+    [Server] New incoming connection 6, ip: 127.0.0.1, port: 36574
+    Waiting on epoll()...
+    [Server] Connection socket 5 is readable
+    [Server] Get 6 bytes from connection 5 : hello
+
+    Waiting on epoll()...
+    [Server] Connection socket 6 is readable
+    [Server] Get 6 bytes from connection 6 : world
+
+    Waiting on epoll()...
+    [Server] Connection socket 5 is readable
+    [Server] Remote client was closed, so close connection 5
+    Waiting on epoll()...
+    [Server] Connection socket 6 is readable
+    [Server] Remote client was closed, so close connection 6
+    Waiting on epoll()...
+    [Server] poll() timeout, end program
+    ```
+
+=== "Client"
+
+    ```bash
+    # 客户端1连接服务器，发送"hello"后`Ctrl+D`退出
+    > nc -q 1 127.0.0.1 1234
+    hello
+    HELLO
+    ```
+    ```bash
+    # 客户端1连接服务器，发送"world"后`Ctrl+D`退出
+    > nc -q 1 127.0.0.1 1234
+    world
+    WORLD
+    ```
 
