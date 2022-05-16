@@ -581,14 +581,51 @@ socket默认是阻塞的，可通过系统调用配置为非阻塞的(如上面�
     * 负责处理事件
     * 可以是单个进程/线程，也可以是多个进程/线程
 
+除了“多Reactor单进程/线程”没有任何优势以外，另外三种“Reactor”和“进程/线程”数量的组合都在实际场景中有所应用。
+
 ### 单Reactor单进程/线程
 
 ![one_reactor_one_process](./images/one_reactor_one_process.png)
 
-### 多Reactor单进程/线程
+进程里有`Reactor`、`Acceptor`、`Handler`这三个对象：
 
-![one_reactor_multi_process](./images/one_reactor_multi_process.png)
+* `Reactor`对象的作用是监听和分发事件
+    * 收到事件后，根据事件类型，通过`dispatch`进行分发给`Acceptor`对象或者`Handler`对象
+* `Acceptor`对象的作用是获取连接
+    * 通过`accept()`函数获取连接，并创建一个`Handler`对象来处理后续的响应
+* `Handler`对象的作用是处理业务
+    * 完成真正的业务逻辑
+
+“单Reactor单进程/线程”的缺点：
+
+* 无法利用多核CPU的性能
+* `Handler`对象在处理业务逻辑时，无法处理其他连接的事情
 
 ### 单Reactor多进程/线程
 
+![one_reactor_multi_process](./images/one_reactor_multi_process.png)
+
+对比“单Reactor单进程/线程”，“单Reactor多进程/线程”不一样的地方在于：
+
+* `Handler`对象不再负责业务逻辑，通过`read`读取到数据后，会将数据发给子线程里的`Processor`对象进行业务处理
+
+“单Reactor多进程/线程”的优点在于：
+
+* 能够充分利用多核CPU的性能
+
+缺点在于：
+
+* 因为一个`Reactor`对象既要承担连接事件，也要承担数据读写事件，且只在一个线程中运行，在面对瞬间高并发的场景时，容易成为性能的瓶颈
+
+### 多Reactor多进程/线程
+
 ![multi_reactor_multi_process](./images/multi_reactor_multi_process.png)
+
+“多Reactor多进程/线程”拥有一个`MainReactor`对象和一个(或多个)`SubReactor`对象，将连接事件和数据读写事件分开监控，并将对连接事件的监控单独放在一个线程中，从而解决了“单Reactor”的高并发问题：
+
+* `MainReactor`对象
+    * 负责接收新连接
+    * 把新连接传递给子线程后，就不需要负责此连接的其他事情了
+* `SubReactor`对象
+    * 负责接收数据读写事件
+    * 调用当前连接对应的`Handler`对象来响应事件
