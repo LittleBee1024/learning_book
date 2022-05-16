@@ -18,7 +18,7 @@ Linux提供了`select()`，`poll()`，`epoll()`三个函数，用于监控文件
 
 ![io_multiplex_examples](./images/io_multiplex_examples.png)
 
-### select
+### select函数
 
 ```cpp
 #include <sys/select.h>
@@ -185,7 +185,7 @@ int main(int argc, char *argv[])
     WORLD
     ```
 
-### poll
+### poll函数
 
 ```cpp
 #include <poll.h>
@@ -350,7 +350,7 @@ int main(int argc, char *argv[])
     WORLD
     ```
 
-### epoll
+### epoll函数
 
 ```cpp
 #include <sys/epoll.h>
@@ -388,6 +388,13 @@ typedef union epoll_data
 //  events - 内核返回的就绪事件，只包含就绪事件，因此无需用户自己遍历寻找感兴趣的事件
 int epoll_wait(int epfd, struct epoll_event* events, int maxevents, int timeout);
 ```
+
+下图显示了`epoll`相关系统调用在内核中的作用。`epoll`较`select/poll`的优势在于：
+
+* 在内核中使用了红黑树来跟踪进程所有待检测的文件描述符，解决了`select/poll`每次都要重复传入所有文件描述符的问题
+* 同时还维护了一个链表来记录就绪事件，解决了`select/poll`每次都要遍历所有文件描述符来寻找感兴趣的就绪事件的问题
+
+![epoll](./images/epoll.png)
 
 [例子"epoll"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/hplsp/multi_io/code/select)利用`epoll()`函数，完成了对客户端连接和客户端输入的监听。不同于`select()`和`poll()`调用，用户无需自己遍历文件描述符，寻找感兴趣的事件。`epoll()`函数只返回用户感兴趣的就绪事件，提高了索引效率。
 
@@ -562,3 +569,8 @@ socket默认是阻塞的，可通过系统调用配置为非阻塞的(如上面�
 阻塞IO，IO复用和SIGIO信号都是同步IO模型，因为这三种模型中，IO的读写操作，都是在IO就绪事件发生之后，由应用程序来完成的。对于异步IO而言，用户可以直接将IO执行读写操作交给内核，无需等待IO就绪事件。同步IO模型向应程序通知的是IO就绪事件，而异步IO向应用程序通知的时IO完成事件。
 
 在Linux环境下，`aio.h`头文件中定义的函数提供了对异步IO的支持，详情参考[文档](https://man7.org/linux/man-pages/man7/aio.7.html)。
+
+## Reactor模式
+
+
+
