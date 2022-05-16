@@ -572,5 +572,23 @@ socket默认是阻塞的，可通过系统调用配置为非阻塞的(如上面�
 
 ## Reactor模式
 
+`Reactor`模式也叫`Dispatcher`模式，利用IO多路复用监听事件，收到事件后，根据事件类型分配（Dispatch）给某个进程/线程。`Reactor`模式主要由"Reactor"和"处理资源池"这两个核心部分组成：
 
+* "Reactor"
+    * 负责监听和分发事件，事件类型包含连接事件和读写事件等
+    * 数量可以只有一个，也可以有多个
+* "处理资源池"
+    * 负责处理事件
+    * 可以是单个进程/线程，也可以是多个进程/线程
 
+### 单Reactor单进程/线程
+
+![one_reactor_one_process](./images/one_reactor_one_process.png)
+
+### 多Reactor单进程/线程
+
+![one_reactor_multi_process](./images/one_reactor_multi_process.png)
+
+### 单Reactor多进程/线程
+
+![multi_reactor_multi_process](./images/multi_reactor_multi_process.png)
