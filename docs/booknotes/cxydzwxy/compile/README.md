@@ -345,7 +345,41 @@ void __attribute__((weak)) foo(int a, int b)
    printf("weak version foo(%d, %d) with bar %d, sizeof(bar) = %zu\n", a, b, bar, sizeof(bar));
 }
 ```
-当没有编译目标中没有强符号["strong.c"](./code/strong_weak_sym/strong.c)，使用弱符号的定义。当存在强符号时，使用强符号的定义。
+当编译目标中没有强符号["strong.c"](./code/strong_weak_sym/strong.c)，使用弱符号的定义。当存在强符号时，使用强符号的定义。
+
+```bash
+# strong.o中强类型的`bar`变量和`foo`函数
+> nm strong.o | egrep 'bar|foo'
+0000000000000000 D bar   # The symbol is in the initialized data section.
+0000000000000000 T foo   # The symbol is in the text (code) section.
+> readelf -s strong.o | egrep 'bar|foo'
+    73: 0000000000000000     8 OBJECT  GLOBAL DEFAULT   22 bar
+    74: 0000000000000000    62 FUNC    GLOBAL DEFAULT   20 foo
+
+# weak.o中弱类型的`bar`变量和`foo`函数
+> nm weak.o | egrep 'bar|foo'
+0000000000000000 V bar   # The symbol is a weak object.
+0000000000000000 W foo   # The symbol is a weak symbol
+> readelf -s weak.o | egrep 'bar|foo'
+    73: 0000000000000000     4 OBJECT  WEAK   DEFAULT   22 bar
+    74: 0000000000000000    61 FUNC    WEAK   DEFAULT   20 foo
+
+# program1只包含了weak.o
+> nm program1 | egrep 'bar|foo'
+0000000000004010 V bar
+0000000000001167 W foo
+> readelf -s program1 | egrep 'bar|foo'
+    57: 0000000000004010     4 OBJECT  WEAK   DEFAULT   25 bar
+    66: 0000000000001167    61 FUNC    WEAK   DEFAULT   16 foo
+
+# program1同时包含了weak.o和strong.o
+> nm program2 | egrep 'bar|foo'
+0000000000004018 D bar
+00000000000011a4 T foo
+> readelf -s program2 | egrep 'bar|foo'
+    58: 0000000000004018     8 OBJECT  GLOBAL DEFAULT   25 bar
+    67: 00000000000011a4    62 FUNC    GLOBAL DEFAULT   16 foo
+```
 
 ## 调试信息
 如果我们在GCC编译时加上`-g`参数，在产生的目标文件里就会加上调试信息，会多出很多"debug"相关的段。例如，["main.c"](./code/debug/main.c)的调式信息段如下：
