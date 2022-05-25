@@ -442,6 +442,48 @@ int main(void)
 * “依赖序列”查找
     * 当`dlopen()`打开某个特定共享对象时，以当前共享对象为根节点，对它所有依赖的共享对象进行广度优先遍历查找
 
+### "-rdynamic"选项
+默认情况下，只有动态链接库才会导出符号到动态符号表".dynsym"。但是，当在链接的时候加上"-rdynamic"选项时，链接器会对可执行文件也会导出符号到动态符号表".dynsym"。一般情况下，可执行文件不需要导出符号，但是当通过`dlopen`动态加载库时，可能需要可执行文件导出符号给动态库。例如，[StackOverflow](https://stackoverflow.com/questions/36692315/what-exactly-does-rdynamic-do-and-when-exactly-is-it-needed)中的例子，通过"-rdynamic"选项解决了运行时的错误。
+
+[例子"dlopen_rdynamic"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/link/dynamic/code/dlopen_rdynamic)利用"-rdynamic"选项，解决了函数调用不一致的问题。当有"-rdynamic"选项时，`print_static_var_addr`函数和`s_a`静态变量的地址才是一致的。
+
+=== "有"-rdynamic"选项"
+
+    ```bash
+    > ./main 
+    Call static function directly:
+    print_static_var_addr addr: 0x56042d12f303
+    s_a addr = 0x56042d132014
+    Call static function from dlopen:
+    print_static_var_addr addr: 0x56042d12f303
+    s_a addr = 0x56042d132014
+
+    # ".dynsym"段中有print_static_var_addr
+    > readelf --dyn-syms ./main
+    Symbol table '.dynsym' contains 23 entries:
+    Num:    Value          Size Type    Bind   Vis      Ndx Name
+    ...
+        14: 0000000000001303    41 FUNC    GLOBAL DEFAULT   16 print_static_var_addr
+    ...
+    ```
+
+=== "没有"-rdynamic"选项"
+
+    ```bash
+    > ./main 
+    Call static function directly:
+    print_static_var_addr addr: 0x558854f1c303
+    s_a addr = 0x558854f1f014
+    Call static function from dlopen:
+    print_static_var_addr addr: 0x7f3f99f6b15c
+    s_a addr = 0x7f3f99f6e02c
+
+    # ".dynsym"段中没有print_static_var_addr
+    > readelf --dyn-syms ./main
+    ```
+
+
+
 ## Linux共享库的组织
 
 ### 共享库版本
