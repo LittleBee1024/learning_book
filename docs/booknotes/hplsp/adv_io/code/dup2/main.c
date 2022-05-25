@@ -13,11 +13,11 @@ int main()
 
    int stdout_fd = 1;
    int rc = dup2(fd, stdout_fd);
-   assert(rc != -1);
+   assert(rc == stdout_fd);
 
-   printf("%s", msg1); // print to log file, not the stdout
+   printf("%s", msg1); // print to log file because the fd is redirected
    fflush(stdout); // no flush will lose the data
-   write(fd, msg2, sizeof(msg2) - 1);
+   write(stdout_fd, msg2, sizeof(msg2) - 1);
 
    close(stdout_fd);
    close(fd);

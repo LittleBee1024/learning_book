@@ -270,8 +270,71 @@ int main(int argc, char **argv)
 ## dup函数
 
 ### dup
+```cpp
+#include <unistd.h>
+
+// 复制文件描述符，新的文件描述符的值由系统指定
+//  oldfd - 要复制的文件描述符
+int dup(int oldfd);
+```
+[例子"dup"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/hplsp/adv_io/code/dup)，复制了标准输出，因此有两个文件描述符可以输出信息：
+```cpp hl_lines="7 9 10"
+const char msg1[] = "hello, world #1\n";
+const char msg2[] = "hello, world #2\n";
+
+int main()
+{
+   int stdout_fd = 1;
+   int stdout_fd_copy = dup(stdout_fd);
+
+   printf("%s", msg1);
+   write(stdout_fd_copy, msg2, sizeof(msg2) - 1); // print to stdout
+
+   close(stdout_fd_copy);
+   return 0;
+}
+```
+```bash
+> ./main 
+hello, world #1
+hello, world #2
+```
 
 ### dup2
+```cpp
+#include <unistd.h>
+
+// 复制文件描述符，新的文件描述符由用户传入
+//  oldfd - 要复制的文件描述符
+//  newfd - 新的文件描述符的值，如果有被此文件描述符打开的文件，会被关闭
+int dup2(int oldfd, int newfd);
+```
+[例子"dup2"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/hplsp/adv_io/code/dup2)，将标准输出重定位到了文件：
+```cpp hl_lines="8 10 12"
+const char msg1[] = "hello, world #1\n";
+const char msg2[] = "hello, world #2\n";
+
+int main()
+{
+   int fd = open("dup2.log", O_CREAT | O_WRONLY | O_APPEND, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+   int stdout_fd = 1;
+   int rc = dup2(fd, stdout_fd);
+
+   printf("%s", msg1); // print to log file because the fd is redirected
+   fflush(stdout); // no flush will lose the data
+   write(stdout_fd, msg2, sizeof(msg2) - 1);
+
+   close(stdout_fd);
+   close(fd);
+
+   return 0;
+}
+```
+```bash
+> cat dup2.log
+hello, world #1
+hello, world #2
+```
 
 ## mmap函数
 
