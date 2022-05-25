@@ -176,6 +176,96 @@ int main()
 ```
 
 ### mkfifo
+```cpp
+#include <sys/stat.h>
+
+// 创建命名管道
+//  pathname - 命名管道文件名，需要保证在创建前不存在此文件
+//  mode - 文件属性
+//  需要同时以“只读”和“只写”的方式打开命名管道，并在两边进行同步读写
+int mkfifo(const char *pathname, mode_t mode);
+```
+![adv_io_mkfifo](./images/adv_io_mkfifo.png)
+
+[例子"mkfifo"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/hplsp/adv_io/code/mkfifo)，创建了一个`/tmp/fifo`命名管道，并在两个进程中通过此管道同步数据：
+
+```cpp hl_lines="10 12 16 17 28 29 33 35 44"
+#define NAMED_FIFO "/tmp/fifo"
+#define MSGSIZE 16
+const char *msg1 = "hello, world #1";
+const char *msg2 = "hello, world #2";
+
+void parent_rw()
+{
+   printf("[Parent] Task Starts\n");
+
+   int fd_read = open(NAMED_FIFO, O_RDONLY);
+   char inbuf[MSGSIZE];
+   int nbytes = read(fd_read, inbuf, MSGSIZE);
+   printf("[Parent] read %d bytes to from child process: %s\n", nbytes, inbuf);
+   close(fd_read);
+
+   int fd_write = open(NAMED_FIFO, O_WRONLY);
+   nbytes = write(fd_write, msg1, MSGSIZE);
+   printf("[Parent] wrote %d bytes to child process: %s\n", nbytes, msg1);
+   close(fd_write);
+
+   printf("[Parent] Task Ends\n");
+}
+
+void child_wr()
+{
+   printf("[Child] Task Starts\n");
+
+   int fd_write = open(NAMED_FIFO, O_WRONLY);
+   int nbytes = write(fd_write, msg2, MSGSIZE);
+   printf("[Child] wrote %d bytes to parent process: %s\n", nbytes, msg2);
+   close(fd_write);
+
+   int fd_read = open(NAMED_FIFO, O_RDONLY);
+   char inbuf[MSGSIZE];
+   nbytes = read(fd_read, inbuf, MSGSIZE);
+   printf("[Child] read %d bytes to from parent process: %s\n", nbytes, inbuf);
+   close(fd_read);
+
+   printf("[Child] Task Ends\n");
+}
+
+int main(int argc, char **argv)
+{
+   int rc = mkfifo(NAMED_FIFO, 0777);
+   if (rc == -1)
+   {
+      perror(NAMED_FIFO);
+      return -1;
+   }
+
+   pid_t pid = fork();
+   if (pid == 0)
+   {
+      child_wr();
+      return 0;
+   }
+
+   sleep(1);
+   parent_rw();
+
+   wait(NULL);
+   unlink(NAMED_FIFO);
+   return 0;
+}
+```
+```bash
+> ./main 
+[Child] Task Starts
+[Parent] Task Starts
+[Child] wrote 16 bytes to parent process: hello, world #2
+[Parent] read 16 bytes to from child process: hello, world #2
+[Parent] wrote 16 bytes to child process: hello, world #1
+[Child] read 16 bytes to from parent process: hello, world #1
+[Child] Task Ends
+[Parent] Task Ends
+```
 
 ## dup/dup2函数
 
