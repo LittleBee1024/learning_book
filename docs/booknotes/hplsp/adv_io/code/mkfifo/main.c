@@ -65,7 +65,7 @@ int main(int argc, char **argv)
    int rc = mkfifo(NAMED_FIFO, 0777);
    if (rc == -1)
    {
-      perror("mkfifo");
+      perror(NAMED_FIFO);
       return -1;
    }
 
