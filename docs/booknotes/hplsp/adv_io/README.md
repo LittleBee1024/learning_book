@@ -456,7 +456,38 @@ int main(int argc, char* argv[])
     Connection closed by foreign host.
     ```
 
-## splice函数
+## copy_file_range函数
+```cpp
+#include <unistd.h>
 
-## tee函数
+// 拷贝文件内容到另一个文件
+ssize_t copy_file_range(int fd_in, off64_t *off_in,
+                        int fd_out, off64_t *off_out,
+                        size_t len, unsigned int flags);
+```
 
+`copy_file_range`函数没有`sendfile`函数对文件描述符的限制，可以在两个普通文件之间进行拷贝，参考[例子"copy_file_range"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/hplsp/adv_io/code/copy_file_range)：
+
+```cpp hl_lines="14"
+int main(int argc, char *argv[])
+{
+   ...
+   int fd_in = open(argv[1], O_RDONLY);
+   struct stat stat;
+   fstat(fd_in, &stat);
+   int len = stat.st_size;
+
+   int fd_out = open(argv[2], O_CREAT | O_WRONLY | O_TRUNC, 0644);
+
+   int nBytes = 0;
+   do
+   {
+      nBytes = copy_file_range(fd_in, NULL, fd_out, NULL, len, 0);
+      len -= rc;
+   } while (len > 0 && nBytes > 0);
+
+   close(fd_in);
+   close(fd_out);
+   return 0;
+}
+```
