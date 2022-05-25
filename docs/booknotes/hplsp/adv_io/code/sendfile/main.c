@@ -12,8 +12,6 @@
 
 int main(int argc, char* argv[])
 {
-   printf("Test sendfile\n");
-
    if (argc <= 3)
    {
       printf("usage: %s ip_address port_number filename\n", basename(argv[0]));
@@ -47,17 +45,11 @@ int main(int argc, char* argv[])
    struct sockaddr_in client;
    socklen_t client_addrlength = sizeof(client);
    int connfd = accept(sock, (struct sockaddr*)&client, &client_addrlength);
-   if (connfd < 0)
-   {
-      printf("error is: %d\n", errno);
-   }
-   else
-   {
-      sendfile(connfd, filefd, NULL, stat_buf.st_size);
-      close(connfd);
-   }
+   assert(connfd > 0);
 
+   sendfile(connfd, filefd, NULL, stat_buf.st_size);
 
+   close(connfd);
    close(sock);
    return 0;
 }

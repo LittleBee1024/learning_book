@@ -404,8 +404,57 @@ int main(int argc, char *argv[])
 * `mmap`在进程间通信中的作用
     * [共享内存](../../cxydzwxy/concurrency/README.md#posix_1)
 
-
 ## sendfile函数
+```cpp
+#include <sys/sendfile.h>
+
+// 将一个真实文件的数据传递给一个socket
+//  out_fd - 必须是一个socket
+//  in_fd - 必须是一个真实文件的文件描述符，不能是socket或管道
+ssize_t sendfile(int out_fd, int in_fd, off_t* offset, size_t count);
+```
+如下图所示，一次`sendfile`系统调用，就可以实现文件的拷贝动作。相比于`mmap+write`实现的零拷贝，`sendfile`同样只有一次CPU拷贝，并且只需要一次系统调用，从而减少了用户空间/内核空间上下文切换的次数。
+
+![sendfile_copy](./images/sendfile_copy.jpg)
+
+[例子"sendfile"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/hplsp/adv_io/code/sendfile)，利用`sendfile`完成了服务器向客户端传递文件数据的功能：
+
+```cpp hl_lines="12"
+int main(int argc, char* argv[])
+{
+   ...
+   int filefd = open(file_name, O_RDONLY);
+   struct stat stat_buf;
+   fstat(filefd, &stat_buf);
+
+   // start server listen socket
+   ...
+   int connfd = accept(sock, (struct sockaddr*)&client, &client_addrlength);
+
+   sendfile(connfd, filefd, NULL, stat_buf.st_size);
+
+   close(connfd);
+   close(sock);
+   return 0;
+}
+```
+=== "server"
+
+    ```bash
+    > ./main 127.0.0.1 12345 ./in.txt
+    ```
+
+=== "client"
+
+    ```bash
+    > telnet 127.0.0.1 12345
+    Trying 127.0.0.1...
+    Connected to 127.0.0.1.
+    Escape character is '^]'.
+    hello
+    world
+    Connection closed by foreign host.
+    ```
 
 ## splice函数
 
