@@ -1,6 +1,6 @@
 # 高级IO函数
 
-> [《Linux高性能服务器编程》 - 游双 ](https://1drv.ms/b/s!AkcJSyT7tq80c1DmkdcxK7oScvQ)第6章的读书笔记，本文中的所有代码可在[GitHub仓库](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/hplsp/adv_io/code)中找到
+> [《Linux高性能服务器编程》 - 游双 ](https://1drv.ms/b/s!AkcJSyT7tq80c1DmkdcxK7oScvQ)第6章，以及[《小林coding - 网络系统》](https://xiaolincoding.com/os)的读书笔记，本文中的所有代码可在[GitHub仓库](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/hplsp/adv_io/code)中找到
 
 ## pipe函数
 
@@ -337,6 +337,64 @@ hello, world #2
 ```
 
 ## mmap函数
+```cpp
+#include <sys/mman.h>
+
+// 申请一块内存，可将这段内存作为进程间通信的共享内存，也可用将文件直接映射到用户空间
+//  start - 允许用户使用某个特定的地址作为这段内存的起始地址，NULL表示由系统分配
+//  length - 内存段长度
+//  prot - 设置内存段的访问权限
+//  flags - 控制内存段被修改后程序的行为
+//      MAP_SHARED - 在进程间共享这段内存，POSIX进程通信依赖此功能
+//      MAP_PRIVATE - 调用进程所私有
+//      MAP_ANONYMOUS / MAP_ANON - 内存段不是从文件映射而来，后两个参数被忽略，POSIX线程同步依赖此功能
+//  fd - 被映射文件对应的文件描述符
+//  offset - 从文件的何处开始映射
+//  成功时返回指向目标内存区域的指针，失败时返回`MAP_FAILED`
+void* mmap(void *start, size_t length, int prot, int flags, int fd, off_t offset);
+```
+
+`mmap`一般用在两个地方：
+
+* 利用`mmap+write`加速文件拷贝，实现零拷贝
+* 在进程间共享内存，例如，POSIX线程/进程间通信就依赖到了`mmap`
+
+### 零拷贝
+正常文件拷贝，需要经过“用户缓冲区”，如下图：
+![normal_copy](./images/normal_copy.jpg)
+*图片来自[文档](https://zhuanlan.zhihu.com/p/357820303)*
+
+而在`mmap`的帮助下，不需要经过“用户缓冲区”，直接在内核空间通过CPU拷贝，从而减少了一次CPU的拷贝时间，如下图：
+![mmap_copy](./images/mmap_copy.jpg)
+
+[例子"mmap"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/hplsp/adv_io/code/mmap)，利用`mmap`实现了对文件的拷贝：
+```cpp hl_lines="12 15 17"
+int main(int argc, char *argv[])
+{
+   ...
+   int fdin = open(in_filename, O_RDONLY);
+   int fdout = open(out_filename, O_RDWR | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+
+   struct stat statbuf;
+   fstat(fdin, &statbuf);
+   ftruncate(fdout, statbuf.st_size); // expand the space of the output file
+
+   // 映射输入文件到用户空间`src_ptr`
+   void *src_ptr = mmap(NULL, statbuf.st_size, PROT_READ, MAP_SHARED, fdin, 0);
+
+   // 映射输出文件到用户空间`dest_ptr`
+   void *dest_ptr = mmap(NULL, statbuf.st_size, PROT_READ | PROT_WRITE, MAP_SHARED, fdout, 0);
+
+   memcpy(dest_ptr, src_ptr, statbuf.st_size); // copy to output file
+
+   munmap(dest_ptr, statbuf.st_size);
+   munmap(src_ptr, statbuf.st_size);
+   return 0;
+}
+```
+
+### 共享内存
+
 
 ## sendfile函数
 
