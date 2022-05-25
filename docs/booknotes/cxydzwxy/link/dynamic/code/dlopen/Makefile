@@ -15,9 +15,6 @@ all: clean main
 main: $(OBJS)
 	$(CC) $(OBJS) $(LDFLAGS) -o $@
 
-inner: $(OBJS3)
-	$(CC) -fPIC -shared $(OBJS3) -o lib$@.so
-
 clean:
 	@rm -rf main *.o core *.so
 
