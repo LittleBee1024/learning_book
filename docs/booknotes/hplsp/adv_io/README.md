@@ -347,7 +347,7 @@ hello, world #2
 //  flags - 控制内存段被修改后程序的行为
 //      MAP_SHARED - 在进程间共享这段内存，POSIX进程通信依赖此功能
 //      MAP_PRIVATE - 调用进程所私有
-//      MAP_ANONYMOUS / MAP_ANON - 内存段不是从文件映射而来，后两个参数被忽略，POSIX线程同步依赖此功能
+//      MAP_ANONYMOUS / MAP_ANON - 内存段不是从文件映射而来，后两个参数被忽略，POSIX进程同步依赖此功能
 //  fd - 被映射文件对应的文件描述符
 //  offset - 从文件的何处开始映射
 //  成功时返回指向目标内存区域的指针，失败时返回`MAP_FAILED`
@@ -357,7 +357,7 @@ void* mmap(void *start, size_t length, int prot, int flags, int fd, off_t offset
 `mmap`一般用在两个地方：
 
 * 利用`mmap+write`加速文件拷贝，实现零拷贝
-* 在进程间共享内存，例如，POSIX线程/进程间通信就依赖到了`mmap`
+* 在进程间共享内存，例如，POSIX进程间通信就依赖到了`mmap`
 
 ### 零拷贝
 正常文件拷贝，需要经过“用户缓冲区”，如下图：
@@ -394,6 +394,15 @@ int main(int argc, char *argv[])
 ```
 
 ### 共享内存
+
+进程间共享内存是`mmap`最重要的功能之一，匿名共享内存可用于父进程/子进程间的通信，而具名共享内存可以实现系统中任意进程间的通信。在[“程序员的自我修养/并发”](../../cxydzwxy/concurrency/README.md)博文中，例举了各场景中`mmap`的作用：
+
+* `mmap`在进程间同步中的作用
+    * [互斥量](../../cxydzwxy/concurrency/README.md#mutex_1)
+    * [信号量](../../cxydzwxy/concurrency/README.md#semaphore_1)
+    * [条件变量](../../cxydzwxy/concurrency/README.md#condition-variable_1)
+* `mmap`在进程间通信中的作用
+    * [共享内存](../../cxydzwxy/concurrency/README.md#posix_1)
 
 
 ## sendfile函数
