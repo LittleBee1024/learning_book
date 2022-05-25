@@ -16,6 +16,7 @@
 //  如果所有读端被关闭，写操作失败，并触发`SIGPIPE`信号
 int pipe(int fd[2]);
 ```
+![adv_io_pipe](./images/adv_io_pipe.png)
 
 [例子"pipe"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/hplsp/adv_io/code/pipe)，实现了子进程同步读取父进程往管道中写入的数据：
 
@@ -87,8 +88,93 @@ child process read 16 bytes to from parent process: hello, world #2
 Child Task Ends
 ```
 
-
 ### socketpair
+```cpp
+#include <sys/socket.h>
+
+// 创建双向管道
+//  domain - 只能是UNIX本地协议族AF_UNIX
+//  type, protocol - 本地协议族的参数
+//  fd[2] - 管道的两端，都可读可写，一端写，必须从另一端读，反之亦然。
+//  如果管道中没有数据，读操作阻塞
+//  如果管道一端的文件描述符都被关闭，则另一端的读操作返回零
+int socketpair(int domain, int type, int protocol, int fd[2]);
+```
+![adv_io_socketpair](./images/adv_io_socketpair.png)
+
+[例子"socketpair"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/hplsp/adv_io/code/socketpair)，实现了在两个进程间传递数据：
+
+```cpp hl_lines="10 13 23 27 36"
+#define MSGSIZE 16
+const char *msg1 = "hello, world #1";
+const char *msg2 = "hello, world #2";
+
+void parent_rw(int socket)
+{
+   printf("[Parent] Task Starts\n");
+
+   char inbuf[MSGSIZE];
+   int nbytes = read(socket, inbuf, MSGSIZE);
+   printf("[Parent] read %d bytes to from child process: %s\n", nbytes, inbuf);
+
+   nbytes = write(socket, msg1, MSGSIZE);
+   printf("[Parent] wrote %d bytes to child process: %s\n", nbytes, msg1);
+
+   printf("[Parent] Task Ends\n");
+}
+
+void child_wr(int socket)
+{
+   printf("[Child] Task Starts\n");
+
+   int nbytes = write(socket, msg2, MSGSIZE);
+   printf("[Child] wrote %d bytes to parent process: %s\n", nbytes, msg2);
+
+   char inbuf[MSGSIZE];
+   nbytes = read(socket, inbuf, MSGSIZE);
+   printf("[Child] read %d bytes to from parent process: %s\n", nbytes, inbuf);
+
+   printf("[Child] Task Ends\n");
+}
+
+int main()
+{
+   int fd[2];
+   socketpair(AF_UNIX, SOCK_STREAM, 0, fd);
+
+   const int parentSocket = 0;
+   const int childSocket = 1;
+
+   pid_t pid = fork();
+   if (pid == 0)
+   {
+      close(fd[parentSocket]);
+      child_wr(fd[childSocket]);
+      close(fd[childSocket]);
+      return 0;
+   }
+
+   close(fd[childSocket]);
+   sleep(1);
+   parent_rw(fd[parentSocket]);
+   close(fd[parentSocket]);
+
+   wait(NULL);
+   return 0;
+}
+```
+```bash
+> ./main 
+[Child] Task Starts
+[Child] wrote 16 bytes to parent process: hello, world #2
+[Parent] Task Starts
+[Parent] read 16 bytes to from child process: hello, world #2
+[Parent] wrote 16 bytes to child process: hello, world #1
+[Parent] Task Ends
+[Child] read 16 bytes to from parent process: hello, world #1
+[Child] Task Ends
+```
+
 ### mkfifo
 
 ## dup/dup2函数

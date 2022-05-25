@@ -39,7 +39,7 @@ void child_wr(int socket)
 int main()
 {
    int fd[2];
-   int rc = socketpair(PF_LOCAL, SOCK_STREAM, 0, fd);
+   int rc = socketpair(AF_UNIX, SOCK_STREAM, 0, fd);
    assert(rc != -1);
 
    const int parentSocket = 0;
