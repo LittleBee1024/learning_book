@@ -267,7 +267,11 @@ int main(int argc, char **argv)
 [Parent] Task Ends
 ```
 
-## dup/dup2函数
+## dup函数
+
+### dup
+
+### dup2
 
 ## mmap函数
 
