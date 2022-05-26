@@ -16,6 +16,7 @@ copyright: Copyright &copy; 2021 - 2022 Little Bee
 # Configuration
 theme:
   name: material
+  custom_dir: overrides
   features:
     - navigation.tabs
     - navigation.top
