@@ -61,7 +61,7 @@ extra:
   # Analytics Website: https://analytics.google.com/analytics/web
   analytics:
     provider: google
-    property: UA-228410494-1
+    property: G-G2RFHH3DL4
     feedback:
       title: Was this page helpful?
       ratings:
