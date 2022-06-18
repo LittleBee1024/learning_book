@@ -131,6 +131,8 @@ nav:
       - booknotes/hplsp/socket/README.md
       - booknotes/hplsp/multi_io/README.md
       - booknotes/hplsp/adv_io/README.md
+    - Linux设备驱动程序:
+      - booknotes/ldd/module/README.md
     - booknotes/csapp/README.md
   - Demos:
     - demos/webassembly/README.md

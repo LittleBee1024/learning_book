@@ -24,3 +24,12 @@ program2
 
 server
 client
+
+# module
+# module
+.*.cmd
+*.ko
+*.symvers
+*.order
+*.mod.c
+*.mod
