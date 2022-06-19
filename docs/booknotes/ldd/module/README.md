@@ -66,9 +66,9 @@ endif
 
 模块装载完成后，会在下面两个目录中加入相关信息：
 
-* /proc/modules
+* `/proc/modules`
     * `lsmod`命令就是读取`/proc/modules`文件中的信息
-* /sys/module/<module-name>
+* `/sys/module/<module-name>`
 
 ```bash
 # 装载模块
