@@ -2,6 +2,8 @@
 
 > [《Linux设备驱动程序》 - 第三版 ](https://1drv.ms/b/s!AkcJSyT7tq80d6mS7pO12K6Qb30)的第3章，[《Linux设备驱动开发详解》 - 宋宝华 ](https://1drv.ms/b/s!AkcJSyT7tq80eFABEg8fSOajqHk)的第6章，的读书笔记，本文中的所有代码可在[GitHub仓库](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/ldd/cdev/code)中找到
 
+![cdev_flow](./images/cdev_flow.png)
+
 ## 设备号
 * 主设备号
     * 标识设备对应的驱动程序
@@ -71,3 +73,31 @@ Jun 19 21:22:18 ben-vm-base kernel: [213898.642963] Mock enter
 Jun 19 21:23:05 ben-vm-base kernel: [213898.642967] Register major number 111 for mock module
 Jun 19 21:23:05 ben-vm-base kernel: [213944.901289] Mock exit
 ```
+
+## 字符设备驱动组成
+
+字符设备驱动主要有两部分组成：
+
+* 模块加载/卸载函数
+    * 在加载函数中应实现设备号的申请和`cdev`的注册
+    * 在卸载函数中应实现设备号的释放和`cdev`的注销
+* `file_operations`结构体中的成员函数
+    * 大多数字符设备驱动会实现`read()`，`write()`和`ioctl()`函数
+
+### `cdev`结构体
+
+```cpp
+#include <linux/cdev.h>
+
+struct cdev {
+    struct kobject kobj;
+    struct module *owner;
+    const struct file_operations *ops;  // 文件操作结构体
+    struct list_head list;
+    dev_t dev;                          // 设备号
+    unsigned int count;
+};
+```
+
+### `file_operations`结构体
+
