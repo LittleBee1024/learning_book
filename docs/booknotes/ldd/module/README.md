@@ -103,7 +103,7 @@ module_param(book_name, charp, S_IRUGO);
 static int book_num = 4000;
 module_param(book_num, int , S_IRUGO);
 ```
-```bash title="装载模块"
+```bash title="装载模块时传入参数"
 > sudo insmod book.ko book_name="Good_Book" book_num=1000
 
 > cat /sys/module/book/parameters/book_name
@@ -112,10 +112,70 @@ Good_Book
 1000
 ```
 
-
 ## 模块符号
 
+`insmod`使用公共内核符号表来解析模块中未定义的符号。内核符号表可通过`cat /proc/kallsyms`查看。
 
+当模块装入内核后，可通过下面的宏导出的任何符号，导出的符号会变成内核符号表的一部分，供其他模块使用：
 
+* `EXPORT_SYMBOL(name)`
+* `EXPORT_SYMBOL_GPL(name)`
 
+[模块"symbol"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/ldd/module/code/symbol)中，"export"模块导出了`hello_export`函数，"import"模块使用了`hello_export`函数:
 
+=== "export.c"
+
+    ```cpp
+    void hello_export(void)
+    {
+        printk(KERN_INFO "Hello from another module");
+    }
+    EXPORT_SYMBOL(hello_export);
+    ```
+
+=== "import.c"
+
+    ```cpp
+    extern void hello_export(void);
+
+    static int import_init(void)
+    {
+        hello_export();
+        printk(KERN_INFO "Import module enter\n");
+        return 0;
+    }
+    module_init(import_init);
+    ```
+
+```bash
+# 先装载export, 再装载import
+> sudo insmod export.ko
+> sudo insmod import.ko
+> tail -n 3 /var/log/kern.log
+Jun 19 14:39:40 ben-vm-base kernel: [190111.168523] Export module enter
+Jun 19 14:39:40 ben-vm-base kernel: [190111.185477] Hello from another module
+Jun 19 14:39:40 ben-vm-base kernel: [190111.185481] Import module enter
+
+# import依赖export
+> modinfo import.ko
+...
+depends:        export
+...
+
+# 查看公共内核符号表
+> cat /proc/kallsyms | grep hello_export
+0000000000000000 r __kstrtab_hello_export       [export]
+0000000000000000 r __kstrtabns_hello_export     [export]
+0000000000000000 r __ksymtab_hello_export       [export]
+0000000000000000 T hello_export [export]
+
+# 先卸载import, 再卸载export
+> sudo rmmod import.ko
+> sudo rmmod export.ko
+> tail -n 5 /var/log/kern.log
+Jun 19 14:39:40 ben-vm-base kernel: [190111.168523] Export module enter
+Jun 19 14:39:40 ben-vm-base kernel: [190111.185477] Hello from another module
+Jun 19 14:39:40 ben-vm-base kernel: [190111.185481] Import module enter
+Jun 19 14:41:49 ben-vm-base kernel: [190240.103068] Import module exit
+Jun 19 14:41:49 ben-vm-base kernel: [190240.138433] Export module exit
+```

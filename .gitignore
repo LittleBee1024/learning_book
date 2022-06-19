@@ -33,3 +33,4 @@ client
 *.order
 *.mod.c
 *.mod
+*.d
