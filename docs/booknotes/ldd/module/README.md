@@ -62,7 +62,34 @@ endif
 
 ### 装载模块
 
-### 卸载模块
+`insmod`和`modprobe`可用于装载模块。`modprobe`命令更强大，会同时加载该模块所依赖的其他模块，因此需要在`/lib/modules/<kernel-version>/modules.dep`文件中指定依赖关系。
+
+模块装载完成后，会在下面两个目录中加入相关信息：
+
+* /proc/modules
+    * `lsmod`命令就是读取`/proc/modules`文件中的信息
+* /sys/module/<module-name>
+
+```bash
+# 装载模块
+> sudo insmod hello.ko
+> tail -n 1 /var/log/kern.log
+Jun 19 12:09:34 ben-vm-base kernel: [181105.450980] Hello World enter
+
+# 查看模块
+> cat /proc/modules | grep hello
+hello 16384 0 - Live 0x0000000000000000 (OE)
+> lsmod | grep hello
+hello                  16384  0
+> ls /sys/module/hello/
+coresize  holders  initsize  initstate  notes  refcnt  sections  srcversion  taint  uevent
+
+# 卸载模块
+> sudo rmmod hello.ko
+> tail -n 2 /var/log/kern.log
+Jun 19 12:09:34 ben-vm-base kernel: [181105.450980] Hello World enter
+Jun 19 12:10:23 ben-vm-base kernel: [181154.345969] Hello World exit
+```
 
 
 ## 模块参数

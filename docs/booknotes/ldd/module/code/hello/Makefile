@@ -19,3 +19,19 @@ clean:
 	make -C $(KDIR) M=$(PWD) clean
 
 endif
+
+install:
+	sudo insmod $(MODULE_NAME).ko
+	tail -n 5 /var/log/kern.log
+
+uninstall:
+	sudo rmmod $(MODULE_NAME).ko
+	tail -n 5 /var/log/kern.log
+
+# lsmod : show "/proc/modules"
+show:
+	modinfo ./$(MODULE_NAME).ko
+	cat /proc/modules | grep $(MODULE_NAME)
+	ls /sys/module/$(MODULE_NAME)
+
+
