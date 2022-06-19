@@ -4,7 +4,7 @@
 
 ## 模块初探
 
-["Hello World"模块](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/ldd/module/code/hello)实现了一个最简单的模块，其中["hello.c"](./code/hello/hello.c)定义了两个函数：
+[模块"Hello World"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/ldd/module/code/hello)实现了一个最简单的模块，其中["hello.c"](./code/hello/hello.c)定义了两个函数：
 
 * `hello_init`在模块被装载到内核时被调用
 * `hello_exit`在模块被移除时被调用
@@ -93,6 +93,25 @@ Jun 19 12:10:23 ben-vm-base kernel: [181154.345969] Hello World exit
 
 
 ## 模块参数
+
+[模块"book"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/ldd/module/code/book)通过`module_param`添加了模块参数，因此在装载时，利用`book_name=<name> book_num=<num>`即可自定义模块的参数内容，`/sys/module/book/parameters`中记录了参数的内容。
+
+```cpp title="book.c"
+static char *book_name = "Linux Device Driver";
+module_param(book_name, charp, S_IRUGO);
+
+static int book_num = 4000;
+module_param(book_num, int , S_IRUGO);
+```
+```bash title="装载模块"
+> sudo insmod book.ko book_name="Good_Book" book_num=1000
+
+> cat /sys/module/book/parameters/book_name
+Good_Book
+> cat /sys/module/book/parameters/book_num
+1000
+```
+
 
 ## 模块符号
 
