@@ -28,7 +28,7 @@ int alloc_chrdev_region(dev_t * dev, unsigned baseminor, unsigned count, const c
 // 释放设备编号
 void unregister_chrdev_region (dev_t from, unsigned count);
 ```
-[模块"register_dev"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/ldd/cdev/code/register_dev)在加载时向系统申请了一个主设备号`111`，在卸载时释放了此设备号：
+[模块"dev_num"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/ldd/cdev/code/dev_num)在加载时向系统申请了一个主设备号`111`，在卸载时释放了此设备号：
 
 ```cpp title="mock.c"
 #define MOCK_MAJOR 111
