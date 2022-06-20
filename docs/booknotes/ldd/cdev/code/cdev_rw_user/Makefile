@@ -18,7 +18,7 @@ main: $(OBJS)
 clean:
 	@rm -rf main *.o *.log
 
-debug:
-	gdb -q ./main \
-	-ex "start" \
-	-ex "bt"
+# load gmem0 module in "../cdev_rw"
+test:
+	./main
+	tail -n 4 /var/log/kern.log
