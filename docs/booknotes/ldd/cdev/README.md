@@ -76,6 +76,8 @@ Jun 19 21:23:05 ben-vm-base kernel: [213944.901289] Mock exit
 
 ## 字符设备驱动组成
 
+![cdev_comp](./images/cdev_comp.png)
+
 字符设备驱动主要有两部分组成：
 
 * 模块加载/卸载函数
@@ -85,6 +87,8 @@ Jun 19 21:23:05 ben-vm-base kernel: [213944.901289] Mock exit
     * 大多数字符设备驱动会实现`read()`，`write()`和`ioctl()`函数
 
 ### `cdev`结构体
+
+在Linux内核中，使用`cdev`结构体描述一个字符设备：
 
 ```cpp
 #include <linux/cdev.h>
@@ -146,6 +150,8 @@ struct file {
     fmode_t f_mode;
     // 文件读写位置
     loff_t f_pos;
+    // 可在open调用时，赋值此字段为某个已分配数据，方便其他调用访问
+    void *private_data;
     ...
 };
 
@@ -161,27 +167,52 @@ struct inode {
 }；
 ```
 
-### 驱动读/写操作
+### `fops`操作
 
-`read`和`write`方法完成的任务是相似的，即拷贝数据到应用程序空间，或从应用程序空间拷贝数据到内核空间：
+`file_operations`结构体中的成员函数是字符设备驱动与内核虚拟文件系统的接口，是用户空间对Linux进行系统调用最终的落实者。大多数字符设备驱动会实现`read()`，`write()`和`ioctl()`函数：
 
 ```cpp
-ssize_t xxx_read(struct file *filep, char __user *buf, size_t count, loff_t *f_pos)
+struct file_operations xxx_fops = {
+    .owner = THIS_MODULE,
+    .read = xxx_read,
+    .write = xxx_write,
+    .unlocked_ioctl= xxx_ioctl,
+    ...
+};
+
+ssize_t xxx_read(struct file *filp, char __user *buf, size_t count, loff_t *f_pos)
 {
     ...
     copy_to_user(..., buf, ...);
     ...
 }
 
-ssize_t xxx_write(struct file *filep, const char __user *buf, size_t count, loff_t *f_pos)
+ssize_t xxx_write(struct file *filp, const char __user *buf, size_t count, loff_t *f_pos)
 {
     ...
     copy_from_user(..., buf, ...);
     ...
 }
-```
 
-`read`和`write`方法的`buf`参数是用户空间的指针，不能直接在内核中直接引用，原因是：
+// I/O控制函数的`cmd`参数为实现定义的I/O控制命令，而`arg`对应于该命令的参数
+long xxx_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+{
+    ...
+    switch(cmd) {
+    case XXX_CMD1:
+        ...
+        break;
+    case XXX_CMD2:
+        ...
+        break;
+    default:
+        // 不能支持的命令
+        return -ENOTTY;
+    }
+    return 0;
+}
+```
+`read`和`write`方法完成的任务是相似的，即拷贝数据到应用程序空间，或从应用程序空间拷贝数据到内核空间。`read`和`write`方法的`buf`参数是用户空间的指针，不能直接在内核中直接引用，原因是：
 
 * 内核模式中用户空间的指针可能是无效的
 * 用户空间的内存是分页的，访问时有可能发生页错误，而内核代码是不允许发生页错误的
@@ -199,4 +230,3 @@ get_user(val, (int *) arg); // 用户→内核，arg是用户空间的地址
 put_user(val, (int *) arg); // 内核→用户，arg是用户空间的地址
 ```
 
-### 驱动I/O控制操作
