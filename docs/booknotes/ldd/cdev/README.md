@@ -377,3 +377,38 @@ hello gmem0
 hello gmem1
 ```
 
+### 用户进程访问设备
+
+[例子"cdev_rw_user"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/ldd/cdev/code/cdev_rw_user)在用户空间，利用Linux系统调用访问了"/dev/gmem0"设备：
+
+```cpp hl_lines="5 7 10 12 16 19"
+#define GMEM0_DEV "/dev/gmem0"
+const char data[] = "Hello, global memory\n";
+int main()
+{
+   int fd = open(GMEM0_DEV, O_RDWR);
+
+   int nBytes = write(fd, data, sizeof(data));
+   printf("Written %d bytes to the device\n", nBytes);
+
+   int pos = lseek(fd, 0, SEEK_CUR);
+   printf("Current device position is %d\n", pos);
+   pos = lseek(fd, 0, SEEK_SET);
+   printf("Set device position to %d\n", pos);
+
+   char buf[1024];
+   int rc = read(fd, buf, nBytes);
+   printf("Read %d bytes from the device: %s\n", rc, buf);
+
+   close(fd);
+   return 0;
+}
+```
+```bash
+> ./main
+Written 22 bytes to the device
+Current device position is 22
+Set device position to 0
+Read 22 bytes from the device: Hello, global memory
+
+```
