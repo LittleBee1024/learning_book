@@ -357,3 +357,23 @@ static loff_t gmem_llseek(struct file *filp, loff_t offset, int whence)
    return newpos;
 }
 ```
+
+### 加载模块
+利用`insmod`加载"gmem"模块后，可通过`cat /proc/devices | grep gmem`查询到此模块的主设备号为"111"。然后，需要通过`mknod`命令在`/dev`下创建对应的设备节点。
+
+```bash
+# 加载"gmem.ko"模块
+> insmod gmem.ko
+# 创建主设备号为111，次设备号为0的设备节点: /dev/gmem0
+> mknod /dev/gmem0 c 111 0
+# 创建主设备号为111，次设备号为1的设备节点: /dev/gmem1
+> mknod /dev/gmem1 c 111 1
+
+# 测试设备节点
+> echo "hello gmem0" > /dev/gmem0
+> echo "hello gmem1" > /dev/gmem1
+> cat /dev/gmem0 && cat /dev/gmem1
+hello gmem0
+hello gmem1
+```
+
