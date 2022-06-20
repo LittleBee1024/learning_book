@@ -114,7 +114,7 @@ void cdev_del(struct cdev *);
 ```
 
 ### `file_operations`结构体
-向系统申请了设备编号后，需要将驱动程序操作连接到这些编号上。`file_operations`结构就是用来建立这种连接的。
+向系统申请了设备编号后，需要将驱动程序操作连接到这些编号上，`file_operations`结构就是用来建立这种连接的。
 
 ```cpp
 #include <linux/fs.h>
@@ -130,7 +130,7 @@ struct file_operations {
     long (*unlocked_ioctl) (struct file *, unsigned int, unsigned long);
     // 将设备内存映射到进程的虚拟地址空间中
     int (*mmap) (struct file *, struct vm_area_struct *);
-    // 设备文件执行的第一个操作
+    // 设备文件执行的第一个操作，提供了给驱动程序初始化的能力
     int (*open) (struct inode *, struct file *);
     // file结构被释放时，将调用这个操作
     //  不是每次调用close时都会被调用，只要file结构被空闲(如fork或dup调用之后)，release就会等到
@@ -161,3 +161,42 @@ struct inode {
 }；
 ```
 
+### 驱动读/写操作
+
+`read`和`write`方法完成的任务是相似的，即拷贝数据到应用程序空间，或从应用程序空间拷贝数据到内核空间：
+
+```cpp
+ssize_t xxx_read(struct file *filep, char __user *buf, size_t count, loff_t *f_pos)
+{
+    ...
+    copy_to_user(..., buf, ...);
+    ...
+}
+
+ssize_t xxx_write(struct file *filep, const char __user *buf, size_t count, loff_t *f_pos)
+{
+    ...
+    copy_from_user(..., buf, ...);
+    ...
+}
+```
+
+`read`和`write`方法的`buf`参数是用户空间的指针，不能直接在内核中直接引用，原因是：
+
+* 内核模式中用户空间的指针可能是无效的
+* 用户空间的内存是分页的，访问时有可能发生页错误，而内核代码是不允许发生页错误的
+* 保护内核内存，防止用户操作破坏内核
+
+因此，可通过下面的函数完成内核空间核用户空间的数据传输：
+```cpp
+// 连续空间
+unsigned long copy_from_user(void *to, const void __user *from, unsigned long count);
+unsigned long copy_to_user(void __user *to, const void *from, unsigned long count);
+
+// 简单类型，如：char, int, long等
+int val;                    // 内核空间整型变量
+get_user(val, (int *) arg); // 用户→内核，arg是用户空间的地址
+put_user(val, (int *) arg); // 内核→用户，arg是用户空间的地址
+```
+
+### 驱动I/O控制操作
