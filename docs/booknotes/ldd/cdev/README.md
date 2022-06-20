@@ -97,7 +97,67 @@ struct cdev {
     dev_t dev;                          // 设备号
     unsigned int count;
 };
+
+// 向内核申请`cdev`空间
+struct cdev *cdev_alloc(void);
+
+// 初始化`cdev`的成员，并建立`cdev`和`file_operations`之间的连接
+void cdev_init(struct cdev * cdev, const struct file_operations * fops);
+
+// 向系统添加一个`cdev`设备
+//  num - 设备编号，由主/次设备号组成
+//  count - 和该设备关联的设备编号的数量，常取值1
+int cdev_add(struct cdev *dev, dev_t num, unsigned int count);
+
+// 从系统删除一个`cdev`设备
+void cdev_del(struct cdev *);
 ```
 
 ### `file_operations`结构体
+向系统申请了设备编号后，需要将驱动程序操作连接到这些编号上。`file_operations`结构就是用来建立这种连接的。
+
+```cpp
+#include <linux/fs.h>
+
+struct file_operations {
+    // 用于修改文件的当前读写位置
+    loff_t (*llseek) (struct file *, loff_t, int);
+    // 从设备中读取数据
+    ssize_t (*read) (struct file *, char __user *, size_t, loff_t *);
+    // 向设备发送数据
+    ssize_t (*write) (struct file *, const char __user *, size_t, loff_t *)；
+    // 提供设备相关控制命令的实现
+    long (*unlocked_ioctl) (struct file *, unsigned int, unsigned long);
+    // 将设备内存映射到进程的虚拟地址空间中
+    int (*mmap) (struct file *, struct vm_area_struct *);
+    // 设备文件执行的第一个操作
+    int (*open) (struct inode *, struct file *);
+    // file结构被释放时，将调用这个操作
+    //  不是每次调用close时都会被调用，只要file结构被空闲(如fork或dup调用之后)，release就会等到
+    //  所有副本都关闭之后才会调用
+    int (*release) (struct inode *, struct file *);
+    ...
+};
+
+// 系统中每个打开的文在内核空间中都有一个对应的`file`结构
+struct file {
+    struct inode *f_inode;
+    // 文件模式
+    fmode_t f_mode;
+    // 文件读写位置
+    loff_t f_pos;
+    ...
+};
+
+// 对于单个文件可能会有多个对应的`file`结构体，但只有一个`inode`结构
+struct inode {
+    // 设备编号
+    dev_t i_rdev;
+    union {
+        // 字符设备内部结构
+        struct cdev *i_cdev;
+        ...
+    };
+}；
+```
 
