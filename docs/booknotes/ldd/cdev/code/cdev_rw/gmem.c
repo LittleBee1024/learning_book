@@ -7,7 +7,7 @@
 
 MODULE_LICENSE("GPL v2");
 
-#define DEVICE_NUM 3
+#define DEVICE_NUM 2
 #define GMEM_MAJOR 111
 #define GLOBALMEM_SIZE 0x1000
 // ioctl CMD
@@ -57,10 +57,7 @@ static ssize_t gmem_read(struct file *filp, char __user *buf, size_t size, loff_
    struct gmem_dev *dev = filp->private_data;
 
    if (p >= GLOBALMEM_SIZE)
-   {
-      printk(KERN_INFO "reach the end of the device whose size is %u bytes(s)\n", GLOBALMEM_SIZE);
       return 0;
-   }
 
    if (count > GLOBALMEM_SIZE - p)
       count = GLOBALMEM_SIZE - p;
@@ -81,10 +78,7 @@ static ssize_t gmem_write(struct file *filp, const char __user *buf, size_t size
    struct gmem_dev *dev = filp->private_data;
 
    if (p >= GLOBALMEM_SIZE)
-   {
-      printk(KERN_INFO "reach the end of the device whose size is %u bytes(s)\n", GLOBALMEM_SIZE);
       return 0;
-   }
 
    if (count > GLOBALMEM_SIZE - p)
       count = GLOBALMEM_SIZE - p;

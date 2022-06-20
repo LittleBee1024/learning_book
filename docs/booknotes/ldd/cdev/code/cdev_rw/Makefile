@@ -1,4 +1,5 @@
 MODULE_NAME := gmem
+MODULE_MAJOR := 111
 
 ifneq (${KERNELRELEASE},)
 obj-m := $(MODULE_NAME).o
@@ -16,14 +17,18 @@ endif
 
 install:
 	sudo insmod $(MODULE_NAME).ko
-	cat /proc/devices | grep gmem
+	sudo rm -rf /dev/gmem*
+	sudo mknod /dev/gmem0 c $(MODULE_MAJOR) 0
+	sudo mknod /dev/gmem1 c $(MODULE_MAJOR) 1
+	sudo chown `users` /dev/gmem*
 
 uninstall:
+	sudo rm -rf /dev/gmem*
 	sudo rmmod $(MODULE_NAME).ko
-	tail -n 3 /var/log/kern.log
+	tail -n 5 /var/log/kern.log
 
-# lsmod : show "/proc/modules"
-show:
-	modinfo ./$(MODULE_NAME).ko
-	cat /proc/modules | grep $(MODULE_NAME)
-	ls /sys/module/$(MODULE_NAME)
+test:
+	echo "hello gmem0" > /dev/gmem0
+	echo "hello gmem1" > /dev/gmem1
+	cat /dev/gmem0 && cat /dev/gmem1
+
