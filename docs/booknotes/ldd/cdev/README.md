@@ -230,3 +230,130 @@ get_user(val, (int *) arg); // 用户→内核，arg是用户空间的地址
 put_user(val, (int *) arg); // 内核→用户，arg是用户空间的地址
 ```
 
+## 字符设备驱动实例
+[驱动"cdev_rw"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/ldd/cdev/code/cdev_rw)实现了一个字符设备驱动。此设备相当于一个全局内存，大小为`GLOBALMEM_SIZE` (4KB)。驱动提供了针对该内存的读写、控制和定位函数，以供用户空间的进程能通过Linux系统调用获取或设置这片内存的内容。
+
+### 注册字符设备
+
+在加载模块时，需要
+
+* 获取设备号
+* 添加字符设备
+
+```cpp hl_lines="15 16 23 24"
+#define DEVICE_NUM 2
+#define GMEM_MAJOR 111
+#define GLOBALMEM_SIZE 0x1000
+
+struct gmem_dev
+{
+   struct cdev cdev;
+   unsigned char mem[GLOBALMEM_SIZE];
+};
+struct gmem_dev *gmem_devp;
+
+static void gmem_setup_cdev(struct gmem_dev *dev, int index)
+{
+   int devno = MKDEV(GMEM_MAJOR, index);
+   cdev_init(&dev->cdev, &gmem_fops);
+   cdev_add(&dev->cdev, devno, 1);
+}
+
+static int __init gmem_init(void)
+{
+    ...
+    devno = MKDEV(GMEM_MAJOR, 0);
+    ret = register_chrdev_region(devno, DEVICE_NUM, "gmem");
+    gmem_devp = kzalloc(sizeof(struct gmem_dev) * DEVICE_NUM, GFP_KERNEL);
+    for (i = 0; i < DEVICE_NUM; i++)
+        gmem_setup_cdev(gmem_devp + i, i);
+
+    return 0;
+}
+```
+
+### 添加文件操作
+
+在通过`cdev_add`添加字符设备之前，需要通过`cdev_init`初始化字符设备的文件操作`file_operations`。驱动"cdev_rw"的文件操作包括：
+
+* `gmem_open`
+    * 从`inode`结构中获取全局内存，并存到`filp->privatre_data`结构中，便于其他函数拿到内存位置
+* `gmem_read`
+    * 将数据从全局内存拷贝到用户空间
+* `gmem_write`
+    * 将数据从用户空血写道全局内存
+* `gmem_llseek`
+    * 修改全局内存的当前读写位置
+
+```cpp hl_lines="13 14 20 25 37 38 45 46 68"
+static const struct file_operations gmem_fops = {
+    .owner = THIS_MODULE,
+    .llseek = gmem_llseek,
+    .read = gmem_read,
+    .write = gmem_write,
+    .unlocked_ioctl = gmem_ioctl,
+    .open = gmem_open,
+    .release = gmem_release,
+};
+
+static int gmem_open(struct inode *inode, struct file *filp)
+{
+   struct gmem_dev *dev = container_of(inode->i_cdev, struct gmem_dev, cdev);
+   filp->private_data = dev;
+   return 0;
+}
+
+static long gmem_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+{
+   struct gmem_dev *dev = filp->private_data;
+
+   switch (cmd)
+   {
+   case MEM_CLEAR:
+      memset(dev->mem, 0, GLOBALMEM_SIZE);
+      printk(KERN_INFO "gmem is set to zero\n");
+      break;
+   default:
+      return -EINVAL;
+   }
+
+   return 0;
+}
+
+static ssize_t gmem_read(struct file *filp, char __user *buf, size_t size, loff_t *ppos)
+{
+   struct gmem_dev *dev = filp->private_data;
+   copy_to_user(buf, dev->mem + *ppos, size);
+   *ppos += size;
+   return size;
+}
+
+static ssize_t gmem_write(struct file *filp, const char __user *buf, size_t size, loff_t *ppos)
+{
+   struct gmem_dev *dev = filp->private_data;
+   copy_from_user(dev->mem + *ppos, buf, size);
+   *ppos += size;
+   return size;
+}
+
+static loff_t gmem_llseek(struct file *filp, loff_t offset, int whence)
+{
+   loff_t newpos = 0;
+   switch (whence)
+   {
+   case 0: /* SEEK_SET */
+      newpos = offset;
+      break;
+   case 1: /* SEEK_CUR */
+      newpos = filp->f_pos + offset;
+      break;
+   case 2: /* SEEK_END */
+      newpos = GLOBALMEM_SIZE + offset;
+      break;
+   default:
+      return -EINVAL;
+   }
+   filp->f_pos = newpos;
+   return newpos;
+}
+```
