@@ -4,6 +4,7 @@
 #include <string.h>
 #include <errno.h>
 #include <unistd.h>
+#include <sys/ioctl.h>
 
 #define ASSERT(A, M, ...)                                                                  \
    if (!(A))                                                                               \
@@ -16,6 +17,7 @@
 #define GMEM0_DEV "/dev/gmem0"
 
 const char data[] = "Hello, global memory\n";
+#define MEM_CLEAR 0x1
 
 int main()
 {
@@ -33,6 +35,9 @@ int main()
    char buf[1024];
    int rc = read(fd, buf, nBytes);
    printf("Read %d bytes from the device: %s\n", rc, buf);
+
+   rc = ioctl(fd, MEM_CLEAR);
+   ASSERT(rc == 0, "Failed to clear memory");
 
    close(fd);
    return 0;
