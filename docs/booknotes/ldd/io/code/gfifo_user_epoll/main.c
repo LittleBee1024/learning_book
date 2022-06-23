@@ -3,11 +3,11 @@
 #include <assert.h>
 #include <sys/wait.h>
 #include <fcntl.h>
-#include <poll.h>
+#include <sys/epoll.h>
 #include <sys/ioctl.h>
 #include <string.h>
 
-#define MAX_POLL_FD 5
+#define MAX_EVENTS 5
 #define GFIFO_DEV "/dev/gfifo"
 const char data[] = "Hello, global gfifo\n";
 
@@ -35,29 +35,32 @@ void poll_read()
    assert(fd > 0);
 
    char buf[1024];
-   struct pollfd fds[MAX_POLL_FD];
-   memset(fds, 0, sizeof(fds));
-   fds[0].fd = fd;
-   fds[0].events = POLLIN;
-   int nfds = 1;
+   int epoll_fd = epoll_create1(0);
+   assert(epoll_fd > 0);
+   struct epoll_event event, events[MAX_EVENTS];
+   event.events = EPOLLIN;
+   event.data.fd = fd;
+   int rc = epoll_ctl(epoll_fd, EPOLL_CTL_ADD, fd, &event);
+   assert(rc != -1);
    int timeout = 1 * 1000; // milliseconds
    while (1)
    {
-      int rc = poll(fds, nfds, timeout);
-      assert(rc >= 0);
-      if (rc == 0)
+      int event_count = epoll_wait(epoll_fd, events, MAX_EVENTS, timeout);
+      assert(event_count >= 0);
+      if (event_count == 0)
       {
-         printf("[Poll Process] poll() timeout, no data to read\n");
+         printf("[Poll Process] epoll() timeout, no data to read\n");
          continue;
       }
 
-      if (fds[0].revents & POLLIN)
+      assert(event_count == 1);
+      if (events[0].events & EPOLLIN)
       {
-         int n = read(fds[0].fd, buf, sizeof(data));
+         int n = read(events[0].data.fd, buf, sizeof(data));
          printf("[Poll Process] Read %d bytes from the device: %s\n", n, buf);
          break;
       }
-      printf("[Poll Process] Receive unexpected event 0x%x\n", fds[0].revents);
+      printf("[Poll Process] Receive unexpected event 0x%x\n", events[0].events);
    }
 
    close(fd);
