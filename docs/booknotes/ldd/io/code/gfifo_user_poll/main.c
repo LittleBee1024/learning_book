@@ -43,14 +43,15 @@ void poll_read()
    int timeout = 1 * 1000; // milliseconds
    while (1)
    {
-      int rc = poll(fds, nfds, timeout);
-      assert(rc >= 0);
-      if (rc == 0)
+      int event_count = poll(fds, nfds, timeout);
+      assert(event_count >= 0);
+      if (event_count == 0)
       {
          printf("[Poll Process] poll() timeout, no data to read\n");
          continue;
       }
 
+      assert(event_count == 1);
       if (fds[0].revents & POLLIN)
       {
          int n = read(fds[0].fd, buf, sizeof(data));
