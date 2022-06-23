@@ -101,7 +101,7 @@ static ssize_t gfifo_read(struct file *filp, char __user *buf,
          ret = -EAGAIN;
          goto out;
       }
-      __set_current_state(TASK_INTERRUPTIBLE);
+      set_current_state(TASK_INTERRUPTIBLE);
       mutex_unlock(&dev->mutex);
 
       schedule();
@@ -157,7 +157,7 @@ static ssize_t gfifo_write(struct file *filp, const char __user *buf,
          ret = -EAGAIN;
          goto out;
       }
-      __set_current_state(TASK_INTERRUPTIBLE);
+      set_current_state(TASK_INTERRUPTIBLE);
 
       mutex_unlock(&dev->mutex);
 

@@ -1267,7 +1267,7 @@ int pipe(int fd[2]);
 * `fd[1]`写文件描述符
    * 如果所有进程的管道读文件描述符被关闭，`write`写文件描述符会触发`SIGPIPE`信号
 
-[例子"pipe"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/concurrency/code/flock/pipe)创建了一个管道，一个进程往管道中写入数据，另一个进程从管道中读出数据：
+[例子"pipe"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/concurrency/code/pipe)创建了一个管道，一个进程往管道中写入数据，另一个进程从管道中读出数据：
 
 ```cpp
 #define MSGSIZE 16
