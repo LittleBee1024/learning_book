@@ -8,18 +8,18 @@
 
 MODULE_LICENSE("GPL v2");
 
-#define gfifo_SIZE 0x1000
+#define GFIFO_SIZE 0x1000
 #define FIFO_CLEAR 0x1
-#define gfifo_MAJOR 231
+#define GFIFO_MAJOR 231
 
-static int gfifo_major = gfifo_MAJOR;
+static int gfifo_major = GFIFO_MAJOR;
 module_param(gfifo_major, int, S_IRUGO);
 
 struct gfifo_dev
 {
    struct cdev cdev;
    unsigned int current_len;
-   unsigned char mem[gfifo_SIZE];
+   unsigned char mem[GFIFO_SIZE];
    struct mutex mutex;
    wait_queue_head_t r_wait;
    wait_queue_head_t w_wait;
@@ -48,7 +48,7 @@ static long gfifo_ioctl(struct file *filp, unsigned int cmd,
    case FIFO_CLEAR:
       mutex_lock(&dev->mutex);
       dev->current_len = 0;
-      memset(dev->mem, 0, gfifo_SIZE);
+      memset(dev->mem, 0, GFIFO_SIZE);
       mutex_unlock(&dev->mutex);
 
       printk(KERN_INFO "gfifo is set to zero\n");
@@ -75,7 +75,7 @@ static unsigned int gfifo_poll(struct file *filp, poll_table *wait)
       mask |= POLLIN | POLLRDNORM;
    }
 
-   if (dev->current_len != gfifo_SIZE)
+   if (dev->current_len != GFIFO_SIZE)
    {
       mask |= POLLOUT | POLLWRNORM;
    }
@@ -150,7 +150,7 @@ static ssize_t gfifo_write(struct file *filp, const char __user *buf,
    mutex_lock(&dev->mutex);
    add_wait_queue(&dev->w_wait, &wait);
 
-   while (dev->current_len == gfifo_SIZE)
+   while (dev->current_len == GFIFO_SIZE)
    {
       if (filp->f_flags & O_NONBLOCK)
       {
@@ -171,8 +171,8 @@ static ssize_t gfifo_write(struct file *filp, const char __user *buf,
       mutex_lock(&dev->mutex);
    }
 
-   if (count > gfifo_SIZE - dev->current_len)
-      count = gfifo_SIZE - dev->current_len;
+   if (count > GFIFO_SIZE - dev->current_len)
+      count = GFIFO_SIZE - dev->current_len;
 
    if (copy_from_user(dev->mem + dev->current_len, buf, count))
    {
