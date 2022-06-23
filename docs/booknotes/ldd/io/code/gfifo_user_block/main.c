@@ -5,7 +5,7 @@
 #include <fcntl.h>
 
 #define GFIFO_DEV "/dev/gfifo"
-const char data[] = "Hello, global filo\n";
+const char data[] = "Hello, global gfifo\n";
 
 void sleep_write()
 {
