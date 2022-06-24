@@ -227,3 +227,271 @@ int main(int argc, char **argv)
 ```
 
 ## 非阻塞I/O
+
+非阻塞I/O在设备无法立即完成用户请求时，不阻塞，而是返回`-EAGAIN`错误，告知用户在设备准备好后再次访问。非阻塞I/O一般和`select`，`poll`或`epoll`系统调用配合使用，以实现多路复用。这三个系统调用的本质是一样的：都允许进程决定是否可以对一个或多个打开的文件做非阻塞的读写操作。
+
+当用户空间在驱动程序关联的文件描述符上执行`select`，`poll`或`epoll`系统调用时，驱动程序中的`poll`文件操作将被调用，该设备方法分为两步：
+
+* 在一个或多个可指示poll状态的等待队列上调用`poll_wait`
+* 返回一个用来描述操作是否可以立即无阻塞执行的位掩码
+
+```cpp
+// 被`select`，`poll`或`epoll`会调用的驱动中的设备方法
+//  poll_table - 用于在内核中实现`select`，`poll`或`epoll`系统调用
+unsigned int (*poll) (struct file *filp, poll_table *wait);
+
+// 向`poll_table`结构中添加一个等待队列
+void poll_wait(struct file *, wait_queue_head_t *, poll_table *);
+```
+
+### 驱动实例
+
+[例子"gfifo"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/ldd/io/code/gfifo)，不仅支持阻塞I/O访问，也支持非阻塞I/O访问。当`O_NONBLOCK`标记被设置后，读写操作都变为非阻塞。当设备没有准备好时，读写操作直接返回`-EAGAIN`而不是进入休眠状态。当用户调用`select`，`poll`或`epoll`时，驱动方法`gfifo_poll`被调用，相关等待队列被加入到`poll_table`结构中，以供内核使用。
+
+```cpp title="gfifo.c" hl_lines="7 8 11 14 27 42"
+static unsigned int gfifo_poll(struct file *filp, poll_table *wait)
+{
+    unsigned int mask = 0;
+    struct gfifo_dev *dev = filp->private_data;
+    mutex_lock(&dev->mutex);
+
+    poll_wait(filp, &dev->r_wait, wait);
+    poll_wait(filp, &dev->w_wait, wait);
+
+    if (dev->current_len != 0)
+        mask |= POLLIN | POLLRDNORM;
+
+    if (dev->current_len != GFIFO_SIZE)
+        mask |= POLLOUT | POLLWRNORM;
+
+    mutex_unlock(&dev->mutex);
+    return mask;
+}
+
+static ssize_t gfifo_read(struct file *filp, char __user *buf, size_t count, loff_t *ppos)
+{
+    ...
+    while (dev->current_len == 0)
+    {
+        if (filp->f_flags & O_NONBLOCK)
+        {
+            ret = -EAGAIN;
+            goto out;
+        }
+        ...
+    }
+    ...
+}
+
+static ssize_t gfifo_write(struct file *filp, const char __user *buf, size_t count, loff_t *ppos)
+{
+    ...
+    while (dev->current_len == GFIFO_SIZE)
+    {
+        if (filp->f_flags & O_NONBLOCK)
+        {
+            ret = -EAGAIN;
+            goto out;
+        }
+        ...
+    }
+   ...
+}
+```
+### 用户空间select测试
+
+[例子"gfifo_user_select"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/ldd/io/code/gfifo_user_select)对GFIFO非阻塞I/O行为的在用户空间通过`select`方法进行了测试。其中，一个进程对"/dev/gfifo"设备进行非阻塞读操作，另一个进程在一定时间之后对"/dev/gfifo"设备进行写操作。读进程以1秒`timeout`时间对`select`进行轮询，写进程在一定时间之后向设备写入数据。读进程的轮询操作在多次`timoout`之后，会收到设备可读事件，从而结束。
+
+```cpp title="Non-block IO Select Test" hl_lines="35 44"
+#define GFIFO_DEV "/dev/gfifo"
+const char data[] = "Hello, global gfifo\n";
+
+void sleep_write()
+{
+   printf("[Write Process] Start\n");
+
+   int fd = open(GFIFO_DEV, O_RDWR);
+   assert(fd > 0);
+
+   sleep(5);
+   int n = write(fd, data, sizeof(data));
+   printf("[Write Process] Written %d bytes to the device\n", n);
+
+   close(fd);
+
+   printf("[Write Process] End\n");
+}
+
+void poll_read()
+{
+    printf("[Poll Process] Start\n");
+
+    int fd = open(GFIFO_DEV, O_RDONLY | O_NONBLOCK);
+    char buf[1024];
+    fd_set rfds;
+    struct timeval timeout;
+    while (1)
+    {
+        FD_ZERO(&rfds);
+        FD_SET(fd, &rfds);
+        timeout.tv_sec = 1;
+        timeout.tv_usec = 0;
+
+        int rc = select(fd + 1, &rfds, NULL, NULL, &timeout);
+        if (rc == 0)
+        {
+            printf("[Poll Process] select() timeout, no data to read\n");
+            continue;
+        }
+
+        if (FD_ISSET(fd, &rfds))
+        {
+            int n = read(fd, buf, sizeof(data));
+            printf("[Poll Process] Read %d bytes from the device: %s\n", n, buf);
+            break;
+        }
+    }
+
+    close(fd);
+    printf("[Poll Process] End\n");
+}
+
+int main(int argc, char **argv)
+{
+    pid_t pid = fork();
+    if (pid == 0)
+    {
+        // child process
+        sleep_write();
+        return 0;
+    }
+    // parent process
+    poll_read();
+    wait(NULL);
+    return 0;
+}
+```
+```bash
+> ./main
+[Poll Process] Start
+[Write Process] Start
+[Poll Process] select() timeout, no data to read
+[Poll Process] select() timeout, no data to read
+[Poll Process] select() timeout, no data to read
+[Poll Process] select() timeout, no data to read
+[Write Process] Written 21 bytes to the device
+[Write Process] End
+[Poll Process] Read 21 bytes from the device: Hello, global gfifo
+
+[Poll Process] End
+```
+
+### 用户空间poll测试
+
+[例子"gfifo_user_poll"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/ldd/io/code/gfifo_user_poll)对GFIFO非阻塞I/O行为的在用户空间通过`poll`方法进行了测试，其行为和上述`select`方法的测试类似。
+
+```cpp title="Non-block IO Poll Test" hl_lines="15 24"
+void poll_read()
+{
+    printf("[Poll Process] Start\n");
+
+    int fd = open(GFIFO_DEV, O_RDONLY | O_NONBLOCK);
+    char buf[1024];
+    struct pollfd fds[MAX_POLL_FD];
+    memset(fds, 0, sizeof(fds));
+    fds[0].fd = fd;
+    fds[0].events = POLLIN;
+    int nfds = 1;
+    int timeout = 1 * 1000; // milliseconds
+    while (1)
+    {
+        int event_count = poll(fds, nfds, timeout);
+        if (event_count == 0)
+        {
+            printf("[Poll Process] poll() timeout, no data to read\n");
+            continue;
+        }
+
+        if (fds[0].revents & POLLIN)
+        {
+            int n = read(fds[0].fd, buf, sizeof(data));
+            printf("[Poll Process] Read %d bytes from the device: %s\n", n, buf);
+            break;
+        }
+        printf("[Poll Process] Receive unexpected event 0x%x\n", fds[0].revents);
+    }
+
+    close(fd);
+    printf("[Poll Process] End\n");
+}
+```
+```bash
+> ./main
+[Poll Process] Start
+[Write Process] Start
+[Poll Process] poll() timeout, no data to read
+[Poll Process] poll() timeout, no data to read
+[Poll Process] poll() timeout, no data to read
+[Poll Process] poll() timeout, no data to read
+[Write Process] Written 21 bytes to the device
+[Write Process] End
+[Poll Process] Read 21 bytes from the device: Hello, global gfifo
+
+[Poll Process] End
+```
+
+### 用户空间epoll测试
+
+[例子"gfifo_user_epoll"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/ldd/io/code/gfifo_user_epoll)对GFIFO非阻塞I/O行为的在用户空间通过`epoll`方法进行了测试，其行为和上述`select`、`poll`方法的测试类似。
+
+```cpp title="Non-block IO EPoll Test" hl_lines="7 17 26"
+void poll_read()
+{
+    printf("[Poll Process] Start\n");
+
+    int fd = open(GFIFO_DEV, O_RDONLY | O_NONBLOCK);
+    char buf[1024];
+    int epoll_fd = epoll_create1(0);
+    assert(epoll_fd > 0);
+    struct epoll_event event, events[MAX_EVENTS];
+    event.events = EPOLLIN;
+    event.data.fd = fd;
+    int rc = epoll_ctl(epoll_fd, EPOLL_CTL_ADD, fd, &event);
+    assert(rc != -1);
+    int timeout = 1 * 1000; // milliseconds
+    while (1)
+    {
+        int event_count = epoll_wait(epoll_fd, events, MAX_EVENTS, timeout);
+        if (event_count == 0)
+        {
+            printf("[Poll Process] epoll() timeout, no data to read\n");
+            continue;
+        }
+
+        if (events[0].events & EPOLLIN)
+        {
+            int n = read(events[0].data.fd, buf, sizeof(data));
+            printf("[Poll Process] Read %d bytes from the device: %s\n", n, buf);
+            break;
+        }
+        printf("[Poll Process] Receive unexpected event 0x%x\n", events[0].events);
+    }
+
+    close(fd);
+    printf("[Poll Process] End\n");
+}
+```
+```bash
+> ./main
+[Poll Process] Start
+[Write Process] Start
+[Poll Process] epoll() timeout, no data to read
+[Poll Process] epoll() timeout, no data to read
+[Poll Process] epoll() timeout, no data to read
+[Poll Process] epoll() timeout, no data to read
+[Write Process] Written 21 bytes to the device
+[Write Process] End
+[Poll Process] Read 21 bytes from the device: Hello, global gfifo
+
+[Poll Process] End
+```
