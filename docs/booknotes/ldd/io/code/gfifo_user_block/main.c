@@ -15,6 +15,7 @@ void sleep_write()
    assert(fd > 0);
 
    sleep(1);
+   printf("[Write Process] Start to write after sleep\n");
    int n = write(fd, data, sizeof(data));
    printf("[Write Process] Written %d bytes to the device\n", n);
 
