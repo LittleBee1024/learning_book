@@ -496,4 +496,54 @@ void poll_read()
 [Poll Process] End
 ```
 
-## 异步I/O
+## 异步通知
+
+异步通知是指，当设备准备就绪时，主动通知应用程序，这样应用程序就无需轮询设备是否可访问。在Linux中，异步通知使用信号`SIGIO`来实现。
+
+### 用户程序的角度
+
+为了启动文件的异步通知机制，用户程序必须执行两个步骤：
+
+* 为了让内核指定应该通知哪个进程，需指定一个进程作为文件的“属主(owner)”
+* 设置`FASYNC`标志，启动异步通知机制
+
+[例子"async_stdin"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/ldd/io/code/async_stdin)启用了`stdin`数据文件到当前进程的异步通知机制。当用户输入一串字符后，标准输入设备释放`SIGIO`信号，这个信号驱使对应的`input_handler()`得以执行。
+
+```cpp title="async_stdin" hl_lines="17 19 21 22"
+#define MAX_LEN 100
+void input_handler(int num)
+{
+   char data[MAX_LEN];
+   int len;
+
+   len = read(STDIN_FILENO, &data, MAX_LEN);
+   data[len] = 0;
+   printf("input available:%s\n", data);
+}
+
+int main()
+{
+   int oflags;
+
+   // 1. 连接信号和信号处理函数
+   signal(SIGIO, input_handler);
+   // 2. 通过F_SETOWN设置设备文件的拥有者为本进程，这样设备驱动发出的信号才能被本进程接收
+   fcntl(STDIN_FILENO, F_SETOWN, getpid());
+   // 3. 通过FASYNC，设置异步通知模式，每当FASYNC标志改变时，驱动程序中的`fasync()`函数被执行
+   oflags = fcntl(STDIN_FILENO, F_GETFL);
+   fcntl(STDIN_FILENO, F_SETFL, oflags | FASYNC);
+
+   while (1);
+   return 0;
+}
+```
+```bash
+> ./main
+hello
+input available:hello
+
+world
+input available:world
+```
+
+### 驱动程序的角度
