@@ -23,9 +23,16 @@ struct gfifo_dev
    struct mutex mutex;
    wait_queue_head_t r_wait;
    wait_queue_head_t w_wait;
+   struct fasync_struct *async_queue;
 };
 
 struct gfifo_dev *gfifo_devp;
+
+static int gfifo_fasync(int fd, struct file *filp, int mode)
+{
+   struct gfifo_dev *dev = filp->private_data;
+   return fasync_helper(fd, filp, mode, &dev->async_queue);
+}
 
 static int gfifo_open(struct inode *inode, struct file *filp)
 {
@@ -35,6 +42,7 @@ static int gfifo_open(struct inode *inode, struct file *filp)
 
 static int gfifo_release(struct inode *inode, struct file *filp)
 {
+   gfifo_fasync(-1, filp, 0);
    return 0;
 }
 
@@ -186,6 +194,11 @@ static ssize_t gfifo_write(struct file *filp, const char __user *buf,
 
       wake_up_interruptible(&dev->r_wait);
 
+      if (dev->async_queue) {
+         kill_fasync(&dev->async_queue, SIGIO, POLL_IN);
+         printk(KERN_DEBUG "%s kill SIGIO\n", __func__);
+      }
+
       ret = count;
    }
 
@@ -203,6 +216,7 @@ static const struct file_operations gfifo_fops = {
     .write = gfifo_write,
     .unlocked_ioctl = gfifo_ioctl,
     .poll = gfifo_poll,
+    .fasync = gfifo_fasync,
     .open = gfifo_open,
     .release = gfifo_release,
 };
