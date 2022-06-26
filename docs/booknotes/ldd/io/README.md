@@ -547,3 +547,75 @@ input available:world
 ```
 
 ### 驱动程序的角度
+
+用户程序的动作在驱动程序中所对应的动作是：
+
+* `F_SETOWN`被调用时，驱动程序对`filp->f_owner`赋值，此外什么也不做
+* `F_SETFL`启用`FASYNC`时，驱动程序调用`fasync`文件操作方法，通过`fasync_helper`添加异步通知进程到`struct fasync_struct`数据结构
+* 当数据到达时，通过`kill_fasync`, 所有注册为异步通知的进程都会被发送一个`SIGIO`信号
+
+[例子"gfifo"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/ldd/io/code/gfifo)，通过如下步骤，即可支持异步通知：
+
+```cpp title="GFIFO Driver Async IO"
+struct gfifo_dev
+{
+    ...
+    struct fasync_struct *async_queue;
+};
+
+static int gfifo_fasync(int fd, struct file *filp, int mode)
+{
+    struct gfifo_dev *dev = filp->private_data;
+    return fasync_helper(fd, filp, mode, &dev->async_queue);
+}
+
+static int gfifo_release(struct inode *inode, struct file *filp)
+{
+    gfifo_fasync(-1, filp, 0);
+    return 0;
+}
+
+static ssize_t gfifo_write(struct file *filp, const char __user *buf,
+                           size_t count, loff_t *ppos)
+{
+    ...
+    if (dev->async_queue) {
+        kill_fasync(&dev->async_queue, SIGIO, POLL_IN);
+        printk(KERN_DEBUG "%s kill SIGIO\n", __func__);
+    }
+    ...
+}
+
+static const struct file_operations gfifo_fops = {
+    ...
+    .fasync = gfifo_fasync,
+};
+```
+
+[例子"gfifo_user_async"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/ldd/io/code/gfifo_user_async)在用户空间对GFIFO的异步通知功能进行了测试，读进程接收到`SIGIO`信号后，成功打印出了写进程写入的数据。
+
+```cpp title="Async IO Test" hl_lines="2 18 20"
+static int read_fd = -1;
+static void signalio_handler(int signum)
+{
+    printf("[Read Process - Signal_IO] Receive a signal from global FIFO, signalnum:%d\n", signum);
+    assert(read_fd > 0);
+    char buf[1024];
+    int n = read(read_fd, buf, sizeof(data));
+    printf("[Read Process - Signal_IO] Read %d bytes from the device: %s\n", n, buf);
+    close(read_fd);
+}
+
+void block_read()
+{
+    printf("[Read Process - Main] Start\n");
+
+    read_fd = open(GFIFO_DEV, O_RDWR);
+    signal(SIGIO, signalio_handler);
+    fcntl(read_fd, F_SETOWN, getpid());
+    int oflags = fcntl(read_fd, F_GETFL);
+    fcntl(read_fd, F_SETFL, oflags | FASYNC);
+
+    printf("[Read Process - Main] End\n");
+}
+```
