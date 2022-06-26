@@ -594,7 +594,7 @@ static const struct file_operations gfifo_fops = {
 
 [例子"gfifo_user_async"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/ldd/io/code/gfifo_user_async)在用户空间对GFIFO的异步通知功能进行了测试，读进程接收到`SIGIO`信号后，成功打印出了写进程写入的数据。
 
-```cpp title="Async IO Test" hl_lines="2 18 20"
+```cpp title="Async Signal Test" hl_lines="2 18 20"
 static int read_fd = -1;
 static void signalio_handler(int signum)
 {
