@@ -32,11 +32,11 @@ static int read_and_print_one_i386(unsigned int port, int size)
    }
 
    if (size == 4)
-      printf("%04x: %08x\n", port, inl(port));
+      printf("%04x: 0x%08x\n", port, inl(port));
    else if (size == 2)
-      printf("%04x: %04x\n", port, inw(port));
+      printf("%04x: 0x%04x\n", port, inw(port));
    else
-      printf("%04x: %02x\n", port, inb(port));
+      printf("%04x: 0x%02x\n", port, inb(port));
    return 0;
 }
 
