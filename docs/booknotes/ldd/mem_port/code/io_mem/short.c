@@ -9,8 +9,9 @@
 MODULE_LICENSE("GPL v2");
 
 #define DEVICE_NUM 2
-#define SHORT_MAJOR 110
-#define SHORT_PORT_BASE 0x378
+#define SHORT_MAJOR 109
+#define SHORT_MEM_BASE 0xfe800000  // pnp
+unsigned long io_short_base = 0;
 
 static int short_open(struct inode *inode, struct file *filp)
 {
@@ -26,7 +27,7 @@ static ssize_t short_read(struct file *filp, char __user *buf, size_t size, loff
 {
    int count = size;
    struct inode *inode = file_dentry(filp)->d_inode;
-   unsigned long port = SHORT_PORT_BASE + (iminor(inode) & 0x0f);
+   void *address = (void *)io_short_base + (iminor(inode) & 0x0f);
 
    unsigned char *kbuf = kmalloc(size, GFP_KERNEL);
    unsigned char *ptr = kbuf;
@@ -35,14 +36,14 @@ static ssize_t short_read(struct file *filp, char __user *buf, size_t size, loff
 
    while (size--)
    {
-      *(ptr++) = inb(port);
+      *(ptr++) = ioread8(address);
       rmb();
    }
 
    if (copy_to_user(buf, kbuf, count))
       count = -EFAULT;
 
-   printk(KERN_INFO "[short_read] port=0x%lx, kbuf[0]=%d, count=%d\n", port, kbuf[0], count);
+   printk(KERN_INFO "[short_read] address=0x%lx, kbuf[0]=%d, count=%d\n", (unsigned long) address, kbuf[0], count);
 
    kfree(kbuf);
    return count;
@@ -52,7 +53,7 @@ static ssize_t short_write(struct file *filp, const char __user *buf, size_t siz
 {
    int count = size;
    struct inode *inode = file_dentry(filp)->d_inode;
-   unsigned long port = SHORT_PORT_BASE + (iminor(inode) & 0x0f);
+   void *address = (void *)io_short_base + (iminor(inode) & 0x0f);
 
    unsigned char *kbuf = kmalloc(size, GFP_KERNEL);
    unsigned char *ptr = kbuf;
@@ -64,11 +65,11 @@ static ssize_t short_write(struct file *filp, const char __user *buf, size_t siz
 
    while (count > 0 && size--)
    {
-      outb(*(ptr++), port);
+      iowrite8(*(ptr++), address);
       wmb();
    }
 
-   printk(KERN_INFO "[short_write] port=0x%lx, kbuf[0]=%d, count=%d\n", port, kbuf[0], count);
+   printk(KERN_INFO "[short_write] address=0x%lx, kbuf[0]=%d, count=%d\n", (unsigned long) address, kbuf[0], count);
 
    kfree(kbuf);
    return count;
@@ -86,17 +87,19 @@ static int __init short_init(void)
 {
    int result;
 
-   if (!request_region(SHORT_PORT_BASE, DEVICE_NUM, "short"))
+   if (!request_mem_region(SHORT_MEM_BASE, DEVICE_NUM, "short"))
    {
-      printk(KERN_INFO "[short_init] can't get I/O port address 0x%x\n", SHORT_PORT_BASE);
+      printk(KERN_INFO "[short_init] can't get I/O mem address 0x%x\n", SHORT_MEM_BASE);
       return -ENODEV;
    }
+   io_short_base = (unsigned long) ioremap(SHORT_MEM_BASE, DEVICE_NUM);
+   printk(KERN_INFO "[short_init] ioremap returns 0x%lx\n", io_short_base);
 
    result = register_chrdev(SHORT_MAJOR, "short", &short_fops);
    if (result < 0)
    {
       printk(KERN_INFO "[short_init] can't get major number\n");
-      release_region(SHORT_PORT_BASE, DEVICE_NUM);
+      release_mem_region(SHORT_MEM_BASE, DEVICE_NUM);
       return result;
    }
    printk(KERN_INFO "[short_init] done\n");
@@ -108,7 +111,8 @@ module_init(short_init);
 static void __exit short_exit(void)
 {
    unregister_chrdev(SHORT_MAJOR, "short");
-   release_region(SHORT_PORT_BASE, DEVICE_NUM);
+   iounmap((void __iomem *)io_short_base);
+   release_mem_region(SHORT_MEM_BASE, DEVICE_NUM);
    printk(KERN_INFO "[short_exit] done\n");
 }
 module_exit(short_exit);
