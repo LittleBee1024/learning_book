@@ -619,3 +619,41 @@ void block_read()
     printf("[Read Process - Main] End\n");
 }
 ```
+
+## mmap操作
+
+一般情况下，用户空间是不可能也不应该直接访问设备的，但是，设备驱动程序中可通过实现`mmap()`函数，使得用户空间能直接访问设备的物理地址。当用户访问用户空间的某个特定地址时，实际上会转化为对设备的访问。
+
+当用户调用`mmap()`系统调用时，内核会进行如下处理：
+
+* 在进程的虚拟空间查找一块VMA
+* 将这块VMA进行映射
+* 如果设备驱动程序的`file_operations`定义了`mmap`操作，则调用它
+    * 驱动程序中的`mmap`操作需要建立页表，并填充VMA结构体中的`vm_operations_struct`指针
+* 将这个VMA插入进程的VMA链表中
+
+### VMA
+VMA通过`vm_area_struct`结构体描述，针对VMA的操作都被包含在`vm_operations_struct`结构体中：
+```cpp
+struct vm_operations_struct {
+    // 被mmap()系统调用所调用
+    void (*open)(struct vm_area_struct * area);
+    // 被munmap()系统调用所调用
+    void (*close)(struct vm_area_struct * area);
+    // 当发生缺页异常时被调用
+    vm_fault_t (*fault)(struct vm_fault *vmf);
+    ...
+};
+```
+
+驱动程序中的`mmap`操作最主要的任务就是建立虚拟地址到物理地址的映射关系，一般有两种方式完成此操作：
+
+* 调用`remap_pfn_range()`函数，在创建的时候完成
+    ```cpp
+    // 为"addr ~ addr+size"的虚拟地址构造页面
+    //  pfn - 虚拟地址应该映射到的物理地址的页帧号(物理地址右移PAGE_SHIFT)
+    //  prot - 新页所要求的保护属性
+    int remap_pfn_range(struct vm_area_struct *vma, unsigned long addr, unsigned long pfn, unsigned long size, pgprot_t prot);
+    ```
+* 实现`fault()`函数，在访问的时完成
+    * 找到虚拟地址所对应的物理页的页描述符
