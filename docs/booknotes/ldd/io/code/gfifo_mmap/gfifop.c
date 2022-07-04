@@ -217,8 +217,8 @@ out2:
 
 void gfifop_vma_open(struct vm_area_struct *vma)
 {
-   printk(KERN_INFO "GFIFOP VMA open, virt %lx, phys %lx\n",
-          vma->vm_start, vma->vm_pgoff << PAGE_SHIFT);
+   printk(KERN_INFO "GFIFOP VMA open, vm_start %lx, vm_end %lx, vm_pgoff %lx\n",
+          vma->vm_start, vma->vm_end, vma->vm_pgoff);
 }
 
 void gfifop_vma_close(struct vm_area_struct *vma)

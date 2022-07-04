@@ -7,30 +7,23 @@
 #include <string.h>
 #include <errno.h>
 #include <sys/user.h>
+#include <sys/ioctl.h>
 
 #define GFIFOP_DEV "/dev/gfifop"
-#define GFIFOP_MMAP_SIZE (PAGE_SIZE * 1)
+#define MEM_CLEAR 0x1
 const char data[] = "Hello, global gfifop\n";
 
-void mmap_write()
+void normal_write()
 {
    printf("[Write Process] Start\n");
 
    int fd = open(GFIFOP_DEV, O_RDWR);
    assert(fd > 0);
 
-   void *ptr = mmap(NULL, GFIFOP_MMAP_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
-   assert(ptr != MAP_FAILED);
+   printf("[Write Process] Start to write after sleep\n");
+   int n = write(fd, data, sizeof(data));
+   printf("[Write Process] Written %d bytes to the device\n", n);
 
-   char data[GFIFOP_MMAP_SIZE];
-   for (int i = 0; i < GFIFOP_MMAP_SIZE; i++)
-      data[i] = 'a' + (char)(i % 26);
-
-   memcpy(ptr, data, GFIFOP_MMAP_SIZE);
-   printf("[Write Process] Written %zu bytes to the device\n", GFIFOP_MMAP_SIZE);
-
-   int rc = munmap(ptr, GFIFOP_MMAP_SIZE);
-   assert(rc == 0);
    close(fd);
 
    printf("[Write Process] End\n");
@@ -43,20 +36,29 @@ void mmap_read()
    int fd = open(GFIFOP_DEV, O_RDWR);
    assert(fd > 0);
 
-   const size_t read_size = 26;
-   void *ptr = mmap(NULL, read_size, PROT_READ, MAP_SHARED, fd, 0);
+   const size_t MMAP_SIZE = sizeof(data);
+   void *ptr = mmap(NULL, MMAP_SIZE, PROT_READ, MAP_SHARED, fd, 0);
    assert(ptr != MAP_FAILED);
 
-   char buf[read_size + 1];
-   buf[read_size] = 0;
-   memcpy(buf, ptr, read_size);
-   printf("[Read Process] Read %zu bytes from the device: %s\n", read_size, buf);
+   char buf[MMAP_SIZE + 1];
+   buf[MMAP_SIZE] = 0;
+   memcpy(buf, ptr, MMAP_SIZE);
+   printf("[Read Process] Read %zu bytes from the device: %s\n", MMAP_SIZE, buf);
 
-   int rc = munmap(ptr, read_size);
+   int rc = munmap(ptr, MMAP_SIZE);
    assert(rc == 0);
    close(fd);
 
    printf("[Read Process] End\n");
+}
+
+void clear_gfifo()
+{
+   int fd = open(GFIFOP_DEV, O_RDWR);
+   assert(fd > 0);
+   int rc = ioctl(fd, MEM_CLEAR);
+   assert(rc == 0);
+   close(fd);
 }
 
 int main(int argc, char **argv)
@@ -65,7 +67,7 @@ int main(int argc, char **argv)
    if (pid == 0)
    {
       // child process
-      mmap_write();
+      normal_write();
       return 0;
    }
 
@@ -73,6 +75,9 @@ int main(int argc, char **argv)
    int rc = wait(NULL);
    assert(rc != -1);
    mmap_read();
+
+   // mmap read doesn't change the "dev->current_len" in the driver
+   clear_gfifo();
 
    return 0;
 }
