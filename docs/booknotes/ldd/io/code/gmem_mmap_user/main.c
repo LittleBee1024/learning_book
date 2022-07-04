@@ -20,7 +20,6 @@ void normal_write()
    int fd = open(GMEMP_DEV, O_RDWR);
    assert(fd > 0);
 
-   printf("[Write Process] Start to write after sleep\n");
    int n = write(fd, data, sizeof(data));
    printf("[Write Process] Written %d bytes to the device\n", n);
 

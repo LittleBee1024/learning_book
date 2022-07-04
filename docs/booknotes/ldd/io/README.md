@@ -657,3 +657,125 @@ struct vm_operations_struct {
     ```
 * 实现`fault()`函数，在访问的时完成
     * 找到虚拟地址所对应的物理页的页描述符
+
+
+### 驱动实例
+
+由于硬件的限制，我们的实验将内核中申请的某块内存映射到用户空间，而不是将设备的物理地址映射到用户空间。[例子"gmem_mmap"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/ldd/io/code/gmem_mmap)，创建了一个"/dev/gmemp"设备。该设备就是一块全局内存(大小是一页)，用户可以通过`read/write`系统调用进行读写，也可以通过`mmap`系统调用将地址映射到用户空间进行读写。
+
+```cpp title="GMEMP" hl_lines="24 30 37 43 50"
+void gmemp_vma_open(struct vm_area_struct *vma)
+{
+    printk(KERN_INFO "GMEMP VMA open, vm_start %lx, vm_end %lx, vm_pgoff %lx\n",
+            vma->vm_start, vma->vm_end, vma->vm_pgoff);
+}
+
+void gmemp_vma_close(struct vm_area_struct *vma)
+{
+    printk(KERN_INFO "GMEMP VMA close.\n");
+}
+
+static vm_fault_t gmemp_vma_nopage(struct vm_fault *vmf)
+{
+    unsigned long offset;
+    struct vm_area_struct *vma = vmf->vma;
+    struct gmemp_dev *dev = vma->vm_private_data;
+    struct page *page = NULL;
+    void *pageptr = NULL;
+
+    offset = (unsigned long)(vmf->address - vma->vm_start) + (vma->vm_pgoff << PAGE_SHIFT);
+    if (offset >= dev->total_size)
+        return VM_FAULT_NOPAGE;
+
+    pageptr = (void *)&dev->mem[offset];
+    if (!pageptr)
+        return VM_FAULT_NOPAGE;
+
+    page = virt_to_page(pageptr);
+    get_page(page);
+    vmf->page = page;
+    return 0;
+}
+
+struct vm_operations_struct gmemp_vm_ops = {
+    .open = gmemp_vma_open,
+    .close = gmemp_vma_close,
+    .fault = gmemp_vma_nopage,
+};
+
+int gmemp_mmap(struct file *filp, struct vm_area_struct *vma)
+{
+    /* don't do anything here: "nopage" will set up page table entries */
+    vma->vm_ops = &gmemp_vm_ops;
+    vma->vm_private_data = filp->private_data;
+    gmemp_vma_open(vma);
+    return 0;
+}
+
+static const struct file_operations gmemp_fops = {
+    .mmap = gmemp_mmap,
+    ...
+};
+```
+
+### 用户空间测试
+
+[例子"gmem_mmap_user"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/ldd/io/code/gmem_mmap_user)对"GMEMP"驱动的`mmap`操作进行了测试。一个进程通过`write`系统调用，往全局内存中写入数据；另一个进程通过`mmap`系统调用，从全区内存中读出数据。
+```cpp title="GMEMP Test"
+#define GMEMP_DEV "/dev/gmemp"
+const char data[] = "Hello, global gmemp\n";
+
+void normal_write()
+{
+   printf("[Write Process] Start\n");
+   int fd = open(GMEMP_DEV, O_RDWR);
+
+   int n = write(fd, data, sizeof(data));
+   printf("[Write Process] Written %d bytes to the device\n", n);
+
+   close(fd);
+   printf("[Write Process] End\n");
+}
+
+void mmap_read()
+{
+   printf("[Read Process] Start\n");
+
+   int fd = open(GMEMP_DEV, O_RDWR);
+   const size_t MMAP_SIZE = sizeof(data);
+   void *ptr = mmap(NULL, MMAP_SIZE, PROT_READ, MAP_SHARED, fd, 0);
+
+   char buf[MMAP_SIZE + 1];
+   buf[MMAP_SIZE] = 0;
+   memcpy(buf, ptr, MMAP_SIZE);
+   printf("[Read Process] Read %zu bytes from the device: %s\n", MMAP_SIZE, buf);
+
+   munmap(ptr, MMAP_SIZE);
+   close(fd);
+
+   printf("[Read Process] End\n");
+}
+
+int main(int argc, char **argv)
+{
+   pid_t pid = fork();
+   if (pid == 0)
+   {
+      normal_write();
+      return 0;
+   }
+   wait(NULL);
+   mmap_read();
+   return 0;
+}
+```
+```bash
+> ./main
+[Write Process] Start
+[Write Process] Written 21 bytes to the device
+[Write Process] End
+[Read Process] Start
+[Read Process] Read 21 bytes from the device: Hello, global gmemp
+
+[Read Process] End
+```
