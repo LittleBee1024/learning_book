@@ -135,6 +135,7 @@ nav:
       - booknotes/ldd/module/README.md
       - booknotes/ldd/cdev/README.md
       - booknotes/ldd/io/README.md
+      - booknotes/ldd/mem_port/README.md
     - booknotes/csapp/README.md
   - Demos:
     - demos/webassembly/README.md
