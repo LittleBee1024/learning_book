@@ -27,16 +27,9 @@ struct gfifop_dev
    struct mutex mutex;
    wait_queue_head_t r_wait;
    wait_queue_head_t w_wait;
-   struct fasync_struct *async_queue;
 };
 
 struct gfifop_dev *gfifop_devp;
-
-static int gfifop_fasync(int fd, struct file *filp, int mode)
-{
-   struct gfifop_dev *dev = filp->private_data;
-   return fasync_helper(fd, filp, mode, &dev->async_queue);
-}
 
 static int gfifop_open(struct inode *inode, struct file *filp)
 {
@@ -46,7 +39,6 @@ static int gfifop_open(struct inode *inode, struct file *filp)
 
 static int gfifop_release(struct inode *inode, struct file *filp)
 {
-   gfifop_fasync(-1, filp, 0);
    return 0;
 }
 
@@ -70,30 +62,6 @@ static long gfifop_ioctl(struct file *filp, unsigned int cmd,
       return -EINVAL;
    }
    return 0;
-}
-
-static unsigned int gfifop_poll(struct file *filp, poll_table *wait)
-{
-   unsigned int mask = 0;
-   struct gfifop_dev *dev = filp->private_data;
-
-   mutex_lock(&dev->mutex);
-
-   poll_wait(filp, &dev->r_wait, wait);
-   poll_wait(filp, &dev->w_wait, wait);
-
-   if (dev->current_len != 0)
-   {
-      mask |= POLLIN | POLLRDNORM;
-   }
-
-   if (dev->current_len != dev->total_size)
-   {
-      mask |= POLLOUT | POLLWRNORM;
-   }
-
-   mutex_unlock(&dev->mutex);
-   return mask;
 }
 
 static ssize_t gfifop_read(struct file *filp, char __user *buf,
@@ -198,12 +166,6 @@ static ssize_t gfifop_write(struct file *filp, const char __user *buf,
 
       wake_up_interruptible(&dev->r_wait);
 
-      if (dev->async_queue)
-      {
-         kill_fasync(&dev->async_queue, SIGIO, POLL_IN);
-         printk(KERN_DEBUG "%s kill SIGIO\n", __func__);
-      }
-
       ret = count;
    }
 
@@ -276,8 +238,6 @@ static const struct file_operations gfifop_fops = {
     .write = gfifop_write,
     .unlocked_ioctl = gfifop_ioctl,
     .mmap = gfifop_mmap,
-    .poll = gfifop_poll,
-    .fasync = gfifop_fasync,
     .open = gfifop_open,
     .release = gfifop_release,
 };
