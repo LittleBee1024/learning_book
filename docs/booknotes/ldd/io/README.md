@@ -647,7 +647,7 @@ struct vm_operations_struct {
     //  prot - 新页所要求的保护属性
     int remap_pfn_range(struct vm_area_struct *vma, unsigned long addr, unsigned long pfn, unsigned long size, pgprot_t prot);
     ```
-* 实现`fault()`函数，在访问的时完成
+* 实现`fault()`函数，在访问的时候完成（可参考下面的例子）
     * 找到虚拟地址所对应的物理页的页描述符
 
 
