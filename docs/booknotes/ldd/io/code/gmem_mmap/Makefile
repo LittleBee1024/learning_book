@@ -1,4 +1,4 @@
-MODULE_NAME = gfifop
+MODULE_NAME = gmemp
 
 ifneq (${KERNELRELEASE},)
 
@@ -21,9 +21,9 @@ insmod:
 
 MODULE_MAJOR = $(shell awk '$$2=="${MODULE_NAME}" {print $$1}' /proc/devices)
 install: insmod
-	sudo mknod /dev/gfifop c $(MODULE_MAJOR) 0
-	sudo chown `users` /dev/gfifop
+	sudo mknod /dev/$(MODULE_NAME) c $(MODULE_MAJOR) 0
+	sudo chown `users` /dev/$(MODULE_NAME)
 
 uninstall:
-	sudo rm -rf /dev/gfifop
+	sudo rm -rf /dev/$(MODULE_NAME)
 	sudo rmmod $(MODULE_NAME).ko

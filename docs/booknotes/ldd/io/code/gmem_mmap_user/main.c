@@ -9,15 +9,15 @@
 #include <sys/user.h>
 #include <sys/ioctl.h>
 
-#define GFIFOP_DEV "/dev/gfifop"
+#define GMEMP_DEV "/dev/gmemp"
 #define MEM_CLEAR 0x1
-const char data[] = "Hello, global gfifop\n";
+const char data[] = "Hello, global gmemp\n";
 
 void normal_write()
 {
    printf("[Write Process] Start\n");
 
-   int fd = open(GFIFOP_DEV, O_RDWR);
+   int fd = open(GMEMP_DEV, O_RDWR);
    assert(fd > 0);
 
    printf("[Write Process] Start to write after sleep\n");
@@ -33,7 +33,7 @@ void mmap_read()
 {
    printf("[Read Process] Start\n");
 
-   int fd = open(GFIFOP_DEV, O_RDWR);
+   int fd = open(GMEMP_DEV, O_RDWR);
    assert(fd > 0);
 
    const size_t MMAP_SIZE = sizeof(data);
@@ -54,7 +54,7 @@ void mmap_read()
 
 void clear_gfifo()
 {
-   int fd = open(GFIFOP_DEV, O_RDWR);
+   int fd = open(GMEMP_DEV, O_RDWR);
    assert(fd > 0);
    int rc = ioctl(fd, MEM_CLEAR);
    assert(rc == 0);
@@ -76,7 +76,6 @@ int main(int argc, char **argv)
    assert(rc != -1);
    mmap_read();
 
-   // mmap read doesn't change the "dev->current_len" in the driver
    clear_gfifo();
 
    return 0;
