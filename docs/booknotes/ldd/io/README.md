@@ -162,16 +162,14 @@ static ssize_t gfifo_write(struct file *filp, const char __user *buf, size_t cou
 
 [例子"gfifo_user_block"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/ldd/io/code/gfifo_user_block)是对上述"gfifo"驱动阻塞I/O行为的在用户空间的测试。其中，一个进程对"/dev/gfifo"设备进行读操作，另一个进程在一定时间之后对"/dev/gfifo"设备进行写操作。读进程会一直阻塞，直到写进程完成写操作。
 
-```cpp title="GFIFO Block I/O Test"
+```cpp title="GFIFO Block I/O Test" hl_lines="11 24"
 #define GFIFO_DEV "/dev/gfifo"
 const char data[] = "Hello, global gfifo\n";
 
 void sleep_write()
 {
    printf("[Write Process] Start\n");
-
    int fd = open(GFIFO_DEV, O_RDWR);
-   assert(fd > 0);
 
    sleep(1);
    printf("[Write Process] Start to write after sleep\n");
@@ -179,7 +177,6 @@ void sleep_write()
    printf("[Write Process] Written %d bytes to the device\n", n);
 
    close(fd);
-
    printf("[Write Process] End\n");
 }
 
@@ -188,14 +185,11 @@ void block_read()
    printf("[Read Process] Start\n");
 
    int fd = open(GFIFO_DEV, O_RDWR);
-   assert(fd > 0);
-
    char buf[1024];
    int n = read(fd, buf, sizeof(data));
    printf("[Read Process] Read %d bytes from the device: %s\n", n, buf);
 
    close(fd);
-
    printf("[Read Process] End\n");
 }
 
@@ -204,11 +198,9 @@ int main(int argc, char **argv)
    pid_t pid = fork();
    if (pid == 0)
    {
-      // child process
       sleep_write();
       return 0;
    }
-   // parent process
    block_read();
    wait(NULL);
    return 0;
@@ -721,7 +713,7 @@ static const struct file_operations gmemp_fops = {
 ### 用户空间测试
 
 [例子"gmem_mmap_user"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/ldd/io/code/gmem_mmap_user)对"GMEMP"驱动的`mmap`操作进行了测试。一个进程通过`write`系统调用，往全局内存中写入数据；另一个进程通过`mmap`系统调用，从全区内存中读出数据。
-```cpp title="GMEMP Test"
+```cpp title="GMEMP Test" hl_lines="22"
 #define GMEMP_DEV "/dev/gmemp"
 const char data[] = "Hello, global gmemp\n";
 
