@@ -94,7 +94,51 @@ module_init(short_init);
 
 ### 用户读写
 
+Linux内核提供了一系列的函数，让用户可以方便访问I/O端口，包括：
+```cpp
+// 读写字节端口（8位）
+unsigned inb(unsigned port);
+void outb(unsigned char byte, unsigned port);
 
+// 读写字端口（16位）
+unsigned inw(unsigned port);
+void outw(unsigned short word, unsigned port);
+
+// 读写长字端口（32位）
+unsigned inl(unsigned port);
+void outl(unsigned longword, unsigned port);
+```
+
+[例子"io_port_user/inp"和"io_port_user/outp"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/ldd/mem_port/code/io_port_user)分别提供了读写I/O端口的方法：
+
+```cpp title="inp/main.c" hl_lines="5 7 9"
+static int read_and_print_one_i386(unsigned int port, int size)
+{
+    ...
+    if (size == 4)
+        printf("%04x: 0x%08x\n", port, inl(port));
+    else if (size == 2)
+        printf("%04x: 0x%04x\n", port, inw(port));
+    else
+        printf("%04x: 0x%02x\n", port, inb(port));
+    return 0;
+}
+```
+```cpp title="outp/main.c" hl_lines="5 7 9"
+static int write_one_i386(unsigned int port, int size)
+{
+    ...
+    if (size == 4)
+        outl(val, port);
+    else if (size == 2)
+        outw(val & 0xffff, port);
+    else
+        outb(val & 0xff, port);
+    return 0;
+}
+```
+
+除了上述访问方式外，用户也可以直接通过读写`/dev/port`文件，对I/O端口进行访问。可直接参考上面例子中的其他代码，此处不再赘述。
 
 ## I/O内存
 内存空间可以直接通过地址、指针来访问。
