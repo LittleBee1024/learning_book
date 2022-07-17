@@ -12,7 +12,7 @@
 ## I/O端口
 在x86处理器中存在着I/O空间，而大多数嵌入式控制器(如ARM、PowerPC等)中并不提供I/O空间，只存在内存空间。I/O空间通过特定的指令`in`和`out`来访问。
 
-在linux中`/proc/ioports`记录了系统分配的所有I/O端口。例如，下面所列出的端口都已经被对应的驱动所占用：
+在linux中，`/proc/ioports`记录了系统分配的所有I/O端口。例如，下面所列出的端口都已经被对应的驱动所占用：
 ```bash
 > sudo cat /proc/ioports
 0000-0cf7 : PCI Bus 0000:00
@@ -47,12 +47,21 @@
 
 ```cpp
 #include <linux/ioport.h>
+
 // 注册I/O端口
 //  first - 端口起始地址
 //  n - 需注册的端口个数
 //  name - 设备名称，显示在/proc/ioports中
 struct resource *request_region(unsigned long first, unsigned long n, const char *name);
+
+// 释放I/O端口
+void release_region(unsigned long start, unsigned long n);
 ```
+
+I/O端口访问的一种途径是直接使用I/O端口操作函数。在设备打开或驱动模块被加载时申请I/O端口区域，之后使用`inb`、`outb`等进行端口访问，最后在设备关闭或驱动被卸载时释放I/O端口范围。下图展示了I/O端口访问的基本流程：
+
+![io_port_seq](./images/io_port_seq.png)
+
 
 ### 驱动程序
 
@@ -141,8 +150,46 @@ static int write_one_i386(unsigned int port, int size)
 除了上述访问方式外，用户也可以直接通过读写`/dev/port`文件，对I/O端口进行访问。可直接参考上面例子中的其他代码，此处不再赘述。
 
 ## I/O内存
-内存空间可以直接通过地址、指针来访问。
+在linux中，`/proc/iomem`记录了系统分配的所有I/O内存。例如，下面所列出的地址都对应了相应的驱动：
+```bash
+> sudo cat /proc/iomem 
+00000000-00000fff : Reserved
+00001000-0009e7ff : System RAM
+0009e800-0009ffff : Reserved
+000a0000-000bffff : PCI Bus 0000:00
+000c0000-000c7fff : Video ROM
+000ca000-000cafff : Adapter ROM
+000cb000-000ccfff : Adapter ROM
+00000000-00000000 : PCI Bus 0000:00
+00000000-00000000 : PCI Bus 0000:00
+000d0000-000dbfff : PCI Bus 0000:00
+000dc000-000fffff : Reserved
+  000f0000-000fffff : System ROM
+00100000-bfedffff : System RAM
+bfee0000-bfefefff : ACPI Tables
+bfeff000-bfefffff : ACPI Non-volatile Storage
+bff00000-bfffffff : System RAM
+c0000000-febfffff : PCI Bus 0000:00
+  c0000000-c0003fff : 0000:00:10.0
+  e5b00000-e5bfffff : PCI Bus 0000:22
+  ...
+```
 
+和I/O端口一样，在使用I/O内存前，需要先通过`request_mem_region`向内核申请：
+```cpp
+#include <linux/ioport.h>
+
+// 申请I/O内存，从start开始分配len字节长的内存区域
+//  name - 设备名称，显示在/proc/iomem中
+struct resource *request_mem_region(unsigned long start, unsigned long len, char *name);
+
+// 释放I/O内存
+void release_mem_region(unsigned long start, unsigned long len);
+```
+
+I/O内存的访问首先是调用`request_mem_region`申请资源，接着将寄存器地址通过`ioremap`映射到内核空间虚拟地址，之后就可以通过Linux设备访问编程接口访问这些设备的寄存器了。访问完成后，应对`ioremap`申请的虚拟地址进行释放，并释放`release_mem_region`申请的I/O内存资源。下图展示了I/O内存访问的基本流程：
+
+![io_mem_seq](./images/io_mem_seq.png)
 
 ### 驱动程序
 
