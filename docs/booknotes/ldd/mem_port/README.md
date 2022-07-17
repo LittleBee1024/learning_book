@@ -203,26 +203,26 @@ unsigned long io_short_base = 0;
 
 static int __init short_init(void)
 {
-   int result;
+    int result;
 
-   if (!request_mem_region(SHORT_MEM_BASE, DEVICE_NUM, "short"))
-   {
-      printk(KERN_INFO "[short_init] can't get I/O mem address 0x%x\n", SHORT_MEM_BASE);
-      return -ENODEV;
-   }
-   io_short_base = (unsigned long) ioremap(SHORT_MEM_BASE, DEVICE_NUM);
-   printk(KERN_INFO "[short_init] ioremap returns 0x%lx\n", io_short_base);
+    if (!request_mem_region(SHORT_MEM_BASE, DEVICE_NUM, "short"))
+    {
+        printk(KERN_INFO "[short_init] can't get I/O mem address 0x%x\n", SHORT_MEM_BASE);
+        return -ENODEV;
+    }
+    io_short_base = (unsigned long) ioremap(SHORT_MEM_BASE, DEVICE_NUM);
+    printk(KERN_INFO "[short_init] ioremap returns 0x%lx\n", io_short_base);
 
-   result = register_chrdev(SHORT_MAJOR, "short", &short_fops);
-   if (result < 0)
-   {
-      printk(KERN_INFO "[short_init] can't get major number\n");
-      release_mem_region(SHORT_MEM_BASE, DEVICE_NUM);
-      return result;
-   }
-   printk(KERN_INFO "[short_init] done\n");
+    result = register_chrdev(SHORT_MAJOR, "short", &short_fops);
+    if (result < 0)
+    {
+        printk(KERN_INFO "[short_init] can't get major number\n");
+        release_mem_region(SHORT_MEM_BASE, DEVICE_NUM);
+        return result;
+    }
+    printk(KERN_INFO "[short_init] done\n");
 
-   return 0;
+    return 0;
 }
 module_init(short_init);
 ```
