@@ -2,7 +2,6 @@
 
 > [《Linux设备驱动程序》 - 第三版 ](https://1drv.ms/b/s!AkcJSyT7tq80d6mS7pO12K6Qb30)的第9章，[《Linux设备驱动开发详解》 - 宋宝华 ](https://1drv.ms/b/s!AkcJSyT7tq80eFABEg8fSOajqHk)的第11章，的读书笔记，本文中的所有代码可在[GitHub仓库](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/ldd/mem_port/code)中找到，本文中的实验涉及与硬件的通信，可能会由于硬件的原因，无法得到期望的结果
 
-## I/O端口和I/O内存
 设备通常会提供一组寄存器来控制设备、读写设备和获取设备状态，即控制寄存器、数据寄存器和状态寄存器。这些寄存器可能位于**I/O空间**中，也可能位于**内存空间**中。
 
 * 当位于I/O空间时，被称为I/O端口
@@ -10,7 +9,7 @@
 
 ![mem_port](./images/mem_port.png)
 
-### I/O空间
+## I/O端口
 在x86处理器中存在着I/O空间，而大多数嵌入式控制器(如ARM、PowerPC等)中并不提供I/O空间，只存在内存空间。I/O空间通过特定的指令`in`和`out`来访问。
 
 在linux中`/proc/ioports`记录了系统分配的所有I/O端口。例如，下面所列出的端口都已经被对应的驱动所占用：
@@ -55,7 +54,7 @@
 struct resource *request_region(unsigned long first, unsigned long n, const char *name);
 ```
 
-#### 读写实验
+### 驱动程序
 
 [驱动"io_port"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/ldd/mem_port/code/io_port)通过`request_region`在"0x378"I/O端口上，注册了一个名为"short"的I/O端口驱动：
 ```cpp title="IO Port Driver" hl_lines="3 9"
@@ -93,10 +92,14 @@ module_init(short_init);
   0378-0379 : short
 ```
 
-### 内存空间
+### 用户读写
+
+
+
+## I/O内存
 内存空间可以直接通过地址、指针来访问。
 
 
-#### 读写实验
+### 驱动程序
 
-
+### 用户读写
