@@ -55,12 +55,48 @@
 struct resource *request_region(unsigned long first, unsigned long n, const char *name);
 ```
 
-#### 用户空间读写
+#### 读写实验
+
+[驱动"io_port"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/ldd/mem_port/code/io_port)通过`request_region`在"0x378"I/O端口上，注册了一个名为"short"的I/O端口驱动：
+```cpp title="IO Port Driver" hl_lines="3 9"
+#define DEVICE_NUM 2
+#define SHORT_MAJOR 110
+#define SHORT_PORT_BASE 0x378
+
+static int __init short_init(void)
+{
+    int result;
+
+    if (!request_region(SHORT_PORT_BASE, DEVICE_NUM, "short"))
+    {
+        printk(KERN_INFO "[short_init] can't get I/O port address 0x%x\n", SHORT_PORT_BASE);
+        return -ENODEV;
+    }
+
+    result = register_chrdev(SHORT_MAJOR, "short", &short_fops);
+    if (result < 0)
+    {
+        printk(KERN_INFO "[short_init] can't get major number\n");
+        release_region(SHORT_PORT_BASE, DEVICE_NUM);
+        return result;
+    }
+    printk(KERN_INFO "[short_init] done\n");
+
+    return 0;
+}
+module_init(short_init);
+```
+
+安装上"short"驱动后，会在`/proc/ioports`文件中对应的位置（0x378），出现"short"驱动：
+```bash
+> sudo cat /proc/ioports | grep short
+  0378-0379 : short
+```
 
 ### 内存空间
 内存空间可以直接通过地址、指针来访问。
 
 
-#### 用户空间读写
+#### 读写实验
 
 
