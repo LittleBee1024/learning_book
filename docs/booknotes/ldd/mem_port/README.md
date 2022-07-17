@@ -193,4 +193,44 @@ I/O内存的访问首先是调用`request_mem_region`申请资源，接着将寄
 
 ### 驱动程序
 
+[驱动"io_mem"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/ldd/mem_port/code/io_mem)通过`request_mem_region`在"0xfe800000"地址上，注册了一个名为"short"的I/O内存驱动：
+
+```cpp title="IO Mem Driver" hl_lines="3 10 15"
+#define DEVICE_NUM 2
+#define SHORT_MAJOR 109
+#define SHORT_MEM_BASE 0xfe800000  // pnp
+unsigned long io_short_base = 0;
+
+static int __init short_init(void)
+{
+   int result;
+
+   if (!request_mem_region(SHORT_MEM_BASE, DEVICE_NUM, "short"))
+   {
+      printk(KERN_INFO "[short_init] can't get I/O mem address 0x%x\n", SHORT_MEM_BASE);
+      return -ENODEV;
+   }
+   io_short_base = (unsigned long) ioremap(SHORT_MEM_BASE, DEVICE_NUM);
+   printk(KERN_INFO "[short_init] ioremap returns 0x%lx\n", io_short_base);
+
+   result = register_chrdev(SHORT_MAJOR, "short", &short_fops);
+   if (result < 0)
+   {
+      printk(KERN_INFO "[short_init] can't get major number\n");
+      release_mem_region(SHORT_MEM_BASE, DEVICE_NUM);
+      return result;
+   }
+   printk(KERN_INFO "[short_init] done\n");
+
+   return 0;
+}
+module_init(short_init);
+```
+
+安装上"short"驱动后，会在`/proc/iomem`文件中对应的位置（0xfe800000），出现"short"驱动：
+```bash
+> sudo cat /proc/iomem | grep short
+    fe800000-fe800001 : short
+```
+
 ### 用户读写
