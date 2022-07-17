@@ -234,3 +234,7 @@ module_init(short_init);
 ```
 
 ### 用户读写
+
+当I/O内存通过`ioremap`映射到内核空间虚拟地址后，内核空间就可以通过此虚拟地址，自由访问I/O内存空间了。如果想让用户空间也能访问I/O内存，可在驱动中实现`mmap`函数，将I/O内存的地址映射到用户空间。或者，也可以通过读写`/dev/mem`文件，在用户空间访问I/O内存。
+
+[例子"io_mem_user/inm"和"io_mem_user/outm"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/ldd/mem_port/code/io_mem_user)通过读写`/dev/mem`文件，可访问相应位置的I/O内存。
