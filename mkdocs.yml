@@ -126,6 +126,7 @@ nav:
     - Debug Hacks:
       - booknotes/debug_hacks/basic/README.md
       - booknotes/debug_hacks/advance/README.md
+      - booknotes/debug_hacks/dwarf/README.md
     - Linux高性能服务器编程:
       - booknotes/hplsp/tcp_ip/README.md
       - booknotes/hplsp/socket/README.md
