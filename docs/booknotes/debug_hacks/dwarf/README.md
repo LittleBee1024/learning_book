@@ -38,6 +38,7 @@ DIE(Debugging Infromation Entry)是DWARF中最基本的单元。每个DIE由一�
 
 | DIE标签 | 描述 |
 | --- | --- |
+| DW_TAG_compile_unit | Represents the compile unit information |
 | DW_TAG_class_type | Represents the class name and type information |
 | DW_TAG_structure_type | Represents the structure name and type information |
 | DW_TAG_union_type | Represents the union name and type information |
@@ -58,3 +59,14 @@ DIE(Debugging Infromation Entry)是DWARF中最基本的单元。每个DIE由一�
 | DW_AT_sibling | Represents the sibling location information |
 | DW_AT_data_member_location | Represents the location information |
 | DW_AT_virtuality | Is set when it is virtual |
+
+## 调试信息
+`readelf --debug-dump=info <elf>`命令可打印ELF文件中的".debug_info"内容，其他段的内容也可以通过`readelf`的相关命令获取。下面通过[例子"debug_format"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/debug_hacks/dwarf/code/debug_format)，介绍各种类型的调试信息。
+
+### 编译单元信息
+
+### 类信息
+
+### 函数信息
+
+### 类型信息
