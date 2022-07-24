@@ -137,7 +137,8 @@ nav:
       - booknotes/ldd/cdev/README.md
       - booknotes/ldd/io/README.md
       - booknotes/ldd/mem_port/README.md
-    - booknotes/csapp/README.md
+    - 深入理解计算机系统:
+      - booknotes/csapp/01/README.md
   - Demos:
     - demos/webassembly/README.md
     - demos/cmake/README.md
