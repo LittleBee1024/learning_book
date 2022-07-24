@@ -250,4 +250,25 @@ int main()
     * 参数1是`base`类的指针类型，位于`<0x3af>`
     * 参数2是`int`类型，位于`<0x65>`
 
+### 行信息
+`readelf --debug-dump=decodedline main`命令可以".debug_line"段中的信息：
 
+```bash title=".debug_line段中的行信息"
+File name                            Line number    Starting address    View    Stmt
+main.cpp                                      19              0x1198               x
+main.cpp                                      21              0x11a7               x
+main.cpp                                      22              0x11ae               x
+main.cpp                                      22              0x11b1               x
+
+main.cpp                                      26              0x1149               x
+main.cpp                                      26              0x1155               x
+main.cpp                                      27              0x1164               x
+main.cpp                                      29              0x116b               x
+main.cpp                                      30              0x117c               x
+main.cpp                                      30              0x1197               x
+```
+
+".debug_line"段建立了源文件行号和程序地址的一一对应关系：
+
+* 当在某一行号设置断点时，调试器可通过".debug_line"段，根据源文件行号找到对应的地址
+* 当某指令发生错误时，调试器可通过".debug_line"段，根据出错地址定位到源文件行号
