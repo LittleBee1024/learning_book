@@ -135,6 +135,8 @@ int main()
 * `DW_TAG_typedef` - `typedef`标签
     * `DW_AT_name` - `typedef`自定义的类型名：`int_type`
     * `DW_AT_type` - `typedef`的原始类型，此处的`<0x65>`是`int`类型的位置
+    * `DW_AT_decl_file` - 源代码文件编号，通过`readelf --debug-dump=line main`中的`The File Name Table`可查看对应文件名。例如，"main.cpp"的编号为1，"stddef.h"的编号为2
+    * `DW_AT_decl_line` - 源代码文件中的行号
 
 [源文件"main.cpp"](./code/debug_format/main.cpp)中的`enum myenum { Jan = 1, Feb = 2}`，在".debug_info"段中对应信息如下：
 
@@ -221,3 +223,31 @@ int main()
 * 其他内容和普通类一样
 
 ### 函数信息
+[源文件"main.cpp"](./code/debug_format/main.cpp)中的`void myclass::display(int x)`，在".debug_info"段中对应信息如下：
+```bash title=".debug_info段中的函数信息"
+ <2><382>: Abbrev Number: 22 (DW_TAG_subprogram)
+    <383>   DW_AT_external    : 1
+    <383>   DW_AT_name        : (indirect string, offset: 0x3c7b): display
+    <387>   DW_AT_decl_file   : 1
+    <388>   DW_AT_decl_line   : 19
+    <389>   DW_AT_decl_column : 9
+    <38a>   DW_AT_linkage_name: (indirect string, offset: 0x1141): _ZN7myclass7displayEi
+    <38e>   DW_AT_accessibility: 1	(public)
+    <38f>   DW_AT_declaration : 1
+    <38f>   DW_AT_object_pointer: <0x393>
+ <3><393>: Abbrev Number: 23 (DW_TAG_formal_parameter)
+    <394>   DW_AT_type        : <0x3af>
+    <398>   DW_AT_artificial  : 1
+ <3><398>: Abbrev Number: 24 (DW_TAG_formal_parameter)
+    <399>   DW_AT_type        : <0x65>
+```
+
+* `DW_TAG_subprogram` - 函数标签
+    * 函数名为`display`
+    * `display`函数定义在"main.cpp"中的第19行
+    * `_ZN7myclass7displayEi`是`myclass::display`的函数编码后的符号
+* `DW_TAG_formal_parameter` - 函数参数标签
+    * 参数1是`base`类的指针类型，位于`<0x3af>`
+    * 参数2是`int`类型，位于`<0x65>`
+
+
