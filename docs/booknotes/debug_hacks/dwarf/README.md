@@ -61,12 +61,163 @@ DIE(Debugging Infromation Entry)是DWARF中最基本的单元。每个DIE由一�
 | DW_AT_virtuality | Is set when it is virtual |
 
 ## 调试信息
-`readelf --debug-dump=info <elf>`命令可打印ELF文件中的".debug_info"内容，其他段的内容也可以通过`readelf`的相关命令获取。下面通过[例子"debug_format"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/debug_hacks/dwarf/code/debug_format)，介绍各种类型的调试信息。
+`readelf --debug-dump=info <elf>`命令可打印ELF文件中的".debug_info"内容，其他段的内容也可以通过`readelf`的相关命令获取。下面通过[例子"debug_format"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/debug_hacks/dwarf/code/debug_format)，介绍各种类型的调试信息，[源文件"main.cpp"](./code/debug_format/main.cpp)的内容如下：
+```cpp
+#include <stdio.h>
+
+typedef int int_type;
+enum myenum { Jan = 1, Feb = 2};
+
+class base
+{
+public:
+    int basemember;
+};
+
+class myclass : public base
+{
+public:
+    int a;
+    char b[8];
+    int_type c;
+    myenum myclass_myenum;
+    void display(int x)
+    {
+        x = 4;
+    }
+};
+
+int main()
+{
+    int test = 3;
+    myclass mc;
+    mc.display(test);
+}
+```
 
 ### 编译单元信息
+```bash title=".debug_info段中的编译单元信息"
+ <0><b>: Abbrev Number: 1 (DW_TAG_compile_unit)
+    <c>   DW_AT_producer    : (indirect string, offset: 0x3d42): GNU C++14 9.4.0 -mtune=generic -march=x86-64 -g3 -O0 -fno-inline -fasynchronous-unwind-tables -fstack-protector-strong -fstack-clash-protection -fcf-protection
+    <10>   DW_AT_language    : 4	(C++)
+    <11>   DW_AT_name        : (indirect string, offset: 0x1138): main.cpp
+    <15>   DW_AT_comp_dir    : (indirect string, offset: 0x2fc8): /home/ben/GitHub/learning_book/docs/booknotes/debug_hacks/dwarf/code/debug_format
+    <19>   DW_AT_ranges      : 0x0
+    <1d>   DW_AT_low_pc      : 0x0
+    <25>   DW_AT_stmt_list   : 0x0
+    <29>   DW_AT_GNU_macros  : 0x0
+```
 
-### 类信息
-
-### 函数信息
+* `DW_TAG_compile_unit` - 编译单元标签
+    * `DW_AT_name` - 编译单元的文件名为"main.cpp"
+    * `DW_AT_comp_dir` - 编译单元文件夹
 
 ### 类型信息
+
+[源文件"main.cpp"](./code/debug_format/main.cpp)中的`typedef int int_type`，在".debug_info"段中对应信息如下：
+
+```bash title=".debug_info段中的typedef"
+ <1><65>: Abbrev Number: 5 (DW_TAG_base_type)
+    <66>   DW_AT_byte_size   : 4
+    <67>   DW_AT_encoding    : 5	(signed)
+    <68>   DW_AT_name        : int
+ ...
+ <1><2f5>: Abbrev Number: 2 (DW_TAG_typedef)
+    <2f6>   DW_AT_name        : (indirect string, offset: 0xd73): int_type
+    <2fa>   DW_AT_decl_file   : 1
+    <2fb>   DW_AT_decl_line   : 3
+    <2fc>   DW_AT_decl_column : 13
+    <2fd>   DW_AT_type        : <0x65>
+```
+
+* `DW_TAG_base_type` - 基本类型
+    * DWARF规定了常见基本类型的信息，如长度为4bytes的`int`类型
+* `DW_TAG_typedef` - `typedef`标签
+    * `DW_AT_name` - `typedef`自定义的类型名：`int_type`
+    * `DW_AT_type` - `typedef`的原始类型，此处的`<0x65>`是`int`类型的位置
+
+[源文件"main.cpp"](./code/debug_format/main.cpp)中的`enum myenum { Jan = 1, Feb = 2}`，在".debug_info"段中对应信息如下：
+
+```bash title=".debug_info段中的enum"
+ <1><301>: Abbrev Number: 16 (DW_TAG_enumeration_type)
+    <302>   DW_AT_name        : (indirect string, offset: 0x546): myenum
+    <306>   DW_AT_encoding    : 7	(unsigned)
+    <307>   DW_AT_byte_size   : 4
+    <308>   DW_AT_type        : <0x40>
+    <30c>   DW_AT_decl_file   : 1
+    <30d>   DW_AT_decl_line   : 4
+    <30e>   DW_AT_decl_column : 6
+    <30f>   DW_AT_sibling     : <0x320>
+ <2><313>: Abbrev Number: 17 (DW_TAG_enumerator)
+    <314>   DW_AT_name        : Jan
+    <318>   DW_AT_const_value : 1
+ <2><319>: Abbrev Number: 17 (DW_TAG_enumerator)
+    <31a>   DW_AT_name        : Feb
+    <31e>   DW_AT_const_value : 2
+```
+
+* `DW_TAG_enumeration_type` - 枚举类型标签
+    * 包括枚举成员的类型和大小
+* `DW_TAG_enumerator` - 枚举常量标签
+    * 包括枚举成员的名字和值
+
+
+### 类信息
+[源文件"main.cpp"](./code/debug_format/main.cpp)中的基类`bash`，在".debug_info"段中对应信息如下：
+```bash title=".debug_info段中的基类信息"
+ <1><320>: Abbrev Number: 18 (DW_TAG_class_type)
+    <321>   DW_AT_name        : (indirect string, offset: 0x230e): base
+    <325>   DW_AT_byte_size   : 4
+    <326>   DW_AT_decl_file   : 1
+    <327>   DW_AT_decl_line   : 6
+    <328>   DW_AT_decl_column : 7
+    <329>   DW_AT_sibling     : <0x33c>
+ <2><32d>: Abbrev Number: 19 (DW_TAG_member)
+    <32e>   DW_AT_name        : (indirect string, offset: 0x25db): basemember
+    <332>   DW_AT_decl_file   : 1
+    <333>   DW_AT_decl_line   : 9
+    <334>   DW_AT_decl_column : 8
+    <335>   DW_AT_type        : <0x65>
+    <339>   DW_AT_data_member_location: 0
+    <33a>   DW_AT_accessibility: 1	(public)
+ <2><33b>: Abbrev Number: 0
+```
+
+* `DW_TAG_class_type` - 类标签
+    * 基类的名字是`base`，大小为4bytes
+    * `DW_AT_sibling` - 兄弟标签的位置，表明当前位置到`<0x33c>`之前的内容都是当前类的信息
+* `DW_TAG_member` - 类成员标签
+    * 基类成员的名字是`basemember`
+    * 基类成员的类型定义在`<0x65>`处，是大小为4bytes的`int`类型
+    * `DW_AT_accessibility` - 类成员的访问属性
+
+源文件中，`myclass`类继承了`base`类，继承类在".debug_info"段中对应信息如下：
+
+```bash title=".debug_info段中的继承类信息"
+ <1><33c>: Abbrev Number: 18 (DW_TAG_class_type)
+    <33d>   DW_AT_name        : (indirect string, offset: 0x4380): myclass
+    <341>   DW_AT_byte_size   : 24
+    <342>   DW_AT_decl_file   : 1
+    <343>   DW_AT_decl_line   : 12
+    <344>   DW_AT_decl_column : 7
+    <345>   DW_AT_sibling     : <0x39f>
+ <2><349>: Abbrev Number: 20 (DW_TAG_inheritance)
+    <34a>   DW_AT_type        : <0x320>
+    <34e>   DW_AT_data_member_location: 0
+    <34f>   DW_AT_accessibility: 1	(public)
+ <2><350>: Abbrev Number: 21 (DW_TAG_member)
+    <351>   DW_AT_name        : a
+    <353>   DW_AT_decl_file   : 1
+    <354>   DW_AT_decl_line   : 15
+    <355>   DW_AT_decl_column : 8
+    <356>   DW_AT_type        : <0x65>
+    <35a>   DW_AT_data_member_location: 4
+    <35b>   DW_AT_accessibility: 1	(public)
+    ...
+```
+
+* `DW_TAG_inheritance` - 继承信息标签
+    * 继承了定义在`<0x320>`处的基类`base`
+* 其他内容和普通类一样
+
+### 函数信息
