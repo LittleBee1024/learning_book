@@ -16,5 +16,21 @@
 
 因此，计算机中的信息，可以理解为**位+上下文**。当我们解释某个信息时，不仅要知道它是什么，还要知道它处于什么环境。
 
+## 如何让程序跑起来
+以["hello world"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/csapp/01/code/hello/main.c)程序为例，计算机是如何通过一串数字，在屏幕上显式"hello, world"字样的？
 
+### 生成可执行文件
+
+![compile_link](./images/compile_link.png)
+
+上图显式了从源文件"hello.c"到可执行文件"hello"的过程，主要包括：
+
+* 预处理阶段
+* 编译阶段
+* 汇编阶段
+* 链接阶段
+
+更详细的过程，可参考博文[《程序员的自我修养-编译》](../../cxydzwxy/compile/README.md)。
+
+### 运行可执行文件
 
