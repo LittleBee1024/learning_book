@@ -1,6 +1,6 @@
 # GDB
 
-> GDB的高级用法，所有样例可在[GitHub仓库](https://github.com/LittleBee1024/learning_book/tree/main/docs/projects/gdb/code)中找到
+> GDB的高级用法，所有样例可在[GitHub仓库](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/debug_hacks/gdb/code)中找到
 
 ## 简介
 GDB用于程序调试，常见的操作有：
@@ -50,7 +50,7 @@ GDB用于程序调试，常见的操作有：
     -ex "bt"
     Reading symbols from ./main...
     Catchpoint 1 (throw)
-    Starting program: /home/yuxiangw/GitHub/learning_book/docs/projects/gdb/code/catch_throw/main 
+    Starting program: /home/yuxiangw/GitHub/learning_book/docs/booknotes/debug_hacks/gdb/code/catch_throw/main 
     start
 
     Catchpoint 1 (exception thrown), 0x00007ffff7e448b2 in __cxa_throw ()
@@ -71,7 +71,7 @@ GDB用于程序调试，常见的操作有：
     -ex "bt"
     Reading symbols from ./main...
     Catchpoint 1 (fork)
-    Starting program: /home/yuxiangw/GitHub/learning_book/docs/projects/gdb/code/catch_fork/main 
+    Starting program: /home/yuxiangw/GitHub/learning_book/docs/booknotes/debug_hacks/gdb/code/catch_fork/main 
     Fork example
 
     Catchpoint 1 (forked process 1767571), arch_fork (ctid=0x7ffff7fb2810) at ../sysdeps/unix/sysv/linux/arch-fork.h:49
@@ -92,7 +92,7 @@ GDB用于程序调试，常见的操作有：
     -ex "bt"
     Reading symbols from ./main...
     Catchpoint 1 (standard signals)
-    Starting program: /home/yuxiangw/GitHub/learning_book/docs/projects/gdb/code/catch_signal/main 
+    Starting program: /home/yuxiangw/GitHub/learning_book/docs/booknotes/debug_hacks/gdb/code/catch_signal/main 
     Catch signal example
     [Detaching after fork from child process 1796689]
     This is parent process to handle SIGUSR1 signal [process PID: 1796685, signal sender PID: 1796689].
@@ -168,7 +168,7 @@ GDB用于程序调试，常见的操作有：
     -ex "info inferiors"
     Reading symbols from ./main...
     Breakpoint 1 at 0x1468: file main.cpp, line 18.
-    Starting program: /home/yuxiangw/GitHub/learning_book/docs/projects/gdb/code/threads/main 
+    Starting program: /home/yuxiangw/GitHub/learning_book/docs/booknotes/debug_hacks/gdb/code/threads/main 
     [Thread debugging using libthread_db enabled]
     Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
     [New Thread 0x7ffff7a12700 (LWP 1821943)]
@@ -194,7 +194,7 @@ GDB用于程序调试，常见的操作有：
         futex_word=0x55555555a188 <cv+40>) at ../sysdeps/nptl/futex-internal.h:183
     * 5    Thread 0x7ffff620f700 (LWP 1821946) "main" signals () at main.cpp:18
     Num  Description       Executable        
-    * 1    process 1821939   /home/yuxiangw/GitHub/learning_book/docs/projects/gdb/code/threads/main 
+    * 1    process 1821939   /home/yuxiangw/GitHub/learning_book/docs/booknotes/debug_hacks/gdb/code/threads/main 
     ```
 
 ## 其他常见命令
