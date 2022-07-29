@@ -1,6 +1,6 @@
 # WebAssembly
 
-> 简单的“WebAssembly + C/Cpp”样例，所有样例可在[GitHub仓库](https://github.com/LittleBee1024/learning_book/tree/main/docs/demos/webassembly/code)中找到
+> 简单的“WebAssembly + C/Cpp”样例，所有样例可在[GitHub仓库](https://github.com/LittleBee1024/learning_book/tree/main/docs/projects/webassembly/code)中找到
 
 ## WebAssembly with C
 ### [代码实例](./code/hello_c)

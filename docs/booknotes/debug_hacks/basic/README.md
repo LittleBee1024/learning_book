@@ -47,7 +47,7 @@ Register | Purpose                                        | Saved across calls
 
 ## 函数调用和栈
 
-> 本章节结合[GDB](../../../demos/gdb/README.md)的调试信息，介绍了栈在程序运行中的作用
+> 本章节结合[GDB](../../../projects/gdb/README.md)的调试信息，介绍了栈在程序运行中的作用
 
 ### 栈的布局
 
