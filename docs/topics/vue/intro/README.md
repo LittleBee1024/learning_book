@@ -1,6 +1,6 @@
 # Vue3简介
 
-> 介绍`Vue3.0`的基本用法和响应性模型，所有样例可在[GitHub仓库](https://github.com/LittleBee1024/learning_book/tree/main/docs/projects/vue/intro/code)中找到
+> 介绍`Vue3.0`的基本用法和响应性模型，所有样例可在[GitHub仓库](https://github.com/LittleBee1024/learning_book/tree/main/docs/topics/vue/intro/code)中找到
 
 ## 声明式渲染
 ### [代码实例](./code/decl_render)

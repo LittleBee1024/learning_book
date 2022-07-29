@@ -1,6 +1,6 @@
 # 组件复用
 
-> 介绍`Vue3.0`中组件复用技术，所有样例可在[GitHub仓库](https://github.com/LittleBee1024/learning_book/tree/main/docs/projects/vue/components/code/)中找到
+> 介绍`Vue3.0`中组件复用技术，所有样例可在[GitHub仓库](https://github.com/LittleBee1024/learning_book/tree/main/docs/topics/vue/components/code/)中找到
 
 ## 渲染控制
 ### [条件渲染v-if实例](./code/v-if)

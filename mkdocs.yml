@@ -3,7 +3,7 @@ site_name: Little Bee Blog
 site_url: https://littlebee1024.github.io/learning_book/
 site_author: Little Bee
 site_description: >-
-  A blog about technical things, such as book notes and simple projects.
+  A blog about technical things, such as book notes and simple topics.
 
 # Repository
 repo_name: littlebee1024/learning_book
@@ -114,8 +114,8 @@ extra_javascript:
 
 # Page tree
 nav:
-  - Home: README.md
-  - Book Notes:
+  - 首页: README.md
+  - 笔记:
     - 程序员的自我修养:
       - booknotes/cxydzwxy/concurrency/README.md
       - booknotes/cxydzwxy/compile/README.md
@@ -141,10 +141,10 @@ nav:
     - 深入理解计算机系统:
       - booknotes/csapp/01/README.md
       - booknotes/csapp/02/README.md
-  - Projects:
-    - projects/webassembly/README.md
-    - projects/cmake/README.md
+  - 专题:
+    - topics/webassembly/README.md
+    - topics/cmake/README.md
     - Vue3:
-      - projects/vue/intro/README.md
-      - projects/vue/components/README.md
-      - projects/vue/demo/README.md
+      - topics/vue/intro/README.md
+      - topics/vue/components/README.md
+      - topics/vue/demo/README.md
