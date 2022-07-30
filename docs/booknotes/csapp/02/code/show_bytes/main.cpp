@@ -13,7 +13,6 @@ void show_bytes(byte_pointer start, size_t len)
 template <typename T>
 void show(T x)
 {
-   printf("Type %s:", typeid(T).name());
    show_bytes((byte_pointer)&x, sizeof(x));
 }
 
