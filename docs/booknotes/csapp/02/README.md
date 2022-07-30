@@ -8,6 +8,15 @@
 
 [例子"sizeof"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/csapp/02/code/sizeof)打印了常见类型的大小。其中，`long`类型在32位机器上是"4 bytes"，在64位机器上是"8 bytes"。
 
+```bash
+> ./main
+char: 1
+int: 4
+long: 8
+long long: 8
+float: 4
+double: 8
+```
 ### 字节顺序
 
 [例子"show_bytes"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/csapp/02/code/show_bytes)按字节大小，打印了不同类型变量的在内存中的值。
