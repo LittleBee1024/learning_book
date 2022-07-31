@@ -141,6 +141,7 @@ nav:
     - 深入理解计算机系统:
       - booknotes/csapp/01/README.md
       - booknotes/csapp/02/README.md
+      - booknotes/csapp/03/README.md
   - 专题:
     - topics/webassembly/README.md
     - topics/cmake/README.md
