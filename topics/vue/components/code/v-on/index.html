@@ -1,0 +1,19 @@
+<html>
+
+<head>
+   <meta charset="UTF-8">
+   <script src="https://unpkg.com/vue@next"></script>
+</head>
+
+<div id="app">
+   <div id="parent01" @click="say($event, 'parent01_clicked')">
+      <button @click="say($event, 'button_clicked')">Click_Without_Modifier</button>
+   </div>
+   <div id="parent02" @click="say($event, 'parent02_clicked')">
+      <button @click.stop="say($event, 'button_clicked')">Click_With_Stop</button>
+   </div>
+</div>
+
+<script src="index.js"></script>
+
+</html>

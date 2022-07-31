@@ -1,0 +1,53 @@
+body {
+   margin : 0px;
+   padding: 0px;
+}
+
+.el-header {
+   background-color    : #ffa724;
+   /* flex layout https://www.ruanyifeng.com/blog/2015/07/flex-grammar.html */
+   display             : flex;
+   align-items         : center;
+   justify-content     : flex-start;
+   height              : 50px;
+}
+
+.el-aside {
+   background-color: white;
+   text-align      : left;
+   padding         : 0px;
+   margin          : 10px;
+}
+
+.el-main {
+   background-color: #e9eef3;
+   text-align      : center;
+   height          : auto;
+   min-height      : 500px;
+}
+
+.el-footer {
+   background-color: black;
+   color           : white;
+   display         : flex;
+   align-items     : center;
+   justify-content : flex-end;
+   height          : 50px;
+}
+
+.grid-content {
+   border-radius: 4px;
+   min-height   : 36px;
+}
+
+.bg-purple {
+   background: #d3dce6;
+}
+
+.bg-purple-dark {
+   background: #99a9bf;
+}
+
+.bg-purple-light {
+   background: #e5e9f2;
+}

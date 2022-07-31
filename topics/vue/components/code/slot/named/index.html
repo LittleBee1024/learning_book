@@ -1,0 +1,24 @@
+<html>
+
+<head>
+   <meta charset="UTF-8">
+   <script src="https://unpkg.com/vue@next"></script>
+</head>
+
+<div id="app">
+   <named-slot></named-slot>
+   <br />
+   <named-slot>
+      <p>A paragraph for the main content.</p>
+      <template v-slot:header>
+         <h1>Here might be a page title</h1>
+      </template>
+      <template #footer>
+         <p>Here's some contact info</p>
+      </template>
+   </named-slot>
+</div>
+
+<script src="index.js"></script>
+
+</html>

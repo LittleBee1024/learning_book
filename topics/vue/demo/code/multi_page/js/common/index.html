@@ -1,0 +1,19 @@
+<html>
+
+<head>
+   <link rel="stylesheet" href="../../css/common.css">
+   <script src="https://unpkg.com/vue@next"></script>
+</head>
+
+<body>
+   <div id="app">
+      <root />
+   </div>
+
+   <script type="module">
+      import vCommon from './index.js'
+      Vue.createApp({}).component('root', vCommon).mount('#app')
+   </script>
+</body>
+
+</html>

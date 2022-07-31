@@ -1,0 +1,1798 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="A blog about technical things, such as book notes and simple topics.">
+      
+      
+        <meta name="author" content="Little Bee">
+      
+      
+        <link rel="canonical" href="https://littlebee1024.github.io/learning_book/booknotes/debug_hacks/basic/">
+      
+      <link rel="icon" href="../../../home/logo.png">
+      <meta name="generator" content="mkdocs-1.3.1, mkdocs-material-8.3.9">
+    
+    
+      
+        <title>调试前的必知必会 - Little Bee Blog</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.1d29e8d0.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.cbb835fc.min.css">
+        
+      
+      
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noto+Sans+Simplified+Chinese:300,300i,400,400i,700,700i%7CConsolas:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Noto Sans Simplified Chinese";--md-code-font:"Consolas"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+  
+
+
+  
+  
+
+
+  <script>function gtag(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],gtag("js",new Date),gtag("config","G-G2RFHH3DL4"),document.addEventListener("DOMContentLoaded",function(){document.forms.search&&document.forms.search.query.addEventListener("blur",function(){this.value&&gtag("event","search",{search_term:this.value})}),"undefined"!=typeof location$&&location$.subscribe(function(e){gtag("config","G-G2RFHH3DL4",{page_path:e.pathname})})})</script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-G2RFHH3DL4"></script>
+
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="orange" data-md-color-accent="orange">
+  
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&"object"==typeof palette.color)for(var key of Object.keys(palette.color))document.body.setAttribute("data-md-color-"+key,palette.color[key])</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#_1" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="Little Bee Blog" class="md-header__button md-logo" aria-label="Little Bee Blog" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17.4 9C17 7.8 16.2 7 15 6.5V5h-1v1.4h-.4c-1.1 0-2 .4-2.8 1.2l-.4.4L9 7.5c-.3-.1-.6-.2-1-.2-.6 0-1.2.2-1.7.6-.6.4-.9.9-1.1 1.4-.2.7-.2 1.3 0 2 .3.7.6 1.2 1.1 1.5-.4 1.5-.1 2.8 1 3.9.8.8 1.7 1.2 2.8 1.2.5 0 .8 0 1.1-.1.6.8 1.4 1.3 2.4 1.3.3 0 .7 0 1-.1.6-.2 1-.6 1.4-1.1.4-.6.6-1.1.6-1.7 0-.4 0-.7-.1-1l-.5-1.6.6-.4c.8-.8 1.2-1.9 1.1-3.1H19V9h-1.6m-9.7 2.3c-.6-.3-.8-.7-.6-1.3.2-.6.6-.8 1.2-.6l3.2 1.2c-1.6.8-2.8 1-3.8.7m6.3 5.6c-.6.2-1 0-1.3-.6-.3-1-.1-2.2.7-3.8l1.2 3.1c.2.7 0 1.1-.6 1.3m1.2-5.3-.6-1.6v-.1l-.3-.3h-.1L12.6 9c.4-.3.8-.5 1.3-.5s1 .2 1.4.6c.4.4.6.8.6 1.3-.2.3-.4.8-.7 1.2Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Little Bee Blog
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              调试前的必知必会
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      <form class="md-header__option" data-md-component="palette">
+        
+          
+          
+          <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="orange" data-md-color-accent="orange"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+          
+            <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6zm0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4zM7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+            </label>
+          
+        
+          
+          
+          <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="orange" data-md-color-accent="orange"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_2">
+          
+            <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3Z"/></svg>
+            </label>
+          
+        
+      </form>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7 0-.24-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91 1.61 0 2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08Z"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/littlebee1024/learning_book" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    littlebee1024/learning_book
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-tabs__inner md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="../../.." class="md-tabs__link">
+      首页
+    </a>
+  </li>
+
+      
+        
+  
+  
+    
+  
+
+
+  
+  
+  
+    
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../cxydzwxy/concurrency/" class="md-tabs__link md-tabs__link--active">
+        笔记
+      </a>
+    </li>
+  
+
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../topics/webassembly/" class="md-tabs__link">
+        专题
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Little Bee Blog" class="md-nav__button md-logo" aria-label="Little Bee Blog" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17.4 9C17 7.8 16.2 7 15 6.5V5h-1v1.4h-.4c-1.1 0-2 .4-2.8 1.2l-.4.4L9 7.5c-.3-.1-.6-.2-1-.2-.6 0-1.2.2-1.7.6-.6.4-.9.9-1.1 1.4-.2.7-.2 1.3 0 2 .3.7.6 1.2 1.1 1.5-.4 1.5-.1 2.8 1 3.9.8.8 1.7 1.2 2.8 1.2.5 0 .8 0 1.1-.1.6.8 1.4 1.3 2.4 1.3.3 0 .7 0 1-.1.6-.2 1-.6 1.4-1.1.4-.6.6-1.1.6-1.7 0-.4 0-.7-.1-1l-.5-1.6.6-.4c.8-.8 1.2-1.9 1.1-3.1H19V9h-1.6m-9.7 2.3c-.6-.3-.8-.7-.6-1.3.2-.6.6-.8 1.2-.6l3.2 1.2c-1.6.8-2.8 1-3.8.7m6.3 5.6c-.6.2-1 0-1.3-.6-.3-1-.1-2.2.7-3.8l1.2 3.1c.2.7 0 1.1-.6 1.3m1.2-5.3-.6-1.6v-.1l-.3-.3h-.1L12.6 9c.4-.3.8-.5 1.3-.5s1 .2 1.4.6c.4.4.6.8.6 1.3-.2.3-.4.8-.7 1.2Z"/></svg>
+
+    </a>
+    Little Bee Blog
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/littlebee1024/learning_book" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    littlebee1024/learning_book
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        首页
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2">
+          笔记
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="笔记" data-md-level="1">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          笔记
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_1" type="checkbox" id="__nav_2_1" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2_1">
+          程序员的自我修养
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="程序员的自我修养" data-md-level="2">
+        <label class="md-nav__title" for="__nav_2_1">
+          <span class="md-nav__icon md-icon"></span>
+          程序员的自我修养
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cxydzwxy/concurrency/" class="md-nav__link">
+        并发
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cxydzwxy/compile/" class="md-nav__link">
+        编译
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_1_3" type="checkbox" id="__nav_2_1_3" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2_1_3">
+          链接
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="链接" data-md-level="3">
+        <label class="md-nav__title" for="__nav_2_1_3">
+          <span class="md-nav__icon md-icon"></span>
+          链接
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cxydzwxy/link/static/" class="md-nav__link">
+        静态链接
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cxydzwxy/link/dynamic/" class="md-nav__link">
+        动态链接
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cxydzwxy/load/" class="md-nav__link">
+        装载
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_2" type="checkbox" id="__nav_2_2" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2_2">
+          Debug Hacks
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Debug Hacks" data-md-level="2">
+        <label class="md-nav__title" for="__nav_2_2">
+          <span class="md-nav__icon md-icon"></span>
+          Debug Hacks
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          调试前的必知必会
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        调试前的必知必会
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    寄存器和汇编代码
+  </a>
+  
+    <nav class="md-nav" aria-label="寄存器和汇编代码">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#x86_64" class="md-nav__link">
+    x86_64寄存器
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    常见操作符
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    函数调用和栈
+  </a>
+  
+    <nav class="md-nav" aria-label="函数调用和栈">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    栈的布局
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gdbbacktrace" class="md-nav__link">
+    GDB的backtrace
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    栈大小的限制
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    参数传递
+  </a>
+  
+    <nav class="md-nav" aria-label="参数传递">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#x86_65" class="md-nav__link">
+    x86_64
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#i386" class="md-nav__link">
+    i386
+  </a>
+  
+    <nav class="md-nav" aria-label="i386">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#i386_1" class="md-nav__link">
+    i386中的寄存器调用
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#c" class="md-nav__link">
+    C++
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advance/" class="md-nav__link">
+        高级调试技术
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gdb/" class="md-nav__link">
+        GDB
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dwarf/" class="md-nav__link">
+        DWARF
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_3" type="checkbox" id="__nav_2_3" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2_3">
+          Linux高性能服务器编程
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Linux高性能服务器编程" data-md-level="2">
+        <label class="md-nav__title" for="__nav_2_3">
+          <span class="md-nav__icon md-icon"></span>
+          Linux高性能服务器编程
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hplsp/tcp_ip/" class="md-nav__link">
+        TCP/IP协议
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hplsp/socket/" class="md-nav__link">
+        套接字基础
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hplsp/multi_io/" class="md-nav__link">
+        IO复用
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hplsp/adv_io/" class="md-nav__link">
+        高级IO函数
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_4" type="checkbox" id="__nav_2_4" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2_4">
+          Linux设备驱动程序
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Linux设备驱动程序" data-md-level="2">
+        <label class="md-nav__title" for="__nav_2_4">
+          <span class="md-nav__icon md-icon"></span>
+          Linux设备驱动程序
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ldd/module/" class="md-nav__link">
+        内核模块
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ldd/cdev/" class="md-nav__link">
+        字符设备驱动
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ldd/io/" class="md-nav__link">
+        高级I/O操作
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ldd/mem_port/" class="md-nav__link">
+        与硬件通信
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_5" type="checkbox" id="__nav_2_5" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2_5">
+          深入理解计算机系统
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="深入理解计算机系统" data-md-level="2">
+        <label class="md-nav__title" for="__nav_2_5">
+          <span class="md-nav__icon md-icon"></span>
+          深入理解计算机系统
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../csapp/01/" class="md-nav__link">
+        计算机漫游
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../csapp/02/" class="md-nav__link">
+        信息的表示和处理
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../csapp/03/" class="md-nav__link">
+        程序的机器表示
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3">
+          专题
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="专题" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          专题
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../topics/webassembly/" class="md-nav__link">
+        WebAssembly
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../topics/cmake/" class="md-nav__link">
+        CMake
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_3" type="checkbox" id="__nav_3_3" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_3">
+          Vue3
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Vue3" data-md-level="2">
+        <label class="md-nav__title" for="__nav_3_3">
+          <span class="md-nav__icon md-icon"></span>
+          Vue3
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../topics/vue/intro/" class="md-nav__link">
+        Vue3简介
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../topics/vue/components/" class="md-nav__link">
+        组件复用
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../topics/vue/demo/" class="md-nav__link">
+        样例模板
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    寄存器和汇编代码
+  </a>
+  
+    <nav class="md-nav" aria-label="寄存器和汇编代码">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#x86_64" class="md-nav__link">
+    x86_64寄存器
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    常见操作符
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    函数调用和栈
+  </a>
+  
+    <nav class="md-nav" aria-label="函数调用和栈">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    栈的布局
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gdbbacktrace" class="md-nav__link">
+    GDB的backtrace
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    栈大小的限制
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    参数传递
+  </a>
+  
+    <nav class="md-nav" aria-label="参数传递">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#x86_65" class="md-nav__link">
+    x86_64
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#i386" class="md-nav__link">
+    i386
+  </a>
+  
+    <nav class="md-nav" aria-label="i386">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#i386_1" class="md-nav__link">
+    i386中的寄存器调用
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#c" class="md-nav__link">
+    C++
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+  
+                
+
+
+<h1 id="_1">调试前的必知必会<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p><a href="https://1drv.ms/b/s!AkcJSyT7tq80clf1-pjOCricrUs?e=xIJL0b">《Debug Hacks--深入调试的技术和工具》 - 吉冈弘隆</a>，第二章的读书笔记，本文中的所有代码可在<a href="https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/debug_hacks/basic/code">GitHub仓库</a>中找到</p>
+</blockquote>
+<h2 id="_2">寄存器和汇编代码<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<blockquote>
+<p>本章节介绍了x84_64平台中的各寄存器的作用，以及汇编代码的基本形式</p>
+</blockquote>
+<h3 id="x86_64">x86_64寄存器<a class="headerlink" href="#x86_64" title="Permanent link">&para;</a></h3>
+<p><a href="http://6.s081.scripts.mit.edu/sp18/x86-64-architecture-guide.html">x86_64</a>定义了各种寄存器，它们的用途如下表所示：</p>
+<table>
+<thead>
+<tr>
+<th>Register</th>
+<th>Purpose</th>
+<th>Saved across calls</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>%rax</td>
+<td>temp register; (保存函数返回值)</td>
+<td>No</td>
+</tr>
+<tr>
+<td>%rbx</td>
+<td>callee-saved</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>%rcx</td>
+<td>used to pass 4th argument to functions</td>
+<td>No</td>
+</tr>
+<tr>
+<td>%rdx</td>
+<td>used to pass 3rd argument to functions</td>
+<td>No</td>
+</tr>
+<tr>
+<td>%rsp</td>
+<td>stack pointer （指向栈顶）</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>%rbp</td>
+<td>callee-saved; base pointer（指向栈帧开始的地方）</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>%rsi</td>
+<td>used to pass 2nd argument to functions</td>
+<td>No</td>
+</tr>
+<tr>
+<td>%rdi</td>
+<td>used to pass 1st argument to functions</td>
+<td>No</td>
+</tr>
+<tr>
+<td>%r8</td>
+<td>used to pass 5th argument to functions</td>
+<td>No</td>
+</tr>
+<tr>
+<td>%r9</td>
+<td>used to pass 6th argument to functions</td>
+<td>No</td>
+</tr>
+<tr>
+<td>%r10-r11</td>
+<td>temporary</td>
+<td>No</td>
+</tr>
+<tr>
+<td>%r12-r15</td>
+<td>callee-saved registers</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>%rip</td>
+<td>instruction pointer; Program Counter register</td>
+<td>Global</td>
+</tr>
+</tbody>
+</table>
+<p>另外还有xmm0, xmm1...等寄存器，用于传递float类型或者double类型的参数，具体参见本文中的<a href="#x86_64">“参数传递-x86_64”</a>章节。</p>
+<h3 id="_3">常见操作符<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h3>
+<p>下表列出了对寄存器和内存的常见操作，其他操作和相应的汇编代码可参考<a href="https://cs.brown.edu/courses/cs033/docs/guides/x64_cheatsheet.pdf">文档</a>。</p>
+<table>
+<thead>
+<tr>
+<th>操作类型</th>
+<th>格式</th>
+<th>操作数值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>立即数</td>
+<td><code>$Imm</code></td>
+<td><code>Imm</code>，立即数寻址</td>
+</tr>
+<tr>
+<td>寄存器</td>
+<td><code>Ea</code></td>
+<td><code>R[Ea]</code>，寄存器寻址</td>
+</tr>
+<tr>
+<td>内存</td>
+<td><code>Imm</code></td>
+<td><code>M[Imm]</code>，绝对寻址</td>
+</tr>
+<tr>
+<td>内存</td>
+<td><code>(Ea)</code></td>
+<td><code>M[R[Ea]]</code>，间接寻址</td>
+</tr>
+<tr>
+<td>内存</td>
+<td><code>Imm(Ea)</code></td>
+<td><code>M[Imm + R[Ea]]</code>，（基地址+偏移量）寻址</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><code>Imm</code>表示立即数，例如：0x8048d8e</li>
+<li><code>Ex</code>表示寄存器，例如：%rax</li>
+<li><code>R[Ex]</code>表示寄存器Ex的值</li>
+<li><code>M[x]</code>表示地址为x的内存中的值</li>
+</ul>
+<h2 id="_4">函数调用和栈<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<blockquote>
+<p>本章节结合<a href="../gdb/">GDB</a>的调试信息，介绍了栈在程序运行中的作用</p>
+</blockquote>
+<h3 id="_5">栈的布局<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h3>
+<p>在函数调用的过程中，栈上依次保存了：</p>
+<ul>
+<li>传给函数的参数，具体传递过程可参考本文中的<a href="#_7">“参数传递”</a>章节<ul>
+<li>对于x86_64，参数通过“rdi, rsi, rdx, rcx, r8, r9”等寄存器传递。当参数过多时，才会将额外的参数通过栈传递</li>
+<li>对于i386，所有的参数都会通过栈传递</li>
+</ul>
+</li>
+<li>调用者的返回地址</li>
+<li>上层栈帧指针<code>%rbp</code>的值</li>
+<li>函数内部使用的自动变量</li>
+</ul>
+<p><img alt="frame" src="images/frame.svg" /></p>
+<p>每次函数调用都会创建自己的栈帧(stack frame)，栈帧的起始地址由<code>%rbp</code>帧指针保存，栈顶由<code>%rsp</code>栈指针保存。以<a href="code/stack/sum.c">"sum.c"</a>代码为例子，<code>main</code>函数(caller)调用了<code>sum_till_MAX</code>函数(callee)，其相关汇编代码如下：</p>
+<ul>
+<li>
+<p><code>main</code>函数调用处的汇编代码
+    <div class="highlight"><pre><span></span><code><span class="err">0</span><span class="nf">x0000000000001296</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">180</span><span class="err">&gt;</span><span class="p">:</span><span class="w">   </span><span class="no">mov</span><span class="w">    </span><span class="no">$0x0</span><span class="p">,</span><span class="nv">%edi</span><span class="w">               </span><span class="c1"># 初始化参数1的值为0</span>
+<span class="err">0</span><span class="nf">x000000000000129b</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">185</span><span class="err">&gt;</span><span class="p">:</span><span class="w">   </span><span class="no">callq</span><span class="w">  </span><span class="mh">0x11a9</span> <span class="p">&lt;</span><span class="no">sum_till_MAX</span><span class="p">&gt;</span><span class="w">   </span><span class="c1"># 跳转至sum_till_MAX，其地址为0x11a9</span>
+<span class="err">0</span><span class="nf">x00000000000012a0</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">190</span><span class="err">&gt;</span><span class="p">:</span><span class="w">   </span><span class="no">mov</span><span class="w">    </span><span class="nv">%rax</span><span class="p">,-</span><span class="mi">0x8</span><span class="p">(</span><span class="nv">%rbp</span><span class="p">)</span><span class="w">         </span><span class="c1"># 将sum_till_MAX返回的结果存到：M[%rbp-0x8]</span>
+</code></pre></div></p>
+</li>
+<li>
+<p><code>sum_till_MAX</code>函数的汇编代码
+    <div class="highlight"><pre><span></span><code><span class="err">0</span><span class="nf">x00000000000011a9</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">0</span><span class="err">&gt;</span><span class="p">:</span><span class="w">     </span><span class="no">endbr64</span><span class="w">                        </span><span class="c1"># sum_till_MAX的起始地址为0x11a9</span>
+<span class="err">0</span><span class="nf">x00000000000011ad</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">4</span><span class="err">&gt;</span><span class="p">:</span><span class="w">     </span><span class="no">push</span><span class="w">   </span><span class="nv">%rbp</span><span class="w">                    </span><span class="c1"># 在栈上保存上层栈帧的地址(存于%rbp)的值</span>
+<span class="err">0</span><span class="nf">x00000000000011ae</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">5</span><span class="err">&gt;</span><span class="p">:</span><span class="w">     </span><span class="no">mov</span><span class="w">    </span><span class="nv">%rsp</span><span class="p">,</span><span class="nv">%rbp</span><span class="w">               </span><span class="c1"># 更新当前栈帧地址(栈顶地址%rsp)到栈指针%rbp</span>
+<span class="err">0</span><span class="nf">x00000000000011b1</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">8</span><span class="err">&gt;</span><span class="p">:</span><span class="w">     </span><span class="no">sub</span><span class="w">    </span><span class="no">$0x20</span><span class="p">,</span><span class="nv">%rsp</span><span class="w">              </span><span class="c1"># 在栈上分配用于保存自动变量的空间(栈按照地址减小的方向增长)</span>
+<span class="err">0</span><span class="nf">x00000000000011b5</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">12</span><span class="err">&gt;</span><span class="p">:</span><span class="w">    </span><span class="no">mov</span><span class="w">    </span><span class="nv">%edi</span><span class="p">,-</span><span class="mi">0x14</span><span class="p">(</span><span class="nv">%rbp</span><span class="p">)</span><span class="w">        </span><span class="c1"># 开始执行sum_till_MAX</span>
+<span class="err">0</span><span class="nf">x00000000000011b8</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">15</span><span class="err">&gt;</span><span class="p">:</span><span class="w">    </span><span class="no">addl</span><span class="w">   </span><span class="no">$0x1</span><span class="p">,-</span><span class="mi">0x14</span><span class="p">(</span><span class="nv">%rbp</span><span class="p">)</span><span class="w">        </span><span class="c1"># n++</span>
+<span class="err">0</span><span class="nf">x00000000000011bc</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">19</span><span class="err">&gt;</span><span class="p">:</span><span class="w">    </span><span class="no">mov</span><span class="w">    </span><span class="mi">-0</span><span class="no">x14</span><span class="p">(</span><span class="nv">%rbp</span><span class="p">),</span><span class="nv">%eax</span><span class="w"></span>
+<span class="err">0</span><span class="nf">x00000000000011bf</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">22</span><span class="err">&gt;</span><span class="p">:</span><span class="w">    </span><span class="no">mov</span><span class="w">    </span><span class="nv">%rax</span><span class="p">,-</span><span class="mi">0x8</span><span class="p">(</span><span class="nv">%rbp</span><span class="p">)</span><span class="w">         </span><span class="c1"># sum = n, M[%rbp0-0x8]存了sum的值</span>
+<span class="err">0</span><span class="nf">x00000000000011c3</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">26</span><span class="err">&gt;</span><span class="p">:</span><span class="w">    </span><span class="no">mov</span><span class="w">    </span><span class="mi">0x2e47</span><span class="p">(</span><span class="nv">%rip</span><span class="p">),</span><span class="nv">%eax</span><span class="w">       </span><span class="c1"># 0x4010 &lt;max_addend&gt;</span>
+<span class="err">0</span><span class="nf">x00000000000011c9</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">32</span><span class="err">&gt;</span><span class="p">:</span><span class="w">    </span><span class="no">cmp</span><span class="w">    </span><span class="nv">%eax</span><span class="p">,-</span><span class="mi">0x14</span><span class="p">(</span><span class="nv">%rbp</span><span class="p">)</span><span class="w"></span>
+<span class="err">0</span><span class="nf">x00000000000011cc</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">35</span><span class="err">&gt;</span><span class="p">:</span><span class="w">    </span><span class="no">jae</span><span class="w">    </span><span class="mh">0x11dc</span> <span class="p">&lt;</span><span class="no">sum_till_MAX</span><span class="p">+</span><span class="mi">51</span><span class="p">&gt;</span><span class="c1"># 结束递归</span>
+<span class="err">0</span><span class="nf">x00000000000011ce</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">37</span><span class="err">&gt;</span><span class="p">:</span><span class="w">    </span><span class="no">mov</span><span class="w">    </span><span class="mi">-0</span><span class="no">x14</span><span class="p">(</span><span class="nv">%rbp</span><span class="p">),</span><span class="nv">%eax</span><span class="w"></span>
+<span class="err">0</span><span class="nf">x00000000000011d1</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">40</span><span class="err">&gt;</span><span class="p">:</span><span class="w">    </span><span class="no">mov</span><span class="w">    </span><span class="nv">%eax</span><span class="p">,</span><span class="nv">%edi</span><span class="w"></span>
+<span class="err">0</span><span class="nf">x00000000000011d3</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">42</span><span class="err">&gt;</span><span class="p">:</span><span class="w">    </span><span class="no">callq</span><span class="w">  </span><span class="mh">0x11a9</span> <span class="p">&lt;</span><span class="no">sum_till_MAX</span><span class="p">&gt;</span><span class="w">   </span><span class="c1"># 递归调用sum_till_MAX</span>
+<span class="err">0</span><span class="nf">x00000000000011d8</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">47</span><span class="err">&gt;</span><span class="p">:</span><span class="w">    </span><span class="no">add</span><span class="w">    </span><span class="nv">%rax</span><span class="p">,-</span><span class="mi">0x8</span><span class="p">(</span><span class="nv">%rbp</span><span class="p">)</span><span class="w"></span>
+<span class="err">0</span><span class="nf">x00000000000011dc</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">51</span><span class="err">&gt;</span><span class="p">:</span><span class="w">    </span><span class="no">mov</span><span class="w">    </span><span class="mi">-0</span><span class="no">x8</span><span class="p">(</span><span class="nv">%rbp</span><span class="p">),</span><span class="nv">%rax</span><span class="w">         </span><span class="c1"># 将sum的值通过%rax返回</span>
+<span class="err">0</span><span class="nf">x00000000000011e0</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">55</span><span class="err">&gt;</span><span class="p">:</span><span class="w">    </span><span class="no">leaveq</span><span class="w">                         </span><span class="c1"># 释放当前栈，更新%rbp的值到上一栈帧</span>
+<span class="err">0</span><span class="nf">x00000000000011e1</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">56</span><span class="err">&gt;</span><span class="p">:</span><span class="w">    </span><span class="no">retq</span><span class="w">                           </span><span class="c1"># 跳转到栈中的返回地址</span>
+</code></pre></div></p>
+</li>
+</ul>
+<h3 id="gdbbacktrace">GDB的backtrace<a class="headerlink" href="#gdbbacktrace" title="Permanent link">&para;</a></h3>
+<p>GDB调试器的backtrace功能是通过搜索栈中保存的信息来实现的。以<a href="code/stack/sum.c">"sum.c"</a>代码为例子，当backtrace显示如下时，
+<div class="highlight"><pre><span></span><code><span class="cp">#0  sum_till_MAX (n=2) at sum.c:18</span>
+<span class="cp">#1  0x00005555555551d8 in sum_till_MAX (n=1) at sum.c:19</span>
+<span class="cp">#2  0x00005555555552a0 in main (argc=2, argv=0x7fffffffdd48) at sum.c:37</span>
+</code></pre></div>
+通过<code>x/40xw $sp</code>打印的栈上内容如下：
+<div class="highlight"><pre><span></span><code><span class="err">0</span><span class="nl">x7fffffffdbd0:</span><span class="w"> </span><span class="err">0</span><span class="nf">x00000000</span><span class="w">      </span><span class="mi">0x00000000</span><span class="w">      </span><span class="mi">0x00000000</span><span class="w">      </span><span class="mi">0x00000002</span><span class="w">      </span><span class="err">当前栈帧</span><span class="w"></span>
+<span class="w">                                                                </span><span class="err">[&quot;</span><span class="nf">u32</span><span class="w"> </span><span class="no">n</span><span class="err">&quot;的值</span><span class="p">]</span><span class="w"></span>
+<span class="err">0</span><span class="nl">x7fffffffdbe0:</span><span class="w"> </span><span class="err">0</span><span class="nf">x00050000</span><span class="w">      </span><span class="mi">0x00000000</span><span class="w">      </span><span class="mi">0x00000002</span><span class="w">      </span><span class="mi">0x00000000</span><span class="w"></span>
+<span class="w">                                                </span><span class="err">[&quot;</span><span class="nf">u64</span><span class="w"> </span><span class="no">sum</span><span class="err">&quot;</span><span class="w"> </span><span class="err">的值是</span><span class="mi">2</span><span class="w">       </span><span class="p">]</span><span class="w"></span>
+<span class="err">0</span><span class="nl">x7fffffffdbf0:</span><span class="w"> </span><span class="err">0</span><span class="nf">xffffdc20</span><span class="w">      </span><span class="mi">0x00007fff</span><span class="w">      </span><span class="mi">0x555551d8</span><span class="w">      </span><span class="mi">0x00005555</span><span class="w"></span>
+<span class="w">                </span><span class="err">[上层%</span><span class="nf">rbp的值0x7fffffffdc20</span><span class="p">]</span><span class="w">    </span><span class="p">[</span><span class="err">返回地址</span><span class="mi">0x00005555555551d8</span><span class="p">]</span><span class="w"></span>
+<span class="err">------------------------------------------------------------------------------------------</span><span class="w"></span>
+<span class="err">0</span><span class="nl">x7fffffffdc00:</span><span class="w"> </span><span class="err">0</span><span class="nf">xffffdc50</span><span class="w">      </span><span class="mi">0x00007fff</span><span class="w">      </span><span class="mi">0x555550c0</span><span class="w">      </span><span class="mi">0x00000001</span><span class="w">      </span><span class="err">上层栈帧</span><span class="w"></span>
+<span class="w">                                                                </span><span class="err">[&quot;</span><span class="nf">u32</span><span class="w"> </span><span class="no">n</span><span class="err">&quot;的值</span><span class="p">]</span><span class="w"></span>
+<span class="err">0</span><span class="nl">x7fffffffdc10:</span><span class="w"> </span><span class="err">0</span><span class="nf">xffffdd40</span><span class="w">      </span><span class="mi">0x00007fff</span><span class="w">      </span><span class="mi">0x00000001</span><span class="w">      </span><span class="mi">0x00000000</span><span class="w"></span>
+<span class="w">                                                </span><span class="err">[&quot;</span><span class="nf">u64</span><span class="w"> </span><span class="no">sum</span><span class="err">&quot;</span><span class="w"> </span><span class="err">的值是</span><span class="mi">1</span><span class="w">       </span><span class="p">]</span><span class="w"></span>
+<span class="err">0</span><span class="nl">x7fffffffdc20:</span><span class="w"> </span><span class="err">0</span><span class="nf">xffffdc50</span><span class="w">      </span><span class="mi">0x00007fff</span><span class="w">      </span><span class="mi">0x555552a0</span><span class="w">      </span><span class="mi">0x00005555</span><span class="w"></span>
+<span class="w">                </span><span class="err">[上层%</span><span class="nf">rbp的值0x7fffffffdc50</span><span class="p">]</span><span class="w">    </span><span class="p">[</span><span class="err">返回地址</span><span class="mi">0x00005555555552a0</span><span class="p">]</span><span class="w"></span>
+<span class="err">------------------------------------------------------------------------------------------</span><span class="w"></span>
+<span class="err">0</span><span class="nl">x7fffffffdc30:</span><span class="w"> </span><span class="err">0</span><span class="nf">xffffdd48</span><span class="w">      </span><span class="mi">0x00007fff</span><span class="w">      </span><span class="mi">0x555550c0</span><span class="w">      </span><span class="mi">0x00000002</span><span class="w"> </span><span class="err">上上层栈帧&#39;</span><span class="no">main</span><span class="err">&#39;</span><span class="w"></span>
+<span class="w">                </span><span class="err">[</span><span class="nl">argv的值:</span><span class="err">0</span><span class="nf">x7fffffffdd48</span><span class="w"> </span><span class="p">]</span><span class="w">                      </span><span class="p">[</span><span class="no">argc的值</span><span class="p">]</span><span class="w"></span>
+<span class="err">0</span><span class="nl">x7fffffffdc40:</span><span class="w"> </span><span class="err">0</span><span class="nf">xffffdd40</span><span class="w">      </span><span class="mi">0x00007fff</span><span class="w">      </span><span class="mi">0x00000000</span><span class="w">      </span><span class="mi">0x00000000</span><span class="w"></span>
+<span class="err">0</span><span class="nl">x7fffffffdc50:</span><span class="w"> </span><span class="err">0</span><span class="nf">x00000000</span><span class="w">      </span><span class="mi">0x00000000</span><span class="w">      </span><span class="mi">0xf7de60b3</span><span class="w">      </span><span class="mi">0x00007fff</span><span class="w"></span>
+<span class="err">0</span><span class="nl">x7fffffffdc60:</span><span class="w"> </span><span class="err">0</span><span class="nf">xf7ffc620</span><span class="w">      </span><span class="mi">0x00007fff</span><span class="w">      </span><span class="mi">0xffffdd48</span><span class="w">      </span><span class="mi">0x00007fff</span><span class="w"></span>
+</code></pre></div></p>
+<ul>
+<li>其中，返回main函数的地址的汇编代码，通过<code>x/i 0x00005555555552a0</code>打印如下：<ul>
+<li><code>0x5555555552a0 &lt;main+190&gt;:   mov    %rax,-0x8(%rbp)</code>，对应于main函数汇编代码的返回位置</li>
+</ul>
+</li>
+<li>通过<code>info frame</code>可以查看更多frame的信息
+    <div class="highlight"><pre><span></span><code><span class="nf">Stack</span><span class="w"> </span><span class="no">level</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="no">frame</span><span class="w"> </span><span class="no">at</span><span class="w"> </span><span class="mi">0x7fffffffdc00</span><span class="p">:</span><span class="w"></span>
+<span class="w"> </span><span class="nf">rip</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="mi">0x5555555551c3</span><span class="w"> </span><span class="no">in</span><span class="w"> </span><span class="no">sum_till_MAX</span><span class="w"> </span><span class="p">(</span><span class="no">sum.c</span><span class="p">:</span><span class="mi">18</span><span class="p">)</span><span class="c1">; saved rip = 0x5555555551d8</span>
+<span class="w"> </span><span class="nf">called</span><span class="w"> </span><span class="no">by</span><span class="w"> </span><span class="no">frame</span><span class="w"> </span><span class="no">at</span><span class="w"> </span><span class="mi">0x7fffffffdc30</span><span class="w"></span>
+<span class="w"> </span><span class="nf">source</span><span class="w"> </span><span class="no">language</span><span class="w"> </span><span class="no">c.</span><span class="w"></span>
+<span class="w"> </span><span class="nf">Arglist</span><span class="w"> </span><span class="no">at</span><span class="w"> </span><span class="mi">0x7fffffffdbc8</span><span class="p">,</span><span class="w"> </span><span class="no">args</span><span class="p">:</span><span class="w"> </span><span class="no">n</span><span class="err">=</span><span class="mi">2</span><span class="w"></span>
+<span class="w"> </span><span class="nf">Locals</span><span class="w"> </span><span class="no">at</span><span class="w"> </span><span class="mi">0x7fffffffdbc8</span><span class="p">,</span><span class="w"> </span><span class="no">Previous</span><span class="w"> </span><span class="no">frame</span><span class="err">&#39;</span><span class="no">s</span><span class="w"> </span><span class="no">sp</span><span class="w"> </span><span class="no">is</span><span class="w"> </span><span class="mi">0x7fffffffdc00</span><span class="w"></span>
+<span class="w"> </span><span class="nf">Saved</span><span class="w"> </span><span class="no">registers</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nf">rbp</span><span class="w"> </span><span class="no">at</span><span class="w"> </span><span class="mi">0x7fffffffdbf0</span><span class="p">,</span><span class="w"> </span><span class="no">rip</span><span class="w"> </span><span class="no">at</span><span class="w"> </span><span class="mi">0x7fffffffdbf8</span><span class="w"></span>
+</code></pre></div></li>
+</ul>
+<h3 id="_6">栈大小的限制<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h3>
+<p>如果进程发生栈溢出(stack overflow)，会引发segmentation fault。上面的<a href="./code/stack">例子</a>如果不带任何参数，就会发生栈溢出。通过GDB调试，可得到如下调试信息：
+<div class="highlight"><pre><span></span><code><span class="err">(</span><span class="nf">gdb</span><span class="p">)</span><span class="w"> </span><span class="no">i</span><span class="w"> </span><span class="no">proc</span><span class="w"> </span><span class="no">mapping</span><span class="w"></span>
+<span class="w">      </span><span class="err">0</span><span class="nf">x7ffff7ffe000</span><span class="w">     </span><span class="mi">0x7ffff7fff000</span><span class="w">     </span><span class="mi">0x1000</span><span class="w">        </span><span class="mi">0x0</span><span class="w"> </span>
+<span class="w">      </span><span class="mi">0x7fffff7ff000</span><span class="w">     </span><span class="mi">0x7ffffffff000</span><span class="w">   </span><span class="mi">0x800000</span><span class="w">        </span><span class="mi">0x0</span><span class="w"> </span><span class="p">[</span><span class="no">stack</span><span class="p">]</span><span class="w"></span>
+<span class="w">  </span><span class="err">0</span><span class="nf">xffffffffff600000</span><span class="w"> </span><span class="mi">0xffffffffff601000</span><span class="w">     </span><span class="mi">0x1000</span><span class="w">        </span><span class="mi">0x0</span><span class="w"> </span><span class="p">[</span><span class="no">vsyscall</span><span class="p">]</span><span class="w"></span>
+<span class="err">(</span><span class="nf">gdb</span><span class="p">)</span><span class="w"> </span><span class="no">p</span><span class="w"> </span><span class="no">$sp</span><span class="w"></span>
+<span class="w">      </span><span class="nf">$1</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="p">(</span><span class="no">void</span><span class="w"> </span><span class="p">*)</span><span class="w"> </span><span class="mi">0x7fffff7fefe0</span><span class="w"></span>
+</code></pre></div></p>
+<ul>
+<li><code>i proc mapping</code>显示的栈的有效地址范围为：0x7fffff7ff000 ~ 0x7ffffffff000</li>
+<li>发生错误时，栈指针为：0x7fffff7fefe0，超出了有效范围</li>
+</ul>
+<p>我们可以通过<code>ulimit -s</code>查看进程栈的最大值，并且可以通过<code>ulimit -Ss &lt;stack_size&gt;</code>修改此值。</p>
+<h2 id="_7">参数传递<a class="headerlink" href="#_7" title="Permanent link">&para;</a></h2>
+<blockquote>
+<p>本章节介绍了不同平台、语言中，不同的函数参数传递模型</p>
+</blockquote>
+<h3 id="x86_65">x86_64<a class="headerlink" href="#x86_65" title="Permanent link">&para;</a></h3>
+<p>在x86_64中，整型和指针型的参数会从左至右依次保存到rdi, rsi, rdx, rcx, r8, r9中，浮点型参数会保存到xmm0, xmm1...中，如果寄存器被用完，其他参数会被保存到栈上。</p>
+<p>以如下<a href="code/call/main.c">代码</a>为例，通过<code>func</code>函数的调用调试信息，我们可以了解x86_64的参数传递模型。
+<div class="highlight"><pre><span></span><code><span class="kt">void</span><span class="w"> </span><span class="nf">func</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="kt">short</span><span class="w"> </span><span class="n">c</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="n">d</span><span class="p">,</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">e</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">f</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">g</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="o">*</span><span class="n">h</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="o">*</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">j</span><span class="p">);</span><span class="w"></span>
+
+<span class="c1">// 函数调用</span>
+<span class="n">func</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="mf">35000L</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="sc">&#39;A&#39;</span><span class="p">,</span><span class="w"> </span><span class="mf">123456789L</span><span class="n">L</span><span class="p">,</span><span class="w"> </span><span class="mf">3.14</span><span class="p">,</span><span class="w"> </span><span class="mf">2.99792458e8</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">v1</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">v2</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;string&quot;</span><span class="p">);</span><span class="w"></span>
+</code></pre></div></p>
+<p>通过GDB命令<code>b *func</code>(加星号可确保函数被断在栈操作之前)，将断点打到<a href="code/call/main.c">示例代码</a>中<code>func</code>函数调用之前，观察到寄存器的值如下：
+<div class="highlight"><pre><span></span><code><span class="err">(</span><span class="nf">gdb</span><span class="p">)</span><span class="w"> </span><span class="no">b</span><span class="w"> </span><span class="p">*</span><span class="no">func</span><span class="w"></span>
+<span class="nf">Breakpoint</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="no">at</span><span class="w"> </span><span class="mi">0x555555555149</span><span class="p">:</span><span class="w"> </span><span class="no">file</span><span class="w"> </span><span class="no">main.c</span><span class="p">,</span><span class="w"> </span><span class="no">line</span><span class="w"> </span><span class="mi">8</span><span class="p">.</span><span class="w"></span>
+
+<span class="err">(</span><span class="nf">gdb</span><span class="p">)</span><span class="w"> </span><span class="no">disas</span><span class="w"> </span><span class="no">func</span><span class="w"></span>
+<span class="nf">Dump</span><span class="w"> </span><span class="no">of</span><span class="w"> </span><span class="no">assembler</span><span class="w"> </span><span class="no">code</span><span class="w"> </span><span class="no">for</span><span class="w"> </span><span class="no">function</span><span class="w"> </span><span class="no">func</span><span class="p">:</span><span class="w"></span>
+<span class="err">=&gt;</span><span class="w"> </span><span class="err">0</span><span class="nf">x0000555555555149</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">0</span><span class="err">&gt;</span><span class="p">:</span><span class="w">     </span><span class="no">endbr64</span><span class="w"> </span>
+<span class="w">   </span><span class="mi">0x000055555555514d</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">4</span><span class="err">&gt;</span><span class="p">:</span><span class="w">     </span><span class="no">push</span><span class="w">   </span><span class="nv">%rbp</span><span class="w"></span>
+<span class="w">   </span><span class="err">0</span><span class="nf">x000055555555514e</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">5</span><span class="err">&gt;</span><span class="p">:</span><span class="w">     </span><span class="no">mov</span><span class="w">    </span><span class="nv">%rsp</span><span class="p">,</span><span class="nv">%rbp</span><span class="w"></span>
+<span class="w">   </span><span class="err">0</span><span class="nf">x0000555555555151</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">8</span><span class="err">&gt;</span><span class="p">:</span><span class="w">     </span><span class="no">sub</span><span class="w">    </span><span class="no">$0x30</span><span class="p">,</span><span class="nv">%rsp</span><span class="w"></span>
+
+<span class="err">(</span><span class="nf">gdb</span><span class="p">)</span><span class="w"> </span><span class="no">i</span><span class="w"> </span><span class="no">r</span><span class="w"></span>
+<span class="nf">rax</span><span class="w">            </span><span class="mi">0x4048f5c3</span><span class="w">          </span><span class="mi">1078523331</span><span class="w"></span>
+<span class="nf">rbx</span><span class="w">            </span><span class="mi">0x555555555240</span><span class="w">      </span><span class="mi">93824992236096</span><span class="w"></span>
+<span class="nf">rcx</span><span class="w">            </span><span class="mi">0x41</span><span class="w">                </span><span class="mi">65</span><span class="w">               </span><span class="c1">#参数d</span>
+<span class="nf">rdx</span><span class="w">            </span><span class="mi">0x5</span><span class="w">                 </span><span class="mi">5</span><span class="w">                </span><span class="c1">#参数c</span>
+<span class="nf">rsi</span><span class="w">            </span><span class="mi">0x88b8</span><span class="w">              </span><span class="mi">35000</span><span class="w">            </span><span class="c1">#参数b</span>
+<span class="nf">rdi</span><span class="w">            </span><span class="mi">0x64</span><span class="w">                </span><span class="mi">100</span><span class="w">              </span><span class="c1">#参数a</span>
+<span class="nf">rbp</span><span class="w">            </span><span class="mi">0x7fffffffdcb0</span><span class="w">      </span><span class="mi">0x7fffffffdcb0</span><span class="w"></span>
+<span class="nf">rsp</span><span class="w">            </span><span class="mi">0x7fffffffdc98</span><span class="w">      </span><span class="mi">0x7fffffffdc98</span><span class="w"></span>
+<span class="nf">r8</span><span class="w">             </span><span class="mi">0x75bcd15</span><span class="w">           </span><span class="mi">123456789</span><span class="w">        </span><span class="c1">#参数e</span>
+<span class="nf">r9</span><span class="w">             </span><span class="mi">0x555555558010</span><span class="w">      </span><span class="mi">93824992247824</span><span class="w">   </span><span class="c1">#参数h</span>
+<span class="na">...</span><span class="w"></span>
+
+<span class="err">(</span><span class="nf">gdb</span><span class="p">)</span><span class="w"> </span><span class="no">p</span><span class="w"> </span><span class="no">$xmm0.v4_float</span><span class="w">                              </span><span class="c1">#参数f</span>
+<span class="nf">$1</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="err">{</span><span class="mi">3</span><span class="no">.1400001</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="err">}</span><span class="w"></span>
+
+<span class="err">(</span><span class="nf">gdb</span><span class="p">)</span><span class="w"> </span><span class="no">p</span><span class="w"> </span><span class="no">$xmm1.v2_double</span><span class="w">                             </span><span class="c1">#参数g</span>
+<span class="nf">$3</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="err">{</span><span class="mi">299792458</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="err">}</span><span class="w"></span>
+
+<span class="err">(</span><span class="nf">gdb</span><span class="p">)</span><span class="w"> </span><span class="no">x</span><span class="err">/</span><span class="mi">3</span><span class="no">xg</span><span class="w"> </span><span class="no">$rsp</span><span class="w">                                    </span><span class="c1">#返回地址,参数i,参数j</span>
+<span class="err">0</span><span class="nl">x7fffffffdc98:</span><span class="w"> </span><span class="err">0</span><span class="nf">x000055555555522e</span><span class="w"> </span><span class="mi">0x0000555555558014</span><span class="w"></span>
+<span class="err">0</span><span class="nl">x7fffffffdca8:</span><span class="w"> </span><span class="err">0</span><span class="nf">x0000555555556055</span><span class="w"></span>
+
+<span class="err">(</span><span class="nf">gdb</span><span class="p">)</span><span class="w"> </span><span class="no">printf</span><span class="w"> </span><span class="err">&quot;</span><span class="nv">%.2f</span><span class="err">\</span><span class="no">n</span><span class="err">&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">*(</span><span class="no">float</span><span class="p">*)</span><span class="mi">0x0000555555558014</span><span class="w">  </span><span class="c1">#参数i</span>
+<span class="err">0</span><span class="nf">.01</span><span class="w"></span>
+
+<span class="err">(</span><span class="nf">gdb</span><span class="p">)</span><span class="w"> </span><span class="no">p</span><span class="w"> </span><span class="p">(</span><span class="no">char</span><span class="p">*)</span><span class="mi">0x0000555555556055</span><span class="w">                   </span><span class="c1">#参数j</span>
+<span class="nf">$1</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="mi">0x555555556055</span><span class="w"> </span><span class="err">&quot;</span><span class="no">string</span><span class="err">&quot;</span><span class="w"></span>
+
+<span class="err">(</span><span class="nf">gdb</span><span class="p">)</span><span class="w"> </span><span class="no">n</span><span class="w"></span>
+<span class="err">(</span><span class="nf">gdb</span><span class="p">)</span><span class="w"> </span><span class="no">bt</span><span class="w">                                            </span><span class="c1">#所有参数的值，和寄存器和栈中的值相同</span>
+<span class="nf">func</span><span class="w"> </span><span class="p">(</span><span class="no">a</span><span class="err">=</span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="no">b</span><span class="err">=</span><span class="mi">35000</span><span class="p">,</span><span class="w"> </span><span class="no">c</span><span class="err">=</span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="no">d</span><span class="err">=</span><span class="mi">65</span><span class="w"> </span><span class="err">&#39;</span><span class="no">A</span><span class="err">&#39;</span><span class="p">,</span><span class="w"> </span><span class="no">e</span><span class="err">=</span><span class="mi">123456789</span><span class="p">,</span><span class="w"> </span><span class="no">f</span><span class="err">=</span><span class="mi">3</span><span class="no">.1400001</span><span class="p">,</span><span class="w"> </span><span class="no">g</span><span class="err">=</span><span class="mi">299792458</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="nf">h</span><span class="err">=</span><span class="mh">0x555555558010</span> <span class="p">&lt;</span><span class="no">v1</span><span class="p">&gt;,</span><span class="w"> </span><span class="no">i</span><span class="err">=</span><span class="mh">0x555555558014</span> <span class="p">&lt;</span><span class="no">v2</span><span class="p">&gt;,</span><span class="w"> </span><span class="no">j</span><span class="err">=</span><span class="mi">0x555555556055</span><span class="w"> </span><span class="err">&quot;</span><span class="no">string</span><span class="err">&quot;</span><span class="p">)</span><span class="w"> </span><span class="no">at</span><span class="w"> </span><span class="no">main.c</span><span class="p">:</span><span class="mi">9</span><span class="w"></span>
+</code></pre></div></p>
+<ul>
+<li>5个整型参数<code>a,b,c,d,e,h</code>被依次存入<code>rdi,rsi,rdx,rcx,r8,r9</code>中</li>
+<li>浮点型参数<code>f,g</code>被存入<code>xmm0,xmm1</code>中，GDB将这些寄存器被看作以下联合类型
+    <div class="highlight"><pre><span></span><code><span class="k">union</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">v4_float</span><span class="p">[</span><span class="mi">4</span><span class="p">];</span><span class="w"></span>
+<span class="w">    </span><span class="kt">double</span><span class="w"> </span><span class="n">v2_double</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span><span class="w"></span>
+<span class="w">    </span><span class="kt">int8_t</span><span class="w"> </span><span class="n">v16_int8</span><span class="p">[</span><span class="mi">16</span><span class="p">];</span><span class="w"></span>
+<span class="w">    </span><span class="kt">int16_t</span><span class="w"> </span><span class="n">v8_int16</span><span class="p">[</span><span class="mi">8</span><span class="p">];</span><span class="w"></span>
+<span class="w">    </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">v4_int32</span><span class="p">[</span><span class="mi">8</span><span class="p">];</span><span class="w"></span>
+<span class="w">    </span><span class="kt">int64_t</span><span class="w"> </span><span class="n">v2_int64</span><span class="p">[</span><span class="mi">8</span><span class="p">];</span><span class="w"></span>
+<span class="w">    </span><span class="n">int128_t</span><span class="w"> </span><span class="n">uint128</span><span class="p">;</span><span class="w"></span>
+<span class="p">}</span><span class="w"> </span><span class="n">xmm0</span><span class="p">;</span><span class="w"></span>
+</code></pre></div></li>
+<li>由于寄存器已经用完，参数<code>i,j</code>被存于栈上，通过<code>x/3xg $rsp</code>依次得到返回地址、参数i和参数j的值，和最终传递的函数参数值相同<ul>
+<li>0x7fffffffdc98: 0x000055555555522e    - 返回地址</li>
+<li>0x7fffffffdca0: 0x0000555555558014    - 参数i</li>
+<li>0x7fffffffdca8: 0x0000555555556055    - 参数j</li>
+</ul>
+</li>
+</ul>
+<h3 id="i386">i386<a class="headerlink" href="#i386" title="Permanent link">&para;</a></h3>
+<p>在i386中，参数全部放在栈中。将上节中的代码通过<code>-m32</code>编译成<a href="./code/call_i386/Makefile">32位版本</a>后，通过GDB调试，断点在<code>func</code>调用之前。此时，<code>func</code>函数的所有参数，从右到左依次被压入栈中，打印栈上内容如下：</p>
+<div class="highlight"><pre><span></span><code><span class="err">(</span><span class="nf">gdb</span><span class="p">)</span><span class="w"> </span><span class="no">p</span><span class="w"> </span><span class="p">*(</span><span class="no">int</span><span class="p">*)(</span><span class="no">$esp</span><span class="err">+</span><span class="mi">4</span><span class="p">)</span><span class="w"></span>
+<span class="nf">$1</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="mi">100</span><span class="w">                                    </span><span class="c1">#参数a</span>
+<span class="err">(</span><span class="nf">gdb</span><span class="p">)</span><span class="w"> </span><span class="no">p</span><span class="w"> </span><span class="p">*(</span><span class="no">long</span><span class="p">*)(</span><span class="no">$esp</span><span class="err">+</span><span class="mi">8</span><span class="p">)</span><span class="w"></span>
+<span class="nf">$2</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="mi">35000</span><span class="w">                                  </span><span class="c1">#参数b</span>
+<span class="err">(</span><span class="nf">gdb</span><span class="p">)</span><span class="w"> </span><span class="no">p</span><span class="w"> </span><span class="p">*(</span><span class="no">short</span><span class="p">*)(</span><span class="no">$esp</span><span class="err">+</span><span class="mi">12</span><span class="p">)</span><span class="w"></span>
+<span class="nf">$3</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="mi">5</span><span class="w">                                      </span><span class="c1">#参数c</span>
+<span class="err">(</span><span class="nf">gdb</span><span class="p">)</span><span class="w"> </span><span class="no">p</span><span class="w"> </span><span class="p">*(</span><span class="no">char</span><span class="p">*)(</span><span class="no">$esp</span><span class="err">+</span><span class="mi">16</span><span class="p">)</span><span class="w"></span>
+<span class="nf">$4</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="mi">65</span><span class="w"> </span><span class="err">&#39;</span><span class="no">A</span><span class="err">&#39;</span><span class="w">                                 </span><span class="c1">#参数d</span>
+<span class="err">(</span><span class="nf">gdb</span><span class="p">)</span><span class="w"> </span><span class="no">p</span><span class="w"> </span><span class="p">*(</span><span class="no">long</span><span class="w"> </span><span class="no">long</span><span class="p">*)(</span><span class="no">$esp</span><span class="err">+</span><span class="mi">20</span><span class="p">)</span><span class="w"></span>
+<span class="nf">$5</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="mi">123456789</span><span class="w">                              </span><span class="c1">#参数e</span>
+<span class="err">(</span><span class="nf">gdb</span><span class="p">)</span><span class="w"> </span><span class="no">printf</span><span class="w"> </span><span class="err">&quot;</span><span class="nv">%.2e</span><span class="err">\</span><span class="no">n</span><span class="err">&quot;</span><span class="p">,*(</span><span class="no">float</span><span class="p">*)(</span><span class="no">$esp</span><span class="err">+</span><span class="mi">28</span><span class="p">)</span><span class="w"></span>
+<span class="err">3</span><span class="nf">.14e</span><span class="err">+</span><span class="mi">00</span><span class="w">                                    </span><span class="c1">#参数f</span>
+<span class="err">(</span><span class="nf">gdb</span><span class="p">)</span><span class="w"> </span><span class="no">printf</span><span class="w"> </span><span class="err">&quot;</span><span class="nv">%.3e</span><span class="err">\</span><span class="no">n</span><span class="err">&quot;</span><span class="p">,*(</span><span class="no">double</span><span class="p">*)(</span><span class="no">$esp</span><span class="err">+</span><span class="mi">32</span><span class="p">)</span><span class="w"></span>
+<span class="err">2</span><span class="nf">.998e</span><span class="err">+</span><span class="mi">08</span><span class="w">                                   </span><span class="c1">#参数g</span>
+<span class="err">(</span><span class="nf">gdb</span><span class="p">)</span><span class="w"> </span><span class="no">p</span><span class="err">/</span><span class="no">x</span><span class="w"> </span><span class="p">*(</span><span class="no">int</span><span class="p">*)(</span><span class="no">$esp</span><span class="err">+</span><span class="mi">40</span><span class="p">)</span><span class="w"></span>
+<span class="nf">$6</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="mi">0x56559008</span><span class="w">                             </span><span class="c1">#参数h</span>
+<span class="err">(</span><span class="nf">gdb</span><span class="p">)</span><span class="w"> </span><span class="no">p</span><span class="err">/</span><span class="no">x</span><span class="w"> </span><span class="p">*(</span><span class="no">int</span><span class="p">*)(</span><span class="no">$esp</span><span class="err">+</span><span class="mi">44</span><span class="p">)</span><span class="w"></span>
+<span class="nf">$7</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="mi">0x5655900c</span><span class="w">                             </span><span class="c1">#参数i</span>
+<span class="err">(</span><span class="nf">gdb</span><span class="p">)</span><span class="w"> </span><span class="no">p</span><span class="err">/</span><span class="no">x</span><span class="w"> </span><span class="p">*(</span><span class="no">int</span><span class="p">*)(</span><span class="no">$esp</span><span class="err">+</span><span class="mi">48</span><span class="p">)</span><span class="w"></span>
+<span class="nf">$8</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="mi">0x56557055</span><span class="w">                             </span><span class="c1">#参数j</span>
+
+<span class="err">(</span><span class="nf">gdb</span><span class="p">)</span><span class="w"> </span><span class="no">n</span><span class="w"></span>
+<span class="err">(</span><span class="nf">gdb</span><span class="p">)</span><span class="w"> </span><span class="no">bt</span><span class="w"></span>
+<span class="nf">func</span><span class="w"> </span><span class="p">(</span><span class="no">a</span><span class="err">=</span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="no">b</span><span class="err">=</span><span class="mi">35000</span><span class="p">,</span><span class="w"> </span><span class="no">c</span><span class="err">=</span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="no">d</span><span class="err">=</span><span class="mi">65</span><span class="w"> </span><span class="err">&#39;</span><span class="no">A</span><span class="err">&#39;</span><span class="p">,</span><span class="w"> </span><span class="no">e</span><span class="err">=</span><span class="mi">123456789</span><span class="p">,</span><span class="w"> </span><span class="no">f</span><span class="err">=</span><span class="mi">3</span><span class="no">.1400001</span><span class="p">,</span><span class="w"> </span><span class="no">g</span><span class="err">=</span><span class="mi">299792458</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="nf">h</span><span class="err">=</span><span class="mh">0x56559008</span> <span class="p">&lt;</span><span class="no">v1</span><span class="p">&gt;,</span><span class="w"> </span><span class="no">i</span><span class="err">=</span><span class="mh">0x5655900c</span> <span class="p">&lt;</span><span class="no">v2</span><span class="p">&gt;,</span><span class="w"> </span><span class="no">j</span><span class="err">=</span><span class="mi">0x56557055</span><span class="w"> </span><span class="err">&quot;</span><span class="no">string</span><span class="err">&quot;</span><span class="p">)</span><span class="w"> </span><span class="no">at</span><span class="w"> </span><span class="no">main.c</span><span class="p">:</span><span class="mi">9</span><span class="w"></span>
+</code></pre></div>
+<h4 id="i386_1">i386中的寄存器调用<a class="headerlink" href="#i386_1" title="Permanent link">&para;</a></h4>
+<p>i386也可以通过“fastcall”的方式，将参数放在寄存器中。例如，GCC可以通过<code>__attribute__((regparm(3)))</code>声明，使用eax，edx和ecx传递开头3各参数。而Linux可以使用FASTCALL和asmregparm等宏来实现。
+<div class="highlight"><pre><span></span><code><span class="n">__attribute__</span><span class="p">((</span><span class="n">regparm</span><span class="p">(</span><span class="mi">3</span><span class="p">)))</span><span class="w"></span>
+<span class="kt">void</span><span class="w"> </span><span class="n">func</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="kt">short</span><span class="w"> </span><span class="n">c</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="n">d</span><span class="p">,</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">e</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">f</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">g</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="o">*</span><span class="n">h</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="o">*</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">j</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="p">...</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</code></pre></div></p>
+<h3 id="c">C++<a class="headerlink" href="#c" title="Permanent link">&para;</a></h3>
+<p>C++函数在编译时会经过函数名变换(mangle)，并且对于类方法的调用，第一个参数是当前类对象的指针。例如，<a href="code/call_cpp/main.cpp">例子</a>中的<code>foo::func</code>函数，最终调用签名如下：
+<div class="highlight"><pre><span></span><code><span class="kt">void</span><span class="w"> </span><span class="nf">func</span><span class="p">(</span><span class="k">class</span><span class="w"> </span><span class="nc">foo</span><span class="w"> </span><span class="o">*</span><span class="k">this</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">y</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">this</span><span class="o">-&gt;</span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">this</span><span class="o">-&gt;</span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">y</span><span class="o">+</span><span class="mi">2</span><span class="p">;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</code></pre></div></p>
+<p>将程序在<code>foo::func</code>函数调用前打上断点后，可得到如下寄存器的值：
+<div class="highlight"><pre><span></span><code><span class="err">(</span><span class="nf">gdb</span><span class="p">)</span><span class="w"> </span><span class="no">i</span><span class="w"> </span><span class="no">r</span><span class="w"></span>
+<span class="na">...</span><span class="w"></span>
+<span class="nf">rdx</span><span class="w">            </span><span class="mi">0x1</span><span class="w">                 </span><span class="mi">1</span><span class="w">                </span><span class="c1">#参数y</span>
+<span class="nf">rsi</span><span class="w">            </span><span class="mi">0x5</span><span class="w">                 </span><span class="mi">5</span><span class="w">                </span><span class="c1">#参数x</span>
+<span class="nf">rdi</span><span class="w">            </span><span class="mi">0x7fffffffdc18</span><span class="w">      </span><span class="mi">140737488346136</span><span class="w">  </span><span class="c1">#参数this</span>
+<span class="na">...</span><span class="w"></span>
+
+<span class="err">(</span><span class="nf">gdb</span><span class="p">)</span><span class="w"> </span><span class="no">n</span><span class="w"></span>
+<span class="err">(</span><span class="nf">gdb</span><span class="p">)</span><span class="w"> </span><span class="no">bt</span><span class="w">                                            </span><span class="c1">#参数值和上面的寄存器值相同</span>
+<span class="nl">foo:</span><span class="err">:</span><span class="nf">func</span><span class="w"> </span><span class="p">(</span><span class="no">this</span><span class="err">=</span><span class="mi">0x7fffffffdc18</span><span class="p">,</span><span class="w"> </span><span class="no">x</span><span class="err">=</span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="no">y</span><span class="err">=</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="no">at</span><span class="w"> </span><span class="no">main.cpp</span><span class="p">:</span><span class="mi">13</span><span class="w"></span>
+</code></pre></div></p>
+
+              
+
+  <!-- Giscus https://giscus.app/ -->
+  <script src="https://giscus.app/client.js"
+    data-repo="LittleBee1024/learning_book"
+    data-repo-id="R_kgDOGR3spQ"
+    data-category="Q&A"
+    data-category-id="DIC_kwDOGR3spc4B_q-C"
+    data-mapping="title"
+    data-strict="1"
+    data-reactions-enabled="1"
+    data-emit-metadata="0"
+    data-input-position="bottom"
+    data-theme="light"
+    data-lang="zh-CN"
+    crossorigin="anonymous"
+    async>
+  </script>
+
+  <!-- Reload on palette change -->
+  <script>
+    var palette = __md_get("__palette")
+    if (palette && typeof palette.color === "object")
+      if (palette.color.scheme === "slate") {
+        var giscus = document.querySelector("script[src*=giscus]")
+        giscus.setAttribute("data-theme", "dark") 
+      }
+
+    /* Register event handlers after documented loaded */
+    document.addEventListener("DOMContentLoaded", function() {
+      var ref = document.querySelector("[data-md-component=palette]")
+      ref.addEventListener("change", function() {
+        var palette = __md_get("__palette")
+        if (palette && typeof palette.color === "object") {
+          var theme = palette.color.scheme === "slate" ? "dark" : "light"
+
+          /* Instruct Giscus to change theme */
+          var frame = document.querySelector(".giscus-frame")
+          frame.contentWindow.postMessage(
+            { giscus: { setConfig: { theme } } },
+            "https://giscus.app"
+          )
+        }
+      })
+    })
+  </script>
+
+            </article>
+            
+          </div>
+        </div>
+        
+          <a href="#" class="md-top md-icon" data-md-component="top" hidden>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
+            Back to top
+          </a>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+    <nav class="md-footer__inner md-grid" aria-label="Footer" >
+      
+        
+        <a href="../../cxydzwxy/load/" class="md-footer__link md-footer__link--prev" aria-label="Previous: 装载" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              装载
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="../advance/" class="md-footer__link md-footer__link--next" aria-label="Next: 高级调试技术" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              高级调试技术
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2021 - 2022 Little Bee
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+      
+      
+    
+    <a href="https://github.com/littlebee1024" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+    </a>
+  
+    
+    
+      
+      
+    
+    <a href="https://hub.docker.com/r/littlebee1024" target="_blank" rel="noopener" title="hub.docker.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M349.9 236.3h-66.1v-59.4h66.1v59.4zm0-204.3h-66.1v60.7h66.1V32zm78.2 144.8H362v59.4h66.1v-59.4zm-156.3-72.1h-66.1v60.1h66.1v-60.1zm78.1 0h-66.1v60.1h66.1v-60.1zm276.8 100c-14.4-9.7-47.6-13.2-73.1-8.4-3.3-24-16.7-44.9-41.1-63.7l-14-9.3-9.3 14c-18.4 27.8-23.4 73.6-3.7 103.8-8.7 4.7-25.8 11.1-48.4 10.7H2.4c-8.7 50.8 5.8 116.8 44 162.1 37.1 43.9 92.7 66.2 165.4 66.2 157.4 0 273.9-72.5 328.4-204.2 21.4.4 67.6.1 91.3-45.2 1.5-2.5 6.6-13.2 8.5-17.1l-13.3-8.9zm-511.1-27.9h-66v59.4h66.1v-59.4zm78.1 0h-66.1v59.4h66.1v-59.4zm78.1 0h-66.1v59.4h66.1v-59.4zm-78.1-72.1h-66.1v60.1h66.1v-60.1z"/></svg>
+    </a>
+  
+    
+    
+    <a href="mailto:littlebee1024@outlook.com" target="_blank" rel="noopener" title="" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m20 8-8 5-8-5V6l8 5 8-5m0-2H4c-1.11 0-2 .89-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2Z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.tabs", "navigation.top", "navigation.tracking", "search.highlight", "search.share", "search.suggest"], "search": "../../../assets/javascripts/workers/search.b97dbffb.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.6c7ad80a.min.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

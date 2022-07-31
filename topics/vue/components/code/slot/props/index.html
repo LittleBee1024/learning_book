@@ -1,0 +1,24 @@
+<html>
+
+<head>
+   <meta charset="UTF-8">
+   <script src="https://unpkg.com/vue@next"></script>
+</head>
+
+<div id="app">
+   <todo-list></todo-list>
+   <br />
+   <todo-list>
+      <template v-slot:default="slotProps">
+         <span style="color:blue;">Change in parent component: {{ slotProps.item }}</span>
+      </template>
+   </todo-list>
+   <p>Abbreviated Syntax for Lone Default Slots:</p>
+   <todo-list v-slot="{ item }">
+      <span style="color:blue;">Change in parent component: {{ item }}</span>
+   </todo-list>
+</div>
+
+<script src="index.js"></script>
+
+</html>

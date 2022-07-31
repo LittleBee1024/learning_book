@@ -1,0 +1,19 @@
+<html>
+
+<head>
+   <meta charset="UTF-8">
+   <script src="https://unpkg.com/vue@next"></script>
+</head>
+
+<div id="app">
+   <h1>Passing all probs dynamically:</h1>
+   <blog-post v-bind="post"></blog-post>
+   <h1>Passing probB and probC dynamically:</h1>
+   <blog-post :prop-b="post.propB" :prop-c="post.propC"></blog-post>
+   <h1>Passing probC statically:</h1>
+   <blog-post prop-c="This is static assignment"></blog-post>
+</div>
+
+<script src="index.js"></script>
+
+</html>
