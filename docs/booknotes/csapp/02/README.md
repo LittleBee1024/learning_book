@@ -11,6 +11,7 @@
 ```bash
 > ./main
 char: 1
+short: 2
 int: 4
 long: 8
 long long: 8
@@ -106,7 +107,37 @@ arithmetic_right_shift
 
 ### 整数表示
 
+对于无符号整数，采用常规二进制编码。对于有符号整数，采用补码(two's-complement)编码，将字的最高有效位解释为负权。下图显示了四位二进制的两种整数表示的结果：
+
+![integer](./images/integer.png)
+
 ### 整数转换
+
+C语言中，无符号整数和有符号整数的规则是：
+
+* 保持位置不变
+
+[例子"conv"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/csapp/02/code/conv)在无符号数和有符号数之间进行了转换：
+```cpp
+int main()
+{
+   short int v = -12345;
+   unsigned short uv = (unsigned short) v;
+   printf("v = %d, uv = %u\n", v, uv);
+
+   unsigned short u = 0xFFFF;
+   short int tu = (short int) u;
+   printf("u = %u, tu = %d\n", u, tu);
+   return 0;
+}
+```
+```bash
+# 53191 + 12345 = 2^16
+# 65535 + 1 = 2^16
+> ./main
+v = -12345, uv = 53191
+u = 65535, tu = -1
+```
 
 ### 整数运算
 
