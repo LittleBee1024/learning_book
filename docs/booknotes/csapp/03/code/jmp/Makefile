@@ -1,9 +1,9 @@
 o:
-	gcc -Og -c absdiff.c
+	gcc -O0 -c absdiff.c
 	objdump -d absdiff.o
 
 s:
-	gcc -Og -S absdiff.c
+	gcc -O0 -S absdiff.c
 
 clean:
 	rm -rf *.s *.o

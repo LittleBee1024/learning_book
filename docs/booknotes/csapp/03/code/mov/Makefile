@@ -1,9 +1,9 @@
 o:
-	gcc -Og -c exchange.c
+	gcc -O0 -c exchange.c
 	objdump -d exchange.o
 
 s:
-	gcc -Og -S exchange.c
+	gcc -O0 -S exchange.c
 
 clean:
 	rm -rf *.s *.o

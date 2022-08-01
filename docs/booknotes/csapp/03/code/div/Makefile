@@ -1,9 +1,9 @@
 o:
-	gcc -Og -c uremdiv.c
-	objdump -d uremdiv.o
+	gcc -O0 -c div.c
+	objdump -d div.o
 
 s:
-	gcc -Og -S uremdiv.c
+	gcc -O0 -S div.c
 
 clean:
 	rm -rf *.s *.o

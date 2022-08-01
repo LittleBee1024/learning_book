@@ -1,9 +1,9 @@
 o:
-	gcc -Og -c comp.c
+	gcc -O0 -c comp.c
 	objdump -d comp.o
 
 s:
-	gcc -Og -S comp.c
+	gcc -O0 -S comp.c
 
 clean:
 	rm -rf *.s *.o
