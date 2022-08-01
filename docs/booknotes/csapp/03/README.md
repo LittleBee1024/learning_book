@@ -240,7 +240,9 @@ movzbq  $dl, %rax                   # %rax = 00000000000000AA
     }
     ```
 
-### 移位操作
+### 常见的算术操作
+
+如上表所视，常见的算术操作包括：加载有效地址、一元和二元操作、移位操作等。
 
 [例子"shl"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/csapp/03/code/asm_operate/shl)中的`arith`函数对常见算术表达进行了求值：
 
@@ -269,6 +271,70 @@ movzbq  $dl, %rax                   # %rax = 00000000000000AA
         long t3 = t1 & 0x0F0F0F0F;
         long t4 = t2 - t3;
         return t4;
+    }
+    ```
+
+### 特殊的算术操作
+
+| 指令 | 效果 | 描述 |
+| --- | --- | --- |
+| imulq S | R[%rdx]:R[%rax] ← S × R[%rax] | 有符号全乘法 |
+| mulq S  | R[%rdx]:R[%rax] ← S × R[%rax] | 无符号全乘法 |
+| cqto    | R[%rdx]:R[%rax] ← 符号扩展(R[%rax]) | 转换为八字 |
+| idivq S | R[%rdx] ← R[%rdx]:R[%rax] mod S </br> R[%rax] ← R[%rdx]:R[%rax] ÷ S | 有符号除法 |
+| divq S  | R[%rdx] ← R[%rdx]:R[%rax] mod S </br> R[%rax] ← R[%rdx]:R[%rax] ÷ S | 无符号除法 |
+
+两个64位有符号或无符号整数相乘得到的乘积需要128位来表示。上表描述的是支持产生两个64位数字的全128位乘积以及整数除法的指令。
+
+`imulq`指令有两种不同的形式：
+
+* “双操作数”乘法指令
+    * 从两个64位操作数产生一个64位乘积
+* “单操作数”乘法指令
+    * 计算两个64位值的全128位乘积
+    * 一个参数必须在寄存器`%rax`中，另一个参数作为指令的源操作数
+    * 乘积结果存放在`%rdx`(高64位)和`%rax`(低64位)中
+
+[例子"mul"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/csapp/03/code/asm_operate/mul)中的两个乘积函数分别利用了两种`imulq`指令：
+
+=== "“单操作数”乘法指令"
+
+    ```asm hl_lines="6"
+    # void multi_64(uint128_t *dest, uint64_t x, uint64_t y)
+    # dest in %rdi, x in %rsi, y in %rdx
+    0000000000000000 <multi_64>:
+     0:   f3 0f 1e fa             endbr64 
+     4:   48 89 f0                mov    %rsi,%rax      # x是第一个参数
+     7:   48 f7 e2                mul    %rdx           # y是第二个参数，计算x*y，结果存放在 %rdx:%rax 中
+     a:   48 89 07                mov    %rax,(%rdi)    # 将低64位拷贝到 dest 低位地址
+     d:   48 89 57 08             mov    %rdx,0x8(%rdi) # 将高64位拷贝到 dest 高位地址
+    11:   c3                      retq
+    ```
+
+=== "“双操作数”乘法指令"
+
+    ```asm hl_lines="5"
+    # void multi_32(uint64_t *dest, uint32_t a, uint32_t b)
+    # dest in %rdi, a in %esi, b in %edx
+    0000000000000012 <multi_32>:
+    12:   f3 0f 1e fa             endbr64 
+    16:   0f af f2                imul   %edx,%esi      # a*b, 结果存在 %rsi 中
+    19:   48 89 37                mov    %rsi,(%rdi)    # 将结果存入 dest 中
+    1c:   c3                      retq
+    ```
+
+=== "C代码"
+
+    ```cpp
+    typedef unsigned __int128 uint128_t;
+    void multi_64(uint128_t *dest, uint64_t x, uint64_t y)
+    {
+        *dest = x * (uint128_t)y;
+    }
+
+    void multi_32(uint64_t *dest, uint32_t a, uint32_t b)
+    {
+        *dest = a * b;
     }
     ```
 
