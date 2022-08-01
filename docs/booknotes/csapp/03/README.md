@@ -592,4 +592,75 @@ if (!t) v = ve;
     }
     ```
 
+### 循环
+
+C语言提供了多种循环结构，即`do-while`、`while`和`for`。汇编中没有相应的指令存在，但可以用**条件测试**和**跳转**组合起来实现循环的效果。
+
+* `do-while`循环
+
+    === "汇编代码的"do-while""
+
+        ```asm
+        loop:
+            body-statement
+            t = test-expr;
+            if (t)
+                goto loop;
+        ```
+
+    === "C语言的"do-while""
+
+        ```cpp
+        do
+            body-statement
+            while(test-expr);
+        ```
+
+* `while`循环
+
+    === "汇编代码的"while""
+
+        ```asm
+            goto test;
+        loop:
+            body-statement
+        test:
+            t = test-expr;
+            if (t)
+                goto loop;
+        ```
+
+    === "C语言的"while""
+
+        ```cpp
+        while(test-expr)
+            body-statement
+        ```
+
+* `for`循环
+
+    === "汇编代码的"for""
+
+        ```asm
+            init-expr;
+            goto test;
+        loop:
+            body-statement
+            update-expr;
+        test:
+            t = test-expr;
+            if (t)
+                goto loop;
+        ```
+
+    === "C语言的"for""
+
+        ```cpp
+        for (init-expr; test-expr; update-expr)
+            body-statement
+        ```
+
+### switch语句
+
+
 ## 过程
