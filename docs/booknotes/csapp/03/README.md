@@ -111,9 +111,37 @@ movq    $-1, %rax                   # %rax = FFFFFFFFFFFFFFFF
     * `%rdi`，`%rsi`，`%rdx`，`%rcx`，`%r8`，`%r9`
 * `%rax`用户存放函数的返回值
 
-更详细的介绍，可参考本文的["过程"](#_8)章节。
+更详细的介绍，可参考本文的["过程"](#_7)章节。
 
-## 访问信息
+### 操作数指示符
+
+x86-64支持多种操作数格式。源数据值可以是常数、或是寄存器或内存中的值。目的数据可以存放在寄存器或内存中。各种不同的操作数被分为三种类型：
+
+* 立即数`Imm`
+* 寄存器`R[ra]`
+* 内存引用`M[Imm]`
+    * 存在多种寻找方式
+
+![operand](./images/operand.png)
+
+### 数据传送指令
+
+| 指令 | 描述 | 例子 |
+| --- | --- | --- |
+| mov S, D | 把数据`S`传送给`D` | movb, movw, movl, movq |
+| movabsq I, R | 把四字立即数存储在寄存器`R`中 | `movabsq $0011223344556677, %rax` |
+| movz S, R | 把数据`S`存储在寄存器`R`中，高位用零补齐 | movzbw, movzbl, movzwl, movzbq, movzwq |
+| movs S, R | 把数据`S`存储在寄存器`R`中，高位用符号位补齐 | movsbw, movsbl, movswl, movsbq, movswq, movslq |
+| cltq | 把`%eax`符号扩展到`%rax` | |
+
+例如，下面的例子描述了不同传送指令的效果：
+```asm
+movabsq $0011223344556677, %rax     # %rax = 0011223344556677
+movb    $0xAA, %dl                  # %dl  = AA
+movb    %dl, %al                    # %rax = 00112233445566AA
+movsbq  $dl, %rax                   # %rax = FFFFFFFFFFFFFFAA
+movzbq  $dl, %rax                   # %rax = 00000000000000AA
+```
 
 ## 算术和逻辑操作
 
