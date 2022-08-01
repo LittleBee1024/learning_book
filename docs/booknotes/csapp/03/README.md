@@ -157,7 +157,7 @@ movzbq  $dl, %rax                   # %rax = 00000000000000AA
 
 [例子"mov"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/csapp/03/code/asm_access/mov)中的`exchange`函数利用了`mov`指令，修改了指针`xp`指向的内容：
 
-=== "ASM"
+=== "汇编代码"
 
     ```asm
     # long exchange(long *xp, long y)
@@ -169,7 +169,7 @@ movzbq  $dl, %rax                   # %rax = 00000000000000AA
     a:   c3                      retq
     ```
 
-=== "C"
+=== "C代码"
 
     ```cpp
     long exchange(long *xp, long y)
@@ -217,7 +217,7 @@ movzbq  $dl, %rax                   # %rax = 00000000000000AA
 
 [例子"lea"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/csapp/03/code/asm_operate/lea)中的`scale`函数利用`leaq`指令，对`x + 4 * y + 12 * z`表达进行了求值：
 
-=== "ASM"
+=== "汇编代码"
 
     ```asm
     # long scale(long x, long y, long z)
@@ -230,7 +230,7 @@ movzbq  $dl, %rax                   # %rax = 00000000000000AA
     10:   c3                      retq
     ```
 
-=== "C"
+=== "C代码"
 
     ```cpp
     long scale(long x, long y, long z)
@@ -246,7 +246,7 @@ movzbq  $dl, %rax                   # %rax = 00000000000000AA
 
 [例子"arith"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/csapp/03/code/asm_operate/arith)中的`arith`函数对常见算术表达进行了求值：
 
-=== "ASM"
+=== "汇编代码"
 
     ```asm
     # long arith(long x, long y, long z)
@@ -261,7 +261,7 @@ movzbq  $dl, %rax                   # %rax = 00000000000000AA
     18:   c3                      retq
     ```
 
-=== "C"
+=== "C代码"
 
     ```cpp
     long arith(long x, long y, long z)
@@ -428,7 +428,7 @@ movzbq  $dl, %rax                   # %rax = 00000000000000AA
 
 [例子"cmp"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/csapp/03/code/asm_control/cmp)通过`SET`指令和`CMP`指令，完成了两个数的比较过程：
 
-=== "ASM"
+=== "汇编代码"
 
     ```asm hl_lines="5 6"
     # int comp(long a, long b)
@@ -441,7 +441,7 @@ movzbq  $dl, %rax                   # %rax = 00000000000000AA
     d:   c3                      retq
     ```
 
-=== "C"
+=== "C代码"
 
     ```cpp
     int comp(long a, long b)
@@ -483,7 +483,7 @@ C语言中的`if-else`语句在汇编代码中被转换为`goto`版本：
 
 [例子"jmp"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/csapp/03/code/asm_control/jmp)通过`JMP`指令和`CMP`指令，实现了`if-else`条件分支：
 
-=== "ASM"
+=== "汇编代码"
 
     ```asm hl_lines="6 7"
     # long absdiff(long x, long y)
@@ -563,7 +563,7 @@ if (!t) v = ve;
 
 因此，条件传送只能用于非常受限制的情况，以提供代码运行的效率。[例子"cmov"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/csapp/03/code/asm_control/cmov)只有开启了`-O1`优化选项，才能生成条件传送的汇编代码，默认情况下使用的是条件跳转指令：
 
-=== "ASM"
+=== "汇编代码"
 
     ```asm hl_lines="9 10"
     # long cmovdiff(long x, long y)
@@ -579,7 +579,7 @@ if (!t) v = ve;
     17:   c3                      retq  
     ```
 
-=== "C"
+=== "C代码"
 
     ```cpp
     long cmovdiff(long x, long y)
@@ -666,7 +666,7 @@ switch语句的关键步骤是通过**跳转表**来访问代码位置。和使�
 
 [例子"switch"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/csapp/03/code/asm_control/switch)编译出的`switch`语句的汇编代码，包含一个跳转表，类似[switch_impl.c](./code/asm_control/switch/switch.c)中的`goto`版本的C代码实现：
 
-=== "ASM"
+=== "汇编代码"
 
     ```asm
     # void switch_eg(long x, long n, long *dest)
