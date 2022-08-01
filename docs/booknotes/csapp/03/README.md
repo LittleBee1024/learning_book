@@ -155,6 +155,31 @@ movsbq  $dl, %rax                   # %rax = FFFFFFFFFFFFFFAA
 movzbq  $dl, %rax                   # %rax = 00000000000000AA
 ```
 
+[例子"mov"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/csapp/03/code/asm_access/mov)中的`exchange`函数利用了`mov`指令，修改了指针`xp`指向的内容：
+
+=== "ASM"
+
+    ```asm
+    # long exchange(long *xp, long y)
+    # xp in %rdi, y in %rsi
+    0000000000000000 <exchange>:
+    0:   f3 0f 1e fa             endbr64
+    4:   48 8b 07                mov    (%rdi),%rax     # 从地址是 %rdi 的内存中获取值(*xp)，并传递到返回值 %rax 中
+    7:   48 89 37                mov    %rsi,(%rdi)     # (*xp = y)
+    a:   c3                      retq
+    ```
+
+=== "C"
+
+    ```cpp
+    long exchange(long *xp, long y)
+    {
+        long x = *xp;
+        *xp = y;
+        return x;
+    }
+    ```
+
 ## 算术和逻辑操作
 
 ## 控制
