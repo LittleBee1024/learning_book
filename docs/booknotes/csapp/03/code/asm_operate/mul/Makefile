@@ -1,9 +1,9 @@
 o:
-	gcc -Og -c store_uprod.c
-	objdump -d store_uprod.o
+	gcc -Og -c mul_32_64.c
+	objdump -d mul_32_64.o
 
 s:
-	gcc -Og -S store_uprod.c
+	gcc -Og -S mul_32_64.c
 
 clean:
 	rm -rf *.s *.o

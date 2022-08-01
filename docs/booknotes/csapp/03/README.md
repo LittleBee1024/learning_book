@@ -193,6 +193,24 @@ movzbq  $dl, %rax                   # %rax = 00000000000000AA
 
 ## 算术和逻辑操作
 
+| 指令 | 效果 | 描述 |
+| --- | --- | --- |
+| leaq S,D | D ← &S    | 加载有效地址 |
+| inc  D   | D ← D+1   | 加1 |
+| dec  D   | D ← D−1   | 减1 |
+| neg  D   | D ← -D    | 取负 |
+| not  D   | D ← ~D    | 取补 |
+| add  S,D | D ← D + S | 加 |
+| sub  S,D | D ← D − S | 减 |
+| imul S,D | D ← D ∗ S | 乘 |
+| xor  S,D | D ← D ^ S | 异或 |
+| or   S,D | D ← D | S | 或 |
+| and  S,D | D ← D & S | 与 |
+| sal  k,D | D ← D<<k  | 左移 |
+| shl  k,D | D ← D<<k  | 左移 (等同SAL) |
+| sar  k,D | D ← D>>k  | 算术右移 |
+| shr  k,D | D ← D>>k  | 逻辑右移 |
+
 ## 控制
 
 ## 过程
