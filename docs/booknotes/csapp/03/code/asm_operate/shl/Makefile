@@ -1,9 +1,9 @@
 o:
-	gcc -O0 -c arith.c
+	gcc -Og -c arith.c
 	objdump -d arith.o
 
 s:
-	gcc -O0 -S arith.c
+	gcc -Og -S arith.c
 
 clean:
 	rm -rf *.s *.o
