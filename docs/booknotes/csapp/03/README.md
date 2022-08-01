@@ -195,21 +195,82 @@ movzbq  $dl, %rax                   # %rax = 00000000000000AA
 
 | 指令 | 效果 | 描述 |
 | --- | --- | --- |
-| leaq S,D | D ← &S    | 加载有效地址 |
-| inc  D   | D ← D+1   | 加1 |
+| leaq S,R | R ← &S    | 加载有效地址，目的地必须是寄存器 |
+| inc  D   | D ← D+1   | 加1，可以是寄存器，也可以是一个内存位置 |
 | dec  D   | D ← D−1   | 减1 |
 | neg  D   | D ← -D    | 取负 |
 | not  D   | D ← ~D    | 取补 |
-| add  S,D | D ← D + S | 加 |
+| add  S,D | D ← D + S | 加，如果是写回内存的操作，第一个操作数必须是从内存读出 |
 | sub  S,D | D ← D − S | 减 |
 | imul S,D | D ← D ∗ S | 乘 |
 | xor  S,D | D ← D ^ S | 异或 |
 | or   S,D | D ← D | S | 或 |
 | and  S,D | D ← D & S | 与 |
-| sal  k,D | D ← D<<k  | 左移 |
+| sal  k,D | D ← D<<k  | 左移，移位量可以是立即数，或单字节寄存器`%cl` |
 | shl  k,D | D ← D<<k  | 左移 (等同SAL) |
 | sar  k,D | D ← D>>k  | 算术右移 |
 | shr  k,D | D ← D>>k  | 逻辑右移 |
+
+### 加载有效地址
+
+加载有效地址(load effective address)指令`leaq`实际上是`movq`指令的变形，将有效地址写入目的操作数（必须是寄存器）。
+
+[例子"lea"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/csapp/03/code/asm_operate/lea)中的`scale`函数利用`leaq`指令，对`x + 4 * y + 12 * z`表达进行了求值：
+
+=== "ASM"
+
+    ```asm
+    # long scale(long x, long y, long z)
+    # x in %rdi, y in %rsi, z in %rdx
+    0000000000000000 <scale>:
+     0:   f3 0f 1e fa             endbr64 
+     4:   48 8d 04 b7             lea    (%rdi,%rsi,4),%rax    # x + 4*y
+     8:   48 8d 14 52             lea    (%rdx,%rdx,2),%rdx    # z + 2*z = 3*z
+     c:   48 8d 04 90             lea    (%rax,%rdx,4),%rax    # (x+4*y)+4*(3*z) = x + 4*y + 12*z
+    10:   c3                      retq
+    ```
+
+=== "C"
+
+    ```cpp
+    long scale(long x, long y, long z)
+    {
+        long t = x + 4 * y + 12 * z;
+        return t;
+    }
+    ```
+
+### 移位操作
+
+[例子"shl"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/csapp/03/code/asm_operate/shl)中的`arith`函数对常见算术表达进行了求值：
+
+=== "ASM"
+
+    ```asm
+    # long arith(long x, long y, long z)
+    # x in %rdi, y in %rsi, z in %rdx
+    0000000000000000 <arith>:
+     0:   f3 0f 1e fa             endbr64 
+     4:   48 31 f7                xor    %rsi,%rdi              # t1 = x ^ y
+     7:   48 8d 04 52             lea    (%rdx,%rdx,2),%rax     # 3*z
+     b:   48 c1 e0 04             shl    $0x4,%rax              # t2 = 16 * (3*z) = 48*z
+     f:   81 e7 0f 0f 0f 0f       and    $0xf0f0f0f,%edi        # t3 = t1 & 0x0F0F0F0F
+    15:   48 29 f8                sub    %rdi,%rax              # Return t2 - t3
+    18:   c3                      retq
+    ```
+
+=== "C"
+
+    ```cpp
+    long arith(long x, long y, long z)
+    {
+        long t1 = x ^ y;
+        long t2 = z * 48;
+        long t3 = t1 & 0x0F0F0F0F;
+        long t4 = t2 - t3;
+        return t4;
+    }
+    ```
 
 ## 控制
 
