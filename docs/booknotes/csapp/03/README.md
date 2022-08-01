@@ -295,7 +295,7 @@ movzbq  $dl, %rax                   # %rax = 00000000000000AA
     * 一个参数必须在寄存器`%rax`中，另一个参数作为指令的源操作数
     * 乘积结果存放在`%rdx`(高64位)和`%rax`(低64位)中
 
-[例子"mul"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/csapp/03/code/asm_operate/mul)中的两个乘积函数分别利用了两种`imulq`指令：
+[例子"mul"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/csapp/03/code/asm_operate/mul)中的两个乘积函数分别利用了两种`imulq`指令，完成了乘法操作：
 
 === "“单操作数”乘法指令"
 
@@ -335,6 +335,64 @@ movzbq  $dl, %rax                   # %rax = 00000000000000AA
     void multi_32(uint64_t *dest, uint32_t a, uint32_t b)
     {
         *dest = a * b;
+    }
+    ```
+
+除法或取模操作都是由“单操作数”除法指令完成的，其规则如下：
+
+* 寄存器`%rdx`(高64位)和`%rax`(低64位)中的128位数作为被除数，如果除数是一个64位的值
+    * 无符号运算：`%rdx`应该设置为全0
+    * 有符号运算：`%rdx`应该设置为`%rax`的符号位，可以用指令`cqto`来完成
+* 除数作为指令的操作数给出
+* 运算结果的商存储在寄存器`%rax`中，余数存储在寄存器`%rdx`中
+
+[例子"div"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/csapp/03/code/asm_operate/div)利用除法指令完成了无符号数`uremdiv`和有符号数`remdiv`的除法操作：
+
+=== "“单操作数”除法指令"
+
+    ```asm hl_lines="8 19 20"
+    # void uremdiv(unsigned long x, unsigned long y, unsigned long *qp, unsigned long *rp)
+    # x in %rdi, y in %rsi, qp in %rdx, rp in %rcx
+    0000000000000000 <uremdiv>:
+     0:   f3 0f 1e fa             endbr64 
+     4:   48 89 f8                mov    %rdi,%rax      # 拷贝被除数 x 到 %rax
+     7:   49 89 d0                mov    %rdx,%r8       # 保存 qp 地址，以腾出 %rdx 用于除法操作
+     a:   ba 00 00 00 00          mov    $0x0,%edx      # 清零 %rdx
+     f:   48 f7 f6                div    %rsi           # 执行除法操作，以 y 为除数
+    12:   49 89 00                mov    %rax,(%r8)     # 将商存入 *qp
+    15:   48 89 11                mov    %rdx,(%rcx)    # 将余数存入 *rp
+    18:   c3                      retq   
+
+    # void remdiv(long x, long y, long *qp, long *rp)
+    # x in %rdi, y in %rsi, qp in %rdx, rp in %rcx
+    0000000000000019 <remdiv>:
+    19:   f3 0f 1e fa             endbr64 
+    1d:   48 89 f8                mov    %rdi,%rax      # 拷贝被除数 x 到 %rax
+    20:   49 89 d0                mov    %rdx,%r8       # 保存 qp 地址，以腾出 %rdx 用于除法操作
+    23:   48 99                   cqto                  # 将 %rdx 设置为 %rax 的符号位
+    25:   48 f7 fe                idiv   %rsi           # 执行除法操作，以 y 为除数
+    28:   49 89 00                mov    %rax,(%r8)     # 将商存入 *qp
+    2b:   48 89 11                mov    %rdx,(%rcx)    # 将余数存入 *rp
+    2e:   c3                      retq
+    ```
+
+=== "C代码"
+
+    ```cpp
+    void uremdiv(unsigned long x, unsigned long y, unsigned long *qp, unsigned long *rp)
+    {
+        unsigned long q = x / y;
+        unsigned long r = x % y;
+        *qp = q;
+        *rp = r;
+    }
+
+    void remdiv(long x, long y, long *qp, long *rp)
+    {
+        long q = x / y;
+        long r = x % y;
+        *qp = q;
+        *rp = r;
     }
     ```
 
