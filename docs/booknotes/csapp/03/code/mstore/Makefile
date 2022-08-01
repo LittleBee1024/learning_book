@@ -1,14 +1,12 @@
-all: main
-
-main:
-	gcc -Og -o main main.c mstore.c
+o:
+	gcc -Og -c mstore.c
+	objdump -d mstore.o
 
 s:
 	gcc -Og -S mstore.c
 
-o:
-	gcc -Og -c mstore.c
-	objdump -d mstore.o
+main:
+	gcc -Og -o main main.c mstore.c
 
 clean:
 	rm -rf *.s *.o main
