@@ -411,9 +411,113 @@ movzbq  $dl, %rax                   # %rax = 00000000000000AA
 
 | 指令 | 描述 |
 | --- | --- |
-| cmp S1, S2 | 比较(S2-S1) |
-| test S1, S2 | 比较(S1&S2) |
+| cmp S1, S2 | 比较(S2-S1)，根据两个操作数之差来设置条件码 |
+| test S1, S2 | 测试(S1&S2)，用来指示哪些位应该被测试 |
 
-### 访问条件码
+条件码的使用方式有三种：
+
+* 根据条件码的某种组合，将一个字节设置位0或者1，如`SET`指令
+* 根据条件码跳转到程序的某个其他的部分，如`JMP`指令
+* 根据条件码有条件的传送数，如`CMOV`指令
+
+### 条件置位指令
+
+下表是常见的`SET`指令，每条指令根据条件码的组合，将一个字节设置位0或者1：
+
+![set](./images/set.png)
+
+[例子"cmp"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/csapp/03/code/asm_control/cmp)通过`SET`指令和`CMP`指令，完成了两个数的比较过程：
+
+=== "ASM"
+
+    ```asm hl_lines="5 6"
+    # int comp(long a, long b)
+    # a in %rdi, b in %rsi
+    0000000000000000 <comp>a
+    0:   f3 0f 1e fa             endbr64 
+    4:   48 39 f7                cmp    %rsi,%rdi   # 比较 a-b
+    7:   0f 9c c0                setl   %al         # a<b 时被置1
+    a:   0f b6 c0                movzbl %al,%eax    # 将结果返回，高位被清零
+    d:   c3                      retq
+    ```
+
+=== "C"
+
+    ```cpp
+    int comp(long a, long b)
+    {
+        return a < b;
+    }
+    ```
+
+### 条件跳转指令
+
+下表是常见的`JMP`指令，当跳转条件满足时，跳转到一条带标号的目的地：
+
+![jmp](./images/jmp.png)
+
+[例子"jmp"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/csapp/03/code/asm_control/jmp)通过`JMP`指令和`CMP`指令，实现了`if-else`条件分支：
+
+=== "ASM"
+
+    ```asm hl_lines="6 7"
+    # long absdiff(long x, long y)
+    # x in %rdi, y in %rsi
+    0000000000000000 <absdiff>:
+     0:   f3 0f 1e fa             endbr64 
+     4:   48 89 f0                mov    %rsi,%rax
+     7:   48 39 f7                cmp    %rsi,%rdi              # 比较 x-y
+     a:   7d 0c                   jge    18 <absdiff+0x18>      # x>=y，跳转置0x18位置
+     c:   48 83 05 00 00 00 00    addq   $0x1,0x0(%rip)         # lt_cnt++
+    13:   01 
+    14:   48 29 f8                sub    %rdi,%rax              # result = y - x
+    17:   c3                      retq   
+    18:   48 83 05 00 00 00 00    addq   $0x1,0x0(%rip)         # ge_cnt++
+    1f:   01 
+    20:   48 29 f7                sub    %rsi,%rdi              # x = x - y
+    23:   48 89 f8                mov    %rdi,%rax              # result = x
+    26:   c3                      retq 
+    ```
+
+=== ""if-else"版本C代码"
+
+    ```cpp
+    long absdiff(long x, long y)
+    {
+        long result;
+        if (x < y)
+        {
+            lt_cnt++;
+            result = y - x;
+        }
+        else
+        {
+            ge_cnt++;
+            result = x - y;
+        }
+        return result;
+    }
+    ```
+
+=== ""goto"版本C代码"
+
+    ```cpp
+    long gotodiff(long x, long y)
+    {
+        long result;
+        if (x >= y)
+            goto x_ge_y;
+        lt_cnt++;
+        result = y - x;
+        return result;
+    x_ge_y:
+        ge_cnt++;
+        result = x - y;
+        return result;
+    }
+    ```
+
+### 条件传送指令
+
 
 ## 过程
