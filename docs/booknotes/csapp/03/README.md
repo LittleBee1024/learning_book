@@ -244,7 +244,7 @@ movzbq  $dl, %rax                   # %rax = 00000000000000AA
 
 如上表所视，常见的算术操作包括：加载有效地址、一元和二元操作、移位操作等。
 
-[例子"shl"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/csapp/03/code/asm_operate/shl)中的`arith`函数对常见算术表达进行了求值：
+[例子"arith"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/csapp/03/code/asm_operate/arith)中的`arith`函数对常见算术表达进行了求值：
 
 === "ASM"
 
