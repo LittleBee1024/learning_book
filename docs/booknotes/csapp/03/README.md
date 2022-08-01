@@ -466,7 +466,7 @@ C语言中的`if-else`语句在汇编代码中被转换为`goto`版本：
         goto false;
     then-statement
     goto done;
-    
+
     false:
         else-statement
     done:
@@ -544,5 +544,52 @@ C语言中的`if-else`语句在汇编代码中被转换为`goto`版本：
 
 ### 条件传送指令
 
+下表是常见的`CMOV`指令，当传送条件满足时，指令把源值S复制到目的R：
+
+![comv](./images/comv.png)
+
+和条件跳转不同，处理器无需预测测试的结果就可以执行条件传送，因此可以避免处理器因错误预测导致性能下降。
+
+然而，不是所有的条件表达式都可以用条件传送来编译。以`v = test-expr ? then-expr : else-expr`语句为例子，用条件传送编译这个表达式会得到以下描述：
+
+```asm
+v = then-expr;
+ve = else-expr;
+t = test-expr;
+if (!t) v = ve;
+```
+
+条件传送的编译方式会同时对`then-expr`和`else-expr`求值。这和C语言的条件语句的执行过程是不一致的。
+
+因此，条件传送只能用于非常受限制的情况，以提供代码运行的效率。[例子"cmov"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/csapp/03/code/asm_control/cmov)只有开启了`-O1`优化选项，才能生成条件传送的汇编代码，默认情况下使用的是条件跳转指令：
+
+=== "ASM"
+
+    ```asm hl_lines="9 10"
+    # long cmovdiff(long x, long y)
+    # x in %rdi, y in %rsi
+    0000000000000000 <cmovdiff>:
+     0:   f3 0f 1e fa             endbr64 
+     4:   48 89 f2                mov    %rsi,%rdx
+     7:   48 29 fa                sub    %rdi,%rdx  # y-x
+     a:   48 89 f8                mov    %rdi,%rax
+     d:   48 29 f0                sub    %rsi,%rax  # rval = x-y
+    10:   48 39 fe                cmp    %rdi,%rsi  # 比较 y-x
+    13:   48 0f 4f c2             cmovg  %rdx,%rax  # 如果 y>x, rval = y-x
+    17:   c3                      retq  
+    ```
+
+=== "C"
+
+    ```cpp
+    long cmovdiff(long x, long y)
+    {
+        long rval = y-x;
+        long eval = x-y;
+        long ntest = x >= y;
+        if (ntest) rval = eval;
+        return rval;
+    }
+    ```
 
 ## 过程
