@@ -456,6 +456,31 @@ movzbq  $dl, %rax                   # %rax = 00000000000000AA
 
 ![jmp](./images/jmp.png)
 
+C语言中的`if-else`语句在汇编代码中被转换为`goto`版本：
+
+=== "汇编代码的"if-else""
+
+    ```asm
+    t = test-expr;
+    if (!t)
+        goto false;
+    then-statement
+    goto done;
+    
+    false:
+        else-statement
+    done:
+    ```
+
+=== "C语言的"if-else""
+
+    ```cpp
+    if (test-expr)
+        then-statement
+    else
+        else-statement
+    ```
+
 [例子"jmp"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/csapp/03/code/asm_control/jmp)通过`JMP`指令和`CMP`指令，实现了`if-else`条件分支：
 
 === "ASM"
