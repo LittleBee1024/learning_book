@@ -662,5 +662,90 @@ C语言提供了多种循环结构，即`do-while`、`while`和`for`。汇编中
 
 ### switch语句
 
+switch语句的关键步骤是通过**跳转表**来访问代码位置。和使用一组很长的`if-else`语句相比，使用跳转表的有点是执行开关语句的时间与开关的数量无关。
+
+[例子"switch"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/csapp/03/code/asm_control/switch)编译出的`switch`语句的汇编代码，包含一个跳转表，类似[switch_impl.c](./code/asm_control/switch/switch.c)中的`goto`版本的C代码实现：
+
+=== "ASM"
+
+    ```asm
+    # void switch_eg(long x, long n, long *dest)
+    # x in %rdi, n in %rsi, dest in %rdx
+    switch_eg:
+        subq    $100, %rsi              # index = n - 100
+        cmpq    $6, %rsi                # 比较 index-6
+        ja      .L8                     # 如果 index>6, 跳转到 default 分支
+        leaq    .L4(%rip), %rcx         # 获取跳转表 .L4 起始地址
+        movslq  (%rcx,%rsi,4), %rax     # 获取跳转表中(index-6)位置的值，即需要跳转的地址相对偏移
+        addq    %rcx, %rax              # 计算出跳转地址
+        notrack jmp *%rax               # 执行跳转
+    .L4:
+        .long    .L7-.L4                # Case 100: loc_A
+        .long    .L8-.L4                # Case 101: loc_def
+        .long    .L6-.L4                # Case 102: loc_B
+        .long    .L5-.L4                # Case 103: loc_C
+        .long    .L3-.L4                # Case 104: loc_D
+        .long    .L8-.L4                # Case 105: loc_def
+        .long    .L3-.L4                # Case 106: loc_D
+    ```
+
+=== "switch语句"
+
+    ```cpp
+    void switch_eg(long x, long n, long *dest)
+    {
+        long val = x;
+        switch (n)
+        {
+        case 100:
+            val *= 13;
+            break;
+        case 102:
+            val += 10;
+        case 103:
+            val += 11;
+            break;
+        case 104:
+        case 106:
+            val *= val;
+            break;
+        default:
+            val = 0;
+        }
+        *dest = val;
+    }
+    ```
+
+=== ""goto"版本的switch语句"
+
+    ```cpp
+    void switch_eg_impl(long x, long n, long *dest)
+    {
+        static void *jt[7] = {
+            &&loc_A, &&loc_def, &&loc_B, &&loc_C, &&loc_D, &&loc_def, &&loc_D
+        };
+        unsigned long index = n - 100;
+        long val;
+        if(index > 6)
+            goto loc_def;
+        goto *jt[index];
+
+    loc_A:
+        val = x * 13;
+        goto done;
+    loc_B:
+        x = x + 10;
+    loc_C:
+        val = x + 11;
+        goto done;
+    loc_D:
+        val = x * x;
+        goto done;
+    loc_def:
+        val = 0;
+    done:
+        *dest = val;
+    }
+    ```
 
 ## 过程
