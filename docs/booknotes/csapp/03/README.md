@@ -842,7 +842,7 @@ x86-64中，通过寄存器最多可以传递6个整型参数。如上表所示�
 * 对一个局部变量使用了地址运算符`&`，需要产生一个地址
 * 局部变量是数组或结构
 
-[例子"proc_params"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/csapp/03/code/proc_params)中的`call_proc`函数必须在栈上分配局部变量，以产生局部变量的地址传入`proc`函数：
+[例子"proc_params"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/csapp/03/code/proc_params)中的`call_proc`函数必须在栈上分配局部变量，以产生局部变量的地址，传入`proc`函数：
 
 === "汇编代码"
 
@@ -903,3 +903,19 @@ x86-64中，通过寄存器最多可以传递6个整型参数。如上表所示�
         return (x1+x2)*(x3-x4);
     }
     ```
+
+下图展示了`call_proc`函数的栈帧内容，其中“金丝雀”用于检验栈是否被破坏，详情可参见["缓冲区溢出"](#_27)章节。
+
+![callstack_proc](./images/callstack_proc.png)
+
+### 寄存器中的局部存储空间
+
+### 递归过程
+
+## 其他
+
+### 数据对齐
+
+### 缓冲区溢出
+
+### 支持变长栈帧
