@@ -833,3 +833,73 @@ x86-64中，通过寄存器最多可以传递6个整型参数。如上表所示�
         *a4p += a4;
     }
     ```
+
+### 栈上的局部存储
+
+大多数情况下过程中的局部数据可存放在寄存器中，但有些情况下，局部数据必须存放在内存中：
+
+* 寄存器不足够存放所有的本地数据
+* 对一个局部变量使用了地址运算符`&`，需要产生一个地址
+* 局部变量是数组或结构
+
+[例子"proc_params"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/csapp/03/code/proc_params)中的`call_proc`函数必须在栈上分配局部变量，以产生局部变量的地址传入`proc`函数：
+
+=== "汇编代码"
+
+    ```asm
+    # long call_proc()
+    #   proc(x1, &x1, x2, &x2, x3, &x3, x4, &x4)
+    0000000000000019 <call_proc>:
+    19:   f3 0f 1e fa             endbr64 
+    1d:   53                      push   %rbx               # 保存 %rbx 寄存器
+    1e:   48 83 ec 20             sub    $0x20,%rsp         # 在栈上分配32字节空间
+    22:   bb 28 00 00 00          mov    $0x28,%ebx
+    27:   64 48 8b 03             mov    %fs:(%rbx),%rax    # 获取金丝雀值，用于保护栈溢出，详情参见后面的章节
+    2b:   48 89 44 24 18          mov    %rax,0x18(%rsp)    # 在栈(%rsp+24)存入8字节的金丝雀值
+    30:   31 c0                   xor    %eax,%eax          # 置零 %rax
+    32:   48 c7 44 24 10 01 00    movq   $0x1,0x10(%rsp)    # 在栈(%rsp+16)存入8字节的x1
+    39:   00 00 
+    3b:   c7 44 24 0c 02 00 00    movl   $0x2,0xc(%rsp)     # 在栈(%rsp+12)存入4字节的x2
+    42:   00 
+    43:   66 c7 44 24 0a 03 00    movw   $0x3,0xa(%rsp)     # 在栈(%rsp+10)存入2字节的x3
+    4a:   c6 44 24 09 04          movb   $0x4,0x9(%rsp)     # 在栈(%rsp+9)存入1字节的x4
+    4f:   48 8d 4c 24 0c          lea    0xc(%rsp),%rcx     # 参数4寄存器 %rcx 存入&x2
+    54:   48 8d 74 24 10          lea    0x10(%rsp),%rsi    # 参数2寄存器 %rsi 存入&x1
+    59:   48 8d 44 24 09          lea    0x9(%rsp),%rax     # &x4 通过 %rax 入栈
+    5e:   50                      push   %rax               # 入栈&x4，用于参数8，栈顶下移8字节
+    5f:   6a 04                   pushq  $0x4               # 入栈x4，用于参数7，栈顶下移8字节
+    61:   4c 8d 4c 24 1a          lea    0x1a(%rsp),%r9     # 参数6寄存器 %r9 存入&x3，&x3地址因栈顶变化需要更新
+    66:   41 b8 03 00 00 00       mov    $0x3,%r8d          # 参数5寄存器 %r8d 存入x3
+    6c:   ba 02 00 00 00          mov    $0x2,%edx          # 参数3寄存器 %edx 存入x2
+    71:   bf 01 00 00 00          mov    $0x1,%edi          # 参数1寄存器 %edi 存入x1
+    76:   e8 00 00 00 00          callq  7b <call_proc+0x62># 调用 call_proc 函数
+    7b:   48 63 4c 24 1c          movslq 0x1c(%rsp),%rcx    # 将x2存入 %rcx, 函数调用前后栈顶位置不变
+    80:   48 03 4c 24 20          add    0x20(%rsp),%rcx    # x1+x2
+    85:   0f bf 54 24 1a          movswl 0x1a(%rsp),%edx    # 将x3存入 %edx
+    8a:   0f be 44 24 19          movsbl 0x19(%rsp),%eax    # 将x4存入 %eax
+    8f:   29 c2                   sub    %eax,%edx          # x3-x4
+    91:   48 63 c2                movslq %edx,%rax
+    94:   48 0f af c1             imul   %rcx,%rax          # (x1+x2)*(x3-x4)
+    98:   48 83 c4 10             add    $0x10,%rsp         # 释放 call_proc 参数在栈上的空间
+    9c:   48 8b 7c 24 18          mov    0x18(%rsp),%rdi
+    a1:   64 48 33 3b             xor    %fs:(%rbx),%rdi    # 检查金丝雀值，确保栈没有被破坏
+    a5:   75 06                   jne    ad <call_proc+0x94>
+    a7:   48 83 c4 20             add    $0x20,%rsp         # 释放 proc 的栈空间
+    ab:   5b                      pop    %rbx               # 恢复 %rbx 寄存器
+    ac:   c3                      retq                      # 返回
+    ad:   e8 00 00 00 00          callq  b2 <call_proc+0x99>
+    ```
+
+=== "C代码"
+
+    ```cpp
+    long call_proc()
+    {
+        long x1 = 1;
+        int x2 = 2;
+        short x3 = 3;
+        char x4 = 4;
+        proc(x1, &x1, x2, &x2, x3, &x3, x4, &x4);
+        return (x1+x2)*(x3-x4);
+    }
+    ```
