@@ -910,6 +910,42 @@ x86-64中，通过寄存器最多可以传递6个整型参数。如上表所示�
 
 ### 寄存器中的局部存储空间
 
+根据惯例，寄存器`%rbx`、`%rbp`和`%r12~%r15`为**被调用这保存**寄存器。所有其他的寄存器，除了栈指针`%rsp`，都为**调用者保存**寄存器，任何函数都能修改他们。
+
+[例子"proc_reg_save"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/csapp/03/code/proc_reg_save)中的`P`函数在两次调用`Q`函数的过程中，利用**被调用这保存**寄存器`%rbx`和`%rbp`保存了局部变量，因此需要在调用结束时恢复寄存器`%rbx`和`%rbp`原来的值：
+
+=== "汇编代码"
+
+    ```asm
+    # long P(long x, long y)
+    # x in %rdi, y in %rsi
+    0000000000000009 <P>:
+     9:   f3 0f 1e fa             endbr64 
+     d:   55                      push   %rbp           # 保存 %rbp
+     e:   53                      push   %rbx           # 保存 %rbx
+     f:   48 89 fd                mov    %rdi,%rbp      # 保存x到 %rbp
+    12:   48 89 f7                mov    %rsi,%rdi      # 保存y到参数1寄存器 %rdi
+    15:   e8 00 00 00 00          callq  1a <P+0x11>    # 调用 Q(y)
+    1a:   48 89 c3                mov    %rax,%rbx      # 保存Q(y)的返回值
+    1d:   48 89 ef                mov    %rbp,%rdi      # 保存x到参数1寄存器 %rdi
+    20:   e8 00 00 00 00          callq  25 <P+0x1c>    # 调用 Q(x)
+    25:   48 01 d8                add    %rbx,%rax      # 将Q(y)的返回值，加到Q(x)的返回值上
+    28:   5b                      pop    %rbx           # 恢复 %rbx
+    29:   5d                      pop    %rbp           # 恢复 %rbp
+    2a:   c3                      retq
+    ```
+
+=== "C代码"
+
+    ```cpp
+    long P(long x, long y)
+    {
+        long u = Q(y);
+        long v = Q(x);
+        return u + v;
+    }
+    ```
+
 ### 递归过程
 
 ## 其他
