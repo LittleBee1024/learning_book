@@ -872,7 +872,7 @@ x86-64中，通过寄存器最多可以传递6个整型参数。如上表所示�
     66:   41 b8 03 00 00 00       mov    $0x3,%r8d          # 参数5寄存器 %r8d 存入x3
     6c:   ba 02 00 00 00          mov    $0x2,%edx          # 参数3寄存器 %edx 存入x2
     71:   bf 01 00 00 00          mov    $0x1,%edi          # 参数1寄存器 %edi 存入x1
-    76:   e8 00 00 00 00          callq  7b <call_proc+0x62># 调用 call_proc 函数
+    76:   e8 00 00 00 00          callq  7b <call_proc+0x62># 调用 proc 函数
     7b:   48 63 4c 24 1c          movslq 0x1c(%rsp),%rcx    # 将x2存入 %rcx, 函数调用前后栈顶位置不变
     80:   48 03 4c 24 20          add    0x20(%rsp),%rcx    # x1+x2
     85:   0f bf 54 24 1a          movswl 0x1a(%rsp),%edx    # 将x3存入 %edx
@@ -947,6 +947,42 @@ x86-64中，通过寄存器最多可以传递6个整型参数。如上表所示�
     ```
 
 ### 递归过程
+
+[例子"proc_reg_save"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/csapp/03/code/proc_reg_save)使用寄存器`%rbx`来保存参数n，先把已有的值保存在栈上，在返回前恢复该值。因此，递归深度越深，所需要的栈空间就越大。
+
+=== "汇编代码"
+
+    ```asm
+    # long rfact(long n)
+    # n in %rdi
+    0000000000000000 <rfact>:
+     0:   f3 0f 1e fa             endbr64 
+     4:   48 83 ff 01             cmp    $0x1,%rdi          # 比较 n-1
+     8:   7f 06                   jg     10 <rfact+0x10>    # 如果n>1，跳转至0x10行
+     a:   b8 01 00 00 00          mov    $0x1,%eax          # 如果n<=1，返回1
+     f:   c3                      retq
+    10:   53                      push   %rbx               # 入栈保存 %rbx
+    11:   48 89 fb                mov    %rdi,%rbx          # 把 n 存入 %rbx
+    14:   48 8d 7f ff             lea    -0x1(%rdi),%rdi    # 把 n-1 存入参数1寄存器 %rdi
+    18:   e8 00 00 00 00          callq  1d <rfact+0x1d>    # 调用 rfact(n-1)
+    1d:   48 0f af c3             imul   %rbx,%rax          # 将调用结果乘以 n
+    21:   5b                      pop    %rbx               # 恢复 %rbx
+    22:   c3                      retq                      # 返回
+    ```
+
+=== "C代码"
+
+    ```cpp
+    long rfact(long n)
+    {
+        long result;
+        if (n <= 1)
+            result = 1;
+        else
+            result = n * rfact(n-1);
+        return result;
+    }
+    ```
 
 ## 其他
 
