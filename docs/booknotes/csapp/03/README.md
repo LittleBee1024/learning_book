@@ -49,7 +49,7 @@
         11ee:       00 00
     ```
 
-=== "C语言代码"
+=== "C代码"
 
     ```cpp
     void multstore(long x, long y, long *dest)
@@ -754,3 +754,81 @@ switch语句的关键步骤是通过**跳转表**来访问代码位置。和使�
     ```
 
 ## 过程
+
+过程是软件中一种很重要的抽象。假设过程P调用过程Q，Q执行后返回到P。这个动作包括了：
+
+* 传递控制
+* 传递数据
+* 分配和释放内存
+
+### 运行时栈
+
+下图给出来运行时栈的通用结构：
+
+![callstack](./images/callstack.png)
+
+* P的栈帧
+    * 通过寄存器，过程P可以传递最多6个整数值，如果Q需要更多的参数，P需要在调用Q之前在自己的栈帧里存储好这些参数
+    * 当过程P调用过程Q时，会把返回地址压入栈中，我们把这个返回地址当做P的栈帧的一部分，因为它存放的是与P相关的状态
+* Q的栈帧
+    * Q的代码在过程的开始，会分配它的栈帧所需的空间，大多数过程的栈帧都是定长的，但有些过程需要变长的帧
+    * 在这个空间中，Q可以保存寄存器的值，分配局部变量空间，为其调用的过程设置参数
+
+### 控制转移
+
+| 指令 | 描述 |
+| --- | --- |
+| call Label | 过程调用 |
+| call *Operand | 过程调用 |
+| ret | 从过程调用中返回 |
+
+* `call`指令会执行两个动作
+    * 将返回地址压入栈中，此地址是紧跟在`call`指令后面的那条指令的地址
+    * 将PC寄存器设置为调用过程的起始地址
+* `ret`指令也会执行两个动作
+    * 从栈中弹出返回地址
+    * 将PC寄存器设置为此返回地址
+
+### 数据传送
+
+| 操作数大小 | 参数1 | 参数2 | 参数3 | 参数4 | 参数5 | 参数6 |
+| --- | --- | --- | --- | --- | --- | --- |
+| 64 | %rdi | %rsi | %rdx | %rcx | %r8  | %r9  |
+| 32 | %edi | %esi | %edx | %ecx | %r8d | %r9d |
+| 16 | %di  | %si  | %dx  | %cx  | %r8w | %r9w |
+| 8  | %dil | %sil | %dl  | %cl  | %r8b | %r9b |
+
+x86-64中，通过寄存器最多可以传递6个整型参数。如上表所示，根据参数的位数和在函数调用中位置，会分配不同的寄存器。如果一个函数有大于6个整型参数，超出部分就要通过栈来传递。
+
+[例子"proc_params"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/csapp/03/code/proc_params)中的`proc`函数有8个参数，且大小各不相同，通过观察其汇编代码，和上面的描述是一致的：
+
+=== "汇编代码"
+
+    ```asm
+    # void proc(long a1, long *a1p, int a2, int *a2p, short a3, short *a3p, char a4, char *a4p)
+    # a1 in %rdi, a1p in %rsi
+    # a2 in %edx, a2p in %rcx
+    # a3 in %r8w, a3p in %r9
+    # a4 at %rsp+8, a4p at %rsp+16
+    0000000000000000 <proc>:
+     0:   f3 0f 1e fa             endbr64 
+     4:   48 8b 44 24 10          mov    0x10(%rsp),%rax    # 将 a4p 存入 %rax
+     9:   48 01 3e                add    %rdi,(%rsi)        # *a1p += a1 (64位)
+     c:   01 11                   add    %edx,(%rcx)        # *a2p += a2 (32位)
+     e:   66 45 01 01             add    %r8w,(%r9)         # *a3p += a3 (16位)
+    12:   8b 54 24 08             mov    0x8(%rsp),%edx     # 将 a4 存入 %edx (8位)
+    16:   00 10                   add    %dl,(%rax)         # *a4p += a4 (8位)
+    18:   c3                      retq
+    ```
+
+=== "C代码"
+
+    ```cpp
+    void proc(long a1, long *a1p, int a2, int *a2p, short a3, short *a3p, char a4, char *a4p)
+    {
+        *a1p += a1;
+        *a2p += a2;
+        *a3p += a3;
+        *a4p += a4;
+    }
+    ```
