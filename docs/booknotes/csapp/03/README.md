@@ -904,7 +904,7 @@ x86-64中，通过寄存器最多可以传递6个整型参数。如上表所示�
     }
     ```
 
-下图展示了`call_proc`函数的栈帧内容，其中“金丝雀”用于检验栈是否被破坏，详情可参见["缓冲区溢出"](#_27)章节。
+下图展示了`call_proc`函数的栈帧内容，其中“金丝雀”用于检验栈是否被破坏，详情可参见["栈破坏检测"](#_27)章节。
 
 ![callstack_proc](./images/callstack_proc.png)
 
@@ -984,6 +984,40 @@ x86-64中，通过寄存器最多可以传递6个整型参数。如上表所示�
     }
     ```
 
+## 缓冲区溢出
+
+局部变量和状态信息都存放在栈中，C对于数组引用不进行任何边界检查，因此对数组的越界写操作会破坏栈中的状态信息。一种常见的状态破坏称为**缓冲区溢出**。现代编译器和操作系统实现了很多机制，限制入侵者通过缓冲区溢出攻击。
+
+### 栈随机化
+栈随机化的思想，利用了地址空间布局随机化(Address-Space Layout Randomization, ASLR)技术，使得栈的位置在程序每次运行时都有变化。因此，限制了对某一固定地址的攻击。其实现方式时：程序开始时，在栈上分配一段0~n字节之间的随机大小的空间。
+
+[例子"protect_ASLR"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/csapp/03/code/protect_ASLR)每次运行，都会打印不同的地址值。当然，如果利用```setarch `uname -m` -R ./main```，禁止ASLR功能，则每次打印的结构会变得一样。
+
+```cpp
+int main()
+{
+   long local;
+   printf("local at %p\n", &local);
+   return 0;
+}
+```
+```bash
+> ./main
+local at 0x7ffda1b6c530
+> ./main
+local at 0x7ffded86af10
+
+# 禁止ASLR运行程序
+> setarch `uname -m` -R ./main
+local at 0x7fffffffdf10
+> setarch `uname -m` -R ./main
+local at 0x7fffffffdf10
+```
+
+### 栈破坏检测
+
+### 限制可执行代码区域
+
 ## 其他
 
 ### 数据对齐
@@ -1052,7 +1086,5 @@ size class C: 8
 size class D: 16
 size class E: 12
 ```
-
-### 缓冲区溢出
 
 ### 支持变长栈帧
