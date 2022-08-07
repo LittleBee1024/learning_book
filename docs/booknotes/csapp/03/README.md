@@ -1016,6 +1016,78 @@ local at 0x7fffffffdf10
 
 ### 栈破坏检测
 
+栈破坏检测能够检测到何时栈已经被破坏。其思想是在栈帧中任何局部缓冲区与栈状态之间存储一个特殊的**金丝雀**值(canary)，也称**哨兵**值(guard value)，是在程序每次运行时随机产生的。在恢复寄存器状态和从函数返回之前，程序检查这个金丝雀值是否被该函数的某个操作或者该函数调用的某个函数的某个操作改变了。如果是的，那么程序异常中止。
+
+金丝雀值是通过指令参数`%fs:40`，用**段寻址**(segmented addressiong)从内存中读入的。将金丝雀值存放在一个特殊的段中，标志为“只读”，这样攻击者就不能覆盖存储的金丝雀值。
+
+[例子"protect_canary"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/csapp/03/code/protect_canary)默认情况下能产生拥有栈破坏检查的代码，利用`-fno-stack-protector`选项，也可以产生没有金丝雀值的代码：
+
+=== "有"金丝雀"值的汇编代码"
+
+    ```asm
+    # void bar()
+    #   foo(&x);
+    #   &x in %rdi
+    0000000000000021 <bar>:
+    21:   f3 0f 1e fa             endbr64 
+    25:   55                      push   %rbp               # 保存 %rbp
+    26:   48 89 e5                mov    %rsp,%rbp          # 保存栈顶
+    29:   48 83 ec 10             sub    $0x10,%rsp         # 分配16字节栈空间
+    2d:   64 48 8b 04 25 28 00    mov    %fs:0x28,%rax      # 获取金丝雀值
+    34:   00 00 
+    36:   48 89 45 f8             mov    %rax,-0x8(%rbp)    # 将8字节金丝雀值写入栈
+    3a:   31 c0                   xor    %eax,%eax
+    3c:   48 c7 45 f0 01 00 00    movq   $0x1,-0x10(%rbp)   # 将8字节x值写入栈
+    43:   00 
+    44:   48 8d 45 f0             lea    -0x10(%rbp),%rax   # &x
+    48:   48 89 c7                mov    %rax,%rdi          # 设置foo函数参数1为&x
+    4b:   e8 00 00 00 00          callq  50 <bar+0x2f>      # 调用foo(&x)
+    50:   90                      nop
+    51:   48 8b 45 f8             mov    -0x8(%rbp),%rax    # 获取栈上的金丝雀值
+    55:   64 48 33 04 25 28 00    xor    %fs:0x28,%rax      # 检测金丝雀值是否正确
+    5c:   00 00 
+    5e:   74 05                   je     65 <bar+0x44>
+    60:   e8 00 00 00 00          callq  65 <bar+0x44>
+    65:   c9                      leaveq 
+    66:   c3                      retq 
+    ```
+
+=== "没有"金丝雀"值的汇编代码"
+
+    ```asm
+    # void bar()
+    #   foo(&x);
+    #   &x in %rdi
+    0000000000000021 <bar>:
+    21:   f3 0f 1e fa             endbr64 
+    25:   55                      push   %rbp               # 保存 %rbp
+    26:   48 89 e5                mov    %rsp,%rbp          # 保存栈顶
+    29:   48 83 ec 10             sub    $0x10,%rsp         # 分配16字节栈空间
+    2d:   48 c7 45 f8 01 00 00    movq   $0x1,-0x8(%rbp)    # 将8字节金丝雀值写入栈
+    34:   00 
+    35:   48 8d 45 f8             lea    -0x8(%rbp),%rax    # &x
+    39:   48 89 c7                mov    %rax,%rdi          # 设置foo函数参数1为&x
+    3c:   e8 00 00 00 00          callq  41 <bar+0x20>      # 调用foo(&x)
+    41:   90                      nop
+    42:   c9                      leaveq 
+    43:   c3                      retq
+    ```
+
+=== "C代码"
+
+    ```cpp
+    void foo(long *x)
+    {
+        *x += 1;
+    }
+
+    void bar()
+    {
+        long x = 1;
+        foo(&x);
+    }
+    ```
+
 ### 限制可执行代码区域
 
 ## 其他
