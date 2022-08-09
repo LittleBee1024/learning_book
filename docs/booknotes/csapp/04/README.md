@@ -15,6 +15,17 @@
 
 ## Y86-64指令集体系结构
 
+### 程序员可见的状态
+
+![y86_64_visible_state](./images/y86_64_visible_state.png)
+
+Y86-64的程序可以访问和修改程序寄存器、条件码、程序计数器和内存。这些状态相当于Y86-64的硬件接口，在接下来分析Y86_64指令的过程中，请时刻关注这些状态的变化。
+
+### Y86-64指令
+
+![y86_64_inst](./images/y86_64_inst.png)
+
+上图显示了Y86-64各指令的结构。虽然不同指令的长度和功能都不同，但是为了最大限度地复用硬件电路，每个指令都遵循相同的执行模式，详情可参考["将处理组织成阶段"](#_5)章节
 
 ## 逻辑设计和硬件控制语言HCL
 
@@ -59,6 +70,71 @@
     * **此时状态单元还维持着`addq`指令的状态**
 
 ## Y86-64的顺序实现
+
+### 将处理组织成阶段
+
+为了统一，将Y86-64指令的执行过程分为五个阶段：
+
+* 取值(fetch)
+    * 从内存中取出不同大小的指令，获取`rA`，`rB`，`valC`，并计算`valP`
+* 译码(decode)
+    * 获取`valA`和`valB`
+* 执行(execute)
+    * 计算`valE`和状态码`CC`
+* 访存(memory)
+    * 读写内存，读出的内存值存于`valM`
+* 写回(write back)
+    * 将`valE`或`valM`写入对应的寄存器
+* 更新PC(PC update)
+    * 除了条件跳转指令和`ret`外，都能在取指阶段确定下一条指令的地址
+        * `call`和`jmp`(无条件转移)，PC的更新值为`valC`
+        * 其他指令，PC的更新值为`valP`
+
+下面介绍不同类型的指令在各阶段的动作：
+
+* 传送指令mov - 向寄存器或内存传递数据，不涉及条件码
+
+    | 阶段 | rrmovq rA,rB | irmovq V,rB | rmmovq rA,D(rB) | mrmovq D(rB),rA |
+    | --- | --- | --- | --- | --- |
+    | 取指 | icode:ifun <- M1[PC]</br>rA:rB <- M1[PC+1]</br><br>valP <- PC+2 | icode:ifun <- M1[PC]</br>rA:rB <- M1[PC+1]</br>valC <- M8[PC+2]<br>valP <- PC+10 | icode:ifun <- M1[PC]</br>rA:rB <- M1[PC+1]</br>valC <- M8[PC+2]<br>valP <- PC+10 | icode:ifun <- M1[PC]</br>rA:rB <- M1[PC+1]</br>valC <- M8[PC+2]<br>valP <- PC+10 |
+    | 译码 | valA <- R[rA]</br> | | valA <- R[rA]</br>valB <- R[rB] | </br>valB <- R[rB] |
+    | 执行 | valE <- 0+valA | valE <- 0+valC | valE <- valB+valC | valE <- valB+valC |
+    | 访存 | | | M8[valE] <- valA | valM <- M8[valE] |
+    | 写回 | R[rB] <- valE | R[rB] <- valE | | R[rA] <- valM |
+    | 更新PC | PC <- valP | PC <- valP | PC <- valP | PC <- valP |
+
+* 算术运算指令OP - 对两个寄存器值进行算术运算，并修改条件码，不涉及内存访问
+
+    | 阶段 | OPq rA, rB |
+    | --- | --- |
+    | 取指 | icode:ifun <- M1[PC]</br>rA:rB <- M1[PC+1]</br>valP <- PC+2 |
+    | 译码 | valA <- R[rA] </br> valB <- R[rB] |
+    | 执行 | valE <- valB OP valA</br>Set CC |
+    | 访存 | |
+    | 写回 | R[rB] <- valE |
+    | 更新PC | PC <- valP |
+
+* 栈操作指令 - 既要访问内存，又要访问寄存器，不涉及条件码
+
+    | 阶段 | pushq rA | popq rA |
+    | --- | --- | --- |
+    | 取指 | icode:ifun <- M1[PC]</br>rA:rB <- M1[PC+1]</br>valP <- PC+2 | icode:ifun <- M1[PC]</br>rA:rB <- M1[PC+1]</br>valP <- PC+2 |
+    | 译码 | valA <- R[rA]</br>valB <- R[%rsp] | valA <- R[%rsp]</br>valB <- R[%rsp] |
+    | 执行 | valE <- valB+(-8) | valE <- valB+8 |
+    | 访存 | M8[valE] <- valA | valM <- M8[valA] |
+    | 写回 | R[%rsp] <- valE | R[%rsp] <- valE</br>R[rA] <- valM |
+    | 更新PC | PC <- valP | PC <- valP |
+
+* 跳转指令 - 对程序计数器的处理方式与其他指令不同，无法在取指阶段直接获得
+
+    | 阶段 | jXX Dest | call Dest | ret |
+    | --- | --- | --- | --- |
+    | 取指 | icode:ifun <- M1[PC]</br>valC <- M8[PC+1]</br>valP <- PC+9 |  icode:ifun <- M1[PC]</br>valC <- M8[PC+1]</br>valP <- PC+9 | icode:ifun <- M1[PC]</br></br>valP <- PC+1 |
+    | 译码 | | </br>valB <- R[%rsp] | valA <- R[%rsp]</br>valB <- R[%rsp] |
+    | 执行 | </br>Cnd <- Cond(CC, ifun) | valE <- valB+(-8) | valE <- valB+8 |
+    | 访存 | | M8[valE] <- valP | valM <- M8[valA] |
+    | 写回 | | R[%rsp] <- valE | R[%rsp] <- valE |
+    | 更新PC | PC <- Cnd?valC:valP | PC <- valC | PC <- valM |
 
 ## Y86-64的流水线实现
 
