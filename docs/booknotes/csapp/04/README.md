@@ -27,6 +27,64 @@ Y86-64的程序可以访问和修改程序寄存器、条件码、程序计数�
 
 上图显示了Y86-64各指令的结构。虽然不同指令的长度和功能都不同，但是为了最大限度地复用硬件电路，每个指令都遵循相同的执行模式，详情可参考["将处理组织成阶段"](#_5)章节
 
+### Y86-64程序
+
+根据Y86-64指令规则，下面给出`sum`函数在Y86-64下的汇编代码：
+
+=== "C代码"
+
+    ```cpp
+    long sum(long *start, long count)
+    {
+        long sum = 0;
+        while (count)
+        {
+            sum += *start;
+            start++;
+            count--;
+        }
+        return sum;
+    }
+    ```
+
+=== ""Y86-64"汇编代码"
+
+    ```asm linenums="1"
+    # long sum(long *start, long count)
+    # start in %rdi, count in %rsi
+    sum:
+        irmovq $8,%r8       # 将常数8放入寄存器
+        irmovq $1,%r9       # 将常数1放入寄存器
+        xorq %rax,%rax      # sum = 0
+        andq %rsi,%rsi      # 初始化条件码，非零标志
+    loop:
+        mrmovq (%rdi),%r10  # 获取*start值
+        addq %r10,%rax      # sum += *start
+        addq %r8,%rdi       # start++
+        subq %r9,%rsi       # count--，并设置条件码
+    test:
+        jne loop            # 当count非零时，跳转
+        ret
+    ```
+
+=== ""x86-64"汇编代码"
+
+    ```asm linenums="1"
+    # long sum(long *start, long count)
+    # start in %rdi, count in %rsi
+    sum:
+        movl $0,%eax        # sum = 0
+        jmp .L2             # 跳转到test
+    .L3:                    # loop:
+        addq (%rdi),%rax    # sum += *start
+        addq $8,%rdi        # start++
+        subq $1,%rsi        # count--
+    test:
+        testq %rsi,%rsi
+        jne .L3             # 当count非零时，跳转
+        ret
+    ```
+
 ## 逻辑设计和硬件控制语言HCL
 
 要实现一个数字系统需要三个主要的组成部分：
