@@ -165,7 +165,7 @@ Y86-64的程序可以访问和修改程序寄存器、条件码、程序计数�
     bool s0 = code in {1, 3};   #当code在集合{1, 3}中时，s0为1
     ```
 
-## Y86-64的顺序实现
+## Y86-64顺序实现
 
 ### 将处理组织成阶段
 
@@ -232,7 +232,7 @@ Y86-64的程序可以访问和修改程序寄存器、条件码、程序计数�
     | 写回 | | R[%rsp] <- valE | R[%rsp] <- valE |
     | 更新PC | PC <- Cnd?valC:valP | PC <- valC | PC <- valM |
 
-## Y86-64的流水线实现
+## Y86-64流水线实现
 
 ### 流水线的通用原理
 
@@ -261,3 +261,21 @@ Y86-64的程序可以访问和修改程序寄存器、条件码、程序计数�
     * 在下图中，未流水线前，I1的结果是I2的输入
     * 当流水线化后，I1的结果成为了I4的输入，这是不可接受的
     ![pipeline_depend](./images/pipeline_depend.png)
+
+## Y86-64各阶段实现对比
+
+### PC选择和取指阶段
+
+![pc_fetchpng](./images/pc_fetch.png)
+
+### 译码和写回阶段
+
+![decode_writeback](./images/decode_writeback.png)
+
+### 执行阶段
+
+![execute](./images/execute.png)
+
+### 访存阶段
+
+![memory](./images/memory.png)
