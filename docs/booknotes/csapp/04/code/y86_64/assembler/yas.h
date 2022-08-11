@@ -66,7 +66,6 @@ namespace YAS
       bool m_lineError;
 
       int m_addr;
-      std::vector<char> m_decodeBuf;
    };
 
 }

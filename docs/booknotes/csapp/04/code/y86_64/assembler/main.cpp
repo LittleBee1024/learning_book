@@ -49,6 +49,11 @@ int main(int argc, char *argv[])
       usage(argv[0]);
       return -1;
    }
+   if (access(option.infname.c_str(), F_OK) != 0)
+   {
+      fprintf(stderr, "Cannot access '%s': No such file\n", option.infname.c_str());
+      return -1;
+   }
 
    YAS::Lexer lex(std::move(std::make_unique<YAS::FileIn>(option.infname.c_str())));
 
