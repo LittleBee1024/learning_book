@@ -34,3 +34,6 @@ client
 *.mod.c
 *.mod
 *.d
+
+# Y86-64
+*_gen.cpp
