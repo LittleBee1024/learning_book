@@ -37,3 +37,4 @@ client
 
 # Y86-64
 *_gen.cpp
+*.yo
