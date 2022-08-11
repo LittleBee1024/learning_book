@@ -6,7 +6,7 @@ YOFILES=abs-asum-cmov.yo abs-asum-jmp.yo asum.yo asumr.yo asumi.yo cjr.yo j-cc.y
 all: $(YOFILES)
 
 %.yo: %.ys
-	$(YAS) $<
+	$(YAS) $< -o $@
 
 clean:
 	rm -f *.yo

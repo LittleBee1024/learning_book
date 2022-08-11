@@ -7,11 +7,11 @@
 #include <stdio.h>
 #include <string>
 #include <memory>
+#include <unistd.h>
 
 static void usage(char *pname)
 {
-   printf("Usage: %s file.ys\n", pname);
-   exit(0);
+   printf("Usage: %s <filename>.ys [-o <filename>.yo] [-h]\n", pname);
 }
 
 static bool endsWith(const std::string &str, const std::string &suffix)
@@ -20,22 +20,44 @@ static bool endsWith(const std::string &str, const std::string &suffix)
           0 == str.compare(str.size() - suffix.size(), suffix.size(), suffix);
 }
 
+struct Options
+{
+   std::string infname;
+   std::string outfname;
+};
+
 int main(int argc, char *argv[])
 {
-   if (argc == 1)
+   Options option;
+   int ch;
+   while ((ch = getopt(argc, argv, "o:h")) != -1)
    {
-      usage(argv[0]);
-      return 0;
+      switch (ch)
+      {
+      case 'h':
+         usage(argv[0]);
+         return 0;
+      case 'o':
+         option.outfname = optarg;
+         break;
+      }
    }
 
-   std::string infname = argv[1];
-   if (!endsWith(infname, ".ys"))
+   option.infname = argv[optind];
+   if (optind != argc - 1 || !endsWith(option.infname, ".ys"))
+   {
       usage(argv[0]);
+      return -1;
+   }
 
-   std::string outfname = infname.substr(0, infname.find_last_of('.')) + ".yo";
+   YAS::Lexer lex(std::move(std::make_unique<YAS::FileIn>(option.infname.c_str())));
 
-   YAS::Lexer lex(std::move(std::make_unique<YAS::FileIn>(infname.c_str())));
-   int ret = lex.parse(std::move(std::make_unique<YAS::FileOut>(outfname.c_str())));
+   std::unique_ptr<YAS::OutputInterface> out;
+   if (option.outfname.empty())
+      out = std::make_unique<YAS::StdOut>();
+   else
+      out = std::make_unique<YAS::FileOut>(option.outfname.c_str());
+   int ret = lex.parse(std::move(out));
 
    if (ret == YAS::ERROR)
       printf("Yas Lexer parse has error\n");

@@ -31,4 +31,12 @@ namespace YAS
    private:
       std::stringstream m_out;
    };
+
+   class StdOut : public OutputInterface
+   {
+   public:
+      StdOut() = default;
+
+      void out(const char *format, ...) override;
+   };
 }
