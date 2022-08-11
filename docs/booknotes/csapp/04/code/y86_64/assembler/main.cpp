@@ -62,12 +62,13 @@ int main(int argc, char *argv[])
       out = std::make_unique<YAS::StdOut>();
    else
       out = std::make_unique<YAS::FileOut>(option.outfname.c_str());
-   int ret = lex.parse(std::move(out));
 
-   if (ret == YAS::ERROR)
+   int rc = lex.parse(std::move(out));
+
+   if (rc == YAS::ERROR)
       printf("Yas Lexer parse has error\n");
    else
       printf("Yas Lexer parse is done\n");
 
-   return 0;
+   return rc;
 }
