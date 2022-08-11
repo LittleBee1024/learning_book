@@ -70,5 +70,5 @@ int main(int argc, char *argv[])
    else
       printf("Yas Lexer parse is done\n");
 
-   return rc;
+   return 0;
 }
