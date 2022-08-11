@@ -34,7 +34,7 @@ namespace
 namespace YAS
 {
    Lexer::Lexer(std::unique_ptr<InputInterface> &&in) : m_in(std::move(in)), m_pass(0), m_hitError(false),
-                                                        m_lineno(0), m_addr(0)
+                                                        m_lineno(0), m_lineError(false), m_addr(0)
    {
       // yasin is a global variable defined in flex
       assert(m_in->getYasIn() != nullptr);
@@ -70,7 +70,7 @@ namespace YAS
 
    void Lexer::processLine()
    {
-      if (m_hitError)
+      if (m_lineError)
          return reset();
 
       // Process different types of the line, only stop when it is done or it has an error
@@ -125,13 +125,15 @@ namespace YAS
 
    void Lexer::reset()
    {
-      m_hitError = true;
+      if (m_lineError)
+         m_hitError = true;
+      m_lineError = false;
       m_tokens.clear();
    }
 
    void Lexer::fail(const char *message)
    {
-      if (!m_hitError)
+      if (!m_lineError)
       {
          m_out->out("Error on line %d: %s\n", m_lineno, message);
          m_out->out("Line %d, Byte 0x%.4x: %s\n", m_lineno, m_addr, m_line.c_str());
@@ -139,7 +141,7 @@ namespace YAS
          fprintf(stderr, "Error on line %d: %s\n", m_lineno, message);
          fprintf(stderr, "Line %d, Byte 0x%.4x: %s\n", m_lineno, m_addr, m_line.c_str());
       }
-      m_hitError = true;
+      m_lineError = true;
    }
 
    int Lexer::processEmptyLine()

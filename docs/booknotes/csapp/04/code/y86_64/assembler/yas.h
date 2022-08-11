@@ -63,6 +63,7 @@ namespace YAS
       int m_lineno;
       std::string m_line;
       std::deque<Token> m_tokens;
+      bool m_lineError;
 
       int m_addr;
       std::vector<char> m_decodeBuf;

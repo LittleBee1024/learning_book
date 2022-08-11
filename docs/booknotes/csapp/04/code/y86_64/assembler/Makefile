@@ -33,3 +33,8 @@ $(BUILD_DIR)/%.o: $(DEP_DIR)/%.cpp
 
 $(TARGET): $(OBJS) $(DEP_OBJS)
 	$(CC) $(CFLAGS) $^ -o $(BUILD_DIR)/$@
+
+Y86_64_CODE=../test/prog1.ys
+debug:
+	gdb -q $(BUILD_DIR)/$(TARGET) \
+	-ex "start $(Y86_64_CODE)"
