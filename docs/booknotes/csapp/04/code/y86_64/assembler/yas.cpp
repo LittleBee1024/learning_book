@@ -73,19 +73,20 @@ namespace YAS
       if (m_hitError)
          return reset();
 
-      if (processEmptyLine())
-         return reset(); // return if error or done
-
-      if (processLabel())
+      // Process different types of the line, only stop when it is done or it has an error
+      if (processEmptyLine() != CONTINUE)
          return reset();
 
-      if (processPosInstr())
+      if (processLabel() != CONTINUE)
          return reset();
 
-      if (processAlignInstr())
+      if (processPosInstr() != CONTINUE)
          return reset();
 
-      if (processNormalInstr())
+      if (processAlignInstr() != CONTINUE)
+         return reset();
+
+      if (processNormalInstr() != CONTINUE)
          return reset();
 
       fail("Has unprocess tokens");
@@ -149,13 +150,14 @@ namespace YAS
             dumpLine();
          return DONE;
       }
-      return SUCCESS;
+      // Not an empty line
+      return CONTINUE;
    }
 
    int Lexer::processLabel()
    {
       if (m_tokens.front().type != TOK_IDENT)
-         return SUCCESS;
+         return CONTINUE;
 
       Token labelToken = m_tokens.front();
       m_tokens.pop_front();
@@ -176,7 +178,7 @@ namespace YAS
          return DONE;
       }
 
-      return SUCCESS;
+      return CONTINUE;
    }
 
    int Lexer::processPosInstr()
@@ -187,8 +189,9 @@ namespace YAS
          return ERROR;
       }
 
+      // It is an instruction but not POS instruction
       if (strcmp(m_tokens.front().sval.c_str(), ".pos") != 0)
-         return SUCCESS;
+         return CONTINUE;
 
       m_tokens.pop_front();
       if (m_tokens.front().type != TOK_NUM)
@@ -213,8 +216,9 @@ namespace YAS
          return ERROR;
       }
 
+      // It is an instruction but not ALIGN instruction
       if (strcmp(m_tokens.front().sval.c_str(), ".align") != 0)
-         return SUCCESS;
+         return CONTINUE;
 
       int a;
       m_tokens.pop_front();
