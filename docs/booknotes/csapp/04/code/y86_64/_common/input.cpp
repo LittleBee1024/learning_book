@@ -1,8 +1,7 @@
 #include "./input.h"
 
-namespace YAS
+namespace CO
 {
-
    FileIn::FileIn(const char *filename)
    {
       m_in = fopen(filename, "r");
@@ -36,5 +35,4 @@ namespace YAS
    {
       return m_in;
    }
-
 }

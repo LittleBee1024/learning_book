@@ -33,15 +33,15 @@ namespace
 
 namespace YAS
 {
-   Lexer::Lexer(std::unique_ptr<InputInterface> &&in) : m_in(std::move(in)), m_pass(0), m_hitError(false),
-                                                        m_lineno(0), m_lineError(false), m_addr(0)
+   Lexer::Lexer(std::unique_ptr<CO::InputInterface> &&in) : m_in(std::move(in)), m_pass(0), m_hitError(false),
+                                                            m_lineno(0), m_lineError(false), m_addr(0)
    {
       // yasin is a global variable defined in flex
       assert(m_in->getYasIn() != nullptr);
       yasin = m_in->getYasIn();
    }
 
-   int Lexer::parse(std::unique_ptr<OutputInterface> &&out)
+   int Lexer::parse(std::unique_ptr<CO::OutputInterface> &&out)
    {
       m_out = std::move(out);
 

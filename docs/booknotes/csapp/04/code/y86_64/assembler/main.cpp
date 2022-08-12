@@ -1,5 +1,6 @@
-#include "./input.h"
-#include "./output.h"
+#include "io_interface.h"
+#include "input.h"
+#include "output.h"
 #include "./yas.h"
 
 #include <fstream>
@@ -55,13 +56,13 @@ int main(int argc, char *argv[])
       return -1;
    }
 
-   YAS::Lexer lex(std::move(std::make_unique<YAS::FileIn>(option.infname.c_str())));
+   YAS::Lexer lex(std::move(std::make_unique<CO::FileIn>(option.infname.c_str())));
 
-   std::unique_ptr<YAS::OutputInterface> out;
+   std::unique_ptr<CO::OutputInterface> out;
    if (option.outfname.empty())
-      out = std::make_unique<YAS::StdOut>();
+      out = std::make_unique<CO::StdOut>();
    else
-      out = std::make_unique<YAS::FileOut>(option.outfname.c_str());
+      out = std::make_unique<CO::FileOut>(option.outfname.c_str());
 
    int rc = lex.parse(std::move(out));
 

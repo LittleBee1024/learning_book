@@ -1,10 +1,11 @@
 #pragma once
 
-#include "./yas_interface.h"
+#include "./io_interface.h"
 
-namespace YAS
+#include <string>
+
+namespace CO
 {
-
    class FileIn : public InputInterface
    {
    public:
@@ -29,5 +30,4 @@ namespace YAS
       std::string m_buf;
       FILE *m_in;
    };
-
 }

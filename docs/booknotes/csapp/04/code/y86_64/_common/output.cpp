@@ -3,9 +3,8 @@
 #include <stdio.h>
 #include <stdarg.h>
 
-namespace YAS
+namespace CO
 {
-
    FileOut::FileOut(const char *filename) : m_out(filename)
    {
    }

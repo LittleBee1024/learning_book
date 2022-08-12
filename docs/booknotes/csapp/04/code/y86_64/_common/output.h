@@ -1,12 +1,12 @@
 #pragma once
 
-#include "./yas_interface.h"
+#include "./io_interface.h"
 
 #include <fstream>
 #include <sstream>
 #include <string>
 
-namespace YAS
+namespace CO
 {
    class FileOut : public OutputInterface
    {
