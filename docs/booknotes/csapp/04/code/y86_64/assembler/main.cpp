@@ -3,9 +3,6 @@
 #include "output.h"
 #include "./yas.h"
 
-#include <fstream>
-#include <iostream>
-#include <stdio.h>
 #include <string>
 #include <memory>
 #include <unistd.h>
