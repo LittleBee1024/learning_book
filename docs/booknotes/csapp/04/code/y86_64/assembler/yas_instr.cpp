@@ -1,5 +1,9 @@
 #include "./yas_instr.h"
 
+// ISA dependency
+#include "instruction.h"
+#include "register.h"
+
 namespace YAS
 {
 
@@ -11,10 +15,10 @@ namespace YAS
    {
       m_decodeBuf.clear();
 
-      instr_ptr instr = find_instr(name);
-      if (instr == nullptr)
+      const auto &instr = ISA::findInstr(name);
+      if (instr.name == nullptr)
       {
-         m_lex.fail("Invalid InstrLexer");
+         m_lex.fail("Invalid Instruction");
          return ERROR;
       }
       // get expected instruction token, pop it from the deque
@@ -23,31 +27,31 @@ namespace YAS
       // don't process instruction in pass 1
       if (m_lex.m_pass == 1)
       {
-         m_lex.m_addr += instr->bytes;
+         m_lex.m_addr += instr.bytes;
          return DONE;
       }
 
       // process the instructions
-      m_decodeBuf.resize(instr->bytes, 0);
-      m_decodeBuf[0] = instr->code;
+      m_decodeBuf.resize(instr.bytes, 0);
+      m_decodeBuf[0] = instr.code;
       m_decodeBuf[1] = static_cast<char>(HPACK(REG_NONE, REG_NONE));
-      switch (instr->arg1)
+      switch (instr.arg1)
       {
       case R_ARG:
-         getReg(instr->arg1pos, instr->arg1hi);
+         getReg(instr.arg1pos, instr.arg1hi);
          break;
       case M_ARG:
-         getMem(instr->arg1pos);
+         getMem(instr.arg1pos);
          break;
       case I_ARG:
-         getNum(instr->arg1pos, instr->arg1hi, 0);
+         getNum(instr.arg1pos, instr.arg1hi, 0);
          break;
       case NO_ARG:
       default:
          break;
       }
 
-      if (instr->arg2 != NO_ARG)
+      if (instr.arg2 != NO_ARG)
       {
          /* Get comma  */
          if (m_lex.m_tokens.front().type != TOK_PUNCT || m_lex.m_tokens.front().cval != ',')
@@ -58,16 +62,16 @@ namespace YAS
          m_lex.m_tokens.pop_front();
 
          /* Get second argument */
-         switch (instr->arg2)
+         switch (instr.arg2)
          {
          case R_ARG:
-            getReg(instr->arg2pos, instr->arg2hi);
+            getReg(instr.arg2pos, instr.arg2hi);
             break;
          case M_ARG:
-            getMem(instr->arg2pos);
+            getMem(instr.arg2pos);
             break;
          case I_ARG:
-            getNum(instr->arg2pos, instr->arg2hi, 0);
+            getNum(instr.arg2pos, instr.arg2hi, 0);
             break;
          case NO_ARG:
          default:
@@ -76,7 +80,7 @@ namespace YAS
       }
 
       m_lex.dumpCode(m_decodeBuf);
-      m_lex.m_addr += instr->bytes;
+      m_lex.m_addr += instr.bytes;
       return DONE;
    }
 
@@ -92,7 +96,7 @@ namespace YAS
          return;
       }
 
-      rval = find_register(m_lex.m_tokens.front().sval.c_str());
+      rval = ISA::findRegister(m_lex.m_tokens.front().sval.c_str());
       m_lex.m_tokens.pop_front();
 
       /* Insert into output */
@@ -145,7 +149,7 @@ namespace YAS
                return;
             }
 
-            rval = find_register(m_lex.m_tokens.front().sval.c_str());
+            rval = ISA::findRegister(m_lex.m_tokens.front().sval.c_str());
             m_lex.m_tokens.pop_front();
             if (m_lex.m_tokens.front().type != TOK_PUNCT || m_lex.m_tokens.front().cval != ')')
             {

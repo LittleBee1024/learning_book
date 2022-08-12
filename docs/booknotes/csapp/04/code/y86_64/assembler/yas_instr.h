@@ -1,7 +1,6 @@
 #pragma once
 
 #include "./yas.h"
-#include "isa.h"
 
 #include <vector>
 

@@ -10,7 +10,7 @@ SRCS=yas_instr.cpp yas.cpp input.cpp output.cpp main.cpp
 OBJS=$(LEX_GEN:%.cpp=$(BUILD_DIR)/%.o) $(SRCS:%.cpp=$(BUILD_DIR)/%.o)
 
 DEP_DIR=../_isa
-DEP_SRCS=isa.cpp
+DEP_SRCS=instruction.cpp register.cpp
 DEP_OBJS=$(DEP_SRCS:%.cpp=$(BUILD_DIR)/%.o)
 
 TARGET=yas
