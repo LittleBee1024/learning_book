@@ -1,5 +1,5 @@
 #include "./yas.h"
-#include "./instruction.h"
+#include "./yas_instr.h"
 
 #include <cassert>
 #include <stdio.h>
@@ -246,7 +246,7 @@ namespace YAS
          return ERROR;
       }
 
-      auto instr = Instruction(*this);
+      auto instr = InstrLexer(*this);
       return instr.decode(m_tokens.front().sval.c_str());
    }
 

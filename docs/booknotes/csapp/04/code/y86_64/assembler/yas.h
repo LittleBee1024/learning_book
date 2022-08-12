@@ -14,7 +14,7 @@ namespace YAS
 
    class Lexer : public LexerInterface
    {
-      friend class Instruction;
+      friend class InstrLexer;
 
    public:
       explicit Lexer(std::unique_ptr<InputInterface> &&in);

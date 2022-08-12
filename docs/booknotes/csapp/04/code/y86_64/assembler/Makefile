@@ -6,7 +6,7 @@ LEX=flex
 BUILD_DIR=build
 
 LEX_GEN=yas_gen.cpp
-SRCS=instruction.cpp yas.cpp input.cpp output.cpp main.cpp
+SRCS=yas_instr.cpp yas.cpp input.cpp output.cpp main.cpp
 OBJS=$(LEX_GEN:%.cpp=$(BUILD_DIR)/%.o) $(SRCS:%.cpp=$(BUILD_DIR)/%.o)
 
 DEP_DIR=../_isa

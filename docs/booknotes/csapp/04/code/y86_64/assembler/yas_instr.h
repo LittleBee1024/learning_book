@@ -8,10 +8,10 @@
 namespace YAS
 {
    // A helper class of Lexer class
-   class Instruction
+   class InstrLexer
    {
    public:
-      explicit Instruction(Lexer &lex);
+      explicit InstrLexer(Lexer &lex);
       int decode(const char *name);
 
    private:

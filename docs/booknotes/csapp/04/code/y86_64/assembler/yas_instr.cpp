@@ -1,20 +1,20 @@
-#include "./instruction.h"
+#include "./yas_instr.h"
 
 namespace YAS
 {
 
-   Instruction::Instruction(Lexer &lex) : m_lex(lex)
+   InstrLexer::InstrLexer(Lexer &lex) : m_lex(lex)
    {
    }
 
-   int Instruction::decode(const char *name)
+   int InstrLexer::decode(const char *name)
    {
       m_decodeBuf.clear();
 
       instr_ptr instr = find_instr(name);
       if (instr == nullptr)
       {
-         m_lex.fail("Invalid Instruction");
+         m_lex.fail("Invalid InstrLexer");
          return ERROR;
       }
       // get expected instruction token, pop it from the deque
@@ -82,7 +82,7 @@ namespace YAS
 
    /* Parse Register from set of m_impl.tokens and put into high or low
    4 bits of code[codepos] */
-   void Instruction::getReg(int codepos, int hi)
+   void InstrLexer::getReg(int codepos, int hi)
    {
       int rval = REG_NONE;
       char c;
@@ -113,7 +113,7 @@ namespace YAS
    Ident(Reg)
    Put Reg in low position of current byte, and Number in following bytes
    */
-   void Instruction::getMem(int codepos)
+   void InstrLexer::getMem(int codepos)
    {
       char rval = REG_NONE;
       word_t val = 0;
@@ -163,7 +163,7 @@ namespace YAS
 
    /* Get numeric value of given number of bytes */
    /* Offset indicates value to subtract from number (for PC relative) */
-   void Instruction::getNum(int codepos, int bytes, int offset)
+   void InstrLexer::getNum(int codepos, int bytes, int offset)
    {
       word_t val = 0;
       int i;
