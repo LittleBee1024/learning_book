@@ -5,9 +5,11 @@ LEX=flex
 
 BUILD_DIR=build
 
-LEX_GEN=yas_gen.cpp
+LEX_GEN=$(BUILD_DIR)/yas_gen.cpp
+LEX_OBJ=$(LEX_GEN:%.cpp=%.o)
+
 SRCS=yas_instr.cpp yas.cpp input.cpp output.cpp main.cpp
-OBJS=$(LEX_GEN:%.cpp=$(BUILD_DIR)/%.o) $(SRCS:%.cpp=$(BUILD_DIR)/%.o)
+SRC_OBJS=$(SRCS:%.cpp=$(BUILD_DIR)/%.o)
 
 DEP_DIR=../_isa
 DEP_SRCS=instruction.cpp register.cpp
@@ -18,10 +20,12 @@ TARGET=yas
 all: clean $(TARGET)
 
 clean:
-	@rm -rf *.o main $(LEX_GEN) $(BUILD_DIR)
+	@rm -rf *.o main $(BUILD_DIR)
 
-$(LEX_GEN): yas.lex
-	$(LEX) -P yas -o $@ $<
+$(LEX_OBJ): yas.lex
+	@mkdir -p '$(@D)'
+	$(LEX) -P yas -o $(LEX_GEN) $<
+	$(CC) $(CFLAGS) -I. -I$(DEP_DIR) -c $(LEX_GEN) -o $@
 
 $(BUILD_DIR)/%.o: %.cpp
 	@mkdir -p '$(@D)'
@@ -31,7 +35,7 @@ $(BUILD_DIR)/%.o: $(DEP_DIR)/%.cpp
 	@mkdir -p '$(@D)'
 	$(CC) $(CFLAGS) -I$(DEP_DIR) -c $< -o $@
 
-$(TARGET): $(OBJS) $(DEP_OBJS)
+$(TARGET): $(LEX_OBJ) $(DEP_OBJS) $(SRC_OBJS)
 	$(CC) $(CFLAGS) $^ -o $(BUILD_DIR)/$@
 
 Y86_64_CODE=../test/prog1.ys
