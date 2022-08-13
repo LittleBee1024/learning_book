@@ -46,7 +46,7 @@ $(BUILD_DIR)/%.o: %.cpp
 $(TARGET): $(DEP_COMMON_OBJS) $(DEP_ISA_OBJS) $(LEX_OBJ) $(SRC_OBJS)
 	$(CC) $(CFLAGS) $^ -o $(BUILD_DIR)/$@
 
-Y86_64_CODE=../test/prog1.ys
+Y86_64_CODE=../test_yas/prog1.ys
 debug:
 	gdb -q $(BUILD_DIR)/$(TARGET) \
 	-ex "start $(Y86_64_CODE)"
