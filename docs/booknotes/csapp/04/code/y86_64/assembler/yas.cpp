@@ -145,9 +145,6 @@ namespace YAS
    {
       if (!m_lineError)
       {
-         m_out->out("Error on line %d: %s\n", m_lineno, message);
-         m_out->out("Line %d, Byte 0x%.4x: %s\n", m_lineno, m_addr, m_line.c_str());
-
          fprintf(stderr, "Error on line %d: %s\n", m_lineno, message);
          fprintf(stderr, "Line %d, Byte 0x%.4x: %s\n", m_lineno, m_addr, m_line.c_str());
       }
