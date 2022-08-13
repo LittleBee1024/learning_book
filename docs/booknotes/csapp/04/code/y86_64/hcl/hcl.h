@@ -41,6 +41,7 @@ namespace HCL
       void fail(const char *format, ...);
 
    private:
+      void clearState();
       void checkArg(NodePtr arg, bool wantbool);
       NodePtr refSymbol(const char *varName);
       void setBool(NodePtr node);
@@ -53,15 +54,17 @@ namespace HCL
       std::unique_ptr<CO::InputInterface> m_in;
       std::unique_ptr<CO::OutputInterface> m_out;
 
-      // store all nodes in the vector
-      std::vector<Node> m_nodes;
       int m_lineno;
+      bool m_hitError;
       enum class OutType
       {
          C,
          Verilog
       };
       OutType m_outType;
+
+      // store all nodes in the vector
+      std::vector<Node> m_nodes;
 
       // signals used in HCL are stored as symbols, for example,
       // boolean signal: boolsig s1 's1_val'

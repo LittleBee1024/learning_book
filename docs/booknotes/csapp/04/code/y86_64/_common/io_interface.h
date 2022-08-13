@@ -10,7 +10,7 @@ namespace CO
       /**
        * @brief Get the handler of flex input
        */
-      virtual FILE *getYasIn() = 0;
+      virtual FILE *getHandler() = 0;
 
    public:
       InputInterface() = default;

@@ -6,8 +6,6 @@
 
 namespace HCL
 {
-   constexpr int DONE = 1;
-   constexpr int CONTINUE = 2;
    constexpr int ERROR = -1;
    constexpr int SUCCESS = 0;
 

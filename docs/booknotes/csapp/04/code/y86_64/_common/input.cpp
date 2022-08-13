@@ -13,7 +13,7 @@ namespace CO
          fclose(m_in);
    }
 
-   FILE *FileIn::getYasIn()
+   FILE *FileIn::getHandler()
    {
       return m_in;
    }
@@ -31,7 +31,7 @@ namespace CO
          fclose(m_in);
    }
 
-   FILE *MemIn::getYasIn()
+   FILE *MemIn::getHandler()
    {
       return m_in;
    }

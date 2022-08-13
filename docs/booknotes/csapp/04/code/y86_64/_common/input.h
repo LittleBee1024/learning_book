@@ -12,7 +12,7 @@ namespace CO
       explicit FileIn(const char *filename);
       ~FileIn() override;
 
-      FILE *getYasIn() override;
+      FILE *getHandler() override;
 
    private:
       FILE *m_in;
@@ -24,7 +24,7 @@ namespace CO
       explicit MemIn(const char *buf);
       ~MemIn() override;
 
-      FILE *getYasIn() override;
+      FILE *getHandler() override;
 
    private:
       std::string m_buf;

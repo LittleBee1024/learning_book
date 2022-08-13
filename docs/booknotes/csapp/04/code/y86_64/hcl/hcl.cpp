@@ -2,28 +2,55 @@
 
 #include <stdarg.h>
 #include <string.h>
+#include <cassert>
 
 // function from yacc
 extern void yyerror(HCL::Parser *par, const char *str);
+extern int yyparse(HCL::Parser *par);
+// lexer input handler
+extern FILE *yyin;
 
 namespace HCL
 {
-   Parser::Parser(std::unique_ptr<CO::InputInterface> &&in) : m_in(std::move(in)), m_lineno(0), m_outType(OutType::C), m_exprBufLen(0)
+   Parser::Parser(std::unique_ptr<CO::InputInterface> &&in) : m_in(std::move(in)), m_lineno(0), m_hitError(false), m_outType(OutType::C), m_exprBufLen(0)
    {
+      // yyin is a global variable defined in flex
+      assert(m_in->getHandler() != nullptr);
+      yyin = m_in->getHandler();
    }
 
    int Parser::toC(std::unique_ptr<CO::OutputInterface> &&out)
    {
+      clearState();
+
       m_out = std::move(out);
       m_outType = OutType::C;
-      return 0;
+
+      yyparse(this);
+      if (m_hitError)
+         return ERROR;
+
+      return SUCCESS;
    }
 
    int Parser::toVerilog(std::unique_ptr<CO::OutputInterface> &&out)
    {
+      clearState();
+
       m_out = std::move(out);
       m_outType = OutType::Verilog;
-      return 0;
+
+      yyparse(this);
+      if (m_hitError)
+         return ERROR;
+
+      return SUCCESS;
+   }
+
+   void Parser::clearState()
+   {
+      m_lineno = 0;
+      m_hitError = false;
    }
 
    void Parser::outQuoteCode(NodePtr quote)
@@ -153,6 +180,7 @@ namespace HCL
 
    void Parser::fail(const char *format, ...)
    {
+      m_hitError = true;
       static char buffer[1024];
       va_list args;
       va_start(args, format);
@@ -318,7 +346,7 @@ namespace HCL
    {
       // clear buffer
       m_exprBufLen = 0;
-      m_exprBuf[0] ='\0';
+      m_exprBuf[0] = '\0';
 
       showExprHelper(expr);
       if (m_exprBufLen >= MAX_SHOW_EXPR_LEN)

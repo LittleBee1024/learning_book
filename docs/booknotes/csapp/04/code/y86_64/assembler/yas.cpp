@@ -37,12 +37,14 @@ namespace YAS
                                                             m_lineno(0), m_lineError(false), m_addr(0)
    {
       // yasin is a global variable defined in flex
-      assert(m_in->getYasIn() != nullptr);
-      yasin = m_in->getYasIn();
+      assert(m_in->getHandler() != nullptr);
+      yasin = m_in->getHandler();
    }
 
    int Lexer::parse(std::unique_ptr<CO::OutputInterface> &&out)
    {
+      clearState();
+
       m_out = std::move(out);
 
       m_pass = 1;
@@ -55,6 +57,14 @@ namespace YAS
       resetYasIn();
       yaslex(this);
       return SUCCESS;
+   }
+
+   void Lexer::clearState()
+   {
+      m_hitError = false;
+      m_lineno = 0;
+      m_lineError = false;
+      m_addr = 0;
    }
 
    void Lexer::saveLine(const char *s)
