@@ -8,20 +8,30 @@ extern void yyerror(HCL::Parser *par, const char *str);
 
 namespace HCL
 {
-   Parser::Parser(std::unique_ptr<CO::InputInterface> &&in) : m_in(std::move(in)), m_lineno(0), m_exprBufLen(0)
+   Parser::Parser(std::unique_ptr<CO::InputInterface> &&in) : m_in(std::move(in)), m_lineno(0), m_to_verilog(false), m_exprBufLen(0)
    {
    }
 
    int Parser::toC(std::unique_ptr<CO::OutputInterface> &&out)
    {
       m_out = std::move(out);
+      m_to_verilog = false;
       return 0;
    }
 
    int Parser::toVerilog(std::unique_ptr<CO::OutputInterface> &&out)
    {
       m_out = std::move(out);
+      m_to_verilog = true;
       return 0;
+   }
+
+   void Parser::insertCode(NodePtr quote)
+   {
+   }
+
+   void Parser::genFunct(NodePtr var, NodePtr expr, int isbool)
+   {
    }
 
    NodePtr Parser::createQuote(const char *quoteStr)
@@ -117,14 +127,6 @@ namespace HCL
          setBool(var);
          setBool(quote);
       }
-   }
-
-   void Parser::insertCode(NodePtr quote)
-   {
-   }
-
-   void Parser::genFunct(NodePtr var, NodePtr expr, int isbool)
-   {
    }
 
    NodePtr Parser::concat(NodePtr n1, NodePtr n2)
@@ -314,7 +316,10 @@ namespace HCL
 
    const char *Parser::showExpr(NodePtr expr)
    {
-      m_exprBufLen = 0; // clear buffer
+      // clear buffer
+      m_exprBufLen = 0;
+      m_exprBuf[0] ='\0';
+
       showExprHelper(expr);
       if (m_exprBufLen >= MAX_SHOW_EXPR_LEN)
          sprintf(m_exprBuf + m_exprBufLen, "...");

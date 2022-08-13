@@ -18,6 +18,10 @@ namespace HCL
       int toVerilog(std::unique_ptr<CO::OutputInterface> &&out) override;
 
    public:
+      void genFunct(NodePtr var, NodePtr expr, int isbool);
+      void insertCode(NodePtr quote);
+
+   public:
       NodePtr createQuote(const char *quoteStr);
       NodePtr createVar(const char *var);
       NodePtr createNum(const char *num);
@@ -29,10 +33,7 @@ namespace HCL
       NodePtr createEleExpr(NodePtr arg1, NodePtr arg2);
       NodePtr createCaseExpr(NodePtr arg1, NodePtr arg2);
 
-      void setBool(NodePtr node);
-      void insertCode(NodePtr quote);
       void addSymbol(NodePtr var, NodePtr quote, int isbool);
-      void genFunct(NodePtr var, NodePtr expr, int isbool);
       NodePtr concat(NodePtr n1, NodePtr n2);
 
       void finishLine();
@@ -42,6 +43,7 @@ namespace HCL
    private:
       void checkArg(NodePtr arg, bool wantbool);
       NodePtr refSymbol(const char *varName);
+      void setBool(NodePtr node);
 
       const char *showExpr(NodePtr expr);
       void showExprHelper(NodePtr expr);
@@ -51,9 +53,10 @@ namespace HCL
       std::unique_ptr<CO::InputInterface> m_in;
       std::unique_ptr<CO::OutputInterface> m_out;
 
-      int m_lineno;
-
+      // store all nodes in the vector
       std::vector<Node> m_nodes;
+      int m_lineno;
+      bool m_to_verilog;
 
       // signals used in HCL are stored as symbols, for example,
       // boolean signal: boolsig s1 's1_val'
