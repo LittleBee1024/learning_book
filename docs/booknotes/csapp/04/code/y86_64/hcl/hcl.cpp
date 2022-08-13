@@ -8,29 +8,29 @@ extern void yyerror(HCL::Parser *par, const char *str);
 
 namespace HCL
 {
-   Parser::Parser(std::unique_ptr<CO::InputInterface> &&in) : m_in(std::move(in)), m_lineno(0), m_to_verilog(false), m_exprBufLen(0)
+   Parser::Parser(std::unique_ptr<CO::InputInterface> &&in) : m_in(std::move(in)), m_lineno(0), m_outType(OutType::C), m_exprBufLen(0)
    {
    }
 
    int Parser::toC(std::unique_ptr<CO::OutputInterface> &&out)
    {
       m_out = std::move(out);
-      m_to_verilog = false;
+      m_outType = OutType::C;
       return 0;
    }
 
    int Parser::toVerilog(std::unique_ptr<CO::OutputInterface> &&out)
    {
       m_out = std::move(out);
-      m_to_verilog = true;
+      m_outType = OutType::Verilog;
       return 0;
    }
 
-   void Parser::insertCode(NodePtr quote)
+   void Parser::outQuoteCode(NodePtr quote)
    {
    }
 
-   void Parser::genFunct(NodePtr var, NodePtr expr, int isbool)
+   void Parser::outFunction(NodePtr var, NodePtr expr, int isbool)
    {
    }
 

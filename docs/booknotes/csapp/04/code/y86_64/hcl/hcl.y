@@ -43,11 +43,11 @@ statements: /* empty */
       ;
 
 statement:
-      QUOTE QSTRING                       { par->insertCode($2); }
+      QUOTE QSTRING                       { par->outQuoteCode($2); }
       | BOOLARG VAR QSTRING               { par->addSymbol($2, $3, 1); }
       | WORDARG VAR QSTRING               { par->addSymbol($2, $3, 0); }
-      | BOOL VAR ASSIGN expr SEMI         { par->genFunct($2, $4, 1); }
-      | WORD VAR ASSIGN expr SEMI         { par->genFunct($2, $4, 0); }
+      | BOOL VAR ASSIGN expr SEMI         { par->outFunction($2, $4, 1); }
+      | WORD VAR ASSIGN expr SEMI         { par->outFunction($2, $4, 0); }
       ;
 
 expr:

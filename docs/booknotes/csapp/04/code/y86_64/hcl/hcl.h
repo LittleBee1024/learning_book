@@ -18,8 +18,8 @@ namespace HCL
       int toVerilog(std::unique_ptr<CO::OutputInterface> &&out) override;
 
    public:
-      void genFunct(NodePtr var, NodePtr expr, int isbool);
-      void insertCode(NodePtr quote);
+      void outFunction(NodePtr var, NodePtr expr, int isbool);
+      void outQuoteCode(NodePtr quote);
 
    public:
       NodePtr createQuote(const char *quoteStr);
@@ -56,7 +56,12 @@ namespace HCL
       // store all nodes in the vector
       std::vector<Node> m_nodes;
       int m_lineno;
-      bool m_to_verilog;
+      enum class OutType
+      {
+         C,
+         Verilog
+      };
+      OutType m_outType;
 
       // signals used in HCL are stored as symbols, for example,
       // boolean signal: boolsig s1 's1_val'
