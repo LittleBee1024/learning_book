@@ -8,13 +8,15 @@ namespace HCL
    enum NodeType : int
    {
       N_QUOTE,    // quote string which starts/ends with ' character
-      N_SIMPLE,   // variable name, number, compare symbol [COMP_OP]
-      N_AND,      // and expression, node && node
-      N_OR,       // or expression, node || node
-      N_NOT,      // not expression, !node
-      N_COMP,     // compare expression, node [COMP_OP] node
-      N_ELE,      // HCL in expression, expr in exprlist
-      N_CASE      // HCL case expression, expr : expr
+      N_VAR,      // variable name
+      N_NUM,      // number
+      N_COMP_OP,  // compare operator [COMP_OP]
+      N_AND_EXPR, // and expression, node && node
+      N_OR_EXPR,  // or expression, node || node
+      N_NOT_EXPR, // not expression, !node
+      N_COMP_EXPR,// compare expression, node [COMP_OP] node
+      N_ELE_EXPR, // HCL in expression, expr in exprlist
+      N_CASE_EXPR // HCL case expression, expr : expr
    };
 
    class Node;

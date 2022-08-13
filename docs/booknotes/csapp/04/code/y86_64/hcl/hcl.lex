@@ -27,10 +27,10 @@ bool                  return(BOOL);
 wordsig               return(WORDARG);
 word                  return(WORD);
 in                    return(IN);
-'[^']*'               yylval = par->createQuoteNode(yytext); return(QSTRING); // create node in yylval for bison for the quote value
-[a-zA-Z][a-zA-Z0-9_]* yylval = par->createSimpleNode(yytext); return(VAR);    // bison can get var name from yylval
-[0-9][0-9]*           yylval = par->createSimpleNode(yytext); return(NUM);    // bison can get number from yylval
--[0-9][0-9]*          yylval = par->createSimpleNode(yytext); return(NUM);
+'[^']*'               yylval = par->createQuote(yytext); return(QSTRING); // create node in yylval for bison for the quote value
+[a-zA-Z][a-zA-Z0-9_]* yylval = par->createVar(yytext); return(VAR);    // bison can get var name from yylval
+[0-9][0-9]*           yylval = par->createNum(yytext); return(NUM);    // bison can get number from yylval
+-[0-9][0-9]*          yylval = par->createNum(yytext); return(NUM);
 "="                   return(ASSIGN);
 ";"                   return(SEMI);
 ":"                   return(COLON);
@@ -43,12 +43,12 @@ in                    return(IN);
 "]"                   return(RBRACK);
 "&&"                  return(AND);
 "||"                  return(OR);
-"!="                  yylval = par->createSimpleNode(yytext); return(COMP);   // it has several COMP node, so it needs to pass the contents to bison through yylval
-"=="                  yylval = par->createSimpleNode(yytext); return(COMP);
-"<"                   yylval = par->createSimpleNode(yytext); return(COMP);
-"<="                  yylval = par->createSimpleNode(yytext); return(COMP);
-">"                   yylval = par->createSimpleNode(yytext); return(COMP);
-">="                  yylval = par->createSimpleNode(yytext); return(COMP);
+"!="                  yylval = par->createCompOp(yytext); return(COMP);   // it has several COMP node, so it needs to pass the contents to bison through yylval
+"=="                  yylval = par->createCompOp(yytext); return(COMP);
+"<"                   yylval = par->createCompOp(yytext); return(COMP);
+"<="                  yylval = par->createCompOp(yytext); return(COMP);
+">"                   yylval = par->createCompOp(yytext); return(COMP);
+">="                  yylval = par->createCompOp(yytext); return(COMP);
 "!"                   return(NOT);
 
 %%

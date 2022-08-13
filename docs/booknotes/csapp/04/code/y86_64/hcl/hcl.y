@@ -54,11 +54,11 @@ expr:
       VAR                                 { $$=$1; }
       | NUM                               { $$=$1; }
       | LPAREN expr RPAREN                { $$=$2; }
-      | NOT expr                          { $$=par->createNotNode($2); }
-      | expr AND expr                     { $$=par->createAndNode($1, $3); }
-      | expr OR expr                      { $$=par->createOrNode($1, $3); }
-      | expr COMP expr                    { $$=par->createCompNode($2,$1,$3); }
-      | expr IN LBRACE exprlist RBRACE    { $$=par->createEleNode($1, $4);}
+      | NOT expr                          { $$=par->createNotExpr($2); }
+      | expr AND expr                     { $$=par->createAndExpr($1, $3); }
+      | expr OR expr                      { $$=par->createOrExpr($1, $3); }
+      | expr COMP expr                    { $$=par->createCompExpr($2,$1,$3); }
+      | expr IN LBRACE exprlist RBRACE    { $$=par->createEleExpr($1, $4);}
       | LBRACK caselist RBRACK            { $$=$2; }
       ;
 
@@ -69,4 +69,4 @@ exprlist:
 
 caselist:
       /* Empty */                         { $$=NULL; }
-      | caselist expr COLON expr SEMI     { $$=par->concat($1, par->createCaseNode($2, $4));}
+      | caselist expr COLON expr SEMI     { $$=par->concat($1, par->createCaseExpr($2, $4));}

@@ -16,14 +16,16 @@ namespace HCL
       int toVerilog(std::unique_ptr<CO::OutputInterface> &&out) override;
 
    public:
-      NodePtr createQuoteNode(const char *);
-      NodePtr createSimpleNode(const char *);
-      NodePtr createNotNode(NodePtr arg);
-      NodePtr createAndNode(NodePtr arg1, NodePtr arg2);
-      NodePtr createOrNode(NodePtr arg1, NodePtr arg2);
-      NodePtr createCompNode(NodePtr op, NodePtr arg1, NodePtr arg2);
-      NodePtr createEleNode(NodePtr arg1, NodePtr arg2);
-      NodePtr createCaseNode(NodePtr arg1, NodePtr arg2);
+      NodePtr createQuote(const char *quoteStr);
+      NodePtr createVar(const char *var);
+      NodePtr createNum(const char *num);
+      NodePtr createCompOp(const char *op);
+      NodePtr createAndExpr(NodePtr arg1, NodePtr arg2);
+      NodePtr createOrExpr(NodePtr arg1, NodePtr arg2);
+      NodePtr createNotExpr(NodePtr arg);
+      NodePtr createCompExpr(NodePtr op, NodePtr arg1, NodePtr arg2);
+      NodePtr createEleExpr(NodePtr arg1, NodePtr arg2);
+      NodePtr createCaseExpr(NodePtr arg1, NodePtr arg2);
 
       void insertCode(NodePtr quoteStr);
       void addArg(NodePtr var, NodePtr quoteStr, int isbool);
@@ -33,6 +35,9 @@ namespace HCL
       void finishLine();
       int getLineNum() const;
       void fail(const char *format, ...);
+
+   private:
+      void checkArg(NodePtr arg, int wantbool);
 
    private:
       std::unique_ptr<CO::InputInterface> m_in;
