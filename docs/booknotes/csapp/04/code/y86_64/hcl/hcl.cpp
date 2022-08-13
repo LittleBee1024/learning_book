@@ -129,7 +129,14 @@ namespace HCL
 
    NodePtr Parser::concat(NodePtr n1, NodePtr n2)
    {
-      return &m_nodes[0];
+      if (!n1)
+         return n2;
+
+      NodePtr tail = n1;
+      while (tail->next)
+         tail = tail->next;
+      tail->next = n2;
+      return n1;
    }
 
    void Parser::finishLine()
@@ -152,7 +159,7 @@ namespace HCL
       yyerror(this, buffer);
    }
 
-   NodePtr Parser::findSymbol(const char *varName)
+   NodePtr Parser::refSymbol(const char *varName)
    {
       auto iter = m_syms.find(varName);
       if (iter == m_syms.end())
@@ -169,7 +176,7 @@ namespace HCL
 
       if (arg->type == N_VAR)
       {
-         NodePtr quote = findSymbol(arg->sval.c_str());
+         NodePtr quote = refSymbol(arg->sval.c_str());
          if (!quote)
             return fail("Variable '%s' not found", arg->sval);
          if (wantbool != quote->isbool)

@@ -41,7 +41,7 @@ namespace HCL
 
    private:
       void checkArg(NodePtr arg, bool wantbool);
-      NodePtr findSymbol(const char *varName);
+      NodePtr refSymbol(const char *varName);
 
       const char *showExpr(NodePtr expr);
       void showExprHelper(NodePtr expr);
