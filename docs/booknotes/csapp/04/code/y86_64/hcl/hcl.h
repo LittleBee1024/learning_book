@@ -5,6 +5,8 @@
 
 #include <memory>
 #include <vector>
+#include <unordered_map>
+#include <string>
 
 namespace HCL
 {
@@ -38,6 +40,11 @@ namespace HCL
 
    private:
       void checkArg(NodePtr arg, int wantbool);
+      NodePtr findSymbol(char *name);
+
+      const char *showExpr(NodePtr expr);
+      void showExprHelper(NodePtr expr);
+      void showTwoArgsExpr(NodePtr expr, const std::string &opStr);
 
    private:
       std::unique_ptr<CO::InputInterface> m_in;
@@ -46,5 +53,11 @@ namespace HCL
       int m_lineno;
 
       std::vector<Node> m_nodes;
+      std::unordered_map<std::string, NodePtr> m_syms;
+
+      // show expression members
+      static const int MAX_SHOW_EXPR_LEN = 80;
+      int m_exprBufLen = 0;
+      char m_exprBuf[1024];
    };
 }
