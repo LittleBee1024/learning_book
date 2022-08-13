@@ -29,8 +29,9 @@ namespace HCL
       NodePtr createEleExpr(NodePtr arg1, NodePtr arg2);
       NodePtr createCaseExpr(NodePtr arg1, NodePtr arg2);
 
-      void insertCode(NodePtr quoteStr);
-      void addArg(NodePtr var, NodePtr quoteStr, int isbool);
+      void setBool(NodePtr node);
+      void insertCode(NodePtr quote);
+      void addSymbol(NodePtr var, NodePtr quote, int isbool);
       void genFunct(NodePtr var, NodePtr expr, int isbool);
       NodePtr concat(NodePtr n1, NodePtr n2);
 
@@ -39,8 +40,8 @@ namespace HCL
       void fail(const char *format, ...);
 
    private:
-      void checkArg(NodePtr arg, int wantbool);
-      NodePtr findSymbol(char *name);
+      void checkArg(NodePtr arg, bool wantbool);
+      NodePtr findSymbol(const char *varName);
 
       const char *showExpr(NodePtr expr);
       void showExprHelper(NodePtr expr);
@@ -53,6 +54,12 @@ namespace HCL
       int m_lineno;
 
       std::vector<Node> m_nodes;
+
+      // signals used in HCL are stored as symbols, for example,
+      // boolean signal: boolsig s1 's1_val'
+      // non-bool signal: wordsig code 'code_val'
+      static const int MAX_SYM_NUM = 100;
+      // the key is signal string in N_VAR node, the value is N_QUOTE node of the N_VAR node
       std::unordered_map<std::string, NodePtr> m_syms;
 
       // show expression members

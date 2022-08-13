@@ -29,63 +29,97 @@ namespace HCL
       std::string sval(quoteStr);
       // remove first and laster quote character '
       sval = sval.substr(1, sval.size() - 2);
-      m_nodes.emplace_back(N_QUOTE, 0, sval.c_str(), nullptr, nullptr);
+      m_nodes.emplace_back(N_QUOTE, false, sval.c_str(), nullptr, nullptr);
       return &m_nodes.back();
    }
 
    NodePtr Parser::createVar(const char *val)
    {
-      m_nodes.emplace_back(N_VAR, 0, val, nullptr, nullptr);
+      m_nodes.emplace_back(N_VAR, false, val, nullptr, nullptr);
       return &m_nodes.back();
    }
 
    NodePtr Parser::createNum(const char *num)
    {
-      m_nodes.emplace_back(N_NUM, 0, num, nullptr, nullptr);
+      m_nodes.emplace_back(N_NUM, false, num, nullptr, nullptr);
       return &m_nodes.back();
    }
 
    NodePtr Parser::createCompOp(const char *op)
    {
-      m_nodes.emplace_back(N_COMP_OP, 0, op, nullptr, nullptr);
+      m_nodes.emplace_back(N_COMP_OP, false, op, nullptr, nullptr);
       return &m_nodes.back();
    }
 
    NodePtr Parser::createAndExpr(NodePtr arg1, NodePtr arg2)
    {
-      return nullptr;
+      checkArg(arg1, true);
+      checkArg(arg2, true);
+      m_nodes.emplace_back(N_AND_EXPR, true, "&", arg1, arg2);
+      return &m_nodes.back();
    }
 
    NodePtr Parser::createOrExpr(NodePtr arg1, NodePtr arg2)
    {
-      return nullptr;
+      checkArg(arg1, true);
+      checkArg(arg2, true);
+      m_nodes.emplace_back(N_OR_EXPR, true, "|", arg1, arg2);
+      return &m_nodes.back();
    }
 
    NodePtr Parser::createNotExpr(NodePtr arg)
    {
-      return nullptr;
+      checkArg(arg, true);
+      m_nodes.emplace_back(N_NOT_EXPR, true, "!", arg, nullptr);
+      return &m_nodes.back();
    }
 
    NodePtr Parser::createCompExpr(NodePtr op, NodePtr arg1, NodePtr arg2)
    {
-      return nullptr;
+      checkArg(arg1, false);
+      checkArg(arg2, false);
+      m_nodes.emplace_back(N_COMP_EXPR, true, op->sval.c_str(), arg1, arg2);
+      return &m_nodes.back();
    }
 
    NodePtr Parser::createEleExpr(NodePtr arg1, NodePtr arg2)
    {
-      return nullptr;
+      checkArg(arg1, false);
+      for (NodePtr ele = arg1; ele; ele = ele->next)
+         checkArg(ele, false);
+      m_nodes.emplace_back(N_ELE_EXPR, true, "in", arg1, arg2);
+      return &m_nodes.back();
    }
 
    NodePtr Parser::createCaseExpr(NodePtr arg1, NodePtr arg2)
    {
-      return nullptr;
+      checkArg(arg1, true);
+      checkArg(arg2, false);
+      m_nodes.emplace_back(N_CASE_EXPR, false, ":", arg1, arg2);
+      return &m_nodes.back();
    }
 
-   void Parser::insertCode(NodePtr quoteStr)
+   void Parser::setBool(NodePtr node)
    {
+      if (!node)
+         fail("Null node encountered");
+      node->isbool = true;
    }
 
-   void Parser::addArg(NodePtr var, NodePtr quoteStr, int isbool)
+   void Parser::addSymbol(NodePtr var, NodePtr quote, int isbool)
+   {
+      if (!var || !quote)
+         return fail("Null node");
+
+      m_syms.emplace(var->sval, quote);
+      if (isbool)
+      {
+         setBool(var);
+         setBool(quote);
+      }
+   }
+
+   void Parser::insertCode(NodePtr quote)
    {
    }
 
@@ -118,17 +152,27 @@ namespace HCL
       yyerror(this, buffer);
    }
 
-   void Parser::checkArg(HCL::NodePtr arg, int wantbool)
+   NodePtr Parser::findSymbol(const char *varName)
+   {
+      auto iter = m_syms.find(varName);
+      if (iter == m_syms.end())
+         return nullptr;
+      NodePtr quote = iter->second;
+      quote->ref++;
+      return quote;
+   }
+
+   void Parser::checkArg(HCL::NodePtr arg, bool wantbool)
    {
       if (!arg)
          return fail("Null node encountered");
 
       if (arg->type == N_VAR)
       {
-         auto iter = m_syms.find(arg->sval);
-         if (iter == m_syms.end())
+         NodePtr quote = findSymbol(arg->sval.c_str());
+         if (!quote)
             return fail("Variable '%s' not found", arg->sval);
-         if (wantbool != iter->second->isbool)
+         if (wantbool != quote->isbool)
             return fail("Variable '%s' not %s", arg->sval, wantbool ? "Boolean" : "Integer");
       }
 

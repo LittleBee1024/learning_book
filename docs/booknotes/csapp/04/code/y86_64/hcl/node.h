@@ -24,13 +24,13 @@ namespace HCL
    class Node
    {
    public:
-      Node(NodeType t, int b, const char *s, NodePtr a1, NodePtr a2)
+      Node(NodeType t, bool b, const char *s, NodePtr a1, NodePtr a2)
           : type(t), isbool(b), sval(s), arg1(a1), arg2(a2), ref(0), next(nullptr)
       {
       }
 
       NodeType type;
-      int isbool;       // Is this node a Boolean expression
+      bool isbool;       // Is this node a Boolean expression
       std::string sval; // Node contents
       Node *arg1;
       Node *arg2;

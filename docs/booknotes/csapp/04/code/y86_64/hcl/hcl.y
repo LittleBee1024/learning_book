@@ -44,8 +44,8 @@ statements: /* empty */
 
 statement:
       QUOTE QSTRING                       { par->insertCode($2); }
-      | BOOLARG VAR QSTRING               { par->addArg($2, $3, 1); }
-      | WORDARG VAR QSTRING               { par->addArg($2, $3, 0); }
+      | BOOLARG VAR QSTRING               { par->addSymbol($2, $3, 1); }
+      | WORDARG VAR QSTRING               { par->addSymbol($2, $3, 0); }
       | BOOL VAR ASSIGN expr SEMI         { par->genFunct($2, $4, 1); }
       | WORD VAR ASSIGN expr SEMI         { par->genFunct($2, $4, 0); }
       ;
