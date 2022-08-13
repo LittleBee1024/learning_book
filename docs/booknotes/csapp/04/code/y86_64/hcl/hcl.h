@@ -75,7 +75,6 @@ namespace HCL
 
       // show expression members
       static const int MAX_SHOW_EXPR_LEN = 80;
-      int m_exprBufLen = 0;
-      char m_exprBuf[1024];
+      std::string m_exprBuf;
    };
 }

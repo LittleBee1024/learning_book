@@ -12,7 +12,7 @@ extern FILE *yyin;
 
 namespace HCL
 {
-   Parser::Parser(std::unique_ptr<CO::InputInterface> &&in) : m_in(std::move(in)), m_lineno(0), m_hitError(false), m_outType(OutType::C), m_exprBufLen(0)
+   Parser::Parser(std::unique_ptr<CO::InputInterface> &&in) : m_in(std::move(in)), m_lineno(0), m_hitError(false), m_outType(OutType::C)
    {
       // yyin is a global variable defined in flex
       assert(m_in->getHandler() != nullptr);
@@ -228,43 +228,34 @@ namespace HCL
 
    void Parser::showTwoArgsExpr(NodePtr expr, const std::string &opStr)
    {
-      sprintf(m_exprBuf + m_exprBufLen, "(");
-      m_exprBufLen += 1;
-
+      m_exprBuf += "(";
       showExprHelper(expr->arg1);
-      if (m_exprBufLen >= MAX_SHOW_EXPR_LEN)
+
+      if (m_exprBuf.length() >= MAX_SHOW_EXPR_LEN)
          return;
 
-      sprintf(m_exprBuf + m_exprBufLen, "%s", opStr.c_str());
-      m_exprBufLen += opStr.length();
-
+      m_exprBuf += opStr;
       showExprHelper(expr->arg2);
-
-      sprintf(m_exprBuf + m_exprBufLen, ")");
-      m_exprBufLen += 1;
+      m_exprBuf += ")";
    }
 
    void Parser::showExprHelper(NodePtr expr)
    {
-      if (m_exprBufLen >= MAX_SHOW_EXPR_LEN)
+      if (m_exprBuf.length() >= MAX_SHOW_EXPR_LEN)
          return;
 
       switch (expr->type)
       {
       case N_QUOTE:
       {
-         int len = expr->sval.length() + 2;
-         sprintf(m_exprBuf + m_exprBufLen, "'%s'", expr->sval.c_str());
-         m_exprBufLen += len;
+         m_exprBuf += "'" + expr->sval + "'";
          break;
       }
       case N_VAR:
       case N_NUM:
       case N_COMP_OP:
       {
-         int len = expr->sval.length();
-         sprintf(m_exprBuf + m_exprBufLen, "%s", expr->sval.c_str());
-         m_exprBufLen += len;
+         m_exprBuf += expr->sval;
          break;
       }
       case N_AND_EXPR:
@@ -279,8 +270,7 @@ namespace HCL
       }
       case N_NOT_EXPR:
       {
-         sprintf(m_exprBuf + m_exprBufLen, "!");
-         m_exprBufLen += 1;
+         m_exprBuf += "!";
          showExprHelper(expr->arg1);
          break;
       }
@@ -292,51 +282,43 @@ namespace HCL
       }
       case N_ELE_EXPR:
       {
-         sprintf(m_exprBuf + m_exprBufLen, "(");
-         m_exprBufLen += 1;
+         m_exprBuf += "(";
          showExprHelper(expr->arg1);
-         sprintf(m_exprBuf + m_exprBufLen, " in {");
-         m_exprBufLen += 5;
+         m_exprBuf += " in {";
 
-         for (NodePtr ele = expr->arg2; m_exprBufLen < MAX_SHOW_EXPR_LEN && ele; ele = ele->next)
+         for (NodePtr ele = expr->arg2; m_exprBuf.length() < MAX_SHOW_EXPR_LEN && ele; ele = ele->next)
          {
             showExprHelper(ele);
             if (ele->next)
-            {
-               sprintf(m_exprBuf + m_exprBufLen, ", ");
-               m_exprBufLen += 2;
-            }
+               m_exprBuf += ", ";
          }
 
-         if (m_exprBufLen >= MAX_SHOW_EXPR_LEN)
+         if (m_exprBuf.length() >= MAX_SHOW_EXPR_LEN)
             return;
-         sprintf(m_exprBuf + m_exprBufLen, "})");
-         m_exprBufLen += 2;
+
+         m_exprBuf += "})";
          break;
       }
       case N_CASE_EXPR:
       {
-         sprintf(m_exprBuf + m_exprBufLen, "[ ");
-         m_exprBufLen += 2;
+         m_exprBuf += "[ ";
 
-         for (NodePtr ele = expr; m_exprBufLen < MAX_SHOW_EXPR_LEN && ele; ele = ele->next)
+         for (NodePtr ele = expr; m_exprBuf.length() < MAX_SHOW_EXPR_LEN && ele; ele = ele->next)
          {
             showExprHelper(ele->arg1);
-            sprintf(m_exprBuf + m_exprBufLen, " : ");
-            m_exprBufLen += 3;
+            m_exprBuf += " : ";
             showExprHelper(ele->arg2);
          }
 
-         if (m_exprBufLen >= MAX_SHOW_EXPR_LEN)
+         if (m_exprBuf.length() >= MAX_SHOW_EXPR_LEN)
             return;
-         sprintf(m_exprBuf + m_exprBufLen, " ]");
-         m_exprBufLen += 2;
+
+         m_exprBuf += " ]";
          break;
       }
       default:
       {
-         sprintf(m_exprBuf + m_exprBufLen, "??");
-         m_exprBufLen += 2;
+         m_exprBuf += "??";
          break;
       }
       }
@@ -344,13 +326,12 @@ namespace HCL
 
    const char *Parser::showExpr(NodePtr expr)
    {
-      // clear buffer
-      m_exprBufLen = 0;
-      m_exprBuf[0] = '\0';
+      m_exprBuf.clear();
 
       showExprHelper(expr);
-      if (m_exprBufLen >= MAX_SHOW_EXPR_LEN)
-         sprintf(m_exprBuf + m_exprBufLen, "...");
-      return m_exprBuf;
+      if (m_exprBuf.length() >= MAX_SHOW_EXPR_LEN)
+         m_exprBuf += "...";
+
+      return m_exprBuf.c_str();
    }
 }
