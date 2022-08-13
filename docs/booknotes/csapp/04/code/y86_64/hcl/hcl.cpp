@@ -24,7 +24,7 @@ namespace HCL
       m_out = std::move(out);
       m_outType = OutType::C;
 
-      clearState();
+      cleanState();
       yyparse(this);
       if (m_hitError)
          return ERROR;
@@ -37,7 +37,7 @@ namespace HCL
       m_out = std::move(out);
       m_outType = OutType::Verilog;
 
-      clearState();
+      cleanState();
       yyparse(this);
       if (m_hitError)
          return ERROR;
@@ -45,7 +45,7 @@ namespace HCL
       return SUCCESS;
    }
 
-   void Parser::clearState()
+   void Parser::cleanState()
    {
       m_lineno = 0;
       m_hitError = false;

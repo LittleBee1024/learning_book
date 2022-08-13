@@ -36,7 +36,7 @@ namespace YAS
 
    private:
       void reset();
-      void clearState();
+      void cleanState();
 
    private:
       // process tokens from a line

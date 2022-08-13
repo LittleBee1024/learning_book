@@ -46,18 +46,18 @@ namespace YAS
       m_out = std::move(out);
 
       m_pass = 1;
-      clearState();
+      cleanState();
       yaslex(this);
       if (m_hitError)
          return ERROR;
 
       m_pass = 2;
-      clearState();
+      cleanState();
       yaslex(this);
       return SUCCESS;
    }
 
-   void Lexer::clearState()
+   void Lexer::cleanState()
    {
       m_hitError = false;
       m_lineno = 0;

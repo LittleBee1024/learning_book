@@ -41,7 +41,7 @@ namespace HCL
       void fail(const char *format, ...);
 
    private:
-      void clearState();
+      void cleanState();
       void checkArg(NodePtr arg, bool wantbool);
       NodePtr refSymbol(const char *varName);
       void setBool(NodePtr node);
