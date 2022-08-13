@@ -36,7 +36,6 @@ namespace YAS
 
    private:
       void reset();
-      void resetYasIn();
       void clearState();
 
    private:

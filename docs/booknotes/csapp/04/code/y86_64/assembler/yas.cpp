@@ -43,18 +43,16 @@ namespace YAS
 
    int Lexer::parse(std::unique_ptr<CO::OutputInterface> &&out)
    {
-      clearState();
-
       m_out = std::move(out);
 
       m_pass = 1;
-      resetYasIn();
+      clearState();
       yaslex(this);
       if (m_hitError)
          return ERROR;
 
       m_pass = 2;
-      resetYasIn();
+      clearState();
       yaslex(this);
       return SUCCESS;
    }
@@ -65,6 +63,7 @@ namespace YAS
       m_lineno = 0;
       m_lineError = false;
       m_addr = 0;
+      fseek(yasin, 0, SEEK_SET);
    }
 
    void Lexer::saveLine(const char *s)
@@ -126,11 +125,6 @@ namespace YAS
    void Lexer::addIdent(const char *s)
    {
       m_tokens.emplace_back(TOK_IDENT, s, 0, ' ');
-   }
-
-   void Lexer::resetYasIn()
-   {
-      fseek(yasin, 0, SEEK_SET);
    }
 
    void Lexer::reset()

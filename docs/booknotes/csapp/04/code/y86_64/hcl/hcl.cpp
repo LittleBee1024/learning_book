@@ -21,11 +21,10 @@ namespace HCL
 
    int Parser::toC(std::unique_ptr<CO::OutputInterface> &&out)
    {
-      clearState();
-
       m_out = std::move(out);
       m_outType = OutType::C;
 
+      clearState();
       yyparse(this);
       if (m_hitError)
          return ERROR;
@@ -35,11 +34,10 @@ namespace HCL
 
    int Parser::toVerilog(std::unique_ptr<CO::OutputInterface> &&out)
    {
-      clearState();
-
       m_out = std::move(out);
       m_outType = OutType::Verilog;
 
+      clearState();
       yyparse(this);
       if (m_hitError)
          return ERROR;
@@ -51,6 +49,7 @@ namespace HCL
    {
       m_lineno = 0;
       m_hitError = false;
+      fseek(yyin, 0, SEEK_SET);
    }
 
    void Parser::outQuoteCode(NodePtr quote)

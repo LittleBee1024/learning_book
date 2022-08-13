@@ -47,6 +47,9 @@ $(TARGET): $(DEP_COMMON_OBJS) $(DEP_ISA_OBJS) $(LEX_OBJ) $(SRC_OBJS)
 	$(CC) $(CFLAGS) $^ -o $(BUILD_DIR)/$@
 
 Y86_64_CODE=../test_yas/prog1.ys
+run:
+	$(BUILD_DIR)/$(TARGET) $(Y86_64_CODE)
+
 debug:
 	gdb -q $(BUILD_DIR)/$(TARGET) \
 	-ex "start $(Y86_64_CODE)"
