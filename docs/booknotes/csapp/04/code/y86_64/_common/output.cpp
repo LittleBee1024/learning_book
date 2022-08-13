@@ -16,7 +16,7 @@ namespace CO
 
    void FileOut::out(const char *format, ...)
    {
-      char buffer[1024];
+      static char buffer[1024];
       va_list args;
       va_start(args, format);
       vsnprintf(buffer, sizeof(buffer), format, args);
@@ -26,7 +26,7 @@ namespace CO
 
    void MemOut::out(const char *format, ...)
    {
-      char buffer[1024];
+      static char buffer[1024];
       va_list args;
       va_start(args, format);
       vsnprintf(buffer, sizeof(buffer), format, args);

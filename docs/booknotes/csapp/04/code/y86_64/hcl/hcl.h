@@ -31,6 +31,8 @@ namespace HCL
       NodePtr concat(NodePtr n1, NodePtr n2);
 
       void finishLine();
+      int getLineNum() const;
+      void fail(const char *format, ...);
 
    private:
       std::unique_ptr<CO::InputInterface> m_in;

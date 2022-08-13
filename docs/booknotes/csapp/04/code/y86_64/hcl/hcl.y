@@ -8,9 +8,16 @@
 #define YYSTYPE HCL::NodePtr
 extern int yylex(HCL::Parser*);
 
-void yyerror(HCL::Parser*, const char *str)
+void yyerror(HCL::Parser *par, const char *str)
 {
-   fprintf(stderr, "Error: %s\n", str);
+   static const int ERRLIM = 5;
+   static int errcnt = 0;
+   fprintf(stderr, "Error: near line %d: %s\n", par->getLineNum(), str);
+   if (++errcnt > ERRLIM)
+   {
+      fprintf(stderr, "Too many errors, aborting\n");
+      exit(1);
+   }
 }
 
 %}

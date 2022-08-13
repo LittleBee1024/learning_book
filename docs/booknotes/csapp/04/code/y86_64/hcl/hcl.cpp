@@ -1,5 +1,10 @@
 #include "./hcl.h"
 
+#include <stdarg.h>
+
+// function from yacc
+extern void yyerror(HCL::Parser *par, const char *str);
+
 namespace HCL
 {
    Parser::Parser(std::unique_ptr<CO::InputInterface> &&in) : m_in(std::move(in)), m_lineno(0)
@@ -76,5 +81,20 @@ namespace HCL
    void Parser::finishLine()
    {
       m_lineno++;
+   }
+
+   int Parser::getLineNum() const
+   {
+      return m_lineno;
+   }
+
+   void Parser::fail(const char *format, ...)
+   {
+      static char buffer[1024];
+      va_list args;
+      va_start(args, format);
+      vsnprintf(buffer, sizeof(buffer), format, args);
+      va_end(args);
+      yyerror(this, buffer);
    }
 }
