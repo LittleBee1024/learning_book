@@ -115,7 +115,7 @@ namespace HCL
       {
          m_out->print("(");
          outExprC(expr->arg1);
-         m_out->print(" %s ", expr->sval);
+         m_out->print(" %s ", expr->sval.c_str());
          outExprC(expr->arg2);
          m_out->print(")");
          break;
