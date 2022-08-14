@@ -21,7 +21,7 @@ namespace HCL
       std::unique_ptr<CO::OutputInterface> m_out;
 
       // format
-      static const int MAX_COLUMN = 80;
+      static const int MAX_COLUMN = 100;
       static const int INDENT_SPACE = 3;
       int m_curLinePos;
       int m_indentLevel;

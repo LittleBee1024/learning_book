@@ -38,17 +38,21 @@ namespace HCL
    void OutGen::feedLineWithUpIndent()
    {
       m_out->out("\n");
+      m_curLinePos = 0;
       m_indentLevel++;
       std::string blanks(m_indentLevel * INDENT_SPACE, ' ');
-      print(blanks.c_str());
+      m_out->out(blanks.c_str());
+      m_curLinePos = blanks.length();
    }
 
    void OutGen::feedLineWithDownIndent()
    {
       m_out->out("\n");
+      m_curLinePos = 0;
       m_indentLevel--;
       std::string blanks(m_indentLevel * INDENT_SPACE, ' ');
-      print(blanks.c_str());
+      m_out->out(blanks.c_str());
+      m_curLinePos = blanks.length();
    }
 
    void OutGen::terminateLine()
