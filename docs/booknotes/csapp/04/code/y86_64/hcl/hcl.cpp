@@ -60,7 +60,7 @@ namespace HCL
       if (m_outType == OutType::Verilog)
          return;
 
-      m_out->print(quote->sval.c_str());
+      m_out->print("%s", quote->sval.c_str());
       m_out->terminateLine();
    }
 
@@ -87,7 +87,7 @@ namespace HCL
       }
       case N_NUM:
       {
-         m_out->print(expr->sval.c_str());
+         m_out->print("%s", expr->sval.c_str());
          break;
       }
       case N_AND_EXPR:
