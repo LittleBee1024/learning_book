@@ -53,6 +53,9 @@ namespace HCL
       void outExprC(NodePtr expr);
       void outExprVerilog(NodePtr expr);
 
+      void outCFunction(NodePtr var, NodePtr expr, int isbool);
+      void outVerilogFunction(NodePtr var, NodePtr expr, int isbool);
+
    private:
       std::unique_ptr<CO::InputInterface> m_in;
       std::unique_ptr<OutGen> m_out;
