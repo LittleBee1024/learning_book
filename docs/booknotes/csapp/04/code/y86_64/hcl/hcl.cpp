@@ -138,7 +138,7 @@ namespace HCL
       {
          m_out->print("(");
          bool done = false;
-         for (NodePtr ele = expr->arg2; ele && !done; ele = ele->next)
+         for (NodePtr ele = expr; ele && !done; ele = ele->next)
          {
             if (ele->arg1->type == N_NUM && atoll(ele->arg1->sval.c_str()) == 1)
             {
@@ -175,6 +175,19 @@ namespace HCL
       }
 
       assert(m_outType == OutType::C);
+
+      m_out->print("long long gen_%s()", var->sval.c_str());
+      m_out->terminateLine();
+      m_out->print("{");
+      m_out->feedLineWithUpIndent();
+      m_out->print("return ");
+      outExprC(expr);
+      m_out->print(";");
+      m_out->feedLineWithDownIndent();
+      m_out->print("}");
+      m_out->terminateLine();
+      m_out->terminateLine();
+
       return;
    }
 
@@ -183,57 +196,57 @@ namespace HCL
       std::string sval(quoteStr);
       // remove first and laster quote character '
       sval = sval.substr(1, sval.size() - 2);
-      m_nodes.emplace_back(N_QUOTE, false, sval.c_str(), nullptr, nullptr);
-      return &m_nodes.back();
+      m_nodes.emplace_back(std::make_shared<Node>(N_QUOTE, false, sval.c_str(), nullptr, nullptr));
+      return m_nodes.back().get();
    }
 
    NodePtr Parser::createVar(const char *val)
    {
-      m_nodes.emplace_back(N_VAR, false, val, nullptr, nullptr);
-      return &m_nodes.back();
+      m_nodes.emplace_back(std::make_shared<Node>(N_VAR, false, val, nullptr, nullptr));
+      return m_nodes.back().get();
    }
 
    NodePtr Parser::createNum(const char *num)
    {
-      m_nodes.emplace_back(N_NUM, false, num, nullptr, nullptr);
-      return &m_nodes.back();
+      m_nodes.emplace_back(std::make_shared<Node>(N_NUM, false, num, nullptr, nullptr));
+      return m_nodes.back().get();
    }
 
    NodePtr Parser::createCompOp(const char *op)
    {
-      m_nodes.emplace_back(N_COMP_OP, false, op, nullptr, nullptr);
-      return &m_nodes.back();
+      m_nodes.emplace_back(std::make_shared<Node>(N_COMP_OP, false, op, nullptr, nullptr));
+      return m_nodes.back().get();
    }
 
    NodePtr Parser::createAndExpr(NodePtr arg1, NodePtr arg2)
    {
       checkArg(arg1, true);
       checkArg(arg2, true);
-      m_nodes.emplace_back(N_AND_EXPR, true, "&", arg1, arg2);
-      return &m_nodes.back();
+      m_nodes.emplace_back(std::make_shared<Node>(N_AND_EXPR, true, "&", arg1, arg2));
+      return m_nodes.back().get();
    }
 
    NodePtr Parser::createOrExpr(NodePtr arg1, NodePtr arg2)
    {
       checkArg(arg1, true);
       checkArg(arg2, true);
-      m_nodes.emplace_back(N_OR_EXPR, true, "|", arg1, arg2);
-      return &m_nodes.back();
+      m_nodes.emplace_back(std::make_shared<Node>(N_OR_EXPR, true, "|", arg1, arg2));
+      return m_nodes.back().get();
    }
 
    NodePtr Parser::createNotExpr(NodePtr arg)
    {
       checkArg(arg, true);
-      m_nodes.emplace_back(N_NOT_EXPR, true, "!", arg, nullptr);
-      return &m_nodes.back();
+      m_nodes.emplace_back(std::make_shared<Node>(N_NOT_EXPR, true, "!", arg, nullptr));
+      return m_nodes.back().get();
    }
 
    NodePtr Parser::createCompExpr(NodePtr op, NodePtr arg1, NodePtr arg2)
    {
       checkArg(arg1, false);
       checkArg(arg2, false);
-      m_nodes.emplace_back(N_COMP_EXPR, true, op->sval.c_str(), arg1, arg2);
-      return &m_nodes.back();
+      m_nodes.emplace_back(std::make_shared<Node>(N_COMP_EXPR, true, op->sval.c_str(), arg1, arg2));
+      return m_nodes.back().get();
    }
 
    NodePtr Parser::createEleExpr(NodePtr arg1, NodePtr arg2)
@@ -241,16 +254,16 @@ namespace HCL
       checkArg(arg1, false);
       for (NodePtr ele = arg1; ele; ele = ele->next)
          checkArg(ele, false);
-      m_nodes.emplace_back(N_ELE_EXPR, true, "in", arg1, arg2);
-      return &m_nodes.back();
+      m_nodes.emplace_back(std::make_shared<Node>(N_ELE_EXPR, true, "in", arg1, arg2));
+      return m_nodes.back().get();
    }
 
    NodePtr Parser::createCaseExpr(NodePtr arg1, NodePtr arg2)
    {
       checkArg(arg1, true);
       checkArg(arg2, false);
-      m_nodes.emplace_back(N_CASE_EXPR, false, ":", arg1, arg2);
-      return &m_nodes.back();
+      m_nodes.emplace_back(std::make_shared<Node>(N_CASE_EXPR, false, ":", arg1, arg2));
+      return m_nodes.back().get();
    }
 
    void Parser::setBool(NodePtr node)
@@ -258,19 +271,6 @@ namespace HCL
       if (!node)
          fail("Null node encountered");
       node->isbool = true;
-   }
-
-   void Parser::addSymbol(NodePtr var, NodePtr quote, int isbool)
-   {
-      if (!var || !quote)
-         return fail("Null node");
-
-      m_syms.emplace(var->sval, quote);
-      if (isbool)
-      {
-         setBool(var);
-         setBool(quote);
-      }
    }
 
    NodePtr Parser::concat(NodePtr n1, NodePtr n2)
@@ -306,6 +306,19 @@ namespace HCL
       yyerror(this, buffer);
    }
 
+   void Parser::addSymbol(NodePtr var, NodePtr quote, int isbool)
+   {
+      if (!var || !quote)
+         return fail("Null node");
+
+      m_syms.emplace(var->sval, quote);
+      if (isbool)
+      {
+         setBool(var);
+         setBool(quote);
+      }
+   }
+
    NodePtr Parser::refSymbol(const char *varName)
    {
       auto iter = m_syms.find(varName);
@@ -328,12 +341,14 @@ namespace HCL
             return fail("Variable '%s' not found", arg->sval);
          if (wantbool != quote->isbool)
             return fail("Variable '%s' not %s", arg->sval, wantbool ? "Boolean" : "Integer");
+         return;
       }
 
       if (arg->type == N_NUM)
       {
          if (wantbool && strcmp(arg->sval.c_str(), "0") != 0 && strcmp(arg->sval.c_str(), "1") != 0)
             return fail("Value '%s' not Boolean", arg->sval);
+         return;
       }
 
       if (wantbool && !arg->isbool)

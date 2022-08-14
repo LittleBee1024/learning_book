@@ -10,7 +10,7 @@
 namespace HCL
 {
 
-   OutGen::OutGen(std::unique_ptr<CO::OutputInterface> &&out) : m_out(std::move(out)), m_curLinePos(0), m_indent(0)
+   OutGen::OutGen(std::unique_ptr<CO::OutputInterface> &&out) : m_out(std::move(out)), m_curLinePos(0), m_indentLevel(0)
    {
    }
 
@@ -26,29 +26,36 @@ namespace HCL
       if (m_curLinePos + len > MAX_COLUMN)
       {
          m_out->out("\n");
-         std::string blanks(m_indent, ' ');
+         int numOfSpace = (m_indentLevel + 1) * INDENT_SPACE;
+         std::string blanks(numOfSpace, ' ');
          m_out->out(blanks.c_str());
-         m_curLinePos = m_indent;
+         m_curLinePos = numOfSpace;
       }
       m_out->out("%s", buf);
       m_curLinePos += len;
    }
 
-   void OutGen::upIndent()
+   void OutGen::feedLineWithUpIndent()
    {
-      m_indent += INDENT_SPACE;
+      m_out->out("\n");
+      m_indentLevel++;
+      std::string blanks(m_indentLevel * INDENT_SPACE, ' ');
+      print(blanks.c_str());
    }
 
-   void OutGen::downIndent()
+   void OutGen::feedLineWithDownIndent()
    {
-      m_indent -= INDENT_SPACE;
+      m_out->out("\n");
+      m_indentLevel--;
+      std::string blanks(m_indentLevel * INDENT_SPACE, ' ');
+      print(blanks.c_str());
    }
 
    void OutGen::terminateLine()
    {
       m_out->out("\n");
       m_curLinePos = 0;
-      m_indent = 0;
+      m_indentLevel = 0;
    }
 
 }

@@ -67,7 +67,7 @@ namespace HCL
       OutType m_outType;
 
       // store all nodes in the vector
-      std::vector<Node> m_nodes;
+      std::vector<std::shared_ptr<Node>> m_nodes;
 
       // signals used in HCL are stored as symbols, for example,
       // boolean signal: boolsig s1 's1_val'

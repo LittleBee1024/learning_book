@@ -13,8 +13,8 @@ namespace HCL
       explicit OutGen(std::unique_ptr<CO::OutputInterface> &&out);
 
       void print(const char *fmt, ...);
-      void upIndent();
-      void downIndent();
+      void feedLineWithUpIndent();
+      void feedLineWithDownIndent();
       void terminateLine();
 
    private:
@@ -24,7 +24,7 @@ namespace HCL
       static const int MAX_COLUMN = 80;
       static const int INDENT_SPACE = 3;
       int m_curLinePos;
-      int m_indent;
+      int m_indentLevel;
    };
 
 }

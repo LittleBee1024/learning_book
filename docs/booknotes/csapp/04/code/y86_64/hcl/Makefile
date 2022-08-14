@@ -47,3 +47,11 @@ $(BUILD_DIR)/%.o: %.cpp
 $(TARGET): $(DEP_COMMON_OBJS) $(YACC_OBJ) $(LEX_OBJ) $(SRC_OBJS)
 	$(CC) $(CFLAGS) $^ -o $(BUILD_DIR)/$@
 
+Y86_64_HCL=../test_hcl/mux4.hcl
+run:
+	$(BUILD_DIR)/$(TARGET) $(Y86_64_HCL)
+
+debug:
+	gdb -q $(BUILD_DIR)/$(TARGET) \
+	-ex "start $(Y86_64_HCL)"
+
