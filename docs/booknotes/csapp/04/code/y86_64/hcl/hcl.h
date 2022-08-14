@@ -50,8 +50,7 @@ namespace HCL
       const char *showExpr(NodePtr expr);
       void showExprHelper(NodePtr expr);
       void showTwoArgsExpr(NodePtr expr, const std::string &opStr);
-      void outExprC(NodePtr expr);
-      void outExprVerilog(NodePtr expr);
+      void outExprHelper(NodePtr expr);
 
       void outCFunction(NodePtr var, NodePtr expr, int isbool);
       void outVerilogFunction(NodePtr var, NodePtr expr, int isbool);

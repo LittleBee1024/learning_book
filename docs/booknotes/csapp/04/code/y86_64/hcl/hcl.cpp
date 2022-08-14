@@ -64,7 +64,7 @@ namespace HCL
       m_out->terminateLine();
    }
 
-   void Parser::outExprC(NodePtr expr)
+   void Parser::outExprHelper(NodePtr expr)
    {
       switch (expr->type)
       {
@@ -79,7 +79,10 @@ namespace HCL
          NodePtr quote = refSymbol(expr->sval.c_str());
          if (!quote)
             return fail("Invalid variable '%s'", expr->sval.c_str());
-         m_out->print("(%s)", quote->sval.c_str());
+         if (m_outType == OutType::C)
+            m_out->print("(%s)", quote->sval.c_str());
+         else // OutType::Verilog
+            m_out->print("%s", expr->sval.c_str());
          break;
       }
       case N_NUM:
@@ -90,33 +93,33 @@ namespace HCL
       case N_AND_EXPR:
       {
          m_out->print("(");
-         outExprC(expr->arg1);
+         outExprHelper(expr->arg1);
          m_out->print(" & ");
-         outExprC(expr->arg2);
+         outExprHelper(expr->arg2);
          m_out->print(")");
          break;
       }
       case N_OR_EXPR:
       {
          m_out->print("(");
-         outExprC(expr->arg1);
+         outExprHelper(expr->arg1);
          m_out->print(" | ");
-         outExprC(expr->arg2);
+         outExprHelper(expr->arg2);
          m_out->print(")");
          break;
       }
       case N_NOT_EXPR:
       {
-         m_out->print("!");
-         outExprC(expr->arg1);
+         m_out->print(m_outType == OutType::C ? "!" : "~");
+         outExprHelper(expr->arg1);
          break;
       }
       case N_COMP_EXPR:
       {
          m_out->print("(");
-         outExprC(expr->arg1);
+         outExprHelper(expr->arg1);
          m_out->print(" %s ", expr->sval.c_str());
-         outExprC(expr->arg2);
+         outExprHelper(expr->arg2);
          m_out->print(")");
          break;
       }
@@ -125,11 +128,11 @@ namespace HCL
          m_out->print("(");
          for (NodePtr ele = expr->arg2; ele; ele = ele->next)
          {
-            outExprC(expr->arg1);
+            outExprHelper(expr->arg1);
             m_out->print(" == ");
-            outExprC(ele);
+            outExprHelper(ele);
             if (ele->next)
-               m_out->print(" || ");
+               m_out->print(m_outType == OutType::C ? " || " : " | ");
          }
          m_out->print(")");
          break;
@@ -142,114 +145,14 @@ namespace HCL
          {
             if (ele->arg1->type == N_NUM && atoll(ele->arg1->sval.c_str()) == 1)
             {
-               outExprC(ele->arg2);
+               outExprHelper(ele->arg2);
                done = true;
             }
             else
             {
-               outExprC(ele->arg1);
+               outExprHelper(ele->arg1);
                m_out->print(" ? ");
-               outExprC(ele->arg2);
-               m_out->print(" : ");
-            }
-         }
-         if (!done)
-            m_out->print("0");
-         m_out->print(")");
-         break;
-      }
-      default:
-         fail("Unknown node type");
-         break;
-      }
-   }
-
-   void Parser::outExprVerilog(NodePtr expr)
-   {
-      switch (expr->type)
-      {
-      case N_QUOTE:
-      case N_COMP_OP:
-      {
-         return fail("Unexpected Node: %s", expr->sval.c_str());
-         break;
-      }
-      case N_VAR:
-      {
-         NodePtr quote = refSymbol(expr->sval.c_str());
-         if (!quote)
-            return fail("Invalid variable '%s'", expr->sval.c_str());
-         m_out->print("%s", expr->sval.c_str());
-         break;
-      }
-      case N_NUM:
-      {
-         m_out->print(expr->sval.c_str());
-         break;
-      }
-      case N_AND_EXPR:
-      {
-         m_out->print("(");
-         outExprVerilog(expr->arg1);
-         m_out->print(" & ");
-         outExprVerilog(expr->arg2);
-         m_out->print(")");
-         break;
-      }
-      case N_OR_EXPR:
-      {
-         m_out->print("(");
-         outExprVerilog(expr->arg1);
-         m_out->print(" | ");
-         outExprVerilog(expr->arg2);
-         m_out->print(")");
-         break;
-      }
-      case N_NOT_EXPR:
-      {
-         m_out->print("~");
-         outExprVerilog(expr->arg1);
-         break;
-      }
-      case N_COMP_EXPR:
-      {
-         m_out->print("(");
-         outExprVerilog(expr->arg1);
-         m_out->print(" %s ", expr->sval.c_str());
-         outExprVerilog(expr->arg2);
-         m_out->print(")");
-         break;
-      }
-      case N_ELE_EXPR:
-      {
-         m_out->print("(");
-         for (NodePtr ele = expr->arg2; ele; ele = ele->next)
-         {
-            outExprVerilog(expr->arg1);
-            m_out->print(" == ");
-            outExprVerilog(ele);
-            if (ele->next)
-               m_out->print(" | ");
-         }
-         m_out->print(")");
-         break;
-      }
-      case N_CASE_EXPR:
-      {
-         m_out->print("(");
-         bool done = false;
-         for (NodePtr ele = expr; ele && !done; ele = ele->next)
-         {
-            if (ele->arg1->type == N_NUM && atoll(ele->arg1->sval.c_str()) == 1)
-            {
-               outExprVerilog(ele->arg2);
-               done = true;
-            }
-            else
-            {
-               outExprVerilog(ele->arg1);
-               m_out->print(" ? ");
-               outExprVerilog(ele->arg2);
+               outExprHelper(ele->arg2);
                m_out->print(" : ");
             }
          }
@@ -288,7 +191,7 @@ namespace HCL
       m_out->print("{");
       m_out->feedLineWithUpIndent();
       m_out->print("return ");
-      outExprC(expr);
+      outExprHelper(expr);
       m_out->print(";");
       m_out->feedLineWithDownIndent();
       m_out->print("}");
@@ -300,7 +203,7 @@ namespace HCL
    {
       m_out->print("assign %s = ", var->sval.c_str());
       m_out->feedLineWithUpIndent();
-      outExprVerilog(expr);
+      outExprHelper(expr);
       m_out->print(";");
       m_out->feedLineWithDownIndent();
       m_out->terminateLine();
