@@ -21,7 +21,7 @@ namespace HCL
 
    int Parser::toC(std::unique_ptr<CO::OutputInterface> &&out)
    {
-      m_out = std::move(out);
+      m_out = std::make_unique<OutGen>(std::move(out));
       m_outType = OutType::C;
 
       cleanState();
@@ -34,7 +34,7 @@ namespace HCL
 
    int Parser::toVerilog(std::unique_ptr<CO::OutputInterface> &&out)
    {
-      m_out = std::move(out);
+      m_out = std::make_unique<OutGen>(std::move(out));
       m_outType = OutType::Verilog;
 
       cleanState();
@@ -54,10 +54,128 @@ namespace HCL
 
    void Parser::outQuoteCode(NodePtr quote)
    {
+      if (!quote)
+         return fail("Null Node");
+
+      if (m_outType == OutType::Verilog)
+         return;
+
+      m_out->print(quote->sval.c_str());
+      m_out->terminateLine();
+   }
+
+   void Parser::outExprC(NodePtr expr)
+   {
+      switch (expr->type)
+      {
+      case N_QUOTE:
+      case N_COMP_OP:
+      {
+         return fail("Unexpected Node: %s", expr->sval.c_str());
+         break;
+      }
+      case N_VAR:
+      {
+         NodePtr quote = refSymbol(expr->sval.c_str());
+         if (!quote)
+            return fail("Invalid variable '%s'", expr->sval.c_str());
+         m_out->print("(%s)", quote->sval.c_str());
+         break;
+      }
+      case N_NUM:
+      {
+         m_out->print(expr->sval.c_str());
+         break;
+      }
+      case N_AND_EXPR:
+      {
+         m_out->print("(");
+         outExprC(expr->arg1);
+         m_out->print(" & ");
+         outExprC(expr->arg2);
+         m_out->print(")");
+         break;
+      }
+      case N_OR_EXPR:
+      {
+         m_out->print("(");
+         outExprC(expr->arg1);
+         m_out->print(" | ");
+         outExprC(expr->arg2);
+         m_out->print(")");
+         break;
+      }
+      case N_NOT_EXPR:
+      {
+         m_out->print("!");
+         outExprC(expr->arg1);
+         break;
+      }
+      case N_COMP_EXPR:
+      {
+         m_out->print("(");
+         outExprC(expr->arg1);
+         m_out->print(" %s ", expr->sval);
+         outExprC(expr->arg2);
+         m_out->print(")");
+         break;
+      }
+      case N_ELE_EXPR:
+      {
+         m_out->print("(");
+         for (NodePtr ele = expr->arg2; ele; ele = ele->next)
+         {
+            outExprC(expr->arg1);
+            m_out->print(" == ");
+            outExprC(ele);
+            if (ele->next)
+               m_out->print(" || ");
+         }
+         m_out->print(")");
+         break;
+      }
+      case N_CASE_EXPR:
+      {
+         m_out->print("(");
+         bool done = false;
+         for (NodePtr ele = expr->arg2; ele && !done; ele = ele->next)
+         {
+            if (ele->arg1->type == N_NUM && atoll(ele->arg1->sval.c_str()) == 1)
+            {
+               outExprC(ele->arg2);
+               done = true;
+            }
+            else
+            {
+               outExprC(ele->arg1);
+               m_out->print(" ? ");
+               outExprC(ele->arg2);
+               m_out->print(" : ");
+            }
+         }
+         if (!done)
+            m_out->print("0");
+         m_out->print(")");
+         break;
+      }
+      default:
+         break;
+      }
    }
 
    void Parser::outFunction(NodePtr var, NodePtr expr, int isbool)
    {
+      if (!var || !expr)
+         return fail("Null Node");
+
+      checkArg(expr, isbool);
+      if (m_outType == OutType::Verilog)
+      {
+         return;
+      }
+
+      assert(m_outType == OutType::C);
+      return;
    }
 
    NodePtr Parser::createQuote(const char *quoteStr)

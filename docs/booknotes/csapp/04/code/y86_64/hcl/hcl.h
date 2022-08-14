@@ -2,6 +2,7 @@
 
 #include "./hcl_interface.h"
 #include "./node.h"
+#include "./outgen.h"
 
 #include <memory>
 #include <vector>
@@ -49,10 +50,12 @@ namespace HCL
       const char *showExpr(NodePtr expr);
       void showExprHelper(NodePtr expr);
       void showTwoArgsExpr(NodePtr expr, const std::string &opStr);
+      void outExprC(NodePtr expr);
+      void outExprVerilog(NodePtr expr);
 
    private:
       std::unique_ptr<CO::InputInterface> m_in;
-      std::unique_ptr<CO::OutputInterface> m_out;
+      std::unique_ptr<OutGen> m_out;
 
       int m_lineno;
       bool m_hitError;
