@@ -11,7 +11,7 @@ extern int yylineno;
 
 void yyerror(Calc *calc, const char *str)
 {
-   fprintf(stderr, "Error near line %d: %s\n", yylineno, str);
+   fprintf(stderr, "Error at line %d: %s\n", yylineno, str);
 }
 
 %}
@@ -31,7 +31,7 @@ void yyerror(Calc *calc, const char *str)
 %%
 
 calclist: /* empty */
-   | calclist exp EOL   { calc->evalArithLine($2); }
+   | calclist exp EOL   { calc->evalArithExpr($2); }
    | calclist EOL       ;
    ;
 

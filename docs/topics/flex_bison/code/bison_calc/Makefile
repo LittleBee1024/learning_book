@@ -13,4 +13,4 @@ main: clean lex
 	g++ -Wall calc_yacc_gen.cpp calc_lex_gen.cpp calc.cpp main.cpp -o main
 
 run:
-	./main test.c
+	./main test.txt

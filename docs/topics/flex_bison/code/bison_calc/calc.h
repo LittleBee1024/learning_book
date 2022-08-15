@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <memory>
+#include <string>
 
 enum NodeType : int
 {
@@ -29,13 +30,18 @@ class Calc
 {
 public:
    explicit Calc(const char *);
+   ~Calc();
    void compute();
 
    NodePtr createNode(NodeType type, NodePtr left, NodePtr right, double num = 0);
-   void evalArithLine(NodePtr expr);
+   void evalArithExpr(NodePtr expr);
    void fail(const char *format, ...);
+
+private:
+   double evalArithExprHelper(NodePtr expr);
 
 private:
    // store all nodes in the vector, so that they can be destroyed automatically
    std::vector<std::shared_ptr<Node>> m_nodes;
+   std::string m_arithExprBuf;
 };

@@ -4,6 +4,7 @@ class Lexer
 {
 public:
    explicit Lexer(const char *fname);
+   ~Lexer();
    void count();
 
    void upCodeLineNum() { m_codeLineNum++; };

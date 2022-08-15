@@ -17,6 +17,11 @@ Lexer::Lexer(const char *fname)
    assert(c_wcin != nullptr);
 }
 
+Lexer::~Lexer()
+{
+   fclose(c_wcin);
+}
+
 void Lexer::count()
 {
    c_wclex(this);
