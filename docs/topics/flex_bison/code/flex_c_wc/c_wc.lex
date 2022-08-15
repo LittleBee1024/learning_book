@@ -1,7 +1,7 @@
 
 %{
 #include "lexer.h"
-#define YY_DECL int c_wclex(Lexer *lex)   // flex C API is wrapped Lexer class
+#define YY_DECL int c_wc_lex(Lexer *lex)   // flex C API is wrapped Lexer class
 %}
 
 %option noyywrap
