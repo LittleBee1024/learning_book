@@ -34,15 +34,15 @@ public:
    void compute();
 
    NodePtr createNode(NodeType type, NodePtr left, NodePtr right, double num = 0);
-   void evalArithExpr(NodePtr expr);
+   void evalExpr(NodePtr expr);
    void fail(const char *format, ...);
 
 private:
-   double evalArithExprHelper(NodePtr expr);
+   double evalExprHelper(NodePtr expr);
 
 private:
-   // store all nodes in the vector, so that they can be destroyed automatically
    bool m_exprHasError = false;
+   // store all nodes in the vector, so that they can be destroyed automatically
    std::vector<std::shared_ptr<Node>> m_nodes;
-   std::string m_arithExprBuf;
+   std::string m_exprBuf;
 };

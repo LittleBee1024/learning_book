@@ -9,7 +9,7 @@ extern int yyparse(Calc *);
 // lexer input handler
 extern FILE *yyin;
 
-Calc::Calc(const char *fname): m_exprHasError(false)
+Calc::Calc(const char *fname)
 {
    yyin = fopen(fname, "r");
 }
@@ -25,13 +25,13 @@ void Calc::compute()
    yyparse(this);
 }
 
-void Calc::evalArithExpr(NodePtr expr)
+void Calc::evalExpr(NodePtr expr)
 {
-   m_arithExprBuf.clear();
+   m_exprBuf.clear();
    if (!m_exprHasError)
    {
-      double res = evalArithExprHelper(expr);
-      printf("%s = %g\n", m_arithExprBuf.c_str(), res);
+      double res = evalExprHelper(expr);
+      printf("%s = %g\n", m_exprBuf.c_str(), res);
    }
    m_exprHasError = false;
    m_nodes.clear();
@@ -54,59 +54,59 @@ void Calc::fail(const char *format, ...)
    yyerror(this, buffer);
 }
 
-double Calc::evalArithExprHelper(NodePtr expr)
+double Calc::evalExprHelper(NodePtr expr)
 {
    switch (expr->type)
    {
    case t_ADD:
    {
-      m_arithExprBuf.push_back('(');
-      double l_val = evalArithExprHelper(expr->left);
-      m_arithExprBuf.push_back('+');
-      double r_val = evalArithExprHelper(expr->right);
-      m_arithExprBuf.push_back(')');
+      m_exprBuf.push_back('(');
+      double l_val = evalExprHelper(expr->left);
+      m_exprBuf.push_back('+');
+      double r_val = evalExprHelper(expr->right);
+      m_exprBuf.push_back(')');
       return l_val + r_val;
    }
    case t_SUB:
    {
-      m_arithExprBuf.push_back('(');
-      double l_val = evalArithExprHelper(expr->left);
-      m_arithExprBuf.push_back('-');
-      double r_val = evalArithExprHelper(expr->right);
-      m_arithExprBuf.push_back(')');
+      m_exprBuf.push_back('(');
+      double l_val = evalExprHelper(expr->left);
+      m_exprBuf.push_back('-');
+      double r_val = evalExprHelper(expr->right);
+      m_exprBuf.push_back(')');
       return l_val - r_val;
    }
    case t_MUL:
    {
-      m_arithExprBuf.push_back('(');
-      double l_val = evalArithExprHelper(expr->left);
-      m_arithExprBuf.push_back('*');
-      double r_val = evalArithExprHelper(expr->right);
-      m_arithExprBuf.push_back(')');
+      m_exprBuf.push_back('(');
+      double l_val = evalExprHelper(expr->left);
+      m_exprBuf.push_back('*');
+      double r_val = evalExprHelper(expr->right);
+      m_exprBuf.push_back(')');
       return l_val * r_val;
    }
    case t_DIV:
    {
-      m_arithExprBuf.push_back('(');
-      double l_val = evalArithExprHelper(expr->left);
-      m_arithExprBuf.push_back('/');
-      double r_val = evalArithExprHelper(expr->right);
-      m_arithExprBuf.push_back(')');
+      m_exprBuf.push_back('(');
+      double l_val = evalExprHelper(expr->left);
+      m_exprBuf.push_back('/');
+      double r_val = evalExprHelper(expr->right);
+      m_exprBuf.push_back(')');
       return l_val / r_val;
    }
    case t_MINUS:
    {
-      m_arithExprBuf.push_back('(');
-      m_arithExprBuf.push_back('-');
-      double l_val = evalArithExprHelper(expr->left);
-      m_arithExprBuf.push_back(')');
+      m_exprBuf.push_back('(');
+      m_exprBuf.push_back('-');
+      double l_val = evalExprHelper(expr->left);
+      m_exprBuf.push_back(')');
       return -l_val;
    }
    case t_NUM:
    {
       char buf[32];
       snprintf(buf, sizeof(buf), "%g", expr->num);
-      m_arithExprBuf.append(buf);
+      m_exprBuf.append(buf);
       return expr->num;
    }
    default:

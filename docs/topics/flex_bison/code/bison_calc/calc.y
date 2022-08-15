@@ -31,7 +31,7 @@ void yyerror(Calc *calc, const char *str)
 %%
 
 calclist: /* empty */
-   | calclist exp EOL   { calc->evalArithExpr($2); }
+   | calclist exp EOL   { calc->evalExpr($2); }
    | calclist EOL       ;
    ;
 
