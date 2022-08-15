@@ -6,9 +6,9 @@
 #include "hcl.h"
 
 #define YYSTYPE HCL::NodePtr
-extern int yylex(HCL::Parser*);
+extern int hcl_lex(HCL::Parser*);
 
-void yyerror(HCL::Parser *par, const char *str)
+void hcl_error(HCL::Parser *par, const char *str)
 {
    static const int ERRLIM = 5;
    static int errcnt = 0;

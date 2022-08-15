@@ -8,8 +8,8 @@
 #define YYSTYPE HCL::NodePtr
 #include "hcl_yacc_gen.hpp"
 
-extern YYSTYPE yylval;
-#define YY_DECL int yylex(HCL::Parser *par)
+extern YYSTYPE hcl_lval;
+#define YY_DECL int hcl_lex(HCL::Parser *par)
 %}
 
 %option noinput
@@ -21,16 +21,16 @@ extern YYSTYPE yylval;
 [ \r\t\f]             ;                   // no action
 [\n]                  par->finishLine();  // end of normal line
 "#".*\n               par->finishLine();  // end of coment line
-quote                 return(QUOTE);      // HCL keyword, token type can indicate the meaning because it is unique, no need yylval in bison
+quote                 return(QUOTE);      // HCL keyword, token type can indicate the meaning because it is unique, no need hcl_lval in bison
 boolsig               return(BOOLARG);
 bool                  return(BOOL);
 wordsig               return(WORDARG);
 word                  return(WORD);
 in                    return(IN);
-'[^']*'               yylval = par->createQuote(yytext); return(QSTRING); // create node in yylval for bison for the quote value
-[a-zA-Z][a-zA-Z0-9_]* yylval = par->createVar(yytext); return(VAR);    // bison can get var name from yylval
-[0-9][0-9]*           yylval = par->createNum(yytext); return(NUM);    // bison can get number from yylval
--[0-9][0-9]*          yylval = par->createNum(yytext); return(NUM);
+'[^']*'               hcl_lval = par->createQuote(hcl_text); return(QSTRING); // create node in hcl_lval for bison for the quote value
+[a-zA-Z][a-zA-Z0-9_]* hcl_lval = par->createVar(hcl_text); return(VAR);    // bison can get var name from hcl_lval
+[0-9][0-9]*           hcl_lval = par->createNum(hcl_text); return(NUM);    // bison can get number from hcl_lval
+-[0-9][0-9]*          hcl_lval = par->createNum(hcl_text); return(NUM);
 "="                   return(ASSIGN);
 ";"                   return(SEMI);
 ":"                   return(COLON);
@@ -43,12 +43,12 @@ in                    return(IN);
 "]"                   return(RBRACK);
 "&&"                  return(AND);
 "||"                  return(OR);
-"!="                  yylval = par->createCompOp(yytext); return(COMP);   // it has several COMP node, so it needs to pass the contents to bison through yylval
-"=="                  yylval = par->createCompOp(yytext); return(COMP);
-"<"                   yylval = par->createCompOp(yytext); return(COMP);
-"<="                  yylval = par->createCompOp(yytext); return(COMP);
-">"                   yylval = par->createCompOp(yytext); return(COMP);
-">="                  yylval = par->createCompOp(yytext); return(COMP);
+"!="                  hcl_lval = par->createCompOp(hcl_text); return(COMP);   // it has several COMP node, so it needs to pass the contents to bison through hcl_lval
+"=="                  hcl_lval = par->createCompOp(hcl_text); return(COMP);
+"<"                   hcl_lval = par->createCompOp(hcl_text); return(COMP);
+"<="                  hcl_lval = par->createCompOp(hcl_text); return(COMP);
+">"                   hcl_lval = par->createCompOp(hcl_text); return(COMP);
+">="                  hcl_lval = par->createCompOp(hcl_text); return(COMP);
 "!"                   return(NOT);
 
 %%

@@ -5,18 +5,18 @@
 #include <cassert>
 
 // function from yacc
-extern void yyerror(HCL::Parser *par, const char *str);
-extern int yyparse(HCL::Parser *par);
+extern void hcl_error(HCL::Parser *par, const char *str);
+extern int hcl_parse(HCL::Parser *par);
 // lexer input handler
-extern FILE *yyin;
+extern FILE *hcl_in;
 
 namespace HCL
 {
    Parser::Parser(std::unique_ptr<CO::InputInterface> &&in) : m_in(std::move(in)), m_lineno(0), m_hitError(false), m_outType(OutType::C)
    {
-      // yyin is a global variable defined in flex
+      // hcl_in is a global variable defined in flex
       assert(m_in->getHandler() != nullptr);
-      yyin = m_in->getHandler();
+      hcl_in = m_in->getHandler();
    }
 
    int Parser::toC(std::unique_ptr<CO::OutputInterface> &&out)
@@ -25,7 +25,7 @@ namespace HCL
       m_outType = OutType::C;
 
       cleanState();
-      yyparse(this);
+      hcl_parse(this);
       if (m_hitError)
          return ERROR;
 
@@ -38,7 +38,7 @@ namespace HCL
       m_outType = OutType::Verilog;
 
       cleanState();
-      yyparse(this);
+      hcl_parse(this);
       if (m_hitError)
          return ERROR;
 
@@ -49,7 +49,7 @@ namespace HCL
    {
       m_lineno = 0;
       m_hitError = false;
-      fseek(yyin, 0, SEEK_SET);
+      fseek(hcl_in, 0, SEEK_SET);
    }
 
    void Parser::outQuoteCode(NodePtr quote)
@@ -321,7 +321,7 @@ namespace HCL
       va_start(args, format);
       vsnprintf(buffer, sizeof(buffer), format, args);
       va_end(args);
-      yyerror(this, buffer);
+      hcl_error(this, buffer);
    }
 
    void Parser::addSymbol(NodePtr var, NodePtr quote, int isbool)

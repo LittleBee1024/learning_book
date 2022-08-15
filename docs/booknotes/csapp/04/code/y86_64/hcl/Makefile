@@ -32,12 +32,12 @@ $(BUILD_DIR)/%.o: $(DEP_COMMON_DIR)/%.cpp
 
 $(YACC_OBJ): hcl.y
 	@mkdir -p '$(@D)'
-	$(YACC) -d -o $(YACC_GEN) $<
+	$(YACC) -p hcl_ -d -o $(YACC_GEN) $<
 	$(CC) $(CFLAGS) -I. -I$(DEP_COMMON_DIR) -c $(YACC_GEN) -o $@
 
 $(LEX_OBJ): hcl.lex
 	@mkdir -p '$(@D)'
-	$(LEX) -o $(LEX_GEN) $<
+	$(LEX) -P hcl_ -o $(LEX_GEN) $<
 	$(CC) $(CFLAGS) -I. -I$(DEP_COMMON_DIR) -I$(BUILD_DIR) -c $(LEX_GEN) -o $@
 
 $(BUILD_DIR)/%.o: %.cpp

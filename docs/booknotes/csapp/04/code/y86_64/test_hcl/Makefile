@@ -18,4 +18,4 @@ to_c: $(HCL_C)
 to_v: $(HCL_V)
 
 clean:
-	rm -f *.c *.v
+	rm -f *.c *.v *.o
