@@ -3,7 +3,8 @@
 class Lexer
 {
 public:
-   Lexer() = default;
+   explicit Lexer(const char *fname);
+   void count();
 
    void upCodeLineNum() { m_codeLineNum++; };
    void upCommentLineNum() { m_commentLineNum++; };
@@ -11,6 +12,7 @@ public:
    void upIfNum() { m_ifNum++; }
    void upLoopNum() { m_loopNum++; }
 
+private:
    void dump() const;
 
 private:
