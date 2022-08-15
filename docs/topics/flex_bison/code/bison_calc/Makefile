@@ -10,7 +10,11 @@ lex: yacc
 	flex -o calc_lex_gen.cpp calc.lex
 
 main: clean lex
-	g++ -Wall calc_yacc_gen.cpp calc_lex_gen.cpp calc.cpp main.cpp -o main
+	g++ -g -Og -Wall calc_yacc_gen.cpp calc_lex_gen.cpp calc.cpp main.cpp -o main
 
 run:
 	./main test.txt
+
+debug:
+	gdb -q ./main \
+	-ex "start test.txt"

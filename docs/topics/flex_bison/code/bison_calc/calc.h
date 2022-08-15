@@ -42,6 +42,7 @@ private:
 
 private:
    // store all nodes in the vector, so that they can be destroyed automatically
+   bool m_exprHasError = false;
    std::vector<std::shared_ptr<Node>> m_nodes;
    std::string m_arithExprBuf;
 };
