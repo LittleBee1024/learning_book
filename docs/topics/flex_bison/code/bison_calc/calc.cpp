@@ -4,25 +4,25 @@
 #include <stdarg.h>
 
 // function from yacc
-extern void yyerror(Calc *, const char *);
-extern int yyparse(Calc *);
+extern void calc_error(Calc *, const char *);
+extern int calc_parse(Calc *);
 // lexer input handler
-extern FILE *yyin;
+extern FILE *calc_in;
 
 Calc::Calc(const char *fname)
 {
-   yyin = fopen(fname, "r");
+   calc_in = fopen(fname, "r");
 }
 
 Calc::~Calc()
 {
-   if (yyin != stdin)
-      fclose(yyin);
+   if (calc_in != stdin)
+      fclose(calc_in);
 }
 
 void Calc::compute()
 {
-   yyparse(this);
+   calc_parse(this);
 }
 
 void Calc::evalExpr(NodePtr expr)
@@ -51,7 +51,7 @@ void Calc::fail(const char *format, ...)
    va_start(args, format);
    vsnprintf(buffer, sizeof(buffer), format, args);
    va_end(args);
-   yyerror(this, buffer);
+   calc_error(this, buffer);
 }
 
 double Calc::evalExprHelper(NodePtr expr)

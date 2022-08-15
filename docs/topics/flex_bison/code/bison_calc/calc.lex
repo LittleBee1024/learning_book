@@ -6,8 +6,8 @@
 #define YYSTYPE NodePtr
 #include "calc_yacc_gen.hpp"
 
-extern YYSTYPE yylval;
-#define YY_DECL int yylex(Calc *calc)
+extern YYSTYPE calc_lval;
+#define YY_DECL int calc_lex(Calc *calc)
 %}
 
 %option noinput
@@ -27,6 +27,6 @@ EXP ([Ee][-+]?[0-9]+)
 "("                     { return LBRACE; }
 ")"                     { return RBRACE; }
 [0-9]+"."[0-9]*{EXP}?   |
-"."?[0-9]+{EXP}?        { yylval = calc->createNode(t_NUM, nullptr, nullptr, atof(yytext)); return NUM; }
+"."?[0-9]+{EXP}?        { calc_lval = calc->createNode(t_NUM, nullptr, nullptr, atof(calc_text)); return NUM; }
 \n                      { return EOL; }
-.                       { calc->fail("Bad input character '%s'", yytext); }
+.                       { calc->fail("Bad input character '%s'", calc_text); }

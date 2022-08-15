@@ -6,12 +6,12 @@
 #include "calc.h"
 
 #define YYSTYPE NodePtr
-extern int yylex(Calc*);
-extern int yylineno;
+extern int calc_lex(Calc*);
+extern int calc_lineno;
 
-void yyerror(Calc *calc, const char *str)
+void calc_error(Calc *calc, const char *str)
 {
-   fprintf(stderr, "Error at line %d: %s\n", yylineno, str);
+   fprintf(stderr, "Error at line %d: %s\n", calc_lineno, str);
 }
 
 %}
