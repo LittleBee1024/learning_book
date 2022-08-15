@@ -37,6 +37,7 @@ client
 
 # Y86-64
 *_gen.cpp
+*_gen.hpp
 *.yo
 **/test_hcl/*.c
 **/test_hcl/*.v
