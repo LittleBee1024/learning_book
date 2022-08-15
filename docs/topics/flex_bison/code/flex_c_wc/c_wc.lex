@@ -1,7 +1,7 @@
 
 %{
 #include "lexer.h"
-#define YY_DECL int c_wclex(Lexer *lex)
+#define YY_DECL int c_wclex(Lexer *lex)   // flex C API is wrapped Lexer class
 %}
 
 %option noyywrap
@@ -32,8 +32,8 @@ Blank                [ \t]
 
 <LINE_CMT>{NewLine}                    { lex->upCommentLineNum(); BEGIN INITIAL; }
 
-<BLOCK_CMT>{NewLine}                   { lex->upCommentLineNum(); }
 <BLOCK_CMT>{BlockCommentEnd}{NewLine}? { lex->upCommentLineNum(); BEGIN INITIAL; }
+<BLOCK_CMT>{NewLine}                   { lex->upCommentLineNum(); }
 
 <INITIAL,LINE_CMT,BLOCK_CMT>.          ; // any character (byte) except newline
 
