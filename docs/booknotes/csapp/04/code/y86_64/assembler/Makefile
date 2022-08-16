@@ -36,7 +36,7 @@ $(BUILD_DIR)/%.o: $(DEP_ISA_DIR)/%.cpp
 
 $(LEX_OBJ): yas.lex
 	@mkdir -p '$(@D)'
-	$(LEX) -P yas -o $(LEX_GEN) $<
+	$(LEX) -P yas_ -o $(LEX_GEN) $<
 	$(CC) $(CFLAGS) -I. -I$(DEP_COMMON_DIR) -I$(DEP_ISA_DIR) -c $(LEX_GEN) -o $@
 
 $(BUILD_DIR)/%.o: %.cpp

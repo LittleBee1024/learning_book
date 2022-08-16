@@ -2,7 +2,7 @@
 
 %{
 #include "yas.h"
-#define YY_DECL int yaslex(YAS::Lexer *lex)
+#define YY_DECL int yas_lex(YAS::Lexer *lex)
 %}
 
 %option noinput
@@ -24,7 +24,7 @@ Reg           %rax|%rcx|%rdx|%rbx|%rsi|%rdi|%rsp|%rbp|%r8|%r9|%r10|%r11|%r12|%r1
 %x ERR
 %%
 
-^{Char}*{Return}*{Newline}    {lex->saveLine(yytext); REJECT;} /* save non-comment line, and continue matching because of REJECT */
+^{Char}*{Return}*{Newline}    {lex->saveLine(yas_text); REJECT;} /* save non-comment line, and continue matching because of REJECT */
 
 #{Char}*{Return}*{Newline}    {lex->processLine();}            /* encounter comment line, process tokens in last non-comment line */
 "//"{Char}*{Return}*{Newline} {lex->processLine();}            /* encounter comment line, process tokens in last non-comment line */
@@ -33,12 +33,12 @@ Reg           %rax|%rcx|%rdx|%rbx|%rsi|%rdi|%rsp|%rbp|%r8|%r9|%r10|%r11|%r12|%r1
 
 {Blank}+                      ;
 "$"+                          ;                                /* constant number start flag */
-{Instr}                       lex->addInstr(yytext);           /* Y86-64 instruction icode */
-{Reg}                         lex->addReg(yytext);             /* Y86-64 register name */
-[-]?{Digit}+                  lex->addNum(atoll(yytext));      /* positive/negative decimal number */
-"0"[xX]{Hex}+                 lex->addNum(strtoull(yytext, nullptr, 16));  /* hex number */
-[():,]                        lex->addPunct(*yytext);          /* one character splits tockens */
-{Ident}                       lex->addIdent(yytext);           /* user defined symbol name */
+{Instr}                       lex->addInstr(yas_text);           /* Y86-64 instruction icode */
+{Reg}                         lex->addReg(yas_text);             /* Y86-64 register name */
+[-]?{Digit}+                  lex->addNum(atoll(yas_text));      /* positive/negative decimal number */
+"0"[xX]{Hex}+                 lex->addNum(strtoull(yas_text, nullptr, 16));  /* hex number */
+[():,]                        lex->addPunct(*yas_text);          /* one character splits tockens */
+{Ident}                       lex->addIdent(yas_text);           /* user defined symbol name */
 {Char}                        {; BEGIN ERR;}                   /* no match */
 <ERR>{Char}*{Newline}         {lex->fail("Invalid line"); BEGIN 0;}       /* report error */
 %%
