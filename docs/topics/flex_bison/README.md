@@ -343,6 +343,63 @@ EXP ([Ee][-+]?[0-9]+)
 
 ### 用户代码
 
+定义好了语法/词法规则后，还需要对应的规则动作，即当语法/词法规则匹配时，需要触发的函数。为了方便使用，例子中将所有的动作都封装在了`Calc`类中。同时，每个记号的内容统一由`NodePtr`指针记录。
+
+```cpp title="calc.h"
+// 六种需要记录内容的记号
+enum NodeType : int
+{
+    t_ADD,
+    t_SUB,
+    t_MUL,
+    t_DIV,
+    t_NUM,
+    t_MINUS
+};
+class Node;
+typedef Node *NodePtr;
+class Node
+{
+public:
+    Node(NodeType t, NodePtr l, NodePtr r, double n) : type(t), left(l), right(r), num(n) {}
+    NodeType type;
+    NodePtr left;
+    NodePtr right;
+    double num;
+};
+
+class Calc
+{
+public:
+    // 调用yyparse开启语法分析
+    void compute();
+    // 在语法/词法规则匹配时被调用，用于创建新的记号
+    NodePtr createNode(NodeType type, NodePtr left, NodePtr right, double num = 0);
+    // 在语法分析的最后阶段被调用，参见语法规则
+    void evalExpr(NodePtr expr);
+    ...
+};
+```
+
+一切准备就绪后，用户需要利用`Calc`这个类，就可以完成算术运算：
+
+```cpp title="main.cpp" hl_lines="5 6"
+int main(int argc, char *argv[])
+{
+    ...
+    const char *filename = (argc == 1) ? nullptr : argv[1];
+    Calc calc(filename);
+    calc.compute();
+    return 0;
+}
+```
+```bash
+> ./main test.txt 
+(2.01+(1.01*0.1)) = 2.111
+((1+2)*3) = 9
+```
+
+
 ## 参考
 
 * [《flex与bison》](https://1drv.ms/b/s!AkcJSyT7tq80eo_xy7LTpX6PPs4)
