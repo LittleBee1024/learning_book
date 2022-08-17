@@ -60,6 +60,78 @@ cart_animal: HORSE | GOAT
 work_animal: HORSE | OX
 ```
 
+## Flex例子
+
+[例子"flex_c_wc"](https://github.com/LittleBee1024/learning_book/tree/main/docs/topics/flex_bison/code/flex_c_wc)利用Flex实现了一个C代码分析器，可以统计某段C代码的代码行数、注释行数、`if`语句数等。
+
+### 词法规则
+
+```cpp
+%{
+#include "lexer.h"
+#define YY_DECL int c_wc_lex(Lexer *lex)   // flex C API is wrapped Lexer class
+%}
+
+%option noyywrap
+%option nounput
+
+LineCommentStart     \/\/
+BlockCommentStart    \/\*
+BlockCommentEnd      \*\/
+If                   if
+Loop                 for|while
+NewLine              \n
+Blank                [ \t]
+
+%x LINE_CMT
+%x BLOCK_CMT
+
+%%
+
+<INITIAL>{LineCommentStart}            { BEGIN LINE_CMT; }
+<INITIAL>{BlockCommentStart}           { BEGIN BLOCK_CMT; }
+
+<INITIAL>{If}                          { lex->upIfNum(); }
+<INITIAL>{Loop}                        { lex->upLoopNum(); }
+
+<INITIAL>^{NewLine}                    |
+<INITIAL>^{Blank}*{NewLine}            { lex->upEmptyLineNum(); }
+<INITIAL>{NewLine}                     { lex->upCodeLineNum(); }
+
+<LINE_CMT>{NewLine}                    { lex->upCommentLineNum(); BEGIN INITIAL; }
+
+<BLOCK_CMT>{BlockCommentEnd}{NewLine}? { lex->upCommentLineNum(); BEGIN INITIAL; }
+<BLOCK_CMT>{NewLine}                   { lex->upCommentLineNum(); }
+
+<INITIAL,LINE_CMT,BLOCK_CMT>.          ; // any character (byte) except newline
+
+%%
+```
+上面是这个例子的词法规则，由`%%`符号分成三个部分：
+
+* 定义部分
+    * `%{`和`%}`的内容会被拷贝到`yylex`之前，用于包含相关头文件和声明相关变量
+        * 例子中，利用`YY_DECL`宏修给`yylex`函数添加了`Lexer`类指针参数。因此，我们可以将所有词法操作都封装在`Lexer`类中，以简化用户接口
+    * `%option`提供了不同的配置选项
+        * `%option noyywrap`表示不需要自定义的`yywarp`函数，进行依次文件扫描
+        * `%option noinput`表示不添加`input`函数，以消除编译警告`warning: ‘input’ defined but not used`
+        * `%option nounput`表示不添加`yyunput`函数，以消除编译警告`warning: ‘yyunput’ defined but not used`
+    * `<NAME> <expression>`可以对正则表达式进行命名
+    * 定义状态，对规则进行状态分类，只匹配当前状态的规则
+        * 词法分析器从状态0开始，也称为`INITIAL`状态
+        * 其他状态通过`%x`或者`%s`来命名，两者的区别参考[文档](https://www.cs.virginia.edu/~cr4bd/flex-manual/Start-Conditions.html#Start-Conditions)
+        * 通过`BEGIN <satename>`可切换状态
+* 规则部分
+    * 每条规则都有自己对于的状态，默认状态为`INITIAL`状态
+        * 例子中大部分规则都是互斥了，只有最后一条规则被三个状态共享
+    * 当规则满足时，对应的动作被触发
+        * 例子中将对应动作都封装在了`LEXER`类的成员函数中了
+* 用户例程
+    * 此部分的内容会被原样拷贝到C文件中
+        * 例子中将代码单独放到了其他文件中，所以此部分为空
+
+## Bison例子
+
 ## 参考
 
 * [《flex与bison》](https://1drv.ms/b/s!AkcJSyT7tq80eo_xy7LTpX6PPs4)
