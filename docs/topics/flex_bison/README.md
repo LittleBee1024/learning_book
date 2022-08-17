@@ -41,9 +41,24 @@ Bison的目的是将相关的词块进行规约`reduce`，得到新的语义。�
     * 此时会调用用户定义的语法动作，将多个记号规约为一个新的记号
     * 新的记号也会触发语法规则匹配，直到无法匹配任何语法规则
 * 如果没有语法规则匹配，则开始移进`shift`动作，将新的符号入栈，结束此次语法分析
-* `yyparse`函数会一直循环上面的步骤，直到没有更多的输入(遇到EOF)
+* `yyparse`函数会一直循环上面的步骤，直到没有更多的输入(遇到EOF)，或发现语法错误
 
 ![bison](./image/bison.png)
+
+当同一个记号可以匹配两条不同规则的时候，就发生了归约错误。默认情况下，Bison采用LALR(1)算法来分析语法，即自左向右向前查看一个记号。因此，默认情况下，不能处理需要向前查看多个记号才能确定匹配规则的语法。
+```
+phrase: cart_animal AND CART
+      | work_animal AND PLOW
+cart_animal: HORSE | GOAT
+work_animal: HORSE | OX
+```
+例如，上面的语法虽然没有歧义，但是对于`HORSE AND CART`输入时，在看到`CART`之前无法确定`HORSE`是一个`cart_animal`还是一个`work_animal`。因此，默认情况下，Bison会发生语法错误。但是，如果将上述语法修改如下，就不会出现归约错误：
+```
+phrase: cart_animal CART
+      | work_animal PLOW
+cart_animal: HORSE | GOAT
+work_animal: HORSE | OX
+```
 
 ## 参考
 
