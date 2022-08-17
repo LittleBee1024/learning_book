@@ -4,7 +4,7 @@
 
 ## 简介
 
-在编译器领域，分为两个部分：
+在编译器领域，分析工作分为两个部分：
 
 * 词法分析(lexical analysis, 或scanning)
     * 把输入分割成一个个有意义的词块
@@ -176,6 +176,129 @@ The statistics of the source code:
 ```
 
 ## Bison例子
+
+[例子"bison_calc"](https://github.com/LittleBee1024/learning_book/tree/main/docs/topics/flex_bison/code/bison_calc)利用Bison和Flex实现了一个计算器，支持加、减、乘、除、括号等符号的算术运算。
+
+### 语法规则
+
+```cpp title="calc.y"
+%{
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include "calc.h"
+
+// 定义token的类型为NodePtr，即yylval的类型
+#define YYSTYPE NodePtr
+// 声明词法分析函数，calc_lex是yylex的别名
+extern int calc_lex(Calc*);
+// calc_lineno是yylineno的别名，表示行号
+// 通过`%option yylineno`使能后，由词法分析器自动生成
+extern int calc_lineno;
+// calc_error是yyerror的别名，语法分析器在遇到错误时被调用，需要用户自定义
+void calc_error(Calc *calc, const char *str)
+{
+   fprintf(stderr, "Error at line %d: %s\n", calc_lineno, str);
+}
+
+%}
+
+%lex-param { Calc *calc }
+%parse-param { Calc *calc }
+
+%token ADD SUB MUL DIV LBRACE RBRACE NUM EOL
+
+/* All operators are left associative. Listed from lowest to highest */
+%left ADD SUB
+%left MUL DIV
+
+%%
+
+calclist: /* empty */
+   | calclist exp EOL   { calc->evalExpr($2); }
+   | calclist EOL       ;
+   ;
+
+exp: factor
+   | exp ADD factor { $$ = calc->createNode(t_ADD, $1, $3); }
+   | exp SUB factor { $$ = calc->createNode(t_SUB, $1, $3); }
+   ;
+
+factor: term
+   | factor MUL term { $$ = calc->createNode(t_MUL, $1, $3); }
+   | factor DIV term { $$ = calc->createNode(t_DIV, $1, $3); }
+   ;
+
+term: NUM { $$ = $1; }
+   | LBRACE exp RBRACE { $$ = $2; }
+   | SUB term { $$ = calc->createNode(t_MINUS, $2, nullptr); }
+   ;
+
+%%
+
+```
+
+上面的代码是例子中的语法规则([calc.y](./code/bison_calc/calc.y))，由`%%`符号分成三个部分：
+
+* 定义部分
+    * `%{`和`%}`内定义C代码
+    * `%lex-param`为`yylex`函数添加参数
+    * `%parse-param`为`yyparse`函数添加参数
+    * `%token`定义记号
+        * 在语法分析器的规则部分，可引用此记号
+        * 词法分析器匹配到此词块时，返回此记号
+    * `%left`表示左结合，详情参见["优先级和结合性"](#_5)章节
+* 规则部分
+    * 语义动作可以通过一个美元符号加上一个数字来使用规则中语法符号所关联的值
+    * `$$`指向左部符号，也就是规则中冒号左边的符号的值
+    * 没有语义动作的规则，使用默认动作：`{ $$ = $1;}`
+* 用户例程
+    * 例子中将代码单独放到了其他文件中，所以此部分为空
+
+#### 优先级和结合性
+
+`%left`、`%right`和`%nonassoc`分别使得一个操作符遵循左结合、右结合或者没有结合性的操作。在同一行的所有操作符具有相同的优先级。例如，
+```
+%left '+' '-'
+%left '*' '/'
+%right POW
+```
+优先级最低的操作符是+和-，其次是*和/，POW优先级最高。
+
+每条规则也有各自的优先级和结合性，通过`%prec`来声明，如果没有`%prec`子句的话，由最右边的记号的优先级决定。例如，
+```
+exp: ...
+    | exp '-' exp
+    ...
+    | '-' exp %prec UMINUS
+```
+`'-' exp`规则的优先级由`UMINUS`的优先级决定，从而和`exp '-' exp`规则的优先级区分开来。
+
+当在存在**移进/归约冲突**时，
+* 如果记号的优先级更高，那么就移进
+* 如果规则的优先级更高，那么就归约
+* 如果两者具有相同的优先级，将检查结合性
+    * 左结合，就归约
+    * 右结合，就移进
+
+例如，
+```
+e: 'X'
+   | e '+' e
+   ;
+```
+对于`X+X+X`输入，有两种可能的语法分析：
+* 先选择归约 - `(X+X)+X`
+    * '+'优先级高于'X'优先级
+    * 或者，优先级相同，左结合
+* 先选择移进操作 - `X+(X+X)`
+    * 'X'优先级高于'+'优先级
+    * 或者，优先级相同，右结合
+
+### 词法规则
+
+### 用户代码
 
 ## 参考
 

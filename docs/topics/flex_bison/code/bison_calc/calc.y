@@ -19,14 +19,11 @@ void calc_error(Calc *calc, const char *str)
 %lex-param { Calc *calc }
 %parse-param { Calc *calc }
 
-%token ADD SUB MUL DIV LBRACE RBRACE MINUS NUM EOL
+%token ADD SUB MUL DIV LBRACE RBRACE NUM EOL
 
 /* All operators are left associative. Listed from lowest to highest */
-%left ADD
-%left SUB
-%left MUL
-%left DIV
-%left MINUS
+%left ADD SUB
+%left MUL DIV
 
 %%
 
@@ -47,7 +44,7 @@ factor: term
 
 term: NUM { $$ = $1; }
    | LBRACE exp RBRACE { $$ = $2; }
-   | MINUS term { $$ = calc->createNode(t_MINUS, $2, nullptr); }
+   | SUB term { $$ = calc->createNode(t_MINUS, $2, nullptr); }
    ;
 
 %%
