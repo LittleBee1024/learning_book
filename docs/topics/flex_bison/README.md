@@ -300,6 +300,47 @@ e: 'X'
 
 ### 词法规则
 
+```cpp title="calc.lex"
+%{
+#include "calc.h"
+#include "stdlib.h"
+
+// Has to define YYSTYPE before "hcl_yacc_gen.hpp"
+#define YYSTYPE NodePtr
+#include "calc_yacc_gen.hpp"
+
+extern YYSTYPE calc_lval;
+#define YY_DECL int calc_lex(Calc *calc)
+%}
+
+%option noinput
+%option nounput
+%option noyywrap
+%option yylineno
+
+EXP ([Ee][-+]?[0-9]+)
+
+%%
+
+[ \r\t\f]               ;
+"+"                     { return ADD; }
+"-"                     { return SUB; }
+"*"                     { return MUL; }
+"/"                     { return DIV; }
+"("                     { return LBRACE; }
+")"                     { return RBRACE; }
+[0-9]+"."[0-9]*{EXP}?   |
+"."?[0-9]+{EXP}?        { calc_lval = calc->createNode(t_NUM, nullptr, nullptr, atof(calc_text)); return NUM; }
+\n                      { return EOL; }
+.                       { calc->fail("Bad input character '%s'", calc_text); }
+```
+
+上面的代码是例子中的词法规则([calc.lex](./code/bison_calc/calc.lex))，组成部分和[Flex例子](#flex_1)中的词法规则相同。两者的不同点在于，此处每个规则的动作都会通过`return`返回一个记号给语法分析器，从而触发语法分析器进行语法分析。
+
+对于下面这个动作，词法分析器不仅要传递`NUM`类型给语法分析器，还需要通过`calc_lval`（`yylval`的别名）将具体的数值内容传递语法分析器。默认情况下，`yylval`是`int`类型。例子中通过`extern YYSTYPE calc_lval`，将`yylval`定义成了自定义指针类型`NodePtr`，以传递更多的信息：
+
+* `calc_lval = calc->createNode(t_NUM, nullptr, nullptr, atof(calc_text)); return NUM;`
+
 ### 用户代码
 
 ## 参考
