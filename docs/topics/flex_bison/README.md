@@ -52,7 +52,7 @@ phrase: cart_animal AND CART
 cart_animal: HORSE | GOAT
 work_animal: HORSE | OX
 ```
-例如，上面的语法虽然没有歧义，但是对于`HORSE AND CART`输入时，在看到`CART`之前无法确定`HORSE`是一个`cart_animal`还是一个`work_animal`。因此，默认情况下，Bison会发生语法错误。但是，如果将上述语法修改如下，就不会出现归约错误：
+例如，上面的语法虽然没有歧义，但是对于`HORSE AND CART`输入，在看到`CART`之前无法确定`HORSE`是一个`cart_animal`还是一个`work_animal`，从而发生语法错误。但是，如果将上述语法修改如下，就不会出现归约错误：
 ```
 phrase: cart_animal CART
       | work_animal PLOW
