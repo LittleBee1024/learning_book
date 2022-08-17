@@ -66,7 +66,7 @@ work_animal: HORSE | OX
 
 ### 词法规则
 
-```cpp
+```cpp title="c_wc.lex"
 %{
 #include "lexer.h"
 #define YY_DECL int c_wc_lex(Lexer *lex)   // flex C API is wrapped Lexer class
@@ -132,7 +132,7 @@ Blank                [ \t]
 
 ### 用户代码
 
-```cpp hl_lines="2 4 9 15"
+```cpp title="lexer.cpp/h" hl_lines="2 4 9 15"
 // c_wc_in是yyin的别名，由Flex工具自动生成
 extern FILE *c_wc_in;
 // c_wc_lex是yylex的别名，由Flex工具自动生成
@@ -174,7 +174,6 @@ The statistics of the source code:
         Code line number: 10, comment line number: 5, empty line number: 5
         If number: 2, loop number: 1
 ```
-
 
 ## Bison例子
 
