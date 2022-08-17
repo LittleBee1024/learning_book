@@ -107,7 +107,7 @@ Blank                [ \t]
 
 %%
 ```
-上面是这个例子的词法规则，由`%%`符号分成三个部分：
+上面的代码是例子中的词法规则([c_wc.lex](./code/flex_c_wc/c_wc.lex))，由`%%`符号分成三个部分：
 
 * 定义部分
     * `%{`和`%}`的内容会被拷贝到`yylex`之前，用于包含相关头文件和声明相关变量
@@ -120,7 +120,7 @@ Blank                [ \t]
     * 定义状态，对规则进行状态分类，只匹配当前状态的规则
         * 词法分析器从状态0开始，也称为`INITIAL`状态
         * 其他状态通过`%x`或者`%s`来命名，两者的区别参考[文档](https://www.cs.virginia.edu/~cr4bd/flex-manual/Start-Conditions.html#Start-Conditions)
-        * 通过`BEGIN <satename>`可切换状态
+        * 通过`BEGIN <statename>`可切换状态
 * 规则部分
     * 每条规则都有自己对于的状态，默认状态为`INITIAL`状态
         * 例子中大部分规则都是互斥了，只有最后一条规则被三个状态共享
@@ -129,6 +129,52 @@ Blank                [ \t]
 * 用户例程
     * 此部分的内容会被原样拷贝到C文件中
         * 例子中将代码单独放到了其他文件中，所以此部分为空
+
+### 用户代码
+
+```cpp hl_lines="2 4 9 15"
+// c_wc_in是yyin的别名，由Flex工具自动生成
+extern FILE *c_wc_in;
+// c_wc_lex是yylex的别名，由Flex工具自动生成
+extern int c_wc_lex(Lexer *lex);
+
+Lexer::Lexer(const char *fname)
+{
+    // 指定输入来自文件`fname`
+    c_wc_in = fopen(fname, "r");
+}
+
+void Lexer::count()
+{
+    // 启动词法分析
+    c_wc_lex(this);
+}
+
+// 下面的函数会在对应规则(查看词法规则文件)匹配时被调用
+void Lexer::upCodeLineNum() { m_codeLineNum++; };
+void Lexer::upCommentLineNum() { m_commentLineNum++; };
+void Lexer::upEmptyLineNum() { m_emptyLineNum++; };
+void Lexer::upIfNum() { m_ifNum++; }
+void Lexer::upLoopNum() { m_loopNum++; }
+```
+
+上面是例子中的用户代码["lexer.cpp"](./code/flex_c_wc/lexer.cpp)，通过`Lexer`类，封装了所有的词法分析操作。从而，在使用词法分析器时，只需要如下操作即可：
+```cpp title="main.cpp" hl_lines="4 5"
+int main(int argc, char *argv[])
+{
+    ...
+    Lexer lex(filename);
+    lex.count();
+    return 0;
+}
+```
+```bash
+> ./main test.c 
+The statistics of the source code:
+        Code line number: 10, comment line number: 5, empty line number: 5
+        If number: 2, loop number: 1
+```
+
 
 ## Bison例子
 
