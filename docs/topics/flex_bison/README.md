@@ -381,7 +381,7 @@ public:
 };
 ```
 
-一切准备就绪后，用户需要利用`Calc`这个类，就可以完成算术运算：
+一切准备就绪后，用户利用`Calc`这个类，就可以完成相应的算术运算：
 
 ```cpp title="main.cpp" hl_lines="5 6"
 int main(int argc, char *argv[])
