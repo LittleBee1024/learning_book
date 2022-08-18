@@ -78,7 +78,7 @@ namespace
    }
 }
 
-namespace ISA
+namespace SIM
 {
    Storage::Storage(int len, IO::OutputInterface &out) : m_out(out)
    {

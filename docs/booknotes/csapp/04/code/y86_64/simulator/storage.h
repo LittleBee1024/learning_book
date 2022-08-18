@@ -5,7 +5,7 @@
 
 #include <vector>
 
-namespace ISA
+namespace SIM
 {
    class Storage
    {

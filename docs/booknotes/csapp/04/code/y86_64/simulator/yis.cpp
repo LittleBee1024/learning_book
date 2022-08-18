@@ -1,15 +1,15 @@
-#include "./state.h"
+#include "./yis.h"
 
-namespace ISA
+namespace SIM
 {
-   State::State(std::unique_ptr<IO::OutputInterface> &&out) : m_out(std::move(out)),
-                                                              m_pc(0),
-                                                              m_reg(REG_SIZE_BYTES, *m_out),
-                                                              m_mem(MEM_SIZE_BYTES, *m_out)
+   YIS::YIS(std::unique_ptr<IO::OutputInterface> &&out) : m_out(std::move(out)),
+                                                          m_pc(0),
+                                                          m_reg(REG_SIZE_BYTES, *m_out),
+                                                          m_mem(MEM_SIZE_BYTES, *m_out)
    {
    }
 
-   int State::loadCode(const char *fname)
+   int YIS::loadCode(const char *fname)
    {
       int bytes = m_mem.load(fname);
       if (bytes)
@@ -17,14 +17,14 @@ namespace ISA
       return bytes;
    }
 
-   StateType State::step()
+   State YIS::step()
    {
       word_t ftpc = m_pc; // fall-through PC
       byte_t byte0 = 0;   // (icode+ifun)
       if (!m_mem.getByte(ftpc, &byte0))
       {
          m_out->out("[ERROR] PC = 0x%llx, Invalid instruction address\n", m_pc);
-         return StateType::INVALID_ADDR;
+         return State::INVALID_ADDR;
       }
       ftpc++;
 
@@ -42,7 +42,7 @@ namespace ISA
          if (!m_mem.getByte(ftpc, &byte1))
          {
             m_out->out("[ERROR] PC = 0x%llx, Invalid instruction address\n", m_pc);
-            return StateType::INVALID_ADDR;
+            return State::INVALID_ADDR;
          }
          ftpc++;
 
@@ -53,7 +53,7 @@ namespace ISA
             if (!VALID_REG(rA) || !VALID_REG(rB))
             {
                m_out->out("[ERROR] PC = 0x%llx, Invalid registers rA=0x%.1x, rB=0x%.1x\n", m_pc, rA, rB);
-               return StateType::INVALID_REG;
+               return State::INVALID_REG;
             }
          }
 
@@ -63,7 +63,7 @@ namespace ISA
             if (!VALID_REG(rA))
             {
                m_out->out("[ERROR] PC = 0x%llx, Invalid register rA=0x%.1x\n", m_pc, rA);
-               return StateType::INVALID_REG;
+               return State::INVALID_REG;
             }
          }
 
@@ -73,7 +73,7 @@ namespace ISA
             if (!VALID_REG(rB))
             {
                m_out->out("[ERROR] PC = 0x%llx, Invalid register rB=0x%.1x\n", m_pc, rB);
-               return StateType::INVALID_REG;
+               return State::INVALID_REG;
             }
          }
       }
@@ -86,7 +86,7 @@ namespace ISA
          if (!m_mem.getWord(ftpc, &cval))
          {
             m_out->out("[ERROR] PC = 0x%llx, Invalid instruction address\n", m_pc);
-            return StateType::INVALID_ADDR;
+            return State::INVALID_ADDR;
          }
          ftpc += sizeof(word_t);
       }
@@ -94,7 +94,7 @@ namespace ISA
       switch (icode)
       {
       case I_HALT:
-         return StateType::HALT;
+         return State::HALT;
       case I_NOP:
          m_pc = ftpc;
          break;
@@ -119,7 +119,7 @@ namespace ISA
          if (m_mem.setWord(cval, val))
          {
             m_out->out("[ERROR] PC = 0x%llx, Invalid RMMOVQ instruction address: 0x%llx\n", m_pc, cval);
-            return StateType::INVALID_ADDR;
+            return State::INVALID_ADDR;
          }
          m_pc = ftpc;
          break;
@@ -131,7 +131,7 @@ namespace ISA
          if (m_mem.getWord(cval, &val))
          {
             m_out->out("[ERROR] PC = 0x%llx, Invalid MRMOVQ instruction address: 0x%llx\n", m_pc, cval);
-            return StateType::INVALID_ADDR;
+            return State::INVALID_ADDR;
          }
          m_reg.setRegVal(rA, val);
          m_pc = ftpc;
@@ -163,7 +163,7 @@ namespace ISA
          if (!m_mem.setWord(val, ftpc)) // write address to stack
          {
             m_out->out("[ERROR] PC = 0x%llx, Invalid CALL instruction stack address: 0x%llx\n", m_pc, val);
-            return StateType::INVALID_ADDR;
+            return State::INVALID_ADDR;
          }
          m_pc = cval;
          break;
@@ -176,7 +176,7 @@ namespace ISA
          if (!m_mem.getWord(dval, &val)) // read from stack
          {
             m_out->out("[ERROR] PC = 0x%llx, Invalid RET instruction stack address: 0x%llx\n", m_pc, dval);
-            return StateType::INVALID_ADDR;
+            return State::INVALID_ADDR;
          }
          m_reg.setRegVal(REG_RSP, dval + sizeof(word_t));
          m_pc = val;
@@ -190,7 +190,7 @@ namespace ISA
          if (!m_mem.setWord(dval, val))
          {
             m_out->out("[ERROR] PC = 0x%llx, Invalid PUSHQ instruction stack address: 0x%llx\n", m_pc, dval);
-            return StateType::INVALID_ADDR;
+            return State::INVALID_ADDR;
          }
          m_pc = ftpc;
          break;
@@ -203,7 +203,7 @@ namespace ISA
          if (!m_mem.getWord(dval, &val))
          {
             m_out->out("[ERROR] PC = 0x%llx, Invalid POPQ instruction stack address: 0x%llx\n", m_pc, dval);
-            return StateType::INVALID_ADDR;
+            return State::INVALID_ADDR;
          }
          m_reg.setRegVal(rA, val);
          m_pc = ftpc;
@@ -221,13 +221,13 @@ namespace ISA
       default:
       {
          m_out->out("[ERROR] PC = 0x%llx, Invalid instruction %.2x\n", m_pc, byte0);
-         return StateType::INVALID_INSTR;
+         return State::INVALID_INSTR;
       }
       }
-      return StateType::OK;
+      return State::OK;
    }
 
-   bool State::checkCond(COND c)
+   bool YIS::checkCond(COND c)
    {
       bool zf = GET_ZF(m_cc);
       bool sf = GET_SF(m_cc);
@@ -264,7 +264,7 @@ namespace ISA
       return jump;
    }
 
-   word_t State::computeALU(ALU op, word_t argA, word_t argB)
+   word_t YIS::computeALU(ALU op, word_t argA, word_t argB)
    {
       word_t val;
       switch (op)
@@ -287,7 +287,7 @@ namespace ISA
       return val;
    }
 
-   cc_t State::computeCC(ALU op, word_t argA, word_t argB)
+   cc_t YIS::computeCC(ALU op, word_t argA, word_t argB)
    {
       word_t val = computeALU(op, argA, argB);
       bool zero = (val == 0);
