@@ -19,12 +19,9 @@ namespace HCL
       N_CASE_EXPR // HCL case expression, expr : expr
    };
 
-   class Node;
-   typedef Node *NodePtr;
-   class Node
+   typedef struct Node
    {
-   public:
-      Node(NodeType t, bool b, const char *s, NodePtr a1, NodePtr a2)
+      Node(NodeType t, bool b, const char *s, Node *a1, Node *a2)
           : type(t), isbool(b), sval(s), arg1(a1), arg2(a2), ref(0), next(nullptr)
       {
       }
@@ -36,5 +33,5 @@ namespace HCL
       Node *arg2;
       int ref; // For var, how many times has it been referenced
       Node *next;
-   };
+   } *NodePtr;
 }
