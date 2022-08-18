@@ -17,7 +17,7 @@ namespace SIM
       return bytes;
    }
 
-   State YIS::step()
+   State YIS::runOneStep()
    {
       word_t ftpc = m_pc; // fall-through PC
       byte_t byte0 = 0;   // (icode+ifun)

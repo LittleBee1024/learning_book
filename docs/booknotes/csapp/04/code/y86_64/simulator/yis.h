@@ -1,5 +1,6 @@
 #pragma once
 
+#include "./sim_interface.h"
 #include "./state.h"
 #include "./storage.h"
 
@@ -11,14 +12,14 @@
 namespace SIM
 {
    // YIS simulates instruction one by one, doesn't create an universal model for all instructions
-   class YIS
+   class YIS : public SimInterface
    {
       static constexpr int REG_SIZE_BYTES = 128;       // 8 bytes * 16 regs
       static constexpr int MEM_SIZE_BYTES = (1 << 13); // 8KB
    public:
       explicit YIS(std::unique_ptr<IO::OutputInterface> &&out);
-      int loadCode(const char *fname);
-      State step();
+      int loadCode(const char *fname) override;
+      State runOneStep() override;
 
    private:
       bool checkCond(COND c);
