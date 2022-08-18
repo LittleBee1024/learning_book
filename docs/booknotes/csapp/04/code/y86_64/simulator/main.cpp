@@ -9,8 +9,7 @@
 
 void usage(char *pname)
 {
-   printf("Usage: %s code_file [max_steps]\n", pname);
-   exit(0);
+   printf("Usage: %s code_file [-m max_steps]\n", pname);
 }
 
 static bool endsWith(const std::string &str, const std::string &suffix)
@@ -28,13 +27,16 @@ int main(int argc, char *argv[])
 {
    Options option;
    int ch;
-   while ((ch = getopt(argc, argv, "h")) != -1)
+   while ((ch = getopt(argc, argv, "hm:")) != -1)
    {
       switch (ch)
       {
       case 'h':
          usage(argv[0]);
          return 0;
+      case 'm':
+         option.maxSteps = std::stoi(optarg);
+         break;
       }
    }
 
