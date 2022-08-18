@@ -356,17 +356,16 @@ enum NodeType : int
     t_NUM,
     t_MINUS
 };
-class Node;
-typedef Node *NodePtr;
-class Node
+
+typedef struct Node
 {
 public:
-    Node(NodeType t, NodePtr l, NodePtr r, double n) : type(t), left(l), right(r), num(n) {}
-    NodeType type;
-    NodePtr left;
-    NodePtr right;
-    double num;
-};
+   Node(NodeType t, Node *l, Node *r, double n) : type(t), left(l), right(r), num(n) {}
+   NodeType type;
+   Node *left;
+   Node *right;
+   double num;
+} *NodePtr;
 
 class Calc
 {
