@@ -1,6 +1,6 @@
 #pragma once
 
-#include "def.h"
+#include "isa.h"
 #include <string>
 
 namespace YAS

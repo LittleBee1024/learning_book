@@ -5,7 +5,6 @@
 typedef unsigned char byte_t;
 typedef long long int word_t;
 typedef long long unsigned uword_t;
-typedef unsigned char cc_t;
 
 /******************
  * Y86_64 Registers
@@ -31,6 +30,8 @@ enum REG_ID : int
    REG_NONE = 0xF,
    REG_ERR
 };
+
+#define VALID_REG(id) (id >= 0 && id < REG_NONE)
 
 /******************
  * Y86_64 Instructions
@@ -104,11 +105,14 @@ enum COND : int
 /* Get the ALU/JMP function out of one byte instruction field */
 #define GET_FUN(instr) LO4(instr)
 
+/******************
+ * Y86_64 Condition
+ ******************/
+typedef unsigned char cc_t;
+
 #define GET_ZF(cc) (((cc) >> 2) & 0x1)
 #define GET_SF(cc) (((cc) >> 1) & 0x1)
 #define GET_OF(cc) (((cc) >> 0) & 0x1)
 
 #define PACK_CC(z, s, o) (((z) << 2) | ((s) << 1) | ((o) << 0))
 #define DEFAULT_CC PACK_CC(1, 0, 0)
-
-#define VALID_REG(id) (id >= 0 && id < REG_NONE)

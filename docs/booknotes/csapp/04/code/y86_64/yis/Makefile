@@ -19,7 +19,7 @@ clean:
 
 $(BUILD_DIR)/%.o: %.cpp
 	@mkdir -p '$(@D)'
-	$(CC) $(CFLAGS) -I$(DEP_COMMON_DIR) -c $< -o $@
+	$(CC) $(CFLAGS) -I.. -I$(DEP_COMMON_DIR) -c $< -o $@
 
 $(BUILD_DIR)/%.o: $(DEP_COMMON_DIR)/%.cpp
 	@mkdir -p '$(@D)'
