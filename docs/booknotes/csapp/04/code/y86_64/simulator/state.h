@@ -2,12 +2,14 @@
 
 namespace SIM
 {
-   enum class State
+   enum State : int
    {
-      OK,
-      HALT,
-      INVALID_ADDR,
-      INVALID_REG,
-      INVALID_INSTR
+      STAT_OK,
+      STAT_HLT,
+      STAT_ERR_ADDR,
+      STAT_ERR_REG,
+      STAT_ERR_INSTR
    };
+
+   const char *getStateName(State s);
 }

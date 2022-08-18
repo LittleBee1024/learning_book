@@ -24,7 +24,7 @@ namespace SIM
       if (!m_mem.getByte(ftpc, &byte0))
       {
          m_out->out("[ERROR] PC = 0x%llx, Invalid instruction address\n", m_pc);
-         return State::INVALID_ADDR;
+         return STAT_ERR_ADDR;
       }
       ftpc++;
 
@@ -42,7 +42,7 @@ namespace SIM
          if (!m_mem.getByte(ftpc, &byte1))
          {
             m_out->out("[ERROR] PC = 0x%llx, Invalid instruction address\n", m_pc);
-            return State::INVALID_ADDR;
+            return STAT_ERR_ADDR;
          }
          ftpc++;
 
@@ -53,7 +53,7 @@ namespace SIM
             if (!VALID_REG(rA) || !VALID_REG(rB))
             {
                m_out->out("[ERROR] PC = 0x%llx, Invalid registers rA=0x%.1x, rB=0x%.1x\n", m_pc, rA, rB);
-               return State::INVALID_REG;
+               return STAT_ERR_REG;
             }
          }
 
@@ -63,7 +63,7 @@ namespace SIM
             if (!VALID_REG(rA))
             {
                m_out->out("[ERROR] PC = 0x%llx, Invalid register rA=0x%.1x\n", m_pc, rA);
-               return State::INVALID_REG;
+               return STAT_ERR_REG;
             }
          }
 
@@ -73,7 +73,7 @@ namespace SIM
             if (!VALID_REG(rB))
             {
                m_out->out("[ERROR] PC = 0x%llx, Invalid register rB=0x%.1x\n", m_pc, rB);
-               return State::INVALID_REG;
+               return STAT_ERR_REG;
             }
          }
       }
@@ -86,7 +86,7 @@ namespace SIM
          if (!m_mem.getWord(ftpc, &cval))
          {
             m_out->out("[ERROR] PC = 0x%llx, Invalid instruction address\n", m_pc);
-            return State::INVALID_ADDR;
+            return STAT_ERR_ADDR;
          }
          ftpc += sizeof(word_t);
       }
@@ -94,7 +94,7 @@ namespace SIM
       switch (icode)
       {
       case I_HALT:
-         return State::HALT;
+         return STAT_HLT;
       case I_NOP:
          m_pc = ftpc;
          break;
@@ -119,7 +119,7 @@ namespace SIM
          if (m_mem.setWord(cval, val))
          {
             m_out->out("[ERROR] PC = 0x%llx, Invalid RMMOVQ instruction address: 0x%llx\n", m_pc, cval);
-            return State::INVALID_ADDR;
+            return STAT_ERR_ADDR;
          }
          m_pc = ftpc;
          break;
@@ -128,10 +128,10 @@ namespace SIM
       {
          cval += m_reg.getRegVal(rB);
          word_t val = 0;
-         if (m_mem.getWord(cval, &val))
+         if (!m_mem.getWord(cval, &val))
          {
             m_out->out("[ERROR] PC = 0x%llx, Invalid MRMOVQ instruction address: 0x%llx\n", m_pc, cval);
-            return State::INVALID_ADDR;
+            return STAT_ERR_ADDR;
          }
          m_reg.setRegVal(rA, val);
          m_pc = ftpc;
@@ -163,7 +163,7 @@ namespace SIM
          if (!m_mem.setWord(val, ftpc)) // write address to stack
          {
             m_out->out("[ERROR] PC = 0x%llx, Invalid CALL instruction stack address: 0x%llx\n", m_pc, val);
-            return State::INVALID_ADDR;
+            return STAT_ERR_ADDR;
          }
          m_pc = cval;
          break;
@@ -176,7 +176,7 @@ namespace SIM
          if (!m_mem.getWord(dval, &val)) // read from stack
          {
             m_out->out("[ERROR] PC = 0x%llx, Invalid RET instruction stack address: 0x%llx\n", m_pc, dval);
-            return State::INVALID_ADDR;
+            return STAT_ERR_ADDR;
          }
          m_reg.setRegVal(REG_RSP, dval + sizeof(word_t));
          m_pc = val;
@@ -190,7 +190,7 @@ namespace SIM
          if (!m_mem.setWord(dval, val))
          {
             m_out->out("[ERROR] PC = 0x%llx, Invalid PUSHQ instruction stack address: 0x%llx\n", m_pc, dval);
-            return State::INVALID_ADDR;
+            return STAT_ERR_ADDR;
          }
          m_pc = ftpc;
          break;
@@ -203,7 +203,7 @@ namespace SIM
          if (!m_mem.getWord(dval, &val))
          {
             m_out->out("[ERROR] PC = 0x%llx, Invalid POPQ instruction stack address: 0x%llx\n", m_pc, dval);
-            return State::INVALID_ADDR;
+            return STAT_ERR_ADDR;
          }
          m_reg.setRegVal(rA, val);
          m_pc = ftpc;
@@ -221,10 +221,10 @@ namespace SIM
       default:
       {
          m_out->out("[ERROR] PC = 0x%llx, Invalid instruction %.2x\n", m_pc, byte0);
-         return State::INVALID_INSTR;
+         return STAT_ERR_INSTR;
       }
       }
-      return State::OK;
+      return STAT_OK;
    }
 
    bool YIS::checkCond(COND c)
