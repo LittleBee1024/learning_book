@@ -43,4 +43,9 @@ namespace ISA
          return Y86_64_REG[id].name;
       return nullptr;
    }
+
+   bool isValidReg(REG_ID id)
+   {
+      return id >= 0 && id < REG_NONE;
+   }
 }

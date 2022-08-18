@@ -30,4 +30,5 @@ namespace ISA
     */
    const char *getRegName(REG_ID id);
 
+   bool isValidReg(REG_ID id);
 }
