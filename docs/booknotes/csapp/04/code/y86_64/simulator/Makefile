@@ -5,7 +5,7 @@ TARGET=yis
 
 BUILD_DIR=build
 
-SRCS=state.cpp storage.cpp yis.cpp main.cpp
+SRCS=state.cpp storage.cpp sim_interface.cpp yis.cpp main.cpp
 OBJS=$(SRCS:%.cpp=$(BUILD_DIR)/%.o)
 
 DEP_COMMON_DIR=../_common

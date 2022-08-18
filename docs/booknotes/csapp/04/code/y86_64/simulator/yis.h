@@ -22,11 +22,6 @@ namespace SIM
       State runOneStep() override;
 
    private:
-      bool checkCond(COND c);
-      word_t computeALU(ALU op, word_t argA, word_t argB);
-      cc_t computeCC(ALU op, word_t argA, word_t argB);
-
-   private:
       std::unique_ptr<IO::OutputInterface> m_out;
 
       word_t m_pc;
