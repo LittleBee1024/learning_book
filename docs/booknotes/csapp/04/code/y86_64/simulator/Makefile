@@ -9,7 +9,7 @@ SRCS=storage.cpp state.cpp main.cpp
 OBJS=$(SRCS:%.cpp=$(BUILD_DIR)/%.o)
 
 DEP_COMMON_DIR=../_common
-DEP_COMMON_SRCS=output.cpp
+DEP_COMMON_SRCS=output.cpp isa.cpp
 DEP_COMMON_OBJS=$(DEP_COMMON_SRCS:%.cpp=$(BUILD_DIR)/%.o)
 
 all: clean $(TARGET)
@@ -19,7 +19,7 @@ clean:
 
 $(BUILD_DIR)/%.o: %.cpp
 	@mkdir -p '$(@D)'
-	$(CC) $(CFLAGS) -I.. -I$(DEP_COMMON_DIR) -c $< -o $@
+	$(CC) $(CFLAGS) -I$(DEP_COMMON_DIR) -c $< -o $@
 
 $(BUILD_DIR)/%.o: $(DEP_COMMON_DIR)/%.cpp
 	@mkdir -p '$(@D)'
