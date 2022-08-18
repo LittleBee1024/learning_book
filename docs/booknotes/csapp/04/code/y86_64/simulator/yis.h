@@ -10,7 +10,7 @@
 
 namespace SIM
 {
-
+   // YIS simulates instruction one by one, doesn't create an universal model for all instructions
    class YIS
    {
       static constexpr int REG_SIZE_BYTES = 128;       // 8 bytes * 16 regs
