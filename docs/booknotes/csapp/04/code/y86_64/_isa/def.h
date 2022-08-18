@@ -110,3 +110,5 @@ enum COND : int
 
 #define PACK_CC(z, s, o) (((z) << 2) | ((s) << 1) | ((o) << 0))
 #define DEFAULT_CC PACK_CC(1, 0, 0)
+
+#define VALID_REG(id) (id >= 0 && id < REG_NONE)

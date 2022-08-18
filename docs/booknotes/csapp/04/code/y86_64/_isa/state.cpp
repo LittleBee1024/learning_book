@@ -1,5 +1,4 @@
 #include "./state.h"
-#include "./register.h"
 
 namespace ISA
 {
@@ -51,7 +50,7 @@ namespace ISA
          {
             rA = (REG_ID)HI4(byte1);
             rB = (REG_ID)LO4(byte1);
-            if (!isValidReg(rA) || !isValidReg(rB))
+            if (!VALID_REG(rA) || !VALID_REG(rB))
             {
                m_out->out("[ERROR] PC = 0x%llx, Invalid registers rA=0x%.1x, rB=0x%.1x\n", m_pc, rA, rB);
                return StateType::INVALID_REG;
@@ -61,7 +60,7 @@ namespace ISA
          if (icode == I_PUSHQ || icode == I_POPQ)
          {
             rA = (REG_ID)HI4(byte1);
-            if (!isValidReg(rA))
+            if (!VALID_REG(rA))
             {
                m_out->out("[ERROR] PC = 0x%llx, Invalid register rA=0x%.1x\n", m_pc, rA);
                return StateType::INVALID_REG;
@@ -71,7 +70,7 @@ namespace ISA
          if (icode == I_IRMOVQ || icode == I_IADDQ)
          {
             rB = (REG_ID)LO4(byte1);
-            if (!isValidReg(rB))
+            if (!VALID_REG(rB))
             {
                m_out->out("[ERROR] PC = 0x%llx, Invalid register rB=0x%.1x\n", m_pc, rB);
                return StateType::INVALID_REG;

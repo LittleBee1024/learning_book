@@ -29,6 +29,4 @@ namespace ISA
     * @return const char*, for invalid ID, return nullptr
     */
    const char *getRegName(REG_ID id);
-
-   bool isValidReg(REG_ID id);
 }

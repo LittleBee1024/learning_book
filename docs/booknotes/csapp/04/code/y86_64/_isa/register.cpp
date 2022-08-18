@@ -44,8 +44,4 @@ namespace ISA
       return nullptr;
    }
 
-   bool isValidReg(REG_ID id)
-   {
-      return id >= 0 && id < REG_NONE;
-   }
 }
