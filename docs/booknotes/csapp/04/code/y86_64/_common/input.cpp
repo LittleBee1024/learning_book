@@ -1,6 +1,6 @@
 #include "./input.h"
 
-namespace CO
+namespace IO
 {
    FileIn::FileIn(const char *filename)
    {

@@ -33,7 +33,7 @@ namespace
 
 namespace YAS
 {
-   Lexer::Lexer(std::unique_ptr<CO::InputInterface> &&in) : m_in(std::move(in)), m_pass(0), m_hitError(false),
+   Lexer::Lexer(std::unique_ptr<IO::InputInterface> &&in) : m_in(std::move(in)), m_pass(0), m_hitError(false),
                                                             m_lineno(0), m_lineError(false), m_addr(0)
    {
       // yas_in is a global variable defined in flex
@@ -41,7 +41,7 @@ namespace YAS
       yas_in = m_in->getHandler();
    }
 
-   int Lexer::parse(std::unique_ptr<CO::OutputInterface> &&out)
+   int Lexer::parse(std::unique_ptr<IO::OutputInterface> &&out)
    {
       m_out = std::move(out);
 

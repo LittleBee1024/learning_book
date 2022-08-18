@@ -80,7 +80,7 @@ namespace
 
 namespace ISA
 {
-   Storage::Storage(int len, CO::OutputInterface &out) : m_out(out)
+   Storage::Storage(int len, IO::OutputInterface &out) : m_out(out)
    {
       len = (len + SIZE_ALIGN - 1) / SIZE_ALIGN * SIZE_ALIGN;
       m_contents.resize(len);
@@ -173,7 +173,7 @@ namespace ISA
       return true;
    }
 
-   RegStore::RegStore(int len, CO::OutputInterface& out) : Storage(len, out)
+   RegStore::RegStore(int len, IO::OutputInterface& out) : Storage(len, out)
    {
    }
 

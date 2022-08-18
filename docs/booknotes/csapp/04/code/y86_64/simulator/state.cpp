@@ -2,7 +2,7 @@
 
 namespace ISA
 {
-   State::State(std::unique_ptr<CO::OutputInterface> &&out) : m_out(std::move(out)),
+   State::State(std::unique_ptr<IO::OutputInterface> &&out) : m_out(std::move(out)),
                                                               m_pc(0),
                                                               m_reg(REG_SIZE_BYTES, *m_out),
                                                               m_mem(MEM_SIZE_BYTES, *m_out)

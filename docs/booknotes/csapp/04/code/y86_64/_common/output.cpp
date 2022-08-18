@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 
-namespace CO
+namespace IO
 {
    FileOut::FileOut(const char *filename) : m_out(filename)
    {

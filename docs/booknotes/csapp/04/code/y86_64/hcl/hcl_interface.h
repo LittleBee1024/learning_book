@@ -18,8 +18,8 @@ namespace HCL
        * @param out The handler for the output
        * @return int Return 0 if success, -1 if error
        */
-      virtual int toC(std::unique_ptr<CO::OutputInterface> &&out) = 0;
-      virtual int toVerilog(std::unique_ptr<CO::OutputInterface> &&out) = 0;
+      virtual int toC(std::unique_ptr<IO::OutputInterface> &&out) = 0;
+      virtual int toVerilog(std::unique_ptr<IO::OutputInterface> &&out) = 0;
 
    public:
       ParserInterface() = default;

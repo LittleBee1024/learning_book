@@ -3,13 +3,13 @@ CFLAGS=-Wall -g
 
 BUILD_DIR=build
 
-SRCS=input.cpp output.cpp
+SRCS=input.cpp output.cpp isa.cpp
 OBJS=$(SRCS:%.cpp=$(BUILD_DIR)/%.o)
 
 all: clean compile
 
 clean:
-	@rm -rf $(BUILD_DIR)
+	@rm -rf $(BUILD_DIR) *.o
 
 $(BUILD_DIR)/%.o: %.cpp
 	@mkdir -p '$(@D)'

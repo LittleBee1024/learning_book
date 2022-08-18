@@ -4,7 +4,7 @@
 
 #include <string>
 
-namespace CO
+namespace IO
 {
    class FileIn : public InputInterface
    {

@@ -10,7 +10,7 @@
 namespace HCL
 {
 
-   OutGen::OutGen(std::unique_ptr<CO::OutputInterface> &&out) : m_out(std::move(out)), m_curLinePos(0), m_indentLevel(0)
+   OutGen::OutGen(std::unique_ptr<IO::OutputInterface> &&out) : m_out(std::move(out)), m_curLinePos(0), m_indentLevel(0)
    {
    }
 

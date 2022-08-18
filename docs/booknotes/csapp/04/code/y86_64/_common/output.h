@@ -6,7 +6,7 @@
 #include <sstream>
 #include <string>
 
-namespace CO
+namespace IO
 {
    class FileOut : public OutputInterface
    {

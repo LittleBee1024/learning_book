@@ -20,7 +20,7 @@ namespace YAS
        * @param out The handler for machine code output
        * @return int Return 0 if success, -1 if error
        */
-      virtual int parse(std::unique_ptr<CO::OutputInterface> &&out) = 0;
+      virtual int parse(std::unique_ptr<IO::OutputInterface> &&out) = 0;
 
    public:
       LexerInterface() = default;

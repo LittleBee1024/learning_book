@@ -10,7 +10,7 @@ namespace HCL
    class OutGen
    {
    public:
-      explicit OutGen(std::unique_ptr<CO::OutputInterface> &&out);
+      explicit OutGen(std::unique_ptr<IO::OutputInterface> &&out);
 
       void print(const char *fmt, ...);
       void feedLineWithUpIndent();
@@ -18,7 +18,7 @@ namespace HCL
       void terminateLine();
 
    private:
-      std::unique_ptr<CO::OutputInterface> m_out;
+      std::unique_ptr<IO::OutputInterface> m_out;
 
       // format
       static const int MAX_COLUMN = 100;

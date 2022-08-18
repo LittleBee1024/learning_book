@@ -64,13 +64,13 @@ int main(int argc, char *argv[])
       return -1;
    }
 
-   HCL::Parser parser(std::move(std::make_unique<CO::FileIn>(option.infname.c_str())));
+   HCL::Parser parser(std::move(std::make_unique<IO::FileIn>(option.infname.c_str())));
 
-   std::unique_ptr<CO::OutputInterface> out;
+   std::unique_ptr<IO::OutputInterface> out;
    if (option.outfname.empty())
-      out = std::make_unique<CO::StdOut>();
+      out = std::make_unique<IO::StdOut>();
    else
-      out = std::make_unique<CO::FileOut>(option.outfname.c_str());
+      out = std::make_unique<IO::FileOut>(option.outfname.c_str());
 
    int rc = 0;
    if (!option.toVerilog)

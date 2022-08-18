@@ -2,7 +2,7 @@
 
 #include <stdio.h>
 
-namespace CO
+namespace IO
 {
    class InputInterface
    {
