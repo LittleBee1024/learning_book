@@ -208,7 +208,7 @@ void dump_memory(FILE *outfile, mem_t m, word_t pos, int cnt);
 /********** Implementation of Register File *************/
 
 mem_t init_reg();
-void free_reg();
+void free_reg(mem_t r);
 
 /* Make a copy of a register file */
 mem_t copy_reg(mem_t oldr);
