@@ -86,48 +86,7 @@ namespace SIM
       m_contents.resize(len);
    }
 
-   int Storage::load(const char *fname)
-   {
-      std::ifstream ifs(fname);
-      if (ifs.fail())
-      {
-         m_out.out("[ERROR] Cannot access '%s': No such file\n", fname);
-         return 0;
-      }
 
-      std::string line;
-      int lineno = 0;
-      int numBytes = 0;
-      while (std::getline(ifs, line))
-      {
-         lineno++;
-         std::string code = getCode(line);
-         if (code.empty())
-            continue;
-
-         if (checkCode(code))
-         {
-            m_out.out("[ERROR] Invalid code (Line %d): %s\n", lineno, code.c_str());
-            return 0;
-         }
-
-         word_t addr = getAddr(code);
-         std::string instr = getInstruction(code);
-         assert(instr.size() % 2 == 0);
-         for (size_t i = 0; i < instr.size(); i += 2)
-         {
-            if (addr >= (word_t)m_contents.size())
-            {
-               m_out.out("[ERROR] Invalid addr (Line %d): 0x%llx\n", lineno, addr);
-               return 0;
-            }
-            // little-endian, the least-significant byte at the smallest address
-            m_contents[addr++] = toNum(instr[i], instr[i + 1]);
-            numBytes++;
-         }
-      }
-      return numBytes;
-   }
 
    bool Storage::getByte(word_t pos, byte_t *dest) const
    {
@@ -192,5 +151,52 @@ namespace SIM
       {
          setWord(id * sizeof(word_t), val);
       }
+   }
+
+   MemStore::MemStore(int len, IO::OutputInterface& out) : Storage(len, out)
+   {
+   }
+
+   int MemStore::load(const char *fname)
+   {
+      std::ifstream ifs(fname);
+      if (ifs.fail())
+      {
+         m_out.out("[ERROR] Cannot access '%s': No such file\n", fname);
+         return 0;
+      }
+
+      std::string line;
+      int lineno = 0;
+      int numBytes = 0;
+      while (std::getline(ifs, line))
+      {
+         lineno++;
+         std::string code = getCode(line);
+         if (code.empty())
+            continue;
+
+         if (checkCode(code))
+         {
+            m_out.out("[ERROR] Invalid code (Line %d): %s\n", lineno, code.c_str());
+            return 0;
+         }
+
+         word_t addr = getAddr(code);
+         std::string instr = getInstruction(code);
+         assert(instr.size() % 2 == 0);
+         for (size_t i = 0; i < instr.size(); i += 2)
+         {
+            if (addr >= (word_t)m_contents.size())
+            {
+               m_out.out("[ERROR] Invalid addr (Line %d): 0x%llx\n", lineno, addr);
+               return 0;
+            }
+            // little-endian, the least-significant byte at the smallest address
+            m_contents[addr++] = toNum(instr[i], instr[i + 1]);
+            numBytes++;
+         }
+      }
+      return numBytes;
    }
 }
