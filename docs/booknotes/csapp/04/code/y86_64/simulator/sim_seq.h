@@ -28,7 +28,7 @@ namespace SIM
       RegStore m_reg;
       MemStore m_mem;
       word_t m_pc;
-      word_t m_predPC;
+      word_t m_ftpc; // fall-through PC
       cc_t m_cc;
 
       struct PCInputs

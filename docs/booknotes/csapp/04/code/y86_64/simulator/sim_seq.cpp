@@ -44,7 +44,7 @@ namespace SIM
                                         m_reg(REG_SIZE_BYTES, m_out),
                                         m_mem(MEM_SIZE_BYTES, m_out),
                                         m_pc(0),
-                                        m_predPC(0),
+                                        m_ftpc(0),
                                         m_cc(DEFAULT_CC)
    {
    }
@@ -79,7 +79,7 @@ namespace SIM
       SEQ::prev_valp = m_pcInputs.valp;
       SEQ::prev_bcond = m_pcInputs.bcond;
       // HCL function to generate predicted PC
-      m_predPC = gen_pc();
+      m_ftpc = gen_pc();
       return STAT_OK;
    }
 
@@ -87,11 +87,13 @@ namespace SIM
    {
       // icode:ifun <- M1[PC]
       byte_t byte0 = 0;
-      if (!m_mem.getByte(m_predPC, &byte0))
+      if (!m_mem.getByte(m_ftpc, &byte0))
       {
-         m_out.out("[ERROR] PC = 0x%llx, Invalid instruction address\n", m_predPC);
+         m_out.out("[ERROR] PC = 0x%llx, Invalid instruction address\n", m_pc);
          return STAT_ERR_ADDR;
       }
+      m_ftpc++;
+
       SEQ::imem_icode = HI4(byte0);
       SEQ::imem_ifun = LO4(byte0);
       SEQ::icode = gen_icode();
@@ -101,6 +103,44 @@ namespace SIM
          m_out.out("[ERROR] PC = 0x%llx, Invalid instruction %.2x\n", m_pc, byte0);
          return STAT_ERR_INSTR;
       }
+
+      // rA:rB <- M1[PC+1]
+      if (gen_need_regids())
+      {
+         byte_t byte1 = 0; // (rA+rB)
+         if (!m_mem.getByte(m_ftpc, &byte1))
+         {
+            m_out.out("[ERROR] PC = 0x%llx, Invalid instruction address\n", m_pc);
+            return STAT_ERR_ADDR;
+         }
+         m_ftpc++;
+
+         SEQ::ra = HI4(byte1);
+         SEQ::rb = LO4(byte1);
+      }
+      else
+      {
+         SEQ::ra = REG_NONE;
+         SEQ::rb = REG_NONE;
+      }
+
+      // valC <- M8[PC+2]
+      if (gen_need_valC())
+      {
+         if (!m_mem.getWord(m_ftpc, &SEQ::valc))
+         {
+            m_out.out("[ERROR] PC = 0x%llx, Invalid instruction address\n", m_pc);
+            return STAT_ERR_ADDR;
+         }
+         m_ftpc += sizeof(word_t);
+      }
+      else
+      {
+         SEQ::valc = 0;
+      }
+
+      m_out.out("IF: Fetched %s at 0x%llx. ra=%s, rb=%s, valC = 0x%llx\n", ISA::decodeInstrName(HPACK(SEQ::icode, SEQ::ifun)),
+                m_pc, ISA::getRegName((REG_ID)SEQ::ra), ISA::getRegName((REG_ID)SEQ::rb), SEQ::valc);
 
       return STAT_OK;
    }
