@@ -86,7 +86,9 @@ namespace SIM
       m_contents.resize(len);
    }
 
-
+   Storage::Storage(const Storage& other) : m_out(other.m_out), m_contents(other.m_contents)
+   {
+   }
 
    bool Storage::getByte(word_t pos, byte_t *dest) const
    {
@@ -132,7 +134,16 @@ namespace SIM
       return true;
    }
 
+   size_t Storage::size() const
+   {
+      return m_contents.size();
+   }
+
    RegStore::RegStore(int len, IO::OutputInterface& out) : Storage(len, out)
+   {
+   }
+
+   RegStore::RegStore(const RegStore &other) : Storage(other)
    {
    }
 
@@ -154,6 +165,10 @@ namespace SIM
    }
 
    MemStore::MemStore(int len, IO::OutputInterface& out) : Storage(len, out)
+   {
+   }
+
+   MemStore::MemStore(const MemStore &other) : Storage(other)
    {
    }
 

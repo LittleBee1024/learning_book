@@ -7,8 +7,6 @@
 #include "io_interface.h"
 #include "isa.h"
 
-#include <memory>
-
 namespace SIM
 {
    // YIS simulates instruction one by one, doesn't create an universal model for all instructions
@@ -17,12 +15,19 @@ namespace SIM
       static constexpr int REG_SIZE_BYTES = 128;       // 8 bytes * 16 regs
       static constexpr int MEM_SIZE_BYTES = (1 << 13); // 8KB
    public:
-      explicit YIS(std::unique_ptr<IO::OutputInterface> &&out);
+      explicit YIS(IO::OutputInterface &out);
+      YIS(const YIS &other);
+
       int loadCode(const char *fname) override;
       State runOneStep() override;
+      void compare(const YIS &other) const;
 
    private:
-      std::unique_ptr<IO::OutputInterface> m_out;
+      void compareReg(const YIS &other) const;
+      void compareMem(const YIS &other) const;
+
+   private:
+      IO::OutputInterface &m_out;
 
       word_t m_pc;
       RegStore m_reg;

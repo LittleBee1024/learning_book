@@ -1,11 +1,20 @@
 #include "./yis.h"
+#include "isa.h"
+#include <assert.h>
 
 namespace SIM
 {
-   YIS::YIS(std::unique_ptr<IO::OutputInterface> &&out) : m_out(std::move(out)),
-                                                          m_pc(0),
-                                                          m_reg(REG_SIZE_BYTES, *m_out),
-                                                          m_mem(MEM_SIZE_BYTES, *m_out)
+   YIS::YIS(IO::OutputInterface &out) : m_out(out),
+                                        m_pc(0),
+                                        m_reg(REG_SIZE_BYTES, m_out),
+                                        m_mem(MEM_SIZE_BYTES, m_out)
+   {
+   }
+
+   YIS::YIS(const YIS &other) : m_out(other.m_out),
+                                m_pc(other.m_pc),
+                                m_reg(other.m_reg),
+                                m_mem(other.m_mem)
    {
    }
 
@@ -13,7 +22,7 @@ namespace SIM
    {
       int bytes = m_mem.load(fname);
       if (bytes)
-         m_out->out("[INFO] Loaded %d bytes code\n", bytes);
+         m_out.out("[INFO] Loaded %d bytes code\n", bytes);
       return bytes;
    }
 
@@ -23,7 +32,7 @@ namespace SIM
       byte_t byte0 = 0;   // (icode+ifun)
       if (!m_mem.getByte(ftpc, &byte0))
       {
-         m_out->out("[ERROR] PC = 0x%llx, Invalid instruction address\n", m_pc);
+         m_out.out("[ERROR] PC = 0x%llx, Invalid instruction address\n", m_pc);
          return STAT_ERR_ADDR;
       }
       ftpc++;
@@ -41,7 +50,7 @@ namespace SIM
       {
          if (!m_mem.getByte(ftpc, &byte1))
          {
-            m_out->out("[ERROR] PC = 0x%llx, Invalid instruction address\n", m_pc);
+            m_out.out("[ERROR] PC = 0x%llx, Invalid instruction address\n", m_pc);
             return STAT_ERR_ADDR;
          }
          ftpc++;
@@ -52,7 +61,7 @@ namespace SIM
             rB = (REG_ID)LO4(byte1);
             if (!VALID_REG(rA) || !VALID_REG(rB))
             {
-               m_out->out("[ERROR] PC = 0x%llx, Invalid registers rA=0x%.1x, rB=0x%.1x\n", m_pc, rA, rB);
+               m_out.out("[ERROR] PC = 0x%llx, Invalid registers rA=0x%.1x, rB=0x%.1x\n", m_pc, rA, rB);
                return STAT_ERR_REG;
             }
          }
@@ -62,7 +71,7 @@ namespace SIM
             rA = (REG_ID)HI4(byte1);
             if (!VALID_REG(rA))
             {
-               m_out->out("[ERROR] PC = 0x%llx, Invalid register rA=0x%.1x\n", m_pc, rA);
+               m_out.out("[ERROR] PC = 0x%llx, Invalid register rA=0x%.1x\n", m_pc, rA);
                return STAT_ERR_REG;
             }
          }
@@ -72,7 +81,7 @@ namespace SIM
             rB = (REG_ID)LO4(byte1);
             if (!VALID_REG(rB))
             {
-               m_out->out("[ERROR] PC = 0x%llx, Invalid register rB=0x%.1x\n", m_pc, rB);
+               m_out.out("[ERROR] PC = 0x%llx, Invalid register rB=0x%.1x\n", m_pc, rB);
                return STAT_ERR_REG;
             }
          }
@@ -85,7 +94,7 @@ namespace SIM
       {
          if (!m_mem.getWord(ftpc, &cval))
          {
-            m_out->out("[ERROR] PC = 0x%llx, Invalid instruction address\n", m_pc);
+            m_out.out("[ERROR] PC = 0x%llx, Invalid instruction address\n", m_pc);
             return STAT_ERR_ADDR;
          }
          ftpc += sizeof(word_t);
@@ -118,7 +127,7 @@ namespace SIM
          word_t val = m_reg.getRegVal(rA);
          if (m_mem.setWord(cval, val))
          {
-            m_out->out("[ERROR] PC = 0x%llx, Invalid RMMOVQ instruction address: 0x%llx\n", m_pc, cval);
+            m_out.out("[ERROR] PC = 0x%llx, Invalid RMMOVQ instruction address: 0x%llx\n", m_pc, cval);
             return STAT_ERR_ADDR;
          }
          m_pc = ftpc;
@@ -130,7 +139,7 @@ namespace SIM
          word_t val = 0;
          if (!m_mem.getWord(cval, &val))
          {
-            m_out->out("[ERROR] PC = 0x%llx, Invalid MRMOVQ instruction address: 0x%llx\n", m_pc, cval);
+            m_out.out("[ERROR] PC = 0x%llx, Invalid MRMOVQ instruction address: 0x%llx\n", m_pc, cval);
             return STAT_ERR_ADDR;
          }
          m_reg.setRegVal(rA, val);
@@ -162,7 +171,7 @@ namespace SIM
          // push PC to stack
          if (!m_mem.setWord(val, ftpc)) // write address to stack
          {
-            m_out->out("[ERROR] PC = 0x%llx, Invalid CALL instruction stack address: 0x%llx\n", m_pc, val);
+            m_out.out("[ERROR] PC = 0x%llx, Invalid CALL instruction stack address: 0x%llx\n", m_pc, val);
             return STAT_ERR_ADDR;
          }
          m_pc = cval;
@@ -175,7 +184,7 @@ namespace SIM
          word_t val = 0;
          if (!m_mem.getWord(dval, &val)) // read from stack
          {
-            m_out->out("[ERROR] PC = 0x%llx, Invalid RET instruction stack address: 0x%llx\n", m_pc, dval);
+            m_out.out("[ERROR] PC = 0x%llx, Invalid RET instruction stack address: 0x%llx\n", m_pc, dval);
             return STAT_ERR_ADDR;
          }
          m_reg.setRegVal(REG_RSP, dval + sizeof(word_t));
@@ -189,7 +198,7 @@ namespace SIM
          m_reg.setRegVal(REG_RSP, dval);
          if (!m_mem.setWord(dval, val))
          {
-            m_out->out("[ERROR] PC = 0x%llx, Invalid PUSHQ instruction stack address: 0x%llx\n", m_pc, dval);
+            m_out.out("[ERROR] PC = 0x%llx, Invalid PUSHQ instruction stack address: 0x%llx\n", m_pc, dval);
             return STAT_ERR_ADDR;
          }
          m_pc = ftpc;
@@ -202,7 +211,7 @@ namespace SIM
          word_t val = 0;
          if (!m_mem.getWord(dval, &val))
          {
-            m_out->out("[ERROR] PC = 0x%llx, Invalid POPQ instruction stack address: 0x%llx\n", m_pc, dval);
+            m_out.out("[ERROR] PC = 0x%llx, Invalid POPQ instruction stack address: 0x%llx\n", m_pc, dval);
             return STAT_ERR_ADDR;
          }
          m_reg.setRegVal(rA, val);
@@ -220,11 +229,49 @@ namespace SIM
       }
       default:
       {
-         m_out->out("[ERROR] PC = 0x%llx, Invalid instruction %.2x\n", m_pc, byte0);
+         m_out.out("[ERROR] PC = 0x%llx, Invalid instruction %.2x\n", m_pc, byte0);
          return STAT_ERR_INSTR;
       }
       }
       return STAT_OK;
    }
 
+   void YIS::compare(const YIS &other) const
+   {
+      compareReg(other);
+      compareMem(other);
+   }
+
+   void YIS::compareReg(const YIS &other) const
+   {
+      m_out.out("Changes to registers:\n");
+
+      for (int id = REG_RAX; id < REG_NONE; id++)
+      {
+         word_t oldVal = other.m_reg.getRegVal((REG_ID)id);
+         word_t newVal = m_reg.getRegVal((REG_ID)id);
+         if (oldVal != newVal)
+         {
+            m_out.out("%s:\t0x%.16llx\t0x%.16llx\n", ISA::getRegName((REG_ID)id), oldVal, newVal);
+         }
+      }
+   }
+
+   void YIS::compareMem(const YIS &other) const
+   {
+      m_out.out("Changes to memory:\n");
+
+      assert(m_mem.size() == other.m_mem.size());
+      for (size_t i = 0; i < m_mem.size(); i += sizeof(word_t))
+      {
+         word_t oldVal = 0;
+         other.m_mem.getWord(i, &oldVal);
+         word_t newVal = 0;
+         m_mem.getWord(i, &newVal);
+         if (oldVal != newVal)
+         {
+            m_out.out("0x%.4llx:\t0x%.16llx\t0x%.16llx\n", i, oldVal, newVal);
+         }
+      }
+   }
 }

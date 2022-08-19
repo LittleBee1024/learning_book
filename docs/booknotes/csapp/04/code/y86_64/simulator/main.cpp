@@ -52,15 +52,20 @@ int main(int argc, char *argv[])
       return -1;
    }
 
-   std::unique_ptr<SIM::SimInterface> sim = std::make_unique<SIM::YIS>(std::move(std::make_unique<IO::StdOut>()));
-   sim->loadCode(option.infname.c_str());
+   std::unique_ptr<IO::OutputInterface> out = std::make_unique<IO::StdOut>();
+   SIM::YIS sim = SIM::YIS(*out);
+   sim.loadCode(option.infname.c_str());
+
+   SIM::YIS snapshot(sim);
 
    SIM::State state = SIM::STAT_OK;
    int i = 0;
    for (i = 0; i < option.maxSteps && state == SIM::STAT_OK; i++)
-      state = sim->runOneStep();
+      state = sim.runOneStep();
 
    printf("After %d steps, the state becomes %s\n", i, SIM::getStateName(state));
+
+   sim.compare(snapshot);
 
    return 0;
 }
