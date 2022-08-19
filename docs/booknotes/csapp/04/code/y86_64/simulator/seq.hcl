@@ -1,7 +1,20 @@
+#/* $begin seq-all-hcl */
+####################################################################
+#  HCL Description of Control for Single Cycle Y86-64 Processor SEQ   #
+#  Copyright (C) Randal E. Bryant, David R. O'Hallaron, 2010       #
+####################################################################
+
+####################################################################
+#    C Include's.  Don't alter these                               #
+####################################################################
+
 quote '#include "state.h"'
 quote '#include "seq.h"'
-
 quote 'using namespace SEQ;'
+
+####################################################################
+#    Declarations.  Do not change/remove/delete any of these       #
+####################################################################
 
 ##### Symbolic representation of Y86-64 Instruction Codes #############
 wordsig INOP    'I_NOP'
@@ -18,14 +31,14 @@ wordsig IPUSHQ  'I_PUSHQ'
 wordsig IPOPQ   'I_POPQ'
 
 ##### Symbolic represenations of Y86-64 function codes                  #####
-wordsig FNONE   'F_NONE'        # Default function code
+wordsig FNONE   'F_NONE'       # Default function code
 
 ##### Symbolic representation of Y86-64 Registers referenced explicitly #####
-wordsig RRSP    'REG_RSP'       # Stack Pointer
-wordsig RNONE   'REG_NONE'      # Special value indicating "no register"
+wordsig RRSP    'REG_RSP'      # Stack Pointer
+wordsig RNONE   'REG_NONE'     # Special value indicating "no register"
 
-##### ALU Functions referenced explicitly                            #####
-wordsig ALUADD  'A_ADD'         # ALU should add its arguments
+##### ALU Functions referenced explicitly                               #####
+wordsig ALUADD  'A_ADD'        # ALU should add its arguments
 
 ##### Possible instruction status values                             #####
 wordsig SAOK    'SIM::STAT_OK'            # Normal execution
@@ -35,15 +48,8 @@ wordsig SHLT    'SIM::STAT_HLT'           # Halt instruction encountered
 
 ##### Signals that can be referenced by control logic ####################
 
-##### PC stage inputs                   #####
-
-## All of these values are based on those from previous instruction
-wordsig  pIcode 'prev_icode'            # Instr. control code
-wordsig  pValC  'prev_valc'             # Constant from instruction
-wordsig  pValM  'prev_valm'             # Value read from memory
-wordsig  pValP  'prev_valp'             # Incremented program counter
-boolsig  pCnd   'prev_bcond'            # Condition flag
-
+##### Fetch stage inputs                #####
+wordsig pc          'pc'                         # Program counter
 ##### Fetch stage computations          #####
 wordsig imem_icode  'imem_icode'        # icode field from instruction memory
 wordsig imem_ifun   'imem_ifun'         # ifun field from instruction memory
@@ -72,23 +78,6 @@ boolsig dmem_error 'dmem_error'         # Error signal from data memory
 ####################################################################
 #    Control Signal Definitions.                                   #
 ####################################################################
-
-################ Program Counter Computation #######################
-
-# Compute fetch location for this instruction based on results from
-# previous instruction.
-
-word pc = [
-        # Call.  Use instruction constant
-        pIcode == ICALL : pValC;
-        # Taken branch.  Use instruction constant
-        pIcode == IJXX && pCnd : pValC;
-        # Completion of RET instruction.  Use value from stack
-        pIcode == IRET : pValM;
-        # Default: Use incremented PC
-        1 : pValP;
-];
-#/* $end seq-plus-pc-hcl */
 
 ################ Fetch Stage     ###################################
 
@@ -205,5 +194,20 @@ word Stat = [
         !instr_valid: SINS;
         icode == IHALT : SHLT;
         1 : SAOK;
+];
+
+################ Program Counter Update ############################
+
+## What address should instruction be fetched at
+
+word new_pc = [
+        # Call.  Use instruction constant
+        icode == ICALL : valC;
+        # Taken branch.  Use instruction constant
+        icode == IJXX && Cnd : valC;
+        # Completion of RET instruction.  Use value from stack
+        icode == IRET : valM;
+        # Default: Use incremented PC
+        1 : valP;
 ];
 #/* $end seq-all-hcl */
