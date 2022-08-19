@@ -22,6 +22,8 @@ namespace SIM
    private:
       State updatePC();
       State fetchInstr();
+      State decode();
+      State execute();
 
    private:
       IO::OutputInterface &m_out;

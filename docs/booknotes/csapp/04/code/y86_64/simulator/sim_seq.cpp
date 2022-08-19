@@ -35,6 +35,10 @@ namespace SEQ
    bool dmem_error = false;
 
    byte_t status = SIM::STAT_OK;
+
+   // var only used by SIM::Seq
+   word_t destE = REG_NONE;
+   word_t destM = REG_NONE;
 }
 
 namespace SIM
@@ -59,9 +63,21 @@ namespace SIM
 
    State Seq::runOneStep()
    {
-      updatePC();
+      State s = STAT_OK;
 
-      fetchInstr();
+      s = updatePC();
+      if (s != STAT_OK)
+         return s;
+
+      s = fetchInstr();
+      if (s != STAT_OK)
+         return s;
+      if (s == STAT_OK && SEQ::icode == STAT_HLT)
+         return STAT_HLT;
+
+      s = decode();
+      if (s != STAT_OK)
+         return s;
 
       return STAT_OK;
    }
@@ -141,6 +157,47 @@ namespace SIM
 
       m_out.out("IF: Fetched %s at 0x%llx. ra=%s, rb=%s, valC = 0x%llx\n", ISA::decodeInstrName(HPACK(SEQ::icode, SEQ::ifun)),
                 m_pc, ISA::getRegName((REG_ID)SEQ::ra), ISA::getRegName((REG_ID)SEQ::rb), SEQ::valc);
+
+      return STAT_OK;
+   }
+
+   State Seq::decode()
+   {
+      // valA <- R[rA]
+      if ((REG_ID)gen_srcA() != REG_NONE)
+      {
+         SEQ::vala = m_reg.getRegVal((REG_ID)gen_srcA());
+      }
+      else
+      {
+         SEQ::vala = 0;
+      }
+
+      // valB <- R[rB]
+      if ((REG_ID)gen_srcB() != REG_NONE)
+      {
+         SEQ::valb = m_reg.getRegVal((REG_ID)gen_srcB());
+      }
+      else
+      {
+         SEQ::valb = 0;
+      }
+
+      return STAT_OK;
+   }
+
+   State Seq::execute()
+   {
+      SEQ::cond = checkCond(m_cc, (COND)SEQ::ifun);
+
+      SEQ::destE = gen_dstE();
+      SEQ::destM = gen_dstM();
+
+      SEQ::vale = computeALU((ALU)gen_alufun(), gen_aluA(), gen_aluB());
+      if (gen_set_cc())
+         m_cc = computeCC((ALU)gen_alufun(), gen_aluA(), gen_aluB());
+
+      SEQ::bcond = SEQ::cond && (SEQ::icode == I_JMP);
 
       return STAT_OK;
    }
