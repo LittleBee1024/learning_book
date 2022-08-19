@@ -23,16 +23,16 @@ $(BUILD_DIR)/%.o: $(DEP_COMMON_DIR)/%.cpp
 	@mkdir -p '$(@D)'
 	$(CC) $(CFLAGS) -I$(DEP_COMMON_DIR) -c $< -o $@
 
-sim: $(DEP_COMMON_OBJS) $(OBJS)
-	$(CC) $(CFLAGS) $^ -o $(BUILD_DIR)/$@
-
 HCL=../hcl/build/hcl
-
 $(BUILD_DIR)/seq.o: seq.hcl
 	@echo "Building the seq.hcl of SEQ+"
 	@mkdir -p '$(@D)'
 	$(HCL) seq.hcl -o $(BUILD_DIR)/seq.cpp
 	$(CC) $(CFLAGS) -I. -I$(DEP_COMMON_DIR) -c $(BUILD_DIR)/seq.cpp -o $@
+
+
+sim: $(DEP_COMMON_OBJS) $(OBJS) $(BUILD_DIR)/seq.o
+	$(CC) $(CFLAGS) $^ -o $(BUILD_DIR)/$@
 
 YAS=../assembler/build/yas
 Y86_64_CODE=../test_yas/asum.yo
