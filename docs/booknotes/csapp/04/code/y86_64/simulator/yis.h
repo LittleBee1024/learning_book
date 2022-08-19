@@ -19,7 +19,7 @@ namespace SIM
 
       int loadCode(const char *fname) override;
       State runOneStep() override;
-      void compare(const YIS &other) const;
+      void compare(const SimInterface &other) const override;
 
    private:
       void compareReg(const YIS &other) const;

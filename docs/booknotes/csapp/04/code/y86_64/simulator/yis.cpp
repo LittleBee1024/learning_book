@@ -229,10 +229,17 @@ namespace SIM
       return STAT_OK;
    }
 
-   void YIS::compare(const YIS &other) const
+   void YIS::compare(const SimInterface &other) const
    {
-      compareReg(other);
-      compareMem(other);
+      const YIS *child = dynamic_cast<const YIS *>(&other);
+      if (!child)
+      {
+         m_out.out("[ERROR] Compared with an invalid simulator snapshot\n");
+         return;
+      }
+
+      compareReg(*child);
+      compareMem(*child);
    }
 
    void YIS::compareReg(const YIS &other) const

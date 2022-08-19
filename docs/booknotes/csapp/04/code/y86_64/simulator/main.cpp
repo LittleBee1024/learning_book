@@ -54,6 +54,7 @@ int main(int argc, char *argv[])
 
    std::unique_ptr<IO::OutputInterface> out = std::make_unique<IO::StdOut>();
    SIM::YIS sim = SIM::YIS(*out);
+
    sim.loadCode(option.infname.c_str());
 
    SIM::YIS snapshot(sim);

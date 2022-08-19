@@ -10,6 +10,7 @@ namespace SIM
    public:
       virtual int loadCode(const char *fname) = 0;
       virtual State runOneStep() = 0;
+      virtual void compare(const SimInterface &other) const = 0;
 
    public:
       SimInterface() = default;
