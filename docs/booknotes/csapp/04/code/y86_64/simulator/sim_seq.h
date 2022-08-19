@@ -17,10 +17,12 @@ namespace SIM
       State runOneStep() override;
 
    private:
-      State updatePC();
-      State fetchInstr();
+      State fetch();
       State decode();
       State execute();
+      State memory();
+      State writeBack();
+      State updatePC();
 
    private:
       word_t m_ftpc; // fall-through PC

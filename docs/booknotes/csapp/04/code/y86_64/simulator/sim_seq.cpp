@@ -36,11 +36,7 @@ namespace SIM
    {
       State s = STAT_OK;
 
-      s = updatePC();
-      if (s != STAT_OK)
-         return s;
-
-      s = fetchInstr();
+      s = fetch();
       if (s != STAT_OK)
          return s;
       if (s == STAT_OK && SEQ::icode == STAT_HLT)
@@ -50,17 +46,26 @@ namespace SIM
       if (s != STAT_OK)
          return s;
 
+      s = execute();
+      if (s != STAT_OK)
+         return s;
+
+      s = memory();
+      if (s != STAT_OK)
+         return s;
+
+      s = writeBack();
+      if (s != STAT_OK)
+         return s;
+
+      s = updatePC();
+      if (s != STAT_OK)
+         return s;
+
       return STAT_OK;
    }
 
-   State Seq::updatePC()
-   {
-      // HCL function to generate predicted PC
-      m_ftpc = gen_new_pc();
-      return STAT_OK;
-   }
-
-   State Seq::fetchInstr()
+   State Seq::fetch()
    {
       // icode:ifun <- M1[PC]
       byte_t byte0 = 0;
@@ -158,4 +163,20 @@ namespace SIM
       return STAT_OK;
    }
 
+   State Seq::memory()
+   {
+      return STAT_OK;
+   }
+
+   State Seq::writeBack()
+   {
+      return STAT_OK;
+   }
+
+   State Seq::updatePC()
+   {
+      // HCL function to generate predicted PC
+      m_ftpc = gen_new_pc();
+      return STAT_OK;
+   }
 }
