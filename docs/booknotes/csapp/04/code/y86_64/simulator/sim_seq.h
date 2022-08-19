@@ -20,10 +20,15 @@ namespace SIM
       void compare(const SimInterface &other) const override;
 
    private:
+      State updatePC();
+      State fetchInstr();
+
+   private:
       IO::OutputInterface &m_out;
       RegStore m_reg;
       MemStore m_mem;
       word_t m_pc;
+      word_t m_predPC;
       cc_t m_cc;
 
       struct PCInputs

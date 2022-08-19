@@ -31,7 +31,7 @@ $(BUILD_DIR)/seq.o: seq.hcl
 	$(CC) $(CFLAGS) -I. -I$(DEP_COMMON_DIR) -c $(BUILD_DIR)/seq.cpp -o $@
 
 
-sim: $(DEP_COMMON_OBJS) $(OBJS) $(BUILD_DIR)/seq.o
+sim: $(DEP_COMMON_OBJS) $(BUILD_DIR)/seq.o $(OBJS)
 	$(CC) $(CFLAGS) $^ -o $(BUILD_DIR)/$@
 
 YAS=../assembler/build/yas
