@@ -13,7 +13,7 @@ namespace SIM
 
    public:
       SimInterface() = default;
-      SimInterface(const SimInterface &) = delete;
+      SimInterface(const SimInterface &) = default;
       SimInterface &operator=(const SimInterface &) = delete;
       virtual ~SimInterface() = default;
 

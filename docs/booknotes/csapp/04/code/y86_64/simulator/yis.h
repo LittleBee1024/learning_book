@@ -16,7 +16,6 @@ namespace SIM
       static constexpr int MEM_SIZE_BYTES = (1 << 13); // 8KB
    public:
       explicit YIS(IO::OutputInterface &out);
-      YIS(const YIS &other);
 
       int loadCode(const char *fname) override;
       State runOneStep() override;

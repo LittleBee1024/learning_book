@@ -11,13 +11,6 @@ namespace SIM
    {
    }
 
-   YIS::YIS(const YIS &other) : m_out(other.m_out),
-                                m_pc(other.m_pc),
-                                m_reg(other.m_reg),
-                                m_mem(other.m_mem)
-   {
-   }
-
    int YIS::loadCode(const char *fname)
    {
       int bytes = m_mem.load(fname);

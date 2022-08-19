@@ -9,15 +9,13 @@ namespace SIM
 {
    class Storage
    {
-   protected:
       static constexpr int SIZE_ALIGN = 32;
-      IO::OutputInterface &m_out;
-      std::vector<byte_t> m_contents;
-
-      Storage(int len, IO::OutputInterface &out);
-      Storage(const Storage &other);
-
    public:
+      Storage(int len, IO::OutputInterface &out);
+      Storage(const Storage &other) = default;
+      Storage &operator=(const Storage &) = delete;
+      virtual ~Storage() = default;
+
       bool getByte(word_t pos, byte_t *dest) const;
       bool setByte(word_t pos, byte_t val);
 
@@ -25,13 +23,16 @@ namespace SIM
       bool setWord(word_t pos, word_t val);
 
       size_t size() const;
+
+   protected:
+      IO::OutputInterface &m_out;
+      std::vector<byte_t> m_contents;
    };
 
    class MemStore : public Storage
    {
    public:
       MemStore(int len, IO::OutputInterface &out);
-      MemStore(const MemStore &other);
 
       /**
        * @brief Load Y86_64 machine code from a file
@@ -46,7 +47,6 @@ namespace SIM
    {
    public:
       RegStore(int len, IO::OutputInterface &out);
-      RegStore(const RegStore &other);
 
       word_t getRegVal(REG_ID id) const;
       void setRegVal(REG_ID id, word_t val);
