@@ -22,5 +22,7 @@ namespace SIM
       bool checkCond(cc_t cc, COND cType);
       word_t computeALU(ALU op, word_t argA, word_t argB);
       cc_t computeCC(ALU op, word_t argA, word_t argB);
+      static constexpr int REG_SIZE_BYTES = 128;       // 8 bytes * 16 regs
+      static constexpr int MEM_SIZE_BYTES = (1 << 13); // 8KB
    };
 }

@@ -12,8 +12,6 @@ namespace SIM
    // Yis simulates instruction one by one, doesn't create an universal model for all instructions
    class Yis : public SimInterface
    {
-      static constexpr int REG_SIZE_BYTES = 128;       // 8 bytes * 16 regs
-      static constexpr int MEM_SIZE_BYTES = (1 << 13); // 8KB
    public:
       explicit Yis(IO::OutputInterface &out);
 

@@ -55,7 +55,11 @@ int main(int argc, char *argv[])
    std::unique_ptr<IO::OutputInterface> out = std::make_unique<IO::StdOut>();
    SIM::Yis sim = SIM::Yis(*out);
 
-   sim.loadCode(option.infname.c_str());
+   if (!sim.loadCode(option.infname.c_str()))
+   {
+      out->out("[ERROR] Failed to load code\n");
+      return -1;
+   }
 
    SIM::Yis snapshot(sim);
 
@@ -64,7 +68,7 @@ int main(int argc, char *argv[])
    for (i = 0; i < option.maxSteps && state == SIM::STAT_OK; i++)
       state = sim.runOneStep();
 
-   printf("After %d steps, the state becomes %s\n", i, SIM::getStateName(state));
+   out->out("After %d steps, the state becomes %s\n", i, SIM::getStateName(state));
 
    sim.compare(snapshot);
 
