@@ -83,7 +83,7 @@ namespace SIM
    Storage::Storage(int len, IO::OutputInterface &out) : m_out(out)
    {
       len = (len + SIZE_ALIGN - 1) / SIZE_ALIGN * SIZE_ALIGN;
-      m_contents.resize(len);
+      m_contents.resize(len, 0);
    }
 
    bool Storage::getByte(word_t pos, byte_t *dest) const

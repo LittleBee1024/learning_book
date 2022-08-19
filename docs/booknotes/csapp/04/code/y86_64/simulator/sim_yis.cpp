@@ -5,9 +5,10 @@
 namespace SIM
 {
    Yis::Yis(IO::OutputInterface &out) : m_out(out),
-                                        m_pc(0),
                                         m_reg(REG_SIZE_BYTES, m_out),
-                                        m_mem(MEM_SIZE_BYTES, m_out)
+                                        m_mem(MEM_SIZE_BYTES, m_out),
+                                        m_pc(0),
+                                        m_cc(DEFAULT_CC)
    {
    }
 

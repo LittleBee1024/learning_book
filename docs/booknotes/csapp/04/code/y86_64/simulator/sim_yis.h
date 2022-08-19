@@ -26,9 +26,9 @@ namespace SIM
    private:
       IO::OutputInterface &m_out;
 
-      word_t m_pc;
       RegStore m_reg;
       MemStore m_mem;
+      word_t m_pc;
       cc_t m_cc;
    };
 

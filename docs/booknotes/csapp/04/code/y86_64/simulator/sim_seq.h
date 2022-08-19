@@ -3,6 +3,7 @@
 #include "./sim_interface.h"
 #include "./seq.h"
 #include "./state.h"
+#include "./storage.h"
 
 #include "io_interface.h"
 
@@ -20,6 +21,20 @@ namespace SIM
 
    private:
       IO::OutputInterface &m_out;
+      RegStore m_reg;
+      MemStore m_mem;
+      word_t m_pc;
+      cc_t m_cc;
+
+      struct PCInputs
+      {
+         byte_t icode = I_NOP;
+         word_t valc = 0;
+         word_t valm = 0;
+         word_t valp = 0;
+         bool bcond = false;
+      };
+      PCInputs m_pcInputs;
    };
 
 }
