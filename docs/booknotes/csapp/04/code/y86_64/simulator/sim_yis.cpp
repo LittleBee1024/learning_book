@@ -1,17 +1,17 @@
-#include "./yis.h"
+#include "./sim_yis.h"
 #include "isa.h"
 #include <assert.h>
 
 namespace SIM
 {
-   YIS::YIS(IO::OutputInterface &out) : m_out(out),
+   Yis::Yis(IO::OutputInterface &out) : m_out(out),
                                         m_pc(0),
                                         m_reg(REG_SIZE_BYTES, m_out),
                                         m_mem(MEM_SIZE_BYTES, m_out)
    {
    }
 
-   int YIS::loadCode(const char *fname)
+   int Yis::loadCode(const char *fname)
    {
       int bytes = m_mem.load(fname);
       if (bytes)
@@ -19,7 +19,7 @@ namespace SIM
       return bytes;
    }
 
-   State YIS::runOneStep()
+   State Yis::runOneStep()
    {
       word_t ftpc = m_pc; // fall-through PC
       byte_t byte0 = 0;   // (icode+ifun)
@@ -229,9 +229,9 @@ namespace SIM
       return STAT_OK;
    }
 
-   void YIS::compare(const SimInterface &other) const
+   void Yis::compare(const SimInterface &other) const
    {
-      const YIS *child = dynamic_cast<const YIS *>(&other);
+      const Yis *child = dynamic_cast<const Yis *>(&other);
       if (!child)
       {
          m_out.out("[ERROR] Compared with an invalid simulator snapshot\n");
@@ -242,7 +242,7 @@ namespace SIM
       compareMem(*child);
    }
 
-   void YIS::compareReg(const YIS &other) const
+   void Yis::compareReg(const Yis &other) const
    {
       m_out.out("Changes to registers:\n");
 
@@ -257,7 +257,7 @@ namespace SIM
       }
    }
 
-   void YIS::compareMem(const YIS &other) const
+   void Yis::compareMem(const Yis &other) const
    {
       m_out.out("Changes to memory:\n");
 

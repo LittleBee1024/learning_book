@@ -9,21 +9,21 @@
 
 namespace SIM
 {
-   // YIS simulates instruction one by one, doesn't create an universal model for all instructions
-   class YIS : public SimInterface
+   // Yis simulates instruction one by one, doesn't create an universal model for all instructions
+   class Yis : public SimInterface
    {
       static constexpr int REG_SIZE_BYTES = 128;       // 8 bytes * 16 regs
       static constexpr int MEM_SIZE_BYTES = (1 << 13); // 8KB
    public:
-      explicit YIS(IO::OutputInterface &out);
+      explicit Yis(IO::OutputInterface &out);
 
       int loadCode(const char *fname) override;
       State runOneStep() override;
       void compare(const SimInterface &other) const override;
 
    private:
-      void compareReg(const YIS &other) const;
-      void compareMem(const YIS &other) const;
+      void compareReg(const Yis &other) const;
+      void compareMem(const Yis &other) const;
 
    private:
       IO::OutputInterface &m_out;

@@ -1,7 +1,7 @@
 #include "io_interface.h"
 #include "output.h"
 #include "./sim_interface.h"
-#include "./yis.h"
+#include "./sim_yis.h"
 #include "./state.h"
 
 #include <memory>
@@ -53,11 +53,11 @@ int main(int argc, char *argv[])
    }
 
    std::unique_ptr<IO::OutputInterface> out = std::make_unique<IO::StdOut>();
-   SIM::YIS sim = SIM::YIS(*out);
+   SIM::Yis sim = SIM::Yis(*out);
 
    sim.loadCode(option.infname.c_str());
 
-   SIM::YIS snapshot(sim);
+   SIM::Yis snapshot(sim);
 
    SIM::State state = SIM::STAT_OK;
    int i = 0;
