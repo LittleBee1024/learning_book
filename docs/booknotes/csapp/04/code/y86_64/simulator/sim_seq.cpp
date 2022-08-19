@@ -44,21 +44,9 @@ namespace SEQ
 namespace SIM
 {
 
-   Seq::Seq(IO::OutputInterface &out) : m_out(out),
-                                        m_reg(REG_SIZE_BYTES, m_out),
-                                        m_mem(MEM_SIZE_BYTES, m_out),
-                                        m_pc(0),
-                                        m_ftpc(0),
-                                        m_cc(DEFAULT_CC)
+   Seq::Seq(IO::OutputInterface &out) : SimBase(out),
+                                        m_ftpc(0)
    {
-   }
-
-   int Seq::loadCode(const char *fname)
-   {
-      int bytes = m_mem.load(fname);
-      if (bytes)
-         m_out.out("[INFO] Loaded %d bytes code\n", bytes);
-      return bytes;
    }
 
    State Seq::runOneStep()
@@ -80,10 +68,6 @@ namespace SIM
          return s;
 
       return STAT_OK;
-   }
-
-   void Seq::compare(const SimInterface &other) const
-   {
    }
 
    State Seq::updatePC()

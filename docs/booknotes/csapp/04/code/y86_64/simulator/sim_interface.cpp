@@ -1,9 +1,73 @@
 #include "./sim_interface.h"
 
+#include <assert.h>
+
 namespace SIM
 {
 
-   bool SimInterface::checkCond(cc_t cc, COND cType)
+   SimBase::SimBase(IO::OutputInterface &out) : m_out(out),
+                                                m_reg(REG_SIZE_BYTES, m_out),
+                                                m_mem(MEM_SIZE_BYTES, m_out),
+                                                m_pc(0),
+                                                m_cc(DEFAULT_CC)
+   {
+   }
+
+   int SimBase::loadCode(const char *fname)
+   {
+      int bytes = m_mem.load(fname);
+      if (bytes)
+         m_out.out("[INFO] Loaded %d bytes code\n", bytes);
+      return bytes;
+   }
+
+   void SimBase::compare(const SimInterface &other) const
+   {
+      const SimBase *child = dynamic_cast<const SimBase *>(&other);
+      if (!child)
+      {
+         m_out.out("[ERROR] Compared with an invalid simulator snapshot\n");
+         return;
+      }
+
+      compareReg(*child);
+      compareMem(*child);
+   }
+
+   void SimBase::compareReg(const SimBase &other) const
+   {
+      m_out.out("Changes to registers:\n");
+
+      for (int id = REG_RAX; id < REG_NONE; id++)
+      {
+         word_t oldVal = other.m_reg.getRegVal((REG_ID)id);
+         word_t newVal = m_reg.getRegVal((REG_ID)id);
+         if (oldVal != newVal)
+         {
+            m_out.out("%s:\t0x%.16llx\t0x%.16llx\n", ISA::getRegName((REG_ID)id), oldVal, newVal);
+         }
+      }
+   }
+
+   void SimBase::compareMem(const SimBase &other) const
+   {
+      m_out.out("Changes to memory:\n");
+
+      assert(m_mem.size() == other.m_mem.size());
+      for (size_t i = 0; i < m_mem.size(); i += sizeof(word_t))
+      {
+         word_t oldVal = 0;
+         other.m_mem.getWord(i, &oldVal);
+         word_t newVal = 0;
+         m_mem.getWord(i, &newVal);
+         if (oldVal != newVal)
+         {
+            m_out.out("0x%.4llx:\t0x%.16llx\t0x%.16llx\n", i, oldVal, newVal);
+         }
+      }
+   }
+
+   bool SimBase::checkCond(cc_t cc, COND cType)
    {
       bool zf = GET_ZF(cc);
       bool sf = GET_SF(cc);
@@ -40,7 +104,7 @@ namespace SIM
       return jump;
    }
 
-   word_t SimInterface::computeALU(ALU op, word_t argA, word_t argB)
+   word_t SimBase::computeALU(ALU op, word_t argA, word_t argB)
    {
       word_t val;
       switch (op)
@@ -63,7 +127,7 @@ namespace SIM
       return val;
    }
 
-   cc_t SimInterface::computeCC(ALU op, word_t argA, word_t argB)
+   cc_t SimBase::computeCC(ALU op, word_t argA, word_t argB)
    {
       word_t val = computeALU(op, argA, argB);
       bool zero = (val == 0);

@@ -1,7 +1,10 @@
 #pragma once
 
 #include "./state.h"
+#include "./storage.h"
+
 #include "isa.h"
+#include "io_interface.h"
 
 namespace SIM
 {
@@ -17,12 +20,33 @@ namespace SIM
       SimInterface(const SimInterface &) = default;
       SimInterface &operator=(const SimInterface &) = delete;
       virtual ~SimInterface() = default;
+   };
+
+   class SimBase : public SimInterface
+   {
+   public:
+      explicit SimBase(IO::OutputInterface &out);
+      int loadCode(const char *fname) override;
+      void compare(const SimInterface &other) const override;
 
    protected:
       bool checkCond(cc_t cc, COND cType);
       word_t computeALU(ALU op, word_t argA, word_t argB);
       cc_t computeCC(ALU op, word_t argA, word_t argB);
+
+   private:
+      void compareReg(const SimBase &other) const;
+      void compareMem(const SimBase &other) const;
+
+   protected:
       static constexpr int REG_SIZE_BYTES = 128;       // 8 bytes * 16 regs
       static constexpr int MEM_SIZE_BYTES = (1 << 13); // 8KB
+
+      IO::OutputInterface &m_out;
+
+      RegStore m_reg;
+      MemStore m_mem;
+      word_t m_pc;
+      cc_t m_cc;
    };
 }
