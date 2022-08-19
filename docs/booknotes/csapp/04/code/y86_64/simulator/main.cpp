@@ -4,6 +4,7 @@
 #include "./yis.h"
 #include "./state.h"
 
+#include <memory>
 #include <unistd.h>
 
 void usage(char *pname)
@@ -51,9 +52,8 @@ int main(int argc, char *argv[])
       return -1;
    }
 
-   IO::StdOut out;
-
-   SIM::YIS sim = SIM::YIS(out);
+   std::unique_ptr<IO::OutputInterface> out = std::make_unique<IO::StdOut>();
+   SIM::YIS sim = SIM::YIS(*out);
    sim.loadCode(option.infname.c_str());
 
    SIM::YIS snapshot(sim);
