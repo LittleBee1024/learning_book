@@ -40,8 +40,11 @@ Y86_64_CODE=../test_yas/asum.yo
 %.yo: %.ys
 	$(YAS) $< -o $@
 
-run: $(Y86_64_CODE)
-	$(BUILD_DIR)/sim $(Y86_64_CODE)
+run_yis: $(Y86_64_CODE)
+	$(BUILD_DIR)/sim -y $(Y86_64_CODE)
+
+run_seq: $(Y86_64_CODE)
+	$(BUILD_DIR)/sim -s $(Y86_64_CODE)
 
 debug:
 	gdb -q $(BUILD_DIR)/sim \
