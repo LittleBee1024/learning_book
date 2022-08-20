@@ -185,7 +185,7 @@ namespace SIM
          }
 
          m_mem.setWord(mem_addr, mem_data);
-         m_out.out("[ERROR] PC = 0x%llx, Wrote 0x%llx to address 0x%llx\n", m_pc, mem_data, mem_addr);
+         m_out.out("IM: PC = 0x%llx, Wrote 0x%llx to address 0x%llx\n", m_pc, mem_data, mem_addr);
       }
 
       return;
