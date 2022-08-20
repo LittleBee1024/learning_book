@@ -17,12 +17,12 @@ namespace SIM
       State runOneStep() override;
 
    private:
-      State fetch();
-      State decode();
-      State execute();
-      State memory();
-      State writeBack();
-      State updatePC();
+      void fetch();
+      void decode();
+      void execute();
+      void memory();
+      void writeBack();
+      void updatePC();
    };
 
 }

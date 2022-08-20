@@ -57,38 +57,16 @@ namespace SIM
 
    State Seq::runOneStep()
    {
-      State s = STAT_OK;
-
-      s = fetch();
-      if (s != STAT_OK)
-         return s;
-      if (s == STAT_OK && SEQ::icode == STAT_HLT)
-         return STAT_HLT;
-
-      s = decode();
-      if (s != STAT_OK)
-         return s;
-
-      s = execute();
-      if (s != STAT_OK)
-         return s;
-
-      s = memory();
-      if (s != STAT_OK)
-         return s;
-
-      s = writeBack();
-      if (s != STAT_OK)
-         return s;
-
-      s = updatePC();
-      if (s != STAT_OK)
-         return s;
-
-      return STAT_OK;
+      fetch();
+      decode();
+      execute();
+      memory();
+      writeBack();
+      updatePC();
+      return (SIM::State)gen_Stat();
    }
 
-   State Seq::fetch()
+   void Seq::fetch()
    {
       // m_pc was updated in last step's updatePC process
       SEQ::valp = m_pc;
@@ -99,7 +77,7 @@ namespace SIM
       if (SEQ::imem_error)
       {
          m_out.out("[ERROR] PC = 0x%llx, Invalid instruction address\n", m_pc);
-         return STAT_ERR_ADDR;
+         return;
       }
       SEQ::imem_icode = HI4(byte0);
       SEQ::imem_ifun = LO4(byte0);
@@ -109,7 +87,7 @@ namespace SIM
       if (!SEQ::instr_valid)
       {
          m_out.out("[ERROR] PC = 0x%llx, Invalid instruction %.2x\n", m_pc, byte0);
-         return STAT_ERR_INSTR;
+         return;
       }
       SEQ::valp++;
 
@@ -119,10 +97,11 @@ namespace SIM
       if (gen_need_regids())
       {
          byte_t byte1 = 0; // (rA+rB)
-         if (!m_mem.getByte(SEQ::valp, &byte1))
+         SEQ::imem_error = !m_mem.getByte(SEQ::valp, &byte1);
+         if (SEQ::imem_error)
          {
             m_out.out("[ERROR] PC = 0x%llx, Invalid instruction address\n", m_pc);
-            return STAT_ERR_ADDR;
+            return;
          }
          SEQ::ra = HI4(byte1);
          SEQ::rb = LO4(byte1);
@@ -133,10 +112,11 @@ namespace SIM
       SEQ::valc = 0;
       if (gen_need_valC())
       {
-         if (!m_mem.getWord(SEQ::valp, &SEQ::valc))
+         SEQ::imem_error = !m_mem.getWord(SEQ::valp, &SEQ::valc);
+         if (SEQ::imem_error)
          {
             m_out.out("[ERROR] PC = 0x%llx, Invalid instruction address\n", m_pc);
-            return STAT_ERR_ADDR;
+            return;
          }
          SEQ::valp += sizeof(word_t);
       }
@@ -144,10 +124,10 @@ namespace SIM
       m_out.out("IF: Fetched %s at 0x%llx. ra=%s, rb=%s, valC = 0x%llx\n", ISA::decodeInstrName(HPACK(SEQ::icode, SEQ::ifun)),
                 m_pc, ISA::getRegName((REG_ID)SEQ::ra), ISA::getRegName((REG_ID)SEQ::rb), SEQ::valc);
 
-      return STAT_OK;
+      return;
    }
 
-   State Seq::decode()
+   void Seq::decode()
    {
       // valA <- R[rA]
       SEQ::srcA = gen_srcA();
@@ -165,11 +145,9 @@ namespace SIM
       SEQ::cond = checkCond(m_cc, (COND)SEQ::ifun);
       SEQ::destE = gen_dstE();
       SEQ::destM = gen_dstM();
-
-      return STAT_OK;
    }
 
-   State Seq::execute()
+   void Seq::execute()
    {
       SEQ::aluA = gen_aluA();
       SEQ::aluB = gen_aluB();
@@ -177,11 +155,9 @@ namespace SIM
       SEQ::vale = computeALU(alufun, SEQ::aluA, SEQ::aluB);
       if (gen_set_cc())
          m_cc = computeCC(alufun, SEQ::aluA, SEQ::aluB);
-
-      return STAT_OK;
    }
 
-   State Seq::memory()
+   void Seq::memory()
    {
       // valM <- Memory, or valM -> Memory
       word_t mem_addr = gen_mem_addr();
@@ -193,7 +169,7 @@ namespace SIM
          if (SEQ::dmem_error)
          {
             m_out.out("[ERROR] PC = 0x%llx, Couldn't read at address 0x%llx\n", m_pc, mem_addr);
-            return STAT_ERR_ADDR;
+            return;
          }
       }
 
@@ -205,32 +181,28 @@ namespace SIM
          if (SEQ::dmem_error)
          {
             m_out.out("[ERROR] PC = 0x%llx, Couldn't write at address 0x%llx\n", m_pc, mem_addr);
-            return STAT_ERR_ADDR;
+            return;
          }
 
          m_mem.setWord(mem_addr, mem_data);
          m_out.out("[ERROR] PC = 0x%llx, Wrote 0x%llx to address 0x%llx\n", m_pc, mem_data, mem_addr);
       }
 
-      return STAT_OK;
+      return;
    }
 
-   State Seq::writeBack()
+   void Seq::writeBack()
    {
       // Register <- valE, or register <- valM
       if (SEQ::destE != REG_NONE)
          m_reg.setRegVal((REG_ID)SEQ::destE, SEQ::vale);
       if (SEQ::destM != REG_NONE)
          m_reg.setRegVal((REG_ID)SEQ::destM, SEQ::valm);
-
-      return STAT_OK;
    }
 
-   State Seq::updatePC()
+   void Seq::updatePC()
    {
       // HCL function to generate predicted PC
       m_pc = gen_new_pc();
-
-      return STAT_OK;
    }
 }
