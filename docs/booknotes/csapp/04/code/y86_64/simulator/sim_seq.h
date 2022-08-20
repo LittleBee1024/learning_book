@@ -23,9 +23,6 @@ namespace SIM
       State memory();
       State writeBack();
       State updatePC();
-
-   private:
-      word_t m_ftpc; // fall-through PC
    };
 
 }
