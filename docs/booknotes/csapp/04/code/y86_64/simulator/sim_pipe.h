@@ -13,10 +13,13 @@ namespace SIM
    class Pipe : public SimBase
    {
    public:
+      // export pipeline registers as a static varible, so that generated function can use it
+      static PipeRegs s_pipeRegs;
+
+   public:
       explicit Pipe(IO::OutputInterface &out);
       State run(int maxSteps) override;
-   
+
    private:
-      PipeRegs m_pipeRegs;
    };
 }

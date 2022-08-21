@@ -25,13 +25,18 @@ $(BUILD_DIR)/%.o: $(DEP_COMMON_DIR)/%.cpp
 
 HCL=../hcl/build/hcl
 $(BUILD_DIR)/seq.o: seq.hcl
-	@echo "Building the seq.hcl of SEQ+"
+	@echo "Building the seq.hcl of SEQ"
 	@mkdir -p '$(@D)'
 	$(HCL) seq.hcl -o $(BUILD_DIR)/seq.cpp
 	$(CC) $(CFLAGS) -I. -I$(DEP_COMMON_DIR) -c $(BUILD_DIR)/seq.cpp -o $@
 
+$(BUILD_DIR)/pipe.o: pipe.hcl
+	@echo "Building the seq.hcl of PIPELINE"
+	@mkdir -p '$(@D)'
+	$(HCL) pipe.hcl -o $(BUILD_DIR)/pipe.cpp
+	$(CC) $(CFLAGS) -I. -I$(DEP_COMMON_DIR) -c $(BUILD_DIR)/pipe.cpp -o $@
 
-sim: $(DEP_COMMON_OBJS) $(BUILD_DIR)/seq.o $(OBJS)
+sim: $(DEP_COMMON_OBJS) $(BUILD_DIR)/seq.o $(BUILD_DIR)/pipe.o $(OBJS)
 	$(CC) $(CFLAGS) $^ -o $(BUILD_DIR)/$@
 
 YAS=../assembler/build/yas

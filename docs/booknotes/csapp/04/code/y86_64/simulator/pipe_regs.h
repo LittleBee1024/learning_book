@@ -9,7 +9,7 @@ namespace SIM
    struct FetchRegs
    {
       word_t pc = 0;
-      State state = STAT_OK;
+      State status = STAT_OK;
 
       void clear() { *this = {}; }
    };
@@ -22,7 +22,7 @@ namespace SIM
       byte_t rb = REG_NONE; /* Register rb ID */
       word_t valc = 0;      /* Instruction word encoding immediate data */
       word_t valp = 0;      /* Incremented program counter */
-      State state = STAT_BUBBLE;
+      State status = STAT_BUBBLE;
 
       void clear() { *this = {}; }
    };
@@ -38,7 +38,7 @@ namespace SIM
       byte_t srcb = REG_NONE;  /* Source Reg ID for valB */
       byte_t deste = REG_NONE; /* Destination register for valE */
       byte_t destm = REG_NONE; /* Destination register for valM */
-      State state = STAT_BUBBLE;
+      State status = STAT_BUBBLE;
 
       void clear() { *this = {}; }
    };
@@ -53,7 +53,7 @@ namespace SIM
       byte_t deste = REG_NONE; /* Destination register for valE */
       byte_t destm = REG_NONE; /* Destination register for valM */
       byte_t srca = REG_NONE;  /* Source register for valA */
-      State state = STAT_BUBBLE;
+      State status = STAT_BUBBLE;
 
       void clear() { *this = {}; }
    };
@@ -66,7 +66,7 @@ namespace SIM
       word_t valm = 0;         /* valM */
       byte_t deste = REG_NONE; /* Destination register for valE */
       byte_t destm = REG_NONE; /* Destination register for valM */
-      State state = STAT_BUBBLE;
+      State status = STAT_BUBBLE;
 
       void clear() { *this = {}; }
    };
@@ -79,7 +79,7 @@ namespace SIM
       P_ERROR
    };
 
-   template<typename PIPE_REG_T>
+   template <typename PIPE_REG_T>
    struct PipeReg
    {
       PIPE_REG_T current;
