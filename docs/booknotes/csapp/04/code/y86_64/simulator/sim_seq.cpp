@@ -59,7 +59,7 @@ namespace SIM
    {
    }
 
-   State Seq::runOneStep()
+   State Seq::runOneCycle()
    {
       fetch();
       decode();
@@ -105,7 +105,7 @@ namespace SIM
       if ((SIM::State)SEQ::gen_Stat() != SIM::STAT_OK)
          return;
 
-      // m_pc was updated in last step's updatePC process
+      // m_pc was updated in last cycle's updatePC process
       SEQ::valp = m_pc;
 
       // icode:ifun <- M1[PC]

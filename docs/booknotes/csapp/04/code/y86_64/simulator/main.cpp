@@ -11,7 +11,7 @@
 
 void usage(char *pname)
 {
-   printf("Usage: %s code_file [-m max_steps]\n", pname);
+   printf("Usage: %s code_file [-m max_cycles]\n", pname);
 }
 
 bool endsWith(const std::string &str, const std::string &suffix)
@@ -64,7 +64,7 @@ std::unique_ptr<SIM::SimInterface> takeSnapshot(SIMType type, const SIM::SimInte
 struct Options
 {
    std::string infname;
-   int maxSteps = 10000;
+   int maxCycles = 10000;
    SIMType type = SIMType::YIS;
 };
 
@@ -80,7 +80,7 @@ int main(int argc, char *argv[])
          usage(argv[0]);
          return 0;
       case 'm':
-         option.maxSteps = std::stoi(optarg);
+         option.maxCycles = std::stoi(optarg);
          break;
       case 'y':
          option.type = SIMType::YIS;
@@ -114,7 +114,7 @@ int main(int argc, char *argv[])
 
    std::unique_ptr<SIM::SimInterface> snapshot = takeSnapshot(option.type, sim.get());
 
-   sim->run(option.maxSteps);
+   sim->run(option.maxCycles);
    sim->compare(*snapshot);
 
    return 0;

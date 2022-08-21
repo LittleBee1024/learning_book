@@ -21,7 +21,7 @@ namespace SIM
    {
    }
 
-   State Pipe::runOneStep()
+   State Pipe::runOneCycle()
    {
       return STAT_OK;
    }

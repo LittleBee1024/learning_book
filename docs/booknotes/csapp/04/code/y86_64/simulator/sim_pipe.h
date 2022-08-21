@@ -21,6 +21,6 @@ namespace SIM
       void reset() override;
 
    private:
-      State runOneStep() override;
+      State runOneCycle() override;
    };
 }

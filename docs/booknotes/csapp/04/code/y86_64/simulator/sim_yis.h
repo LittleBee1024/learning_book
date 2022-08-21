@@ -14,7 +14,7 @@ namespace SIM
    public:
       explicit Yis(IO::OutputInterface &out);
    private:
-      State runOneStep() override;
+      State runOneCycle() override;
    };
 
 }

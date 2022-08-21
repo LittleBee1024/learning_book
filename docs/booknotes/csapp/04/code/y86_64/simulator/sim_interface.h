@@ -12,7 +12,7 @@ namespace SIM
    {
    public:
       virtual int loadCode(const char *fname) = 0;
-      virtual State run(int maxSteps) = 0;
+      virtual State run(int maxCycles) = 0;
       virtual void compare(const SimInterface &other) const = 0;
       virtual void reset() = 0;
 
@@ -29,11 +29,11 @@ namespace SIM
       explicit SimBase(IO::OutputInterface &out);
       int loadCode(const char *fname) override;
       void compare(const SimInterface &other) const override;
-      State run(int maxSteps) override;
+      State run(int maxCycles) override;
       void reset() override;
 
    protected:
-      virtual State runOneStep() = 0;
+      virtual State runOneCycle() = 0;
 
    protected:
       bool checkCond(cc_t cc, COND cType);

@@ -7,7 +7,7 @@ namespace SIM
    {
    }
 
-   State Yis::runOneStep()
+   State Yis::runOneCycle()
    {
       word_t ftpc = m_pc; // fall-through PC
       m_out.out("F: predPC = 0x%llx\n", ftpc);
