@@ -19,12 +19,16 @@ namespace SIM
 
    Pipe::Pipe(IO::OutputInterface &out) : SimBase(out)
    {
-      s_pipeRegs.clear();
    }
 
    State Pipe::run(int maxSteps)
    {
       s_pipeRegs.clear();
+      return SimBase::run(maxSteps);
+   }
+
+   State Pipe::runOneStep()
+   {
       return STAT_OK;
    }
 

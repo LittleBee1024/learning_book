@@ -21,5 +21,6 @@ namespace SIM
       State run(int maxSteps) override;
 
    private:
+      State runOneStep() override;
    };
 }
