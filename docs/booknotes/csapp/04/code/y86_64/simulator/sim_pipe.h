@@ -18,7 +18,7 @@ namespace SIM
 
    public:
       explicit Pipe(IO::OutputInterface &out);
-      State run(int maxSteps) override;
+      void reset() override;
 
    private:
       State runOneStep() override;

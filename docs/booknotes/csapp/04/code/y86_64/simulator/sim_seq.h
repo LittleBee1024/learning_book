@@ -13,6 +13,7 @@ namespace SIM
    {
    public:
       explicit Seq(IO::OutputInterface &out);
+      void reset() override;
 
    private:
       State runOneStep() override;

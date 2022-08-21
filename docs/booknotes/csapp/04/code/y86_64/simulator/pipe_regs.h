@@ -11,7 +11,7 @@ namespace SIM
       word_t pc = 0;
       State status = STAT_OK;
 
-      void clear() { *this = {}; }
+      void reset() { *this = {}; }
    };
 
    struct DecodeRegs
@@ -24,7 +24,7 @@ namespace SIM
       word_t valp = 0;      /* Incremented program counter */
       State status = STAT_BUBBLE;
 
-      void clear() { *this = {}; }
+      void reset() { *this = {}; }
    };
 
    struct ExecuteRegs
@@ -40,7 +40,7 @@ namespace SIM
       byte_t destm = REG_NONE; /* Destination register for valM */
       State status = STAT_BUBBLE;
 
-      void clear() { *this = {}; }
+      void reset() { *this = {}; }
    };
 
    struct MemoryRegs
@@ -55,7 +55,7 @@ namespace SIM
       byte_t srca = REG_NONE;  /* Source register for valA */
       State status = STAT_BUBBLE;
 
-      void clear() { *this = {}; }
+      void reset() { *this = {}; }
    };
 
    struct WritebackRegs
@@ -68,7 +68,7 @@ namespace SIM
       byte_t destm = REG_NONE; /* Destination register for valM */
       State status = STAT_BUBBLE;
 
-      void clear() { *this = {}; }
+      void reset() { *this = {}; }
    };
 
    enum PipeOp : int
@@ -96,7 +96,7 @@ namespace SIM
       PipeReg<WritebackRegs> writeback;
 
       void update();
-      void clear();
+      void reset();
       bool hasError() const;
    };
 

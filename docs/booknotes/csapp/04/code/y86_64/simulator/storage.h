@@ -23,6 +23,7 @@ namespace SIM
       bool setWord(word_t pos, word_t val);
 
       size_t size() const;
+      void reset();
 
    protected:
       IO::OutputInterface &m_out;

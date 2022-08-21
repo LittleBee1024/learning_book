@@ -21,15 +21,24 @@ namespace SIM
    {
    }
 
-   State Pipe::run(int maxSteps)
-   {
-      s_pipeRegs.clear();
-      return SimBase::run(maxSteps);
-   }
-
    State Pipe::runOneStep()
    {
       return STAT_OK;
+   }
+
+   void Pipe::reset()
+   {
+      s_pipeRegs.reset();
+
+      PIPE::imem_icode = I_NOP;
+      PIPE::imem_ifun = F_NONE;
+      PIPE::imem_error = false;
+      PIPE::instr_valid = true;
+      PIPE::d_regvala = 0;
+      PIPE::d_regvalb = 0;
+      PIPE::dmem_error = false;
+
+      SimBase::reset();
    }
 
 }

@@ -14,6 +14,7 @@ namespace SIM
       virtual int loadCode(const char *fname) = 0;
       virtual State run(int maxSteps) = 0;
       virtual void compare(const SimInterface &other) const = 0;
+      virtual void reset() = 0;
 
    public:
       SimInterface() = default;
@@ -29,6 +30,7 @@ namespace SIM
       int loadCode(const char *fname) override;
       void compare(const SimInterface &other) const override;
       State run(int maxSteps) override;
+      void reset() override;
 
    protected:
       virtual State runOneStep() = 0;

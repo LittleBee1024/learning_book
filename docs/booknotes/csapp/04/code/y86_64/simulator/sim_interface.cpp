@@ -35,6 +35,14 @@ namespace SIM
       return state;
    }
 
+   void SimBase::reset()
+   {
+      m_reg.reset();
+      m_mem.reset();
+      m_pc = 0;
+      m_cc = DEFAULT_CC;
+   }
+
    void SimBase::compare(const SimInterface &other) const
    {
       const SimBase *child = dynamic_cast<const SimBase *>(&other);

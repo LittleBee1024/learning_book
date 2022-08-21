@@ -11,7 +11,7 @@ namespace SIM
          case P_BUBBLE:
          {
             /* insert a bubble into the current stage */
-            reg.current.clear();
+            reg.current.reset();
             break;
          }
          case P_LOAD:
@@ -23,7 +23,7 @@ namespace SIM
          case P_ERROR:
          {
             /* Like a bubble, but insert error condition */
-            reg.current.clear();
+            reg.current.reset();
             break;
          }
          case P_STALL:
@@ -41,22 +41,22 @@ namespace SIM
       updateRegs(writeback);
    }
 
-   void PipeRegs::clear()
+   void PipeRegs::reset()
    {
-      fetch.current.clear();
-      fetch.next.clear();
+      fetch.current.reset();
+      fetch.next.reset();
       fetch.op = P_LOAD;
-      decode.current.clear();
-      decode.next.clear();
+      decode.current.reset();
+      decode.next.reset();
       decode.op = P_LOAD;
-      execute.current.clear();
-      execute.next.clear();
+      execute.current.reset();
+      execute.next.reset();
       execute.op = P_LOAD;
-      memory.current.clear();
-      memory.next.clear();
+      memory.current.reset();
+      memory.next.reset();
       memory.op = P_LOAD;
-      writeback.current.clear();
-      writeback.next.clear();
+      writeback.current.reset();
+      writeback.next.reset();
       writeback.op = P_LOAD;
    }
 

@@ -1,5 +1,6 @@
 #include "./storage.h"
 
+#include <algorithm>
 #include <fstream>
 #include <assert.h>
 
@@ -133,6 +134,11 @@ namespace SIM
    size_t Storage::size() const
    {
       return m_contents.size();
+   }
+
+   void Storage::reset()
+   {
+      std::fill(m_contents.begin(), m_contents.end(), 0);
    }
 
    RegStore::RegStore(int len, IO::OutputInterface& out) : Storage(len, out)

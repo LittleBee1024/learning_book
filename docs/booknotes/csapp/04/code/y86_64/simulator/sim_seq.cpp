@@ -70,6 +70,34 @@ namespace SIM
       return (SIM::State)SEQ::gen_Stat();
    }
 
+   void Seq::reset()
+   {
+      SEQ::imem_icode = I_NOP;
+      SEQ::imem_ifun = F_NONE;
+      SEQ::imem_error = false;
+      SEQ::icode = I_NOP;
+      SEQ::ifun = 0;
+      SEQ::instr_valid = true;
+      SEQ::ra = REG_NONE;
+      SEQ::rb = REG_NONE;
+      SEQ::valc = 0;
+      SEQ::valp = 0;
+      SEQ::vala = 0;
+      SEQ::valb = 0;
+      SEQ::vale = 0;
+      SEQ::cond = false;
+      SEQ::valm = 0;
+      SEQ::dmem_error = false;
+      SEQ::srcA = REG_NONE;
+      SEQ::srcB = REG_NONE;
+      SEQ::destE = REG_NONE;
+      SEQ::destM = REG_NONE;
+      SEQ::aluA = 0;
+      SEQ::aluB = 0;
+
+      SimBase::reset();
+   }
+
    void Seq::fetch()
    {
       m_out.out("F: predPC = 0x%llx\n", m_pc);
