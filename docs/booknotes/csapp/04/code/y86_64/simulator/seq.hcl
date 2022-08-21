@@ -1,16 +1,6 @@
-#/* $begin seq-all-hcl */
-####################################################################
-#  HCL Description of Control for Single Cycle Y86-64 Processor SEQ   #
-#  Copyright (C) Randal E. Bryant, David R. O'Hallaron, 2010       #
-####################################################################
-
-####################################################################
-#    C Include's.  Don't alter these                               #
-####################################################################
-
 quote '#include "state.h"'
 quote '#include "seq.h"'
-quote 'using namespace SEQ;'
+quote 'namespace SEQ {'
 
 ####################################################################
 #    Declarations.  Do not change/remove/delete any of these       #
@@ -210,4 +200,5 @@ word new_pc = [
         # Default: Use incremented PC
         1 : valP;
 ];
-#/* $end seq-all-hcl */
+
+quote '}' # namespace SEQ

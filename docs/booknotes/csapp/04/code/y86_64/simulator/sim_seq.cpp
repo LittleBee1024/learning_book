@@ -63,7 +63,7 @@ namespace SIM
       memory();
       writeBack();
       updatePC();
-      return (SIM::State)gen_Stat();
+      return (SIM::State)SEQ::gen_Stat();
    }
 
    void Seq::fetch()
@@ -81,9 +81,9 @@ namespace SIM
       }
       SEQ::imem_icode = HI4(byte0);
       SEQ::imem_ifun = LO4(byte0);
-      SEQ::icode = gen_icode();
-      SEQ::ifun = gen_ifun();
-      SEQ::instr_valid = gen_instr_valid();
+      SEQ::icode = SEQ::gen_icode();
+      SEQ::ifun = SEQ::gen_ifun();
+      SEQ::instr_valid = SEQ::gen_instr_valid();
       if (!SEQ::instr_valid)
       {
          m_out.out("[ERROR] PC = 0x%llx, Invalid instruction %.2x\n", m_pc, byte0);
@@ -94,7 +94,7 @@ namespace SIM
       // rA:rB <- M1[PC+1]
       SEQ::ra = REG_NONE;
       SEQ::rb = REG_NONE;
-      if (gen_need_regids())
+      if (SEQ::gen_need_regids())
       {
          byte_t byte1 = 0; // (rA+rB)
          SEQ::imem_error = !m_mem.getByte(SEQ::valp, &byte1);
@@ -110,7 +110,7 @@ namespace SIM
 
       // valC <- M8[PC+2]
       SEQ::valc = 0;
-      if (gen_need_valC())
+      if (SEQ::gen_need_valC())
       {
          SEQ::imem_error = !m_mem.getWord(SEQ::valp, &SEQ::valc);
          if (SEQ::imem_error)
@@ -130,40 +130,40 @@ namespace SIM
    void Seq::decode()
    {
       // valA <- R[rA]
-      SEQ::srcA = gen_srcA();
+      SEQ::srcA = SEQ::gen_srcA();
       SEQ::vala = 0;
       if (SEQ::srcA != REG_NONE)
          SEQ::vala = m_reg.getRegVal((REG_ID)SEQ::srcA);
 
       // valB <- R[rB]
-      SEQ::srcB = gen_srcB();
+      SEQ::srcB = SEQ::gen_srcB();
       SEQ::valb = 0;
       if (SEQ::srcB != REG_NONE)
          SEQ::valb = m_reg.getRegVal((REG_ID)SEQ::srcB);
 
-      // gen_dstE() depends on cond, so it has been set before gen_dstE()
+      // SEQ::gen_dstE() depends on cond, so it has been set before SEQ::gen_dstE()
       SEQ::cond = checkCond(m_cc, (COND)SEQ::ifun);
-      SEQ::destE = gen_dstE();
-      SEQ::destM = gen_dstM();
+      SEQ::destE = SEQ::gen_dstE();
+      SEQ::destM = SEQ::gen_dstM();
    }
 
    void Seq::execute()
    {
-      SEQ::aluA = gen_aluA();
-      SEQ::aluB = gen_aluB();
-      ALU alufun = (ALU)gen_alufun();
+      SEQ::aluA = SEQ::gen_aluA();
+      SEQ::aluB = SEQ::gen_aluB();
+      ALU alufun = (ALU)SEQ::gen_alufun();
       SEQ::vale = computeALU(alufun, SEQ::aluA, SEQ::aluB);
-      if (gen_set_cc())
+      if (SEQ::gen_set_cc())
          m_cc = computeCC(alufun, SEQ::aluA, SEQ::aluB);
    }
 
    void Seq::memory()
    {
       // valM <- Memory, or valM -> Memory
-      word_t mem_addr = gen_mem_addr();
-      word_t mem_data = gen_mem_data();
+      word_t mem_addr = SEQ::gen_mem_addr();
+      word_t mem_data = SEQ::gen_mem_data();
       SEQ::valm = 0;
-      if (gen_mem_read())
+      if (SEQ::gen_mem_read())
       {
          SEQ::dmem_error = !m_mem.getWord(mem_addr, &SEQ::valm);
          if (SEQ::dmem_error)
@@ -173,7 +173,7 @@ namespace SIM
          }
       }
 
-      if (gen_mem_write())
+      if (SEQ::gen_mem_write())
       {
          // Do a test read of the data memory to make sure address is OK
          word_t junk;
@@ -203,6 +203,6 @@ namespace SIM
    void Seq::updatePC()
    {
       // HCL function to generate predicted PC
-      m_pc = gen_new_pc();
+      m_pc = SEQ::gen_new_pc();
    }
 }
