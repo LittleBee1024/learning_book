@@ -48,5 +48,5 @@ run_seq: $(Y86_64_CODE)
 
 debug:
 	gdb -q $(BUILD_DIR)/sim \
-	-ex "start $(Y86_64_CODE)"
+	-ex "start -s $(Y86_64_CODE)"
 

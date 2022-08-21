@@ -14,20 +14,18 @@ namespace SEQ
    bool imem_error = false;
    byte_t icode = I_NOP;
    word_t ifun = 0;
-   bool instr_valid = false;
+   bool instr_valid = true;
    // byte1
    word_t ra = REG_NONE;
    word_t rb = REG_NONE;
    // word
    word_t valc = 0;
-   // next pc
+   // fall-through PC
    word_t valp = 0;
 
    /*************
     * Decode/WriteBack stage
     *************/
-   word_t srcA = REG_NONE;
-   word_t srcB = REG_NONE;
    word_t destE = REG_NONE;
    word_t destM = REG_NONE;
    word_t vala = 0;
@@ -66,6 +64,9 @@ namespace SIM
 
    void Seq::fetch()
    {
+      if ((SIM::State)SEQ::gen_Stat() != SIM::STAT_OK)
+         return;
+
       // m_pc was updated in last step's updatePC process
       SEQ::valp = m_pc;
 
@@ -127,17 +128,20 @@ namespace SIM
 
    void Seq::decode()
    {
+      if ((SIM::State)SEQ::gen_Stat() != SIM::STAT_OK)
+         return;
+
       // valA <- R[rA]
-      SEQ::srcA = SEQ::gen_srcA();
+      REG_ID srcA = (REG_ID)SEQ::gen_srcA();
       SEQ::vala = 0;
-      if (SEQ::srcA != REG_NONE)
-         SEQ::vala = m_reg.getRegVal((REG_ID)SEQ::srcA);
+      if (srcA != REG_NONE)
+         SEQ::vala = m_reg.getRegVal(srcA);
 
       // valB <- R[rB]
-      SEQ::srcB = SEQ::gen_srcB();
+      REG_ID srcB = (REG_ID)SEQ::gen_srcB();
       SEQ::valb = 0;
-      if (SEQ::srcB != REG_NONE)
-         SEQ::valb = m_reg.getRegVal((REG_ID)SEQ::srcB);
+      if (srcB != REG_NONE)
+         SEQ::valb = m_reg.getRegVal(srcB);
 
       // SEQ::gen_dstE() depends on cond, so it has been set before SEQ::gen_dstE()
       SEQ::cond = checkCond(m_cc, (COND)SEQ::ifun);
@@ -147,6 +151,9 @@ namespace SIM
 
    void Seq::execute()
    {
+      if ((SIM::State)SEQ::gen_Stat() != SIM::STAT_OK)
+         return;
+
       word_t aluA = SEQ::gen_aluA();
       word_t aluB = SEQ::gen_aluB();
       ALU alufun = (ALU)SEQ::gen_alufun();
@@ -157,6 +164,9 @@ namespace SIM
 
    void Seq::memory()
    {
+      if ((SIM::State)SEQ::gen_Stat() != SIM::STAT_OK)
+         return;
+
       // valM <- Memory, or valM -> Memory
       word_t mem_addr = SEQ::gen_mem_addr();
       word_t mem_data = SEQ::gen_mem_data();
@@ -191,6 +201,9 @@ namespace SIM
 
    void Seq::writeBack()
    {
+      if ((SIM::State)SEQ::gen_Stat() != SIM::STAT_OK)
+         return;
+
       // Register <- valE, or register <- valM
       if (SEQ::destE != REG_NONE)
          m_reg.setRegVal((REG_ID)SEQ::destE, SEQ::vale);
@@ -200,6 +213,9 @@ namespace SIM
 
    void Seq::updatePC()
    {
+      if ((SIM::State)SEQ::gen_Stat() != SIM::STAT_OK)
+         return;
+
       // HCL function to generate predicted PC
       m_pc = SEQ::gen_new_pc();
    }
