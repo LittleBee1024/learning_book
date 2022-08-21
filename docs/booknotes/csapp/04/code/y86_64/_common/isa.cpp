@@ -51,6 +51,15 @@ namespace
    const std::vector<std::string> Y86_64_REG_NAMES = {"%rax", "%rcx", "%rdx", "%rbx", "%rsp", "%rbp", "%rsi", "%rdi",
                                                       "%r8", "%r9", "%r10", "%r11", "%r12", "%r13", "%r14"};
 
+   const std::vector<std::string> CC_NAMES = {
+       "Z=0 S=0 O=0",
+       "Z=0 S=0 O=1",
+       "Z=0 S=1 O=0",
+       "Z=0 S=1 O=1",
+       "Z=1 S=0 O=0",
+       "Z=1 S=0 O=1",
+       "Z=1 S=1 O=0",
+       "Z=1 S=1 O=1"};
 }
 
 namespace ISA
@@ -91,5 +100,14 @@ namespace ISA
       if (id >= REG_RAX && id < REG_NONE)
          return Y86_64_REG_NAMES[id].c_str();
       return "----";
+   }
+
+   const char *getCCName(cc_t c)
+   {
+      int ci = c;
+      if (ci < 0 || ci > 7)
+         return "???????????";
+      else
+         return CC_NAMES[c].c_str();
    }
 }

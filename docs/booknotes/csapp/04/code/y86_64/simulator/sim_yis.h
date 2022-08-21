@@ -13,7 +13,9 @@ namespace SIM
    {
    public:
       explicit Yis(IO::OutputInterface &out);
-      State runOneStep() override;
+      State run(int maxSteps) override;
+   private:
+      State runOneStep();
    };
 
 }

@@ -13,10 +13,11 @@ namespace SIM
    {
    public:
       explicit Seq(IO::OutputInterface &out);
-
-      State runOneStep() override;
+      State run(int maxSteps) override;
 
    private:
+      State runOneStep();
+
       void fetch();
       void decode();
       void execute();

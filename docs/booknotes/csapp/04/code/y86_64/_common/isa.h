@@ -167,4 +167,12 @@ namespace ISA
     * @return const char*, for invalid ID, return nullptr
     */
    const char *getRegName(REG_ID id);
+
+   /**
+    * @brief Get the name of Y76-64 CC
+    * 
+    * @param c, the type of CC
+    * @return const char* 
+    */
+   const char *getCCName(cc_t c);
 }

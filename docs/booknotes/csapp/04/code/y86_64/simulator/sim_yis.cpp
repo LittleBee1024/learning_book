@@ -7,6 +7,19 @@ namespace SIM
    {
    }
 
+   State Yis::run(int maxSteps)
+   {
+      SIM::State state = SIM::STAT_OK;
+      int i = 0;
+      for (i = 0; i < maxSteps && state == SIM::STAT_OK; i++)
+      {
+         state = runOneStep();
+      }
+
+      m_out.out("After %d steps, the state becomes %s\n", i, SIM::getStateName(state));
+      return state;
+   }
+
    State Yis::runOneStep()
    {
       word_t ftpc = m_pc; // fall-through PC

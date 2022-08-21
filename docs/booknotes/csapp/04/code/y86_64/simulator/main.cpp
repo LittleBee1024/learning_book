@@ -116,13 +116,7 @@ int main(int argc, char *argv[])
 
    std::unique_ptr<SIM::SimInterface> snapshot = takeSnapshot(option.type, sim.get());
 
-   SIM::State state = SIM::STAT_OK;
-   int i = 0;
-   for (i = 0; i < option.maxSteps && state == SIM::STAT_OK; i++)
-      state = sim->runOneStep();
-
-   out->out("After %d steps, the state becomes %s\n", i, SIM::getStateName(state));
-
+   sim->run(option.maxSteps);
    sim->compare(*snapshot);
 
    return 0;
