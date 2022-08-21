@@ -26,18 +26,12 @@ namespace SEQ
    /*************
     * Decode/WriteBack stage
     *************/
-   word_t srcA = REG_NONE;
-   word_t srcB = REG_NONE;
-   word_t destE = REG_NONE;
-   word_t destM = REG_NONE;
    word_t vala = 0;
    word_t valb = 0;
 
    /*************
     * Execute stage
     *************/
-   word_t aluA = 0;
-   word_t aluB = 0;
    word_t vale = 0;
    bool cond = false;
 
@@ -46,6 +40,16 @@ namespace SEQ
     *************/
    word_t valm = 0;
    bool dmem_error = false;
+
+   /*********************************
+    * Variables only used in this CPP
+    *********************************/
+   word_t srcA = REG_NONE;
+   word_t srcB = REG_NONE;
+   word_t destE = REG_NONE;
+   word_t destM = REG_NONE;
+   word_t aluA = 0;
+   word_t aluB = 0;
 }
 
 namespace SIM
