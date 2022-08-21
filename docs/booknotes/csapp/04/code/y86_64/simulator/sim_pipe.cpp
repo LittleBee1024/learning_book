@@ -24,6 +24,7 @@ namespace SIM
 
    State Pipe::run(int maxSteps)
    {
+      s_pipeRegs.clear();
       return STAT_OK;
    }
 
