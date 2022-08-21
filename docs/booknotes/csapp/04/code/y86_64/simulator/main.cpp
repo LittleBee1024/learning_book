@@ -30,10 +30,8 @@ std::unique_ptr<SIM::SimInterface> createSimulator(SIMType type, IO::OutputInter
    switch (type)
    {
    case SIMType::YIS:
-      out.out("--- Start YIS Simulator ---\n");
       return std::make_unique<SIM::Yis>(out);
    case SIMType::SEQ:
-      out.out("--- Start SEQ Simulator ---\n");
       return std::make_unique<SIM::Seq>(out);
    default:
       assert(0 && "Invalid Simulator Type\n");

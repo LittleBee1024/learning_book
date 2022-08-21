@@ -53,14 +53,17 @@ namespace SIM
 
    State Seq::run(int maxSteps)
    {
+      m_out.out("Run code at SEQ simulator\n");
+
       SIM::State state = SIM::STAT_OK;
       int i = 0;
       for (i = 0; i < maxSteps && state == SIM::STAT_OK; i++)
       {
+         m_out.out("\nCycle %d. CC=%s, Stat=%s\n", i, ISA::getCCName(m_cc), getStateName(state));
          state = runOneStep();
       }
 
-      m_out.out("After %d steps, the state becomes %s\n", i, SIM::getStateName(state));
+      m_out.out("\nAfter %d cycles, the state becomes %s\n\n", i, SIM::getStateName(state));
       return state;
    }
 
@@ -133,10 +136,9 @@ namespace SIM
          SEQ::valp += sizeof(word_t);
       }
 
-      m_out.out("IF: Fetched %s at 0x%llx. ra=%s, rb=%s, valC = 0x%llx\n", ISA::decodeInstrName(HPACK(SEQ::icode, SEQ::ifun)),
-                m_pc, ISA::getRegName((REG_ID)SEQ::ra), ISA::getRegName((REG_ID)SEQ::rb), SEQ::valc);
-
-      return;
+      m_out.out("D: instr = %s, rA = %s, rB = %s, valC = 0x%llx, valP = 0x%llx\n",
+         ISA::decodeInstrName(HPACK(SEQ::icode, SEQ::ifun)), ISA::getRegName((REG_ID)SEQ::ra),
+         ISA::getRegName((REG_ID)SEQ::rb), SEQ::valc, SEQ::valp);
    }
 
    void Seq::decode()
@@ -160,6 +162,10 @@ namespace SIM
       SEQ::cond = checkCond(m_cc, (COND)SEQ::ifun);
       SEQ::destE = SEQ::gen_dstE();
       SEQ::destM = SEQ::gen_dstM();
+
+      m_out.out("E: instr = %s, valC = 0x%llx, valA = 0x%llx, valB = 0x%llx\n   srcA = %s, srcB = %s, dstE = %s, dstM = %s\n",
+         ISA::decodeInstrName(HPACK(SEQ::icode, SEQ::ifun)), SEQ::valc, SEQ::vala, SEQ::valb,
+         ISA::getRegName(srcA), ISA::getRegName(srcB), ISA::getRegName((REG_ID)SEQ::destE), ISA::getRegName((REG_ID)SEQ::destM));
    }
 
    void Seq::execute()
@@ -173,6 +179,10 @@ namespace SIM
       SEQ::vale = computeALU(alufun, aluA, aluB);
       if (SEQ::gen_set_cc())
          m_cc = computeCC(alufun, aluA, aluB);
+
+      m_out.out("M: instr = %s, Cnd = %d, valE = 0x%llx, valA = 0x%llx\n   dstE = %s, dstM = %s\n",
+         ISA::decodeInstrName(HPACK(SEQ::icode, SEQ::ifun)), SEQ::cond, SEQ::vale, SEQ::vala,
+         ISA::getRegName((REG_ID)SEQ::destE), ISA::getRegName((REG_ID)SEQ::destM));
    }
 
    void Seq::memory()
@@ -209,7 +219,9 @@ namespace SIM
          m_out.out("IM: PC = 0x%llx, Wrote 0x%llx to address 0x%llx\n", m_pc, mem_data, mem_addr);
       }
 
-      return;
+      m_out.out("W: instr = %s, valE = 0x%llx, valM = 0x%llx, dstE = %s, dstM = %s\n",
+         ISA::decodeInstrName(HPACK(SEQ::icode, SEQ::ifun)), SEQ::vale, SEQ::valm,
+         ISA::getRegName((REG_ID)SEQ::destE), ISA::getRegName((REG_ID)SEQ::destM));
    }
 
    void Seq::writeBack()
@@ -231,5 +243,6 @@ namespace SIM
 
       // HCL function to generate predicted PC
       m_pc = SEQ::gen_new_pc();
+      m_out.out("F: predPC = 0x%llx\n", m_pc);
    }
 }

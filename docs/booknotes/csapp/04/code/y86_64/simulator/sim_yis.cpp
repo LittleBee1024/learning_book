@@ -9,20 +9,25 @@ namespace SIM
 
    State Yis::run(int maxSteps)
    {
+      m_out.out("Run code at YIS simulator\n");
+
       SIM::State state = SIM::STAT_OK;
       int i = 0;
       for (i = 0; i < maxSteps && state == SIM::STAT_OK; i++)
       {
+         m_out.out("\nCycle %d. CC=%s, Stat=%s\n", i, ISA::getCCName(m_cc), getStateName(state));
          state = runOneStep();
       }
 
-      m_out.out("After %d steps, the state becomes %s\n", i, SIM::getStateName(state));
+      m_out.out("\nAfter %d cycles, the state becomes %s\n\n", i, SIM::getStateName(state));
       return state;
    }
 
    State Yis::runOneStep()
    {
       word_t ftpc = m_pc; // fall-through PC
+      m_out.out("F: predPC = 0x%llx\n", ftpc);
+
       byte_t byte0 = 0;   // (icode+ifun)
       if (!m_mem.getByte(ftpc, &byte0))
       {
@@ -93,6 +98,9 @@ namespace SIM
          }
          ftpc += sizeof(word_t);
       }
+
+      m_out.out("D: instr = %s, rA = %s, rB = %s, valC = 0x%llx, valP = 0x%llx\n", ISA::decodeInstrName(HPACK(icode, ifun)),
+         ISA::getRegName((REG_ID)rA), ISA::getRegName((REG_ID)rB), cval, ftpc);
 
       switch (icode)
       {
