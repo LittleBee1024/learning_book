@@ -36,8 +36,6 @@ namespace SEQ
    /*************
     * Execute stage
     *************/
-   word_t aluA = 0;
-   word_t aluB = 0;
    word_t vale = 0;
    bool cond = false;
 
@@ -149,12 +147,12 @@ namespace SIM
 
    void Seq::execute()
    {
-      SEQ::aluA = SEQ::gen_aluA();
-      SEQ::aluB = SEQ::gen_aluB();
+      word_t aluA = SEQ::gen_aluA();
+      word_t aluB = SEQ::gen_aluB();
       ALU alufun = (ALU)SEQ::gen_alufun();
-      SEQ::vale = computeALU(alufun, SEQ::aluA, SEQ::aluB);
+      SEQ::vale = computeALU(alufun, aluA, aluB);
       if (SEQ::gen_set_cc())
-         m_cc = computeCC(alufun, SEQ::aluA, SEQ::aluB);
+         m_cc = computeCC(alufun, aluA, aluB);
    }
 
    void Seq::memory()
