@@ -26,6 +26,8 @@ namespace SEQ
    /*************
     * Decode/WriteBack stage
     *************/
+   word_t srcA = REG_NONE;
+   word_t srcB = REG_NONE;
    word_t destE = REG_NONE;
    word_t destM = REG_NONE;
    word_t vala = 0;
@@ -34,6 +36,8 @@ namespace SEQ
    /*************
     * Execute stage
     *************/
+   word_t aluA = 0;
+   word_t aluB = 0;
    word_t vale = 0;
    bool cond = false;
 
@@ -80,6 +84,8 @@ namespace SIM
 
    void Seq::fetch()
    {
+      m_out.out("F: predPC = 0x%llx\n", m_pc);
+
       if ((SIM::State)SEQ::gen_Stat() != SIM::STAT_OK)
          return;
 
@@ -135,58 +141,59 @@ namespace SIM
          }
          SEQ::valp += sizeof(word_t);
       }
-
-      m_out.out("D: instr = %s, rA = %s, rB = %s, valC = 0x%llx, valP = 0x%llx\n",
-         ISA::decodeInstrName(HPACK(SEQ::icode, SEQ::ifun)), ISA::getRegName((REG_ID)SEQ::ra),
-         ISA::getRegName((REG_ID)SEQ::rb), SEQ::valc, SEQ::valp);
    }
 
    void Seq::decode()
    {
+      m_out.out("D: instr = %s, rA = %s, rB = %s, valC = 0x%llx, valP = 0x%llx\n",
+                ISA::decodeInstrName(HPACK(SEQ::icode, SEQ::ifun)), ISA::getRegName((REG_ID)SEQ::ra),
+                ISA::getRegName((REG_ID)SEQ::rb), SEQ::valc, SEQ::valp);
+
       if ((SIM::State)SEQ::gen_Stat() != SIM::STAT_OK)
          return;
 
       // valA <- R[rA]
-      REG_ID srcA = (REG_ID)SEQ::gen_srcA();
+      SEQ::srcA = SEQ::gen_srcA();
       SEQ::vala = 0;
-      if (srcA != REG_NONE)
-         SEQ::vala = m_reg.getRegVal(srcA);
+      if (SEQ::srcA != REG_NONE)
+         SEQ::vala = m_reg.getRegVal((REG_ID)SEQ::srcA);
 
       // valB <- R[rB]
-      REG_ID srcB = (REG_ID)SEQ::gen_srcB();
+      SEQ::srcB = SEQ::gen_srcB();
       SEQ::valb = 0;
-      if (srcB != REG_NONE)
-         SEQ::valb = m_reg.getRegVal(srcB);
+      if (SEQ::srcB != REG_NONE)
+         SEQ::valb = m_reg.getRegVal((REG_ID)SEQ::srcB);
 
       // SEQ::gen_dstE() depends on cond, so it has been set before SEQ::gen_dstE()
       SEQ::cond = checkCond(m_cc, (COND)SEQ::ifun);
       SEQ::destE = SEQ::gen_dstE();
       SEQ::destM = SEQ::gen_dstM();
-
-      m_out.out("E: instr = %s, valC = 0x%llx, valA = 0x%llx, valB = 0x%llx\n   srcA = %s, srcB = %s, dstE = %s, dstM = %s\n",
-         ISA::decodeInstrName(HPACK(SEQ::icode, SEQ::ifun)), SEQ::valc, SEQ::vala, SEQ::valb,
-         ISA::getRegName(srcA), ISA::getRegName(srcB), ISA::getRegName((REG_ID)SEQ::destE), ISA::getRegName((REG_ID)SEQ::destM));
    }
 
    void Seq::execute()
    {
+      m_out.out("E: instr = %s, valC = 0x%llx, valA = 0x%llx, valB = 0x%llx, valP = 0x%llx\n   srcA = %s, srcB = %s, dstE = %s, dstM = %s\n",
+                ISA::decodeInstrName(HPACK(SEQ::icode, SEQ::ifun)), SEQ::valc, SEQ::vala, SEQ::valb, SEQ::valp,
+                ISA::getRegName((REG_ID)SEQ::srcA), ISA::getRegName((REG_ID)SEQ::srcB),
+                ISA::getRegName((REG_ID)SEQ::destE), ISA::getRegName((REG_ID)SEQ::destM));
+
       if ((SIM::State)SEQ::gen_Stat() != SIM::STAT_OK)
          return;
 
-      word_t aluA = SEQ::gen_aluA();
-      word_t aluB = SEQ::gen_aluB();
+      SEQ::aluA = SEQ::gen_aluA();
+      SEQ::aluB = SEQ::gen_aluB();
       ALU alufun = (ALU)SEQ::gen_alufun();
-      SEQ::vale = computeALU(alufun, aluA, aluB);
+      SEQ::vale = computeALU(alufun, SEQ::aluA, SEQ::aluB);
       if (SEQ::gen_set_cc())
-         m_cc = computeCC(alufun, aluA, aluB);
-
-      m_out.out("M: instr = %s, Cnd = %d, valE = 0x%llx, valA = 0x%llx\n   dstE = %s, dstM = %s\n",
-         ISA::decodeInstrName(HPACK(SEQ::icode, SEQ::ifun)), SEQ::cond, SEQ::vale, SEQ::vala,
-         ISA::getRegName((REG_ID)SEQ::destE), ISA::getRegName((REG_ID)SEQ::destM));
+         m_cc = computeCC(alufun, SEQ::aluA, SEQ::aluB);
    }
 
    void Seq::memory()
    {
+      m_out.out("M: instr = %s, Cnd = %d, valE = 0x%llx, valA = 0x%llx, valP = 0x%llx\n   dstE = %s, dstM = %s\n",
+                ISA::decodeInstrName(HPACK(SEQ::icode, SEQ::ifun)), SEQ::cond, SEQ::vale, SEQ::vala, SEQ::valp,
+                ISA::getRegName((REG_ID)SEQ::destE), ISA::getRegName((REG_ID)SEQ::destM));
+
       if ((SIM::State)SEQ::gen_Stat() != SIM::STAT_OK)
          return;
 
@@ -216,16 +223,15 @@ namespace SIM
          }
 
          m_mem.setWord(mem_addr, mem_data);
-         m_out.out("IM: PC = 0x%llx, Wrote 0x%llx to address 0x%llx\n", m_pc, mem_data, mem_addr);
       }
-
-      m_out.out("W: instr = %s, valE = 0x%llx, valM = 0x%llx, dstE = %s, dstM = %s\n",
-         ISA::decodeInstrName(HPACK(SEQ::icode, SEQ::ifun)), SEQ::vale, SEQ::valm,
-         ISA::getRegName((REG_ID)SEQ::destE), ISA::getRegName((REG_ID)SEQ::destM));
    }
 
    void Seq::writeBack()
    {
+      m_out.out("W: instr = %s, valP = 0x%llx, valE = 0x%llx, valM = 0x%llx\n   dstE = %s, dstM = %s\n",
+                ISA::decodeInstrName(HPACK(SEQ::icode, SEQ::ifun)), SEQ::vale, SEQ::valm, SEQ::valp,
+                ISA::getRegName((REG_ID)SEQ::destE), ISA::getRegName((REG_ID)SEQ::destM));
+
       if ((SIM::State)SEQ::gen_Stat() != SIM::STAT_OK)
          return;
 
@@ -243,6 +249,5 @@ namespace SIM
 
       // HCL function to generate predicted PC
       m_pc = SEQ::gen_new_pc();
-      m_out.out("F: predPC = 0x%llx\n", m_pc);
    }
 }
