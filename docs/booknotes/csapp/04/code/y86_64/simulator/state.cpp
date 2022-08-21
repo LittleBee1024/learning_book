@@ -4,7 +4,8 @@ namespace SIM
 {
    const char *getStateName(State s)
    {
-      static const char *stateNames[] = { "OK", "HALT", "ERR_ADR", "ERR_REG", "ERR_INSTR" };
+      static const char *stateNames[] = {"OK", "HALT", "ERR_ADR", "ERR_REG", "ERR_INSTR", "BUBBLE",
+                                         "PIPELINE"};
       return stateNames[s];
    }
 }
