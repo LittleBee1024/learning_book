@@ -90,6 +90,6 @@ namespace ISA
    {
       if (id >= REG_RAX && id < REG_NONE)
          return Y86_64_REG_NAMES[id].c_str();
-      return "REG_NONE";
+      return "----";
    }
 }
