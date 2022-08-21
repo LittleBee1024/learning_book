@@ -97,6 +97,7 @@ namespace SIM
 
       void update();
       void clear();
+      bool hasError() const;
    };
 
 }

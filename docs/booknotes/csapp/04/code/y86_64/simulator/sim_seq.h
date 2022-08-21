@@ -8,7 +8,7 @@
 
 namespace SIM
 {
-   // Seq simulator is the implementation of SEQ+ model in the book
+   // Seq simulator is the implementation of SEQ model in the book
    class Seq : public SimBase
    {
    public:

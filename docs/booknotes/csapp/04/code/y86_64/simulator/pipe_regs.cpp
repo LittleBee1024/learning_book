@@ -60,4 +60,10 @@ namespace SIM
       writeback.op = P_LOAD;
    }
 
+   bool PipeRegs::hasError() const
+   {
+      return (fetch.op == P_ERROR || decode.op == P_ERROR || execute.op == P_ERROR ||
+              memory.op == P_ERROR || writeback.op == P_ERROR);
+   }
+
 }

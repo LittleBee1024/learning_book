@@ -3,7 +3,7 @@ CFLAGS=-Wall -g
 
 BUILD_DIR=build
 
-SRCS=state.cpp storage.cpp sim_interface.cpp sim_seq.cpp sim_yis.cpp pipe_regs.cpp main.cpp
+SRCS=state.cpp storage.cpp sim_interface.cpp sim_seq.cpp sim_yis.cpp pipe_regs.cpp sim_pipe.cpp main.cpp
 OBJS=$(SRCS:%.cpp=$(BUILD_DIR)/%.o)
 
 DEP_COMMON_DIR=../_common
