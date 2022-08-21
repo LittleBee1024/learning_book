@@ -28,6 +28,8 @@ namespace SIM
 
    void Pipe::reset()
    {
+      SimBase::reset();
+
       s_pipeRegs.reset();
 
       PIPE::imem_icode = I_NOP;
@@ -37,8 +39,6 @@ namespace SIM
       PIPE::d_regvala = 0;
       PIPE::d_regvalb = 0;
       PIPE::dmem_error = false;
-
-      SimBase::reset();
    }
 
 }

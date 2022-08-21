@@ -72,6 +72,8 @@ namespace SIM
 
    void Seq::reset()
    {
+      SimBase::reset();
+
       SEQ::imem_icode = I_NOP;
       SEQ::imem_ifun = F_NONE;
       SEQ::imem_error = false;
@@ -94,8 +96,6 @@ namespace SIM
       SEQ::destM = REG_NONE;
       SEQ::aluA = 0;
       SEQ::aluB = 0;
-
-      SimBase::reset();
    }
 
    void Seq::fetch()
