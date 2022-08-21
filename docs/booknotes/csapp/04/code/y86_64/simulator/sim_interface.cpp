@@ -21,6 +21,20 @@ namespace SIM
       return bytes;
    }
 
+   State SimBase::run(int maxSteps)
+   {
+      SIM::State state = SIM::STAT_OK;
+      int i = 0;
+      for (i = 0; i < maxSteps && state == SIM::STAT_OK; i++)
+      {
+         m_out.out("\nCycle %d. CC=%s, Stat=%s\n", i, ISA::getCCName(m_cc), getStateName(state));
+         state = runOneStep();
+      }
+
+      m_out.out("\nAfter %d cycles, the state becomes %s\n\n", i, SIM::getStateName(state));
+      return state;
+   }
+
    void SimBase::compare(const SimInterface &other) const
    {
       const SimBase *child = dynamic_cast<const SimBase *>(&other);

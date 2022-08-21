@@ -28,6 +28,10 @@ namespace SIM
       explicit SimBase(IO::OutputInterface &out);
       int loadCode(const char *fname) override;
       void compare(const SimInterface &other) const override;
+      State run(int maxSteps) override;
+
+   protected:
+      virtual State runOneStep() = 0;
 
    protected:
       bool checkCond(cc_t cc, COND cType);

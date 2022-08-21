@@ -55,22 +55,6 @@ namespace SIM
    {
    }
 
-   State Seq::run(int maxSteps)
-   {
-      m_out.out("Run code at SEQ simulator\n");
-
-      SIM::State state = SIM::STAT_OK;
-      int i = 0;
-      for (i = 0; i < maxSteps && state == SIM::STAT_OK; i++)
-      {
-         m_out.out("\nCycle %d. CC=%s, Stat=%s\n", i, ISA::getCCName(m_cc), getStateName(state));
-         state = runOneStep();
-      }
-
-      m_out.out("\nAfter %d cycles, the state becomes %s\n\n", i, SIM::getStateName(state));
-      return state;
-   }
-
    State Seq::runOneStep()
    {
       fetch();
