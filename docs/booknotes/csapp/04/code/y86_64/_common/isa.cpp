@@ -82,7 +82,7 @@ namespace ISA
          if (code == instr.code)
             return instr.name;
       }
-      return nullptr;
+      return "<bad>";
    }
 
    REG_ID findRegister(const char *name)

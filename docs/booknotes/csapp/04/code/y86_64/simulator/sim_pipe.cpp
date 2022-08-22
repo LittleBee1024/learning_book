@@ -78,7 +78,7 @@ namespace SIM
          m_reg.setRegVal((REG_ID)PIPE::wb_destM, PIPE::wb_valM);
       if (PIPE::mem_write)
       {
-         if (!m_mem.setWord(PIPE::mem_addr, PIPE::mem_addr))
+         if (!m_mem.setWord(PIPE::mem_addr, PIPE::mem_data))
          {
             m_out.out("[ERROR] Couldn't write at address 0x%llx\n", PIPE::mem_addr);
             return STAT_ERR_ADDR;
@@ -94,8 +94,6 @@ namespace SIM
       PIPE::pipe_regs.update();
 
       // dump current pipeline registers
-      m_out.out("\nCycle %lld. CC=%s, Stat=%s\n", m_numCyc, ISA::getCCName(m_cc), getStateName(PIPE::status));
-
       m_out.out("F: predPC = 0x%llx\n", PIPE::pipe_regs.fetch.current.pc);
 
       m_out.out("D: instr = %s, rA = %s, rB = %s, valC = 0x%llx, valP = 0x%llx, Stat = %s\n",
