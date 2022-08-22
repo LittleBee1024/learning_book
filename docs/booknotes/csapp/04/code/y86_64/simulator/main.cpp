@@ -3,6 +3,7 @@
 #include "./sim_interface.h"
 #include "./sim_yis.h"
 #include "./sim_seq.h"
+#include "./sim_pipe.h"
 #include "./state.h"
 
 #include <memory>
@@ -22,7 +23,8 @@ bool endsWith(const std::string &str, const std::string &suffix)
 enum class SIMType
 {
    YIS,
-   SEQ
+   SEQ,
+   PIPE
 };
 
 std::unique_ptr<SIM::SimInterface> createSimulator(SIMType type, IO::OutputInterface &out)
@@ -30,9 +32,14 @@ std::unique_ptr<SIM::SimInterface> createSimulator(SIMType type, IO::OutputInter
    switch (type)
    {
    case SIMType::YIS:
+      out.out("[INFO] Create Yis Simulator\n");
       return std::make_unique<SIM::Yis>(out);
    case SIMType::SEQ:
+      out.out("[INFO] Create SEQ Simulator\n");
       return std::make_unique<SIM::Seq>(out);
+   case SIMType::PIPE:
+      out.out("[INFO] Create Pipeline Simulator\n");
+      return std::make_unique<SIM::Pipe>(out);
    default:
       assert(0 && "Invalid Simulator Type\n");
       return nullptr;
@@ -55,6 +62,12 @@ std::unique_ptr<SIM::SimInterface> takeSnapshot(SIMType type, const SIM::SimInte
       assert(child != nullptr);
       return std::make_unique<SIM::Seq>(*child);
    }
+   case SIMType::PIPE:
+   {
+      auto child = dynamic_cast<const SIM::Pipe *>(sim);
+      assert(child != nullptr);
+      return std::make_unique<SIM::Pipe>(*child);
+   }
    default:
       assert(0 && "Invalid Simulator Type\n");
       return nullptr;
@@ -72,7 +85,7 @@ int main(int argc, char *argv[])
 {
    Options option;
    int ch;
-   while ((ch = getopt(argc, argv, "hysm:")) != -1)
+   while ((ch = getopt(argc, argv, "hyspm:")) != -1)
    {
       switch (ch)
       {
@@ -87,6 +100,9 @@ int main(int argc, char *argv[])
          break;
       case 's':
          option.type = SIMType::SEQ;
+         break;
+      case 'p':
+         option.type = SIMType::PIPE;
          break;
       }
    }

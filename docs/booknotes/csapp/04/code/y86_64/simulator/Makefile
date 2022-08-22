@@ -51,6 +51,9 @@ run_yis: $(Y86_64_CODE)
 run_seq: $(Y86_64_CODE)
 	$(BUILD_DIR)/sim -s $(Y86_64_CODE)
 
+run_pipe: $(Y86_64_CODE)
+	$(BUILD_DIR)/sim -p $(Y86_64_CODE)
+
 debug:
 	gdb -q $(BUILD_DIR)/sim \
 	-ex "start -s $(Y86_64_CODE)"
