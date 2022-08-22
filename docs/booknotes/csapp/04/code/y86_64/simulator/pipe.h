@@ -1,5 +1,6 @@
 #pragma once
 
+#include "./pipe_regs.h"
 #include "isa.h"
 
 /* Defined in sim_pipe.cpp */
@@ -46,4 +47,7 @@ namespace PIPE
    extern word_t d_regvala;
    extern word_t d_regvalb;
    extern bool dmem_error;
+
+   // export pipeline registers as a global varible
+   extern SIM::PipeRegs pipe_regs;
 }

@@ -1,4 +1,6 @@
 #include "./sim_pipe.h"
+#include "./pipe.h"
+#include "./pipe_regs.h"
 
 #include "isa.h"
 
@@ -11,12 +13,11 @@ namespace PIPE
    word_t d_regvala = 0;
    word_t d_regvalb = 0;
    bool dmem_error = false;
+   SIM::PipeRegs pipe_regs;
 }
 
 namespace SIM
 {
-   PipeRegs Pipe::s_pipeRegs;
-
    Pipe::Pipe(IO::OutputInterface &out) : SimBase(out)
    {
    }
@@ -29,9 +30,6 @@ namespace SIM
    void Pipe::reset()
    {
       SimBase::reset();
-
-      s_pipeRegs.reset();
-
       PIPE::imem_icode = I_NOP;
       PIPE::imem_ifun = F_NONE;
       PIPE::imem_error = false;
@@ -39,6 +37,7 @@ namespace SIM
       PIPE::d_regvala = 0;
       PIPE::d_regvalb = 0;
       PIPE::dmem_error = false;
+      PIPE::pipe_regs.reset();
    }
 
 }
