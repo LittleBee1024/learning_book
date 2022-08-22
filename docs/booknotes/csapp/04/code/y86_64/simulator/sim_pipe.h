@@ -35,11 +35,11 @@ namespace SIM
       void doFetchStageForComingDecodeRegs();
       // update coming fetch pipeline registers
       void doWritebackStageForComingFetchRegs();
-      // update coming writeback pipeline registers, which depends on current memory registers
+      // update coming writeback pipeline registers
       void doMemoryStageForComingWritebackRegs();
-      // update coming memory pipeline registers, which depends on current execute registers
+      // update coming memory pipeline registers
       void doExecuteStageForComingMemoryRegs();
-      // update coming execute registers, which depends on current decode registers
+      // update coming execute registers
       void doDecodeStageForComingExecuteRegs();
 
       // update pipeline operations
