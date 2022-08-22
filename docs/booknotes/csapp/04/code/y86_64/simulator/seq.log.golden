@@ -1,0 +1,355 @@
+[INFO] Create SEQ Simulator
+[INFO] Loaded 141 bytes code
+
+Cycle 0. CC=Z=1 S=0 O=0, Stat=OK
+F: predPC = 0x0
+D: instr = irmovq, rA = ----, rB = %rsp, valC = 0x200, valP = 0xa
+E: instr = irmovq, valC = 0x200, valA = 0x0, valB = 0x0, valP = 0xa
+   srcA = ----, srcB = ----, dstE = %rsp, dstM = ----
+M: instr = irmovq, Cnd = 1, valE = 0x200, valA = 0x0, valP = 0xa
+   dstE = %rsp, dstM = ----
+W: instr = irmovq, valP = 0x200, valE = 0x0, valM = 0xa
+   dstE = %rsp, dstM = ----
+
+Cycle 1. CC=Z=1 S=0 O=0, Stat=OK
+F: predPC = 0xa
+D: instr = call, rA = ----, rB = ----, valC = 0x38, valP = 0x13
+E: instr = call, valC = 0x38, valA = 0x0, valB = 0x200, valP = 0x13
+   srcA = ----, srcB = %rsp, dstE = %rsp, dstM = ----
+M: instr = call, Cnd = 1, valE = 0x1f8, valA = 0x0, valP = 0x13
+   dstE = %rsp, dstM = ----
+W: instr = call, valP = 0x1f8, valE = 0x0, valM = 0x13
+   dstE = %rsp, dstM = ----
+
+Cycle 2. CC=Z=1 S=0 O=0, Stat=OK
+F: predPC = 0x38
+D: instr = irmovq, rA = ----, rB = %rdi, valC = 0x18, valP = 0x42
+E: instr = irmovq, valC = 0x18, valA = 0x0, valB = 0x0, valP = 0x42
+   srcA = ----, srcB = ----, dstE = %rdi, dstM = ----
+M: instr = irmovq, Cnd = 1, valE = 0x18, valA = 0x0, valP = 0x42
+   dstE = %rdi, dstM = ----
+W: instr = irmovq, valP = 0x18, valE = 0x0, valM = 0x42
+   dstE = %rdi, dstM = ----
+
+Cycle 3. CC=Z=1 S=0 O=0, Stat=OK
+F: predPC = 0x42
+D: instr = irmovq, rA = ----, rB = %rsi, valC = 0x4, valP = 0x4c
+E: instr = irmovq, valC = 0x4, valA = 0x0, valB = 0x0, valP = 0x4c
+   srcA = ----, srcB = ----, dstE = %rsi, dstM = ----
+M: instr = irmovq, Cnd = 1, valE = 0x4, valA = 0x0, valP = 0x4c
+   dstE = %rsi, dstM = ----
+W: instr = irmovq, valP = 0x4, valE = 0x0, valM = 0x4c
+   dstE = %rsi, dstM = ----
+
+Cycle 4. CC=Z=1 S=0 O=0, Stat=OK
+F: predPC = 0x4c
+D: instr = call, rA = ----, rB = ----, valC = 0x56, valP = 0x55
+E: instr = call, valC = 0x56, valA = 0x0, valB = 0x1f8, valP = 0x55
+   srcA = ----, srcB = %rsp, dstE = %rsp, dstM = ----
+M: instr = call, Cnd = 1, valE = 0x1f0, valA = 0x0, valP = 0x55
+   dstE = %rsp, dstM = ----
+W: instr = call, valP = 0x1f0, valE = 0x0, valM = 0x55
+   dstE = %rsp, dstM = ----
+
+Cycle 5. CC=Z=1 S=0 O=0, Stat=OK
+F: predPC = 0x56
+D: instr = irmovq, rA = ----, rB = %r8, valC = 0x8, valP = 0x60
+E: instr = irmovq, valC = 0x8, valA = 0x0, valB = 0x0, valP = 0x60
+   srcA = ----, srcB = ----, dstE = %r8, dstM = ----
+M: instr = irmovq, Cnd = 1, valE = 0x8, valA = 0x0, valP = 0x60
+   dstE = %r8, dstM = ----
+W: instr = irmovq, valP = 0x8, valE = 0x0, valM = 0x60
+   dstE = %r8, dstM = ----
+
+Cycle 6. CC=Z=1 S=0 O=0, Stat=OK
+F: predPC = 0x60
+D: instr = irmovq, rA = ----, rB = %r9, valC = 0x1, valP = 0x6a
+E: instr = irmovq, valC = 0x1, valA = 0x0, valB = 0x0, valP = 0x6a
+   srcA = ----, srcB = ----, dstE = %r9, dstM = ----
+M: instr = irmovq, Cnd = 1, valE = 0x1, valA = 0x0, valP = 0x6a
+   dstE = %r9, dstM = ----
+W: instr = irmovq, valP = 0x1, valE = 0x0, valM = 0x6a
+   dstE = %r9, dstM = ----
+
+Cycle 7. CC=Z=1 S=0 O=0, Stat=OK
+F: predPC = 0x6a
+D: instr = xorq, rA = %rax, rB = %rax, valC = 0x0, valP = 0x6c
+E: instr = xorq, valC = 0x0, valA = 0x0, valB = 0x0, valP = 0x6c
+   srcA = %rax, srcB = %rax, dstE = %rax, dstM = ----
+M: instr = xorq, Cnd = 1, valE = 0x0, valA = 0x0, valP = 0x6c
+   dstE = %rax, dstM = ----
+W: instr = xorq, valP = 0x0, valE = 0x0, valM = 0x6c
+   dstE = %rax, dstM = ----
+
+Cycle 8. CC=Z=1 S=0 O=0, Stat=OK
+F: predPC = 0x6c
+D: instr = andq, rA = %rsi, rB = %rsi, valC = 0x0, valP = 0x6e
+E: instr = andq, valC = 0x0, valA = 0x4, valB = 0x4, valP = 0x6e
+   srcA = %rsi, srcB = %rsi, dstE = %rsi, dstM = ----
+M: instr = andq, Cnd = 0, valE = 0x4, valA = 0x4, valP = 0x6e
+   dstE = %rsi, dstM = ----
+W: instr = andq, valP = 0x4, valE = 0x0, valM = 0x6e
+   dstE = %rsi, dstM = ----
+
+Cycle 9. CC=Z=0 S=0 O=0, Stat=OK
+F: predPC = 0x6e
+D: instr = jmp, rA = ----, rB = ----, valC = 0x87, valP = 0x77
+E: instr = jmp, valC = 0x87, valA = 0x0, valB = 0x0, valP = 0x77
+   srcA = ----, srcB = ----, dstE = ----, dstM = ----
+M: instr = jmp, Cnd = 1, valE = 0x0, valA = 0x0, valP = 0x77
+   dstE = ----, dstM = ----
+W: instr = jmp, valP = 0x0, valE = 0x0, valM = 0x77
+   dstE = ----, dstM = ----
+
+Cycle 10. CC=Z=0 S=0 O=0, Stat=OK
+F: predPC = 0x87
+D: instr = jne, rA = ----, rB = ----, valC = 0x77, valP = 0x90
+E: instr = jne, valC = 0x77, valA = 0x0, valB = 0x0, valP = 0x90
+   srcA = ----, srcB = ----, dstE = ----, dstM = ----
+M: instr = jne, Cnd = 1, valE = 0x0, valA = 0x0, valP = 0x90
+   dstE = ----, dstM = ----
+W: instr = jne, valP = 0x0, valE = 0x0, valM = 0x90
+   dstE = ----, dstM = ----
+
+Cycle 11. CC=Z=0 S=0 O=0, Stat=OK
+F: predPC = 0x77
+D: instr = mrmovq, rA = %r10, rB = %rdi, valC = 0x0, valP = 0x81
+E: instr = mrmovq, valC = 0x0, valA = 0x0, valB = 0x18, valP = 0x81
+   srcA = ----, srcB = %rdi, dstE = ----, dstM = %r10
+M: instr = mrmovq, Cnd = 1, valE = 0x18, valA = 0x0, valP = 0x81
+   dstE = ----, dstM = %r10
+W: instr = mrmovq, valP = 0x18, valE = 0xd000d000d, valM = 0x81
+   dstE = ----, dstM = %r10
+
+Cycle 12. CC=Z=0 S=0 O=0, Stat=OK
+F: predPC = 0x81
+D: instr = addq, rA = %r10, rB = %rax, valC = 0x0, valP = 0x83
+E: instr = addq, valC = 0x0, valA = 0xd000d000d, valB = 0x0, valP = 0x83
+   srcA = %r10, srcB = %rax, dstE = %rax, dstM = ----
+M: instr = addq, Cnd = 1, valE = 0xd000d000d, valA = 0xd000d000d, valP = 0x83
+   dstE = %rax, dstM = ----
+W: instr = addq, valP = 0xd000d000d, valE = 0x0, valM = 0x83
+   dstE = %rax, dstM = ----
+
+Cycle 13. CC=Z=0 S=0 O=0, Stat=OK
+F: predPC = 0x83
+D: instr = addq, rA = %r8, rB = %rdi, valC = 0x0, valP = 0x85
+E: instr = addq, valC = 0x0, valA = 0x8, valB = 0x18, valP = 0x85
+   srcA = %r8, srcB = %rdi, dstE = %rdi, dstM = ----
+M: instr = addq, Cnd = 1, valE = 0x20, valA = 0x8, valP = 0x85
+   dstE = %rdi, dstM = ----
+W: instr = addq, valP = 0x20, valE = 0x0, valM = 0x85
+   dstE = %rdi, dstM = ----
+
+Cycle 14. CC=Z=0 S=0 O=0, Stat=OK
+F: predPC = 0x85
+D: instr = subq, rA = %r9, rB = %rsi, valC = 0x0, valP = 0x87
+E: instr = subq, valC = 0x0, valA = 0x1, valB = 0x4, valP = 0x87
+   srcA = %r9, srcB = %rsi, dstE = %rsi, dstM = ----
+M: instr = subq, Cnd = 0, valE = 0x3, valA = 0x1, valP = 0x87
+   dstE = %rsi, dstM = ----
+W: instr = subq, valP = 0x3, valE = 0x0, valM = 0x87
+   dstE = %rsi, dstM = ----
+
+Cycle 15. CC=Z=0 S=0 O=0, Stat=OK
+F: predPC = 0x87
+D: instr = jne, rA = ----, rB = ----, valC = 0x77, valP = 0x90
+E: instr = jne, valC = 0x77, valA = 0x0, valB = 0x0, valP = 0x90
+   srcA = ----, srcB = ----, dstE = ----, dstM = ----
+M: instr = jne, Cnd = 1, valE = 0x0, valA = 0x0, valP = 0x90
+   dstE = ----, dstM = ----
+W: instr = jne, valP = 0x0, valE = 0x0, valM = 0x90
+   dstE = ----, dstM = ----
+
+Cycle 16. CC=Z=0 S=0 O=0, Stat=OK
+F: predPC = 0x77
+D: instr = mrmovq, rA = %r10, rB = %rdi, valC = 0x0, valP = 0x81
+E: instr = mrmovq, valC = 0x0, valA = 0x0, valB = 0x20, valP = 0x81
+   srcA = ----, srcB = %rdi, dstE = ----, dstM = %r10
+M: instr = mrmovq, Cnd = 1, valE = 0x20, valA = 0x0, valP = 0x81
+   dstE = ----, dstM = %r10
+W: instr = mrmovq, valP = 0x20, valE = 0xc000c000c0, valM = 0x81
+   dstE = ----, dstM = %r10
+
+Cycle 17. CC=Z=0 S=0 O=0, Stat=OK
+F: predPC = 0x81
+D: instr = addq, rA = %r10, rB = %rax, valC = 0x0, valP = 0x83
+E: instr = addq, valC = 0x0, valA = 0xc000c000c0, valB = 0xd000d000d, valP = 0x83
+   srcA = %r10, srcB = %rax, dstE = %rax, dstM = ----
+M: instr = addq, Cnd = 1, valE = 0xcd00cd00cd, valA = 0xc000c000c0, valP = 0x83
+   dstE = %rax, dstM = ----
+W: instr = addq, valP = 0xcd00cd00cd, valE = 0x0, valM = 0x83
+   dstE = %rax, dstM = ----
+
+Cycle 18. CC=Z=0 S=0 O=0, Stat=OK
+F: predPC = 0x83
+D: instr = addq, rA = %r8, rB = %rdi, valC = 0x0, valP = 0x85
+E: instr = addq, valC = 0x0, valA = 0x8, valB = 0x20, valP = 0x85
+   srcA = %r8, srcB = %rdi, dstE = %rdi, dstM = ----
+M: instr = addq, Cnd = 1, valE = 0x28, valA = 0x8, valP = 0x85
+   dstE = %rdi, dstM = ----
+W: instr = addq, valP = 0x28, valE = 0x0, valM = 0x85
+   dstE = %rdi, dstM = ----
+
+Cycle 19. CC=Z=0 S=0 O=0, Stat=OK
+F: predPC = 0x85
+D: instr = subq, rA = %r9, rB = %rsi, valC = 0x0, valP = 0x87
+E: instr = subq, valC = 0x0, valA = 0x1, valB = 0x3, valP = 0x87
+   srcA = %r9, srcB = %rsi, dstE = %rsi, dstM = ----
+M: instr = subq, Cnd = 0, valE = 0x2, valA = 0x1, valP = 0x87
+   dstE = %rsi, dstM = ----
+W: instr = subq, valP = 0x2, valE = 0x0, valM = 0x87
+   dstE = %rsi, dstM = ----
+
+Cycle 20. CC=Z=0 S=0 O=0, Stat=OK
+F: predPC = 0x87
+D: instr = jne, rA = ----, rB = ----, valC = 0x77, valP = 0x90
+E: instr = jne, valC = 0x77, valA = 0x0, valB = 0x0, valP = 0x90
+   srcA = ----, srcB = ----, dstE = ----, dstM = ----
+M: instr = jne, Cnd = 1, valE = 0x0, valA = 0x0, valP = 0x90
+   dstE = ----, dstM = ----
+W: instr = jne, valP = 0x0, valE = 0x0, valM = 0x90
+   dstE = ----, dstM = ----
+
+Cycle 21. CC=Z=0 S=0 O=0, Stat=OK
+F: predPC = 0x77
+D: instr = mrmovq, rA = %r10, rB = %rdi, valC = 0x0, valP = 0x81
+E: instr = mrmovq, valC = 0x0, valA = 0x0, valB = 0x28, valP = 0x81
+   srcA = ----, srcB = %rdi, dstE = ----, dstM = %r10
+M: instr = mrmovq, Cnd = 1, valE = 0x28, valA = 0x0, valP = 0x81
+   dstE = ----, dstM = %r10
+W: instr = mrmovq, valP = 0x28, valE = 0xb000b000b00, valM = 0x81
+   dstE = ----, dstM = %r10
+
+Cycle 22. CC=Z=0 S=0 O=0, Stat=OK
+F: predPC = 0x81
+D: instr = addq, rA = %r10, rB = %rax, valC = 0x0, valP = 0x83
+E: instr = addq, valC = 0x0, valA = 0xb000b000b00, valB = 0xcd00cd00cd, valP = 0x83
+   srcA = %r10, srcB = %rax, dstE = %rax, dstM = ----
+M: instr = addq, Cnd = 1, valE = 0xbcd0bcd0bcd, valA = 0xb000b000b00, valP = 0x83
+   dstE = %rax, dstM = ----
+W: instr = addq, valP = 0xbcd0bcd0bcd, valE = 0x0, valM = 0x83
+   dstE = %rax, dstM = ----
+
+Cycle 23. CC=Z=0 S=0 O=0, Stat=OK
+F: predPC = 0x83
+D: instr = addq, rA = %r8, rB = %rdi, valC = 0x0, valP = 0x85
+E: instr = addq, valC = 0x0, valA = 0x8, valB = 0x28, valP = 0x85
+   srcA = %r8, srcB = %rdi, dstE = %rdi, dstM = ----
+M: instr = addq, Cnd = 1, valE = 0x30, valA = 0x8, valP = 0x85
+   dstE = %rdi, dstM = ----
+W: instr = addq, valP = 0x30, valE = 0x0, valM = 0x85
+   dstE = %rdi, dstM = ----
+
+Cycle 24. CC=Z=0 S=0 O=0, Stat=OK
+F: predPC = 0x85
+D: instr = subq, rA = %r9, rB = %rsi, valC = 0x0, valP = 0x87
+E: instr = subq, valC = 0x0, valA = 0x1, valB = 0x2, valP = 0x87
+   srcA = %r9, srcB = %rsi, dstE = %rsi, dstM = ----
+M: instr = subq, Cnd = 0, valE = 0x1, valA = 0x1, valP = 0x87
+   dstE = %rsi, dstM = ----
+W: instr = subq, valP = 0x1, valE = 0x0, valM = 0x87
+   dstE = %rsi, dstM = ----
+
+Cycle 25. CC=Z=0 S=0 O=0, Stat=OK
+F: predPC = 0x87
+D: instr = jne, rA = ----, rB = ----, valC = 0x77, valP = 0x90
+E: instr = jne, valC = 0x77, valA = 0x0, valB = 0x0, valP = 0x90
+   srcA = ----, srcB = ----, dstE = ----, dstM = ----
+M: instr = jne, Cnd = 1, valE = 0x0, valA = 0x0, valP = 0x90
+   dstE = ----, dstM = ----
+W: instr = jne, valP = 0x0, valE = 0x0, valM = 0x90
+   dstE = ----, dstM = ----
+
+Cycle 26. CC=Z=0 S=0 O=0, Stat=OK
+F: predPC = 0x77
+D: instr = mrmovq, rA = %r10, rB = %rdi, valC = 0x0, valP = 0x81
+E: instr = mrmovq, valC = 0x0, valA = 0x0, valB = 0x30, valP = 0x81
+   srcA = ----, srcB = %rdi, dstE = ----, dstM = %r10
+M: instr = mrmovq, Cnd = 1, valE = 0x30, valA = 0x0, valP = 0x81
+   dstE = ----, dstM = %r10
+W: instr = mrmovq, valP = 0x30, valE = 0xa000a000a000, valM = 0x81
+   dstE = ----, dstM = %r10
+
+Cycle 27. CC=Z=0 S=0 O=0, Stat=OK
+F: predPC = 0x81
+D: instr = addq, rA = %r10, rB = %rax, valC = 0x0, valP = 0x83
+E: instr = addq, valC = 0x0, valA = 0xa000a000a000, valB = 0xbcd0bcd0bcd, valP = 0x83
+   srcA = %r10, srcB = %rax, dstE = %rax, dstM = ----
+M: instr = addq, Cnd = 1, valE = 0xabcdabcdabcd, valA = 0xa000a000a000, valP = 0x83
+   dstE = %rax, dstM = ----
+W: instr = addq, valP = 0xabcdabcdabcd, valE = 0x0, valM = 0x83
+   dstE = %rax, dstM = ----
+
+Cycle 28. CC=Z=0 S=0 O=0, Stat=OK
+F: predPC = 0x83
+D: instr = addq, rA = %r8, rB = %rdi, valC = 0x0, valP = 0x85
+E: instr = addq, valC = 0x0, valA = 0x8, valB = 0x30, valP = 0x85
+   srcA = %r8, srcB = %rdi, dstE = %rdi, dstM = ----
+M: instr = addq, Cnd = 1, valE = 0x38, valA = 0x8, valP = 0x85
+   dstE = %rdi, dstM = ----
+W: instr = addq, valP = 0x38, valE = 0x0, valM = 0x85
+   dstE = %rdi, dstM = ----
+
+Cycle 29. CC=Z=0 S=0 O=0, Stat=OK
+F: predPC = 0x85
+D: instr = subq, rA = %r9, rB = %rsi, valC = 0x0, valP = 0x87
+E: instr = subq, valC = 0x0, valA = 0x1, valB = 0x1, valP = 0x87
+   srcA = %r9, srcB = %rsi, dstE = %rsi, dstM = ----
+M: instr = subq, Cnd = 0, valE = 0x0, valA = 0x1, valP = 0x87
+   dstE = %rsi, dstM = ----
+W: instr = subq, valP = 0x0, valE = 0x0, valM = 0x87
+   dstE = %rsi, dstM = ----
+
+Cycle 30. CC=Z=1 S=0 O=0, Stat=OK
+F: predPC = 0x87
+D: instr = jne, rA = ----, rB = ----, valC = 0x77, valP = 0x90
+E: instr = jne, valC = 0x77, valA = 0x0, valB = 0x0, valP = 0x90
+   srcA = ----, srcB = ----, dstE = ----, dstM = ----
+M: instr = jne, Cnd = 0, valE = 0x0, valA = 0x0, valP = 0x90
+   dstE = ----, dstM = ----
+W: instr = jne, valP = 0x0, valE = 0x0, valM = 0x90
+   dstE = ----, dstM = ----
+
+Cycle 31. CC=Z=1 S=0 O=0, Stat=OK
+F: predPC = 0x90
+D: instr = ret, rA = ----, rB = ----, valC = 0x0, valP = 0x91
+E: instr = ret, valC = 0x0, valA = 0x1f0, valB = 0x1f0, valP = 0x91
+   srcA = %rsp, srcB = %rsp, dstE = %rsp, dstM = ----
+M: instr = ret, Cnd = 1, valE = 0x1f8, valA = 0x1f0, valP = 0x91
+   dstE = %rsp, dstM = ----
+W: instr = ret, valP = 0x1f8, valE = 0x55, valM = 0x91
+   dstE = %rsp, dstM = ----
+
+Cycle 32. CC=Z=1 S=0 O=0, Stat=OK
+F: predPC = 0x55
+D: instr = ret, rA = ----, rB = ----, valC = 0x0, valP = 0x56
+E: instr = ret, valC = 0x0, valA = 0x1f8, valB = 0x1f8, valP = 0x56
+   srcA = %rsp, srcB = %rsp, dstE = %rsp, dstM = ----
+M: instr = ret, Cnd = 1, valE = 0x200, valA = 0x1f8, valP = 0x56
+   dstE = %rsp, dstM = ----
+W: instr = ret, valP = 0x200, valE = 0x13, valM = 0x56
+   dstE = %rsp, dstM = ----
+
+Cycle 33. CC=Z=1 S=0 O=0, Stat=OK
+F: predPC = 0x13
+D: instr = halt, rA = ----, rB = ----, valC = 0x0, valP = 0x14
+E: instr = halt, valC = 0x0, valA = 0x1f8, valB = 0x1f8, valP = 0x14
+   srcA = %rsp, srcB = %rsp, dstE = %rsp, dstM = ----
+M: instr = halt, Cnd = 1, valE = 0x200, valA = 0x1f8, valP = 0x14
+   dstE = %rsp, dstM = ----
+W: instr = halt, valP = 0x200, valE = 0x13, valM = 0x14
+   dstE = %rsp, dstM = ----
+
+After 34 cycles, the state becomes HALT
+
+Changes to registers:
+%rax:	0x0000000000000000	0x0000abcdabcdabcd
+%rsp:	0x0000000000000000	0x0000000000000200
+%rdi:	0x0000000000000000	0x0000000000000038
+%r8:	0x0000000000000000	0x0000000000000008
+%r9:	0x0000000000000000	0x0000000000000001
+%r10:	0x0000000000000000	0x0000a000a000a000
+Changes to memory:
+0x01f0:	0x0000000000000000	0x0000000000000055
+0x01f8:	0x0000000000000000	0x0000000000000013

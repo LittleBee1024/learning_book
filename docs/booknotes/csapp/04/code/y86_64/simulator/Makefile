@@ -45,6 +45,13 @@ Y86_64_CODE=../test_yas/asum.yo
 %.yo: %.ys
 	$(YAS) $< -o $@
 
+test:
+	@rm -rf *.log
+	@$(BUILD_DIR)/sim -y $(Y86_64_CODE) > yis.log
+	@$(BUILD_DIR)/sim -s $(Y86_64_CODE) > seq.log
+	@$(BUILD_DIR)/sim -p $(Y86_64_CODE) > pipe.log
+	diff yis.log yis.log.golden && diff seq.log seq.log.golden && diff pipe.log pipe.log.golden && echo 'TEST_PASSED'
+
 run_yis: $(Y86_64_CODE)
 	$(BUILD_DIR)/sim -y $(Y86_64_CODE)
 
