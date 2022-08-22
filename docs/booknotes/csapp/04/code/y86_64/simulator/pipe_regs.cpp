@@ -17,7 +17,7 @@ namespace SIM
          case P_LOAD:
          {
             /* copy calculated state from previous stage */
-            reg.current = reg.next;
+            reg.current = reg.coming;
             break;
          }
          case P_ERROR:
@@ -44,19 +44,19 @@ namespace SIM
    void PipeRegs::reset()
    {
       fetch.current.reset();
-      fetch.next.reset();
+      fetch.coming.reset();
       fetch.op = P_LOAD;
       decode.current.reset();
-      decode.next.reset();
+      decode.coming.reset();
       decode.op = P_LOAD;
       execute.current.reset();
-      execute.next.reset();
+      execute.coming.reset();
       execute.op = P_LOAD;
       memory.current.reset();
-      memory.next.reset();
+      memory.coming.reset();
       memory.op = P_LOAD;
       writeback.current.reset();
-      writeback.next.reset();
+      writeback.coming.reset();
       writeback.op = P_LOAD;
    }
 

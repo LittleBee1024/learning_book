@@ -26,13 +26,13 @@ namespace SIM
        *  Need to do decode after execute & memory stages, and memory stage before
        *  execute, in order to propagate forwarding values properly
        * *************************************************************************/
-      // update next decode and fetch pipeline registers
-      void doFetchStageForNextDecodeAndFetchRegs();
-      // update next writeback pipeline registers, which depends on current memory registers
-      void doMemoryStageForNextWritebackRegs();
-      // update next memory pipeline registers, which depends on current execute registers
-      void doExecuteStageForNextMemoryRegs();
-      // update next execute registers, which depends on current decode registers
-      void doDecodeStageForNextExecuteRegs();
+      // update coming decode and fetch pipeline registers
+      void doFetchStageForComingDecodeAndFetchRegs();
+      // update coming writeback pipeline registers, which depends on current memory registers
+      void doMemoryStageForComingWritebackRegs();
+      // update coming memory pipeline registers, which depends on current execute registers
+      void doExecuteStageForComingMemoryRegs();
+      // update coming execute registers, which depends on current decode registers
+      void doDecodeStageForComingExecuteRegs();
    };
 }

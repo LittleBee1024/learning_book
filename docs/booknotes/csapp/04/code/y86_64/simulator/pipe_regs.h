@@ -83,7 +83,7 @@ namespace SIM
    struct PipeReg
    {
       PIPE_REG_T current;
-      PIPE_REG_T next;
+      PIPE_REG_T coming;
       PipeOp op = P_LOAD;
    };
 
