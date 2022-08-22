@@ -45,11 +45,19 @@ namespace SIM
       doExecuteStageForComingMemoryRegs();
       doDecodeStageForComingExecuteRegs();
 
+      doStallCheck();
+
+      if (PIPE::pipe_regs.writeback.current.status != STAT_BUBBLE)
+         m_numInstr++;
+      m_numCyc++;
+
       return PIPE::status; // status is set in write back stage
    }
 
    void Pipe::reset()
    {
+      m_numInstr = 0;
+      m_numCyc = 0;
       SimBase::reset();
       PIPE::imem_icode = I_NOP;
       PIPE::imem_ifun = F_NONE;
@@ -84,6 +92,36 @@ namespace SIM
    void Pipe::updateCurrentPipeRegs()
    {
       PIPE::pipe_regs.update();
+
+      // dump current pipeline registers
+      m_out.out("\nCycle %lld. CC=%s, Stat=%s\n", m_numCyc, ISA::getCCName(m_cc), getStateName(PIPE::status));
+
+      m_out.out("F: predPC = 0x%llx\n", PIPE::pipe_regs.fetch.current.pc);
+
+      m_out.out("D: instr = %s, rA = %s, rB = %s, valC = 0x%llx, valP = 0x%llx, Stat = %s\n",
+                ISA::decodeInstrName(HPACK(PIPE::pipe_regs.decode.current.icode, PIPE::pipe_regs.decode.current.ifun)),
+                ISA::getRegName((REG_ID)PIPE::pipe_regs.decode.current.ra), ISA::getRegName((REG_ID)PIPE::pipe_regs.decode.current.rb),
+                PIPE::pipe_regs.decode.current.valc, PIPE::pipe_regs.decode.current.valp,
+                getStateName(PIPE::pipe_regs.decode.current.status));
+
+      m_out.out("E: instr = %s, valC = 0x%llx, valA = 0x%llx, valB = 0x%llx\n   srcA = %s, srcB = %s, dstE = %s, dstM = %s, Stat = %s\n",
+                ISA::decodeInstrName(HPACK(PIPE::pipe_regs.execute.current.icode, PIPE::pipe_regs.execute.current.ifun)),
+                PIPE::pipe_regs.execute.current.valc, PIPE::pipe_regs.execute.current.vala, PIPE::pipe_regs.execute.current.valb,
+                ISA::getRegName((REG_ID)PIPE::pipe_regs.execute.current.srca), ISA::getRegName((REG_ID)PIPE::pipe_regs.execute.current.srcb),
+                ISA::getRegName((REG_ID)PIPE::pipe_regs.execute.current.deste), ISA::getRegName((REG_ID)PIPE::pipe_regs.execute.current.destm),
+                getStateName(PIPE::pipe_regs.execute.current.status));
+
+      m_out.out("M: instr = %s, Cnd = %d, valE = 0x%llx, valA = 0x%llx\n   dstE = %s, dstM = %s, Stat = %s\n",
+                ISA::decodeInstrName(HPACK(PIPE::pipe_regs.memory.current.icode, PIPE::pipe_regs.memory.current.ifun)),
+                PIPE::pipe_regs.memory.current.takebranch, PIPE::pipe_regs.memory.current.vale, PIPE::pipe_regs.memory.current.vala,
+                ISA::getRegName((REG_ID)PIPE::pipe_regs.memory.current.deste), ISA::getRegName((REG_ID)PIPE::pipe_regs.memory.current.destm),
+                getStateName(PIPE::pipe_regs.memory.current.status));
+
+      m_out.out("W: instr = %s, valE = 0x%llx, valM = 0x%llx, dstE = %s, dstM = %s, Stat = %s\n",
+                ISA::decodeInstrName(HPACK(PIPE::pipe_regs.writeback.current.icode, PIPE::pipe_regs.writeback.current.ifun)),
+                PIPE::pipe_regs.writeback.current.vale, PIPE::pipe_regs.writeback.current.valm,
+                ISA::getRegName((REG_ID)PIPE::pipe_regs.writeback.current.deste), ISA::getRegName((REG_ID)PIPE::pipe_regs.writeback.current.destm),
+                getStateName(PIPE::pipe_regs.writeback.current.status));
    }
 
    // update coming decode and fetch pipeline registers

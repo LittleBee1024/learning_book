@@ -38,5 +38,9 @@ namespace SIM
       // update pipeline operations
       void doStallCheck();
       PipeOp pipeCntl(const char *name, word_t stall, word_t bubble);
+
+   private:
+      word_t m_numInstr = 0;
+      word_t m_numCyc = 0;
    };
 }
