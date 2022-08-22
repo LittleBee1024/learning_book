@@ -10,6 +10,8 @@ DEP_COMMON_DIR=../_common
 DEP_COMMON_SRCS=output.cpp isa.cpp
 DEP_COMMON_OBJS=$(DEP_COMMON_SRCS:%.cpp=$(BUILD_DIR)/%.o)
 
+.PHONY: all sim test
+
 all: clean sim
 
 clean:
@@ -46,11 +48,14 @@ Y86_64_CODE=../test_yas/asum.yo
 	$(YAS) $< -o $@
 
 test:
-	@rm -rf *.log
-	@$(BUILD_DIR)/sim -y $(Y86_64_CODE) > yis.log
-	@$(BUILD_DIR)/sim -s $(Y86_64_CODE) > seq.log
-	@$(BUILD_DIR)/sim -p $(Y86_64_CODE) > pipe.log
-	diff yis.log yis.log.golden && diff seq.log seq.log.golden && diff pipe.log pipe.log.golden && echo 'TEST_PASSED'
+	@rm -rf test/*.log
+	$(BUILD_DIR)/sim -y $(Y86_64_CODE) > test/yis.log
+	$(BUILD_DIR)/sim -s $(Y86_64_CODE) > test/seq.log
+	$(BUILD_DIR)/sim -p $(Y86_64_CODE) > test/pipe.log
+	@cd test && diff yis.log yis.log.golden && \
+               diff seq.log seq.log.golden && \
+               diff pipe.log pipe.log.golden && \
+               echo 'TEST_PASSED'
 
 run_yis: $(Y86_64_CODE)
 	$(BUILD_DIR)/sim -y $(Y86_64_CODE)
