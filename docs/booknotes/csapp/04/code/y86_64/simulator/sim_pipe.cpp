@@ -25,8 +25,8 @@ namespace SIM
    {
       updateCurrentPipeRegs();
 
-      doFetchStageForComingDecodeAndFetchRegs();
-      doWritebackStage();
+      doFetchStageForComingDecodeRegs();
+      doWritebackStageForComingFetchRegs();
       doMemoryStageForComingWritebackRegs();
       doExecuteStageForComingMemoryRegs();
       doDecodeStageForComingExecuteRegs();
@@ -56,7 +56,6 @@ namespace SIM
       PIPE::pipe_regs.reset();
    }
 
-   // update current pipeline registers with the help of comming pipeline registers
    void Pipe::updateCurrentPipeRegs()
    {
       PIPE::pipe_regs.update();
@@ -90,8 +89,7 @@ namespace SIM
                 getStateName(PIPE::pipe_regs.writeback.current.status));
    }
 
-   // update coming decode and fetch pipeline registers
-   void Pipe::doFetchStageForComingDecodeAndFetchRegs()
+   void Pipe::doFetchStageForComingDecodeRegs()
    {
       m_pc = PIPE::gen_f_pc();
       word_t valp = m_pc;
@@ -102,8 +100,10 @@ namespace SIM
          m_out.out("[ERROR] PC = 0x%llx, Invalid instruction address\n", m_pc);
       PIPE::imem_icode = HI4(instr);
       PIPE::imem_ifun = LO4(instr);
+      // gen_instr_valid/gen_need_regids/gen_need_valC depends on icode below
       PIPE::pipe_regs.decode.coming.icode = PIPE::gen_f_icode();
       PIPE::pipe_regs.decode.coming.ifun = PIPE::gen_f_ifun();
+
       PIPE::instr_valid = PIPE::gen_instr_valid();
       if (!PIPE::instr_valid)
          m_out.out("[ERROR] PC = 0x%llx, Invalid instruction %.2x\n", m_pc, instr);
@@ -130,14 +130,12 @@ namespace SIM
       }
       PIPE::pipe_regs.decode.coming.valc = valc;
       PIPE::pipe_regs.decode.coming.valp = valp;
+
       PIPE::pipe_regs.decode.coming.status = (SIM::State)PIPE::gen_f_stat();
       PIPE::pipe_regs.decode.coming.stage_pc = m_pc; // for debugging
-
-      PIPE::pipe_regs.fetch.coming.pc = PIPE::gen_f_predPC();
-      PIPE::pipe_regs.fetch.coming.status = (PIPE::pipe_regs.decode.coming.status == STAT_OK) ? STAT_OK : STAT_BUBBLE;
    }
 
-   void Pipe::doWritebackStage()
+   void Pipe::doWritebackStageForComingFetchRegs()
    {
       word_t wb_destE = PIPE::gen_w_dstE();
       word_t wb_valE = PIPE::gen_w_valE();
@@ -145,12 +143,14 @@ namespace SIM
          m_reg.setRegVal((REG_ID)wb_destE, wb_valE);
 
       word_t wb_destM = PIPE::gen_w_dstM();
-      word_t wb_valM  = PIPE::gen_w_valM();
+      word_t wb_valM = PIPE::gen_w_valM();
       if (wb_destM != REG_NONE)
          m_reg.setRegVal((REG_ID)wb_destM, wb_valM);
+
+      PIPE::pipe_regs.fetch.coming.pc = PIPE::gen_f_predPC();
+      PIPE::pipe_regs.fetch.coming.status = (PIPE::gen_f_stat() == STAT_OK) ? STAT_OK : STAT_BUBBLE;
    }
 
-   // update coming writeback pipeline registers, which depends on current memory registers
    void Pipe::doMemoryStageForComingWritebackRegs()
    {
       PIPE::dmem_error = false;
@@ -186,7 +186,6 @@ namespace SIM
       PIPE::pipe_regs.writeback.coming.stage_pc = PIPE::pipe_regs.memory.current.stage_pc;
    }
 
-   // update coming memory pipeline registers, which depends on current execute registers
    void Pipe::doExecuteStageForComingMemoryRegs()
    {
       word_t alufun = PIPE::gen_alufun();
@@ -209,7 +208,6 @@ namespace SIM
       PIPE::pipe_regs.memory.coming.stage_pc = PIPE::pipe_regs.execute.current.stage_pc;
    }
 
-   // update coming execute registers, which depends on current decode registers
    void Pipe::doDecodeStageForComingExecuteRegs()
    {
       PIPE::pipe_regs.execute.coming.srca = PIPE::gen_d_srcA();
@@ -248,7 +246,6 @@ namespace SIM
       }
    }
 
-   // update pipeline operations
    void Pipe::doStallCheck()
    {
       PIPE::pipe_regs.fetch.op = pipeCntl("F", PIPE::gen_F_stall(), PIPE::gen_F_bubble());

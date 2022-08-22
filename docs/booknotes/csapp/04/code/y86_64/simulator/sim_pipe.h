@@ -18,22 +18,30 @@ namespace SIM
    private:
       State runOneCycle() override;
 
-      // update current pipeline registers
+      // update current pipeline registers base on its comming pipeline registers
       void updateCurrentPipeRegs();
 
       /***************************************************************************
-       *  Need to do decode after execute & memory stages, and memory stage before
-       *  execute, in order to propagate forwarding values properly
+       * In order to propagate forwarding values properly, the calling sequence of
+       * each stage should be modified in reverse order, to make sure the inputs of
+       * a stage is unchanged before the stage is done in one cycle.
+       * 1. fetch stage     -> update decode pipeline registers
+       * 2. writeback stage -> update fetch pipeline registers
+       * 3. memory stage    -> update writeback pipeline registers
+       * 4. execute stage   -> update memory pipeline registers
+       * 5. decode stage    -> update execute pipeline registers
        * *************************************************************************/
-      // update coming decode and fetch pipeline registers
-      void doFetchStageForComingDecodeAndFetchRegs();
-      void doWritebackStage();
+      // update coming decode pipeline registers
+      void doFetchStageForComingDecodeRegs();
+      // update coming fetch pipeline registers
+      void doWritebackStageForComingFetchRegs();
       // update coming writeback pipeline registers, which depends on current memory registers
       void doMemoryStageForComingWritebackRegs();
       // update coming memory pipeline registers, which depends on current execute registers
       void doExecuteStageForComingMemoryRegs();
       // update coming execute registers, which depends on current decode registers
       void doDecodeStageForComingExecuteRegs();
+
       // update pipeline operations
       void doStallCheck();
       PipeOp pipeCntl(const char *name, word_t stall, word_t bubble);
