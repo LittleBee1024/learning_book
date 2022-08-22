@@ -1,6 +1,5 @@
 #include "./sim_pipe.h"
 #include "./pipe.h"
-#include "./pipe_regs.h"
 
 #include "isa.h"
 
@@ -128,11 +127,10 @@ namespace SIM
       PIPE::pipe_regs.decode.coming.valc = valc;
       PIPE::pipe_regs.decode.coming.valp = valp;
       PIPE::pipe_regs.decode.coming.status = (SIM::State)PIPE::gen_f_stat();
+      PIPE::pipe_regs.decode.coming.stage_pc = m_pc; // for debugging
 
       PIPE::pipe_regs.fetch.coming.pc = PIPE::gen_f_predPC();
       PIPE::pipe_regs.fetch.coming.status = (PIPE::pipe_regs.decode.coming.status == STAT_OK) ? STAT_OK : STAT_BUBBLE;
-
-      PIPE::pipe_regs.decode.coming.stage_pc = m_pc; // for debugging
    }
 
    // update coming writeback pipeline registers, which depends on current memory registers
@@ -218,6 +216,34 @@ namespace SIM
       PIPE::pipe_regs.execute.coming.ifun = PIPE::pipe_regs.decode.current.ifun;
       PIPE::pipe_regs.execute.coming.status = PIPE::pipe_regs.decode.current.status;
       PIPE::pipe_regs.execute.coming.stage_pc = PIPE::pipe_regs.decode.current.stage_pc;
+   }
+
+   PipeOp Pipe::pipeCntl(const char *name, word_t stall, word_t bubble)
+   {
+      if (stall)
+      {
+         if (bubble)
+         {
+            m_out.out("%s: Conflicting control signals for pipe register\n", name);
+            return P_ERROR;
+         }
+         else
+            return P_STALL;
+      }
+      else
+      {
+         return bubble ? P_BUBBLE : P_LOAD;
+      }
+   }
+
+   // update pipeline operations
+   void Pipe::doStallCheck()
+   {
+      PIPE::pipe_regs.fetch.op = pipeCntl("F", PIPE::gen_F_stall(), PIPE::gen_F_bubble());
+      PIPE::pipe_regs.decode.op = pipeCntl("D", PIPE::gen_D_stall(), PIPE::gen_D_bubble());
+      PIPE::pipe_regs.execute.op = pipeCntl("E", PIPE::gen_E_stall(), PIPE::gen_E_bubble());
+      PIPE::pipe_regs.memory.op = pipeCntl("M", PIPE::gen_M_stall(), PIPE::gen_M_bubble());
+      PIPE::pipe_regs.writeback.op = pipeCntl("W", PIPE::gen_W_stall(), PIPE::gen_W_bubble());
    }
 
 }

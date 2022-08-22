@@ -2,6 +2,7 @@
 
 #include "./sim_interface.h"
 #include "./state.h"
+#include "./pipe_regs.h"
 
 #include "io_interface.h"
 
@@ -34,5 +35,8 @@ namespace SIM
       void doExecuteStageForComingMemoryRegs();
       // update coming execute registers, which depends on current decode registers
       void doDecodeStageForComingExecuteRegs();
+      // update pipeline operations
+      void doStallCheck();
+      PipeOp pipeCntl(const char *name, word_t stall, word_t bubble);
    };
 }
