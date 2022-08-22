@@ -13,17 +13,6 @@ namespace PIPE
    word_t d_regvalb = 0;
    bool dmem_error = false;
    SIM::PipeRegs pipe_regs;
-
-   // variables only used in this CPP
-   word_t wb_destE = REG_NONE;
-   word_t wb_valE = 0;
-   word_t wb_destM = REG_NONE;
-   word_t wb_valM = 0;
-   word_t mem_addr = 0;
-   word_t mem_data = 0;
-   bool mem_write = false;
-   word_t cc_in = DEFAULT_CC;
-   SIM::State status = SIM::STAT_OK;
 }
 
 namespace SIM
@@ -34,13 +23,10 @@ namespace SIM
 
    State Pipe::runOneCycle()
    {
-      State s = updateSimStates();
-      if (s != STAT_OK)
-         return s;
-
       updateCurrentPipeRegs();
 
       doFetchStageForComingDecodeAndFetchRegs();
+      doWritebackStage();
       doMemoryStageForComingWritebackRegs();
       doExecuteStageForComingMemoryRegs();
       doDecodeStageForComingExecuteRegs();
@@ -50,8 +36,9 @@ namespace SIM
       if (PIPE::pipe_regs.writeback.current.status != STAT_BUBBLE)
          m_numInstr++;
       m_numCyc++;
+      m_out.out("[INFO] %lld cycle is done for instruction %lld\n", m_numCyc, m_numInstr);
 
-      return PIPE::status; // status is set in write back stage
+      return (SIM::State)PIPE::gen_Stat(); // status is set in write back stage
    }
 
    void Pipe::reset()
@@ -67,25 +54,6 @@ namespace SIM
       PIPE::d_regvalb = 0;
       PIPE::dmem_error = false;
       PIPE::pipe_regs.reset();
-   }
-
-   // update simulator's states, including PC update, register/memory write
-   State Pipe::updateSimStates()
-   {
-      if (PIPE::wb_destE != REG_NONE)
-         m_reg.setRegVal((REG_ID)PIPE::wb_destE, PIPE::wb_valE);
-      if (PIPE::wb_destM != REG_NONE)
-         m_reg.setRegVal((REG_ID)PIPE::wb_destM, PIPE::wb_valM);
-      if (PIPE::mem_write)
-      {
-         if (!m_mem.setWord(PIPE::mem_addr, PIPE::mem_data))
-         {
-            m_out.out("[ERROR] Couldn't write at address 0x%llx\n", PIPE::mem_addr);
-            return STAT_ERR_ADDR;
-         }
-      }
-      m_cc = PIPE::cc_in;
-      return STAT_OK;
    }
 
    // update current pipeline registers with the help of comming pipeline registers
@@ -169,29 +137,43 @@ namespace SIM
       PIPE::pipe_regs.fetch.coming.status = (PIPE::pipe_regs.decode.coming.status == STAT_OK) ? STAT_OK : STAT_BUBBLE;
    }
 
+   void Pipe::doWritebackStage()
+   {
+      word_t wb_destE = PIPE::gen_w_dstE();
+      word_t wb_valE = PIPE::gen_w_valE();
+      if (wb_destE != REG_NONE)
+         m_reg.setRegVal((REG_ID)wb_destE, wb_valE);
+
+      word_t wb_destM = PIPE::gen_w_dstM();
+      word_t wb_valM  = PIPE::gen_w_valM();
+      if (wb_destM != REG_NONE)
+         m_reg.setRegVal((REG_ID)wb_destM, wb_valM);
+   }
+
    // update coming writeback pipeline registers, which depends on current memory registers
    void Pipe::doMemoryStageForComingWritebackRegs()
    {
-      bool read = PIPE::gen_mem_read();
-      PIPE::mem_addr = PIPE::gen_mem_addr();
-      PIPE::mem_data = PIPE::pipe_regs.memory.current.vala;
-      PIPE::mem_write = PIPE::gen_mem_write();
       PIPE::dmem_error = false;
 
+      bool mem_read = PIPE::gen_mem_read();
+      word_t mem_addr = PIPE::gen_mem_addr();
       word_t valm = 0;
-      if (read)
+      if (mem_read)
       {
-         PIPE::dmem_error = PIPE::dmem_error || !m_mem.getWord(PIPE::mem_addr, &valm);
+         PIPE::dmem_error = PIPE::dmem_error || !m_mem.getWord(mem_addr, &valm);
          if (PIPE::dmem_error)
-            m_out.out("[ERROR] Couldn't read at address 0x%llx\n", PIPE::mem_addr);
+            m_out.out("[ERROR] Couldn't read at address 0x%llx\n", mem_addr);
       }
-      if (PIPE::mem_write)
+
+      bool mem_write = PIPE::gen_mem_write();
+      word_t mem_data = PIPE::pipe_regs.memory.current.vala;
+      if (mem_write)
       {
-         word_t junk;
-         // Do a read of address just to check validity
-         PIPE::dmem_error = PIPE::dmem_error || !m_mem.getWord(PIPE::mem_addr, &junk);
+         PIPE::dmem_error = PIPE::dmem_error || !m_mem.setWord(mem_addr, mem_data);
          if (PIPE::dmem_error)
-            m_out.out("[ERROR] Couldn't write to address 0x%llx\n", PIPE::mem_addr);
+         {
+            m_out.out("[ERROR] Couldn't write at address 0x%llx\n", mem_addr);
+         }
       }
 
       PIPE::pipe_regs.writeback.coming.icode = PIPE::pipe_regs.memory.current.icode;
@@ -215,7 +197,7 @@ namespace SIM
       PIPE::pipe_regs.memory.coming.takebranch = checkCond(m_cc, (COND)PIPE::pipe_regs.execute.current.ifun);
       PIPE::pipe_regs.memory.coming.vale = computeALU((ALU)alufun, alua, alub);
       if (setcc)
-         PIPE::cc_in = computeCC((ALU)alufun, alua, alub);
+         m_cc = computeCC((ALU)alufun, alua, alub);
 
       PIPE::pipe_regs.memory.coming.icode = PIPE::pipe_regs.execute.current.icode;
       PIPE::pipe_regs.memory.coming.ifun = PIPE::pipe_regs.execute.current.ifun;
@@ -230,13 +212,6 @@ namespace SIM
    // update coming execute registers, which depends on current decode registers
    void Pipe::doDecodeStageForComingExecuteRegs()
    {
-      // Set up write backs.  Don't occur until end of cycle
-      PIPE::wb_destE = PIPE::gen_w_dstE();
-      PIPE::wb_valE = PIPE::gen_w_valE();
-      PIPE::wb_destM = PIPE::gen_w_dstM();
-      PIPE::wb_valM = PIPE::gen_w_valM();
-      PIPE::status = (SIM::State)PIPE::gen_Stat();
-
       PIPE::pipe_regs.execute.coming.srca = PIPE::gen_d_srcA();
       PIPE::pipe_regs.execute.coming.srcb = PIPE::gen_d_srcB();
       PIPE::pipe_regs.execute.coming.deste = PIPE::gen_d_dstE();

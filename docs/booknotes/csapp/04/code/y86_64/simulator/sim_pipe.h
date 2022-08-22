@@ -18,8 +18,6 @@ namespace SIM
    private:
       State runOneCycle() override;
 
-      // update simulator's states, including PC update, register/memory write
-      State updateSimStates();
       // update current pipeline registers
       void updateCurrentPipeRegs();
 
@@ -29,6 +27,7 @@ namespace SIM
        * *************************************************************************/
       // update coming decode and fetch pipeline registers
       void doFetchStageForComingDecodeAndFetchRegs();
+      void doWritebackStage();
       // update coming writeback pipeline registers, which depends on current memory registers
       void doMemoryStageForComingWritebackRegs();
       // update coming memory pipeline registers, which depends on current execute registers
