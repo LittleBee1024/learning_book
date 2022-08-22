@@ -32,6 +32,8 @@ namespace SIM
          }
          if (reg.op != P_ERROR)
             reg.op = P_LOAD;
+         else
+            reg.current.status = STAT_ERR_PIPE;
       };
 
       updateRegs(fetch);
@@ -58,12 +60,6 @@ namespace SIM
       writeback.current.reset();
       writeback.coming.reset();
       writeback.op = P_LOAD;
-   }
-
-   bool PipeRegs::hasError() const
-   {
-      return (fetch.op == P_ERROR || decode.op == P_ERROR || execute.op == P_ERROR ||
-              memory.op == P_ERROR || writeback.op == P_ERROR);
    }
 
 }

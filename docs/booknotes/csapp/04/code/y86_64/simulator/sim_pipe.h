@@ -18,9 +18,9 @@ namespace SIM
       State runOneCycle() override;
 
       // update simulator's states, including PC update, register/memory write
-      void updateSimStates();
-      // update current pipelines
-      void updatePipelines();
+      State updateSimStates();
+      // update current pipeline registers
+      void updateCurrentPipeRegs();
 
       /***************************************************************************
        *  Need to do decode after execute & memory stages, and memory stage before
