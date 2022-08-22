@@ -252,6 +252,7 @@ namespace SIM
 
       PIPE::pipe_regs.execute.coming.icode = PIPE::pipe_regs.decode.current.icode;
       PIPE::pipe_regs.execute.coming.ifun = PIPE::pipe_regs.decode.current.ifun;
+      PIPE::pipe_regs.execute.coming.valc = PIPE::pipe_regs.decode.current.valc;
       PIPE::pipe_regs.execute.coming.status = PIPE::pipe_regs.decode.current.status;
       PIPE::pipe_regs.execute.coming.stage_pc = PIPE::pipe_regs.decode.current.stage_pc;
    }
