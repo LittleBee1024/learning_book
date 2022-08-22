@@ -23,6 +23,7 @@ namespace SIM
       word_t valc = 0;      /* Instruction word encoding immediate data */
       word_t valp = 0;      /* Incremented program counter */
       State status = STAT_BUBBLE;
+      word_t stage_pc = 0; /* For debugging, record the address that the stage comes from */
 
       void reset() { *this = {}; }
    };
@@ -39,6 +40,7 @@ namespace SIM
       byte_t deste = REG_NONE; /* Destination register for valE */
       byte_t destm = REG_NONE; /* Destination register for valM */
       State status = STAT_BUBBLE;
+      word_t stage_pc = 0; /* For debugging, record the address that the stage comes from */
 
       void reset() { *this = {}; }
    };
@@ -54,6 +56,7 @@ namespace SIM
       byte_t destm = REG_NONE; /* Destination register for valM */
       byte_t srca = REG_NONE;  /* Source register for valA */
       State status = STAT_BUBBLE;
+      word_t stage_pc = 0; /* For debugging, record the address that the stage comes from */
 
       void reset() { *this = {}; }
    };
@@ -67,6 +70,7 @@ namespace SIM
       byte_t deste = REG_NONE; /* Destination register for valE */
       byte_t destm = REG_NONE; /* Destination register for valM */
       State status = STAT_BUBBLE;
+      word_t stage_pc = 0; /* For debugging, record the address that the stage comes from */
 
       void reset() { *this = {}; }
    };

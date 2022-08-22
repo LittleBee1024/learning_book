@@ -84,6 +84,49 @@ namespace SIM
    // update coming decode and fetch pipeline registers
    void Pipe::doFetchStageForComingDecodeAndFetchRegs()
    {
+      m_pc = PIPE::gen_f_pc();
+      word_t valp = m_pc;
+
+      byte_t instr = HPACK(I_NOP, F_NONE);
+      PIPE::imem_error = !m_mem.getByte(valp, &instr);
+      if (PIPE::imem_error)
+         m_out.out("[ERROR] PC = 0x%llx, Invalid instruction address\n", m_pc);
+      PIPE::imem_icode = HI4(instr);
+      PIPE::imem_ifun = LO4(instr);
+      PIPE::pipe_regs.decode.coming.icode = PIPE::gen_f_icode();
+      PIPE::pipe_regs.decode.coming.ifun = PIPE::gen_f_ifun();
+      PIPE::instr_valid = PIPE::gen_instr_valid();
+      if (!PIPE::instr_valid)
+         m_out.out("[ERROR] PC = 0x%llx, Invalid instruction %.2x\n", m_pc, instr);
+      valp++;
+
+      byte_t regids = HPACK(REG_NONE, REG_NONE);
+      if (PIPE::gen_need_regids())
+      {
+         PIPE::imem_error = !m_mem.getByte(valp, &regids);
+         if (PIPE::imem_error)
+            m_out.out("[ERROR] PC = 0x%llx, Invalid instruction address\n", m_pc);
+         valp++;
+      }
+      PIPE::pipe_regs.decode.coming.ra = HI4(regids);
+      PIPE::pipe_regs.decode.coming.rb = LO4(regids);
+
+      word_t valc = 0;
+      if (PIPE::gen_need_valC())
+      {
+         PIPE::imem_error = !m_mem.getWord(valp, &valc);
+         if (PIPE::imem_error)
+            m_out.out("[ERROR] PC = 0x%llx, Invalid instruction address\n", m_pc);
+         valp += sizeof(word_t);
+      }
+      PIPE::pipe_regs.decode.coming.valc = valc;
+      PIPE::pipe_regs.decode.coming.valp = valp;
+      PIPE::pipe_regs.decode.coming.status = (SIM::State)PIPE::gen_f_stat();
+
+      PIPE::pipe_regs.fetch.coming.pc = PIPE::gen_f_predPC();
+      PIPE::pipe_regs.fetch.coming.status = (PIPE::pipe_regs.decode.coming.status == STAT_OK) ? STAT_OK : STAT_BUBBLE;
+
+      PIPE::pipe_regs.decode.coming.stage_pc = m_pc; // for debugging
    }
 
    // update coming writeback pipeline registers, which depends on current memory registers
