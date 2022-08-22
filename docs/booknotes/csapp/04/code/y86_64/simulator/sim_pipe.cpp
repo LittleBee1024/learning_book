@@ -24,6 +24,7 @@ namespace PIPE
    word_t mem_data = 0;
    bool mem_write = false;
    word_t cc_in = DEFAULT_CC;
+   SIM::State status = SIM::STAT_OK;
 }
 
 namespace SIM
@@ -40,7 +41,12 @@ namespace SIM
 
       updateCurrentPipeRegs();
 
-      return STAT_OK;
+      doFetchStageForComingDecodeAndFetchRegs();
+      doMemoryStageForComingWritebackRegs();
+      doExecuteStageForComingMemoryRegs();
+      doDecodeStageForComingExecuteRegs();
+
+      return PIPE::status; // status is set in write back stage
    }
 
    void Pipe::reset()
@@ -132,16 +138,86 @@ namespace SIM
    // update coming writeback pipeline registers, which depends on current memory registers
    void Pipe::doMemoryStageForComingWritebackRegs()
    {
+      bool read = PIPE::gen_mem_read();
+      PIPE::mem_addr = PIPE::gen_mem_addr();
+      PIPE::mem_data = PIPE::pipe_regs.memory.current.vala;
+      PIPE::mem_write = PIPE::gen_mem_write();
+      PIPE::dmem_error = false;
+
+      word_t valm = 0;
+      if (read)
+      {
+         PIPE::dmem_error = PIPE::dmem_error || !m_mem.getWord(PIPE::mem_addr, &valm);
+         if (PIPE::dmem_error)
+            m_out.out("[ERROR] Couldn't read at address 0x%llx\n", PIPE::mem_addr);
+      }
+      if (PIPE::mem_write)
+      {
+         word_t junk;
+         // Do a read of address just to check validity
+         PIPE::dmem_error = PIPE::dmem_error || !m_mem.getWord(PIPE::mem_addr, &junk);
+         if (PIPE::dmem_error)
+            m_out.out("[ERROR] Couldn't write to address 0x%llx\n", PIPE::mem_addr);
+      }
+
+      PIPE::pipe_regs.writeback.coming.icode = PIPE::pipe_regs.memory.current.icode;
+      PIPE::pipe_regs.writeback.coming.ifun = PIPE::pipe_regs.memory.current.ifun;
+      PIPE::pipe_regs.writeback.coming.vale = PIPE::pipe_regs.memory.current.vale;
+      PIPE::pipe_regs.writeback.coming.valm = valm;
+      PIPE::pipe_regs.writeback.coming.deste = PIPE::pipe_regs.memory.current.deste;
+      PIPE::pipe_regs.writeback.coming.destm = PIPE::pipe_regs.memory.current.destm;
+      PIPE::pipe_regs.writeback.coming.status = (SIM::State)PIPE::gen_m_stat();
+      PIPE::pipe_regs.writeback.coming.stage_pc = PIPE::pipe_regs.memory.current.stage_pc;
    }
 
    // update coming memory pipeline registers, which depends on current execute registers
    void Pipe::doExecuteStageForComingMemoryRegs()
    {
+      word_t alufun = PIPE::gen_alufun();
+      bool setcc = PIPE::gen_set_cc();
+      word_t alua = PIPE::gen_aluA();
+      word_t alub = PIPE::gen_aluB();
+
+      PIPE::pipe_regs.memory.coming.takebranch = checkCond(m_cc, (COND)PIPE::pipe_regs.execute.current.ifun);
+      PIPE::pipe_regs.memory.coming.vale = computeALU((ALU)alufun, alua, alub);
+      if (setcc)
+         PIPE::cc_in = computeCC((ALU)alufun, alua, alub);
+
+      PIPE::pipe_regs.memory.coming.icode = PIPE::pipe_regs.execute.current.icode;
+      PIPE::pipe_regs.memory.coming.ifun = PIPE::pipe_regs.execute.current.ifun;
+      PIPE::pipe_regs.memory.coming.vala = PIPE::gen_e_valA();
+      PIPE::pipe_regs.memory.coming.deste = PIPE::gen_e_dstE();
+      PIPE::pipe_regs.memory.coming.destm = PIPE::pipe_regs.execute.current.destm;
+      PIPE::pipe_regs.memory.coming.srca = PIPE::pipe_regs.execute.current.srca;
+      PIPE::pipe_regs.memory.coming.status = PIPE::pipe_regs.execute.current.status;
+      PIPE::pipe_regs.memory.coming.stage_pc = PIPE::pipe_regs.execute.current.stage_pc;
    }
 
    // update coming execute registers, which depends on current decode registers
    void Pipe::doDecodeStageForComingExecuteRegs()
    {
+      // Set up write backs.  Don't occur until end of cycle
+      PIPE::wb_destE = PIPE::gen_w_dstE();
+      PIPE::wb_valE = PIPE::gen_w_valE();
+      PIPE::wb_destM = PIPE::gen_w_dstM();
+      PIPE::wb_valM = PIPE::gen_w_valM();
+      PIPE::status = (SIM::State)PIPE::gen_Stat();
+
+      PIPE::pipe_regs.execute.coming.srca = PIPE::gen_d_srcA();
+      PIPE::pipe_regs.execute.coming.srcb = PIPE::gen_d_srcB();
+      PIPE::pipe_regs.execute.coming.deste = PIPE::gen_d_dstE();
+      PIPE::pipe_regs.execute.coming.destm = PIPE::gen_d_dstM();
+
+      PIPE::d_regvala = m_reg.getRegVal((REG_ID)PIPE::pipe_regs.execute.coming.srca);
+      PIPE::d_regvalb = m_reg.getRegVal((REG_ID)PIPE::pipe_regs.execute.coming.srcb);
+
+      PIPE::pipe_regs.execute.coming.vala = PIPE::gen_d_valA();
+      PIPE::pipe_regs.execute.coming.valb = PIPE::gen_d_valB();
+
+      PIPE::pipe_regs.execute.coming.icode = PIPE::pipe_regs.decode.current.icode;
+      PIPE::pipe_regs.execute.coming.ifun = PIPE::pipe_regs.decode.current.ifun;
+      PIPE::pipe_regs.execute.coming.status = PIPE::pipe_regs.decode.current.status;
+      PIPE::pipe_regs.execute.coming.stage_pc = PIPE::pipe_regs.decode.current.stage_pc;
    }
 
 }

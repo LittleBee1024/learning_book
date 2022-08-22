@@ -6,7 +6,7 @@
 /* Defined in sim_pipe.cpp */
 namespace PIPE
 {
-   /* Defined in pipe.cpp which is generated from pipe.hcl by hcl tool */
+   // fetch stage functions
    word_t gen_f_pc();
    word_t gen_f_predPC();
    word_t gen_f_icode();
@@ -16,6 +16,7 @@ namespace PIPE
    word_t gen_need_valC();
    word_t gen_instr_valid();
 
+   // decocode and writeback stage functions
    word_t gen_d_srcA();
    word_t gen_d_srcB();
    word_t gen_d_dstE();
@@ -28,6 +29,22 @@ namespace PIPE
    word_t gen_w_valM();
    word_t gen_Stat();
 
+   // execute stage functions
+   word_t gen_alufun();
+   word_t gen_set_cc();
+   word_t gen_Bch();
+   word_t gen_aluA();
+   word_t gen_aluB();
+   word_t gen_e_valA();
+   word_t gen_e_dstE();
+
+   // memory stage functions
+   word_t gen_mem_addr();
+   word_t gen_mem_read();
+   word_t gen_mem_write();
+   word_t gen_m_stat();
+
+   // pipeline control functions for different stages
    word_t gen_F_stall();
    word_t gen_F_bubble();
    word_t gen_D_stall();
