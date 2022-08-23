@@ -12,7 +12,12 @@
 
 void usage(char *pname)
 {
-   printf("Usage: %s code_file [-m max_cycles]\n", pname);
+   printf("Usage: %s code_file [-y/s/p] [-m max_cycles]\n", pname);
+   printf("\tcode_file  : Y86-64 code file *.yo\n");
+   printf("\t-y         : YIS simulator\n");
+   printf("\t-s         : SEQ simulator\n");
+   printf("\t-p         : PIPE simulator\n");
+   printf("\t-m         : specifies the max number of running steps\n");
 }
 
 bool endsWith(const std::string &str, const std::string &suffix)

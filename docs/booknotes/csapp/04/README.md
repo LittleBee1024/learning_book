@@ -445,3 +445,17 @@ int main(int argc, char *argv[]) {
 * 模拟Y86-64的流水线实现 - [PIPE](https://github.com/LittleBee1024/learning_book/blob/main/docs/booknotes/csapp/04/code/y86_64/simulator/sim_pipe.h)
     * 结合["pipe.hcl"](https://github.com/LittleBee1024/learning_book/blob/main/docs/booknotes/csapp/04/code/y86_64/simulator/pipe.hcl)硬件描述，用相同的代码实现所有的指令
 
+例如，在YIS仿真器上运行书4.1.5的例子，可得到同样的结果：
+```asm title="simulator>./build/sim -y test/asum.yo"
+...
+Changes to registers:
+%rax:   0x0000000000000000      0x0000abcdabcdabcd
+%rsp:   0x0000000000000000      0x0000000000000200
+%rdi:   0x0000000000000000      0x0000000000000038
+%r8:    0x0000000000000000      0x0000000000000008
+%r9:    0x0000000000000000      0x0000000000000001
+%r10:   0x0000000000000000      0x0000a000a000a000
+Changes to memory:
+0x01f0: 0x0000000000000000      0x0000000000000055
+0x01f8: 0x0000000000000000      0x0000000000000013
+```
