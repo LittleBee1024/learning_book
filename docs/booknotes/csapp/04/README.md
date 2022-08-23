@@ -353,8 +353,7 @@ Y86-64的程序可以访问和修改程序寄存器、条件码、程序计数�
 Y86-64汇编器通过`Flex`工具，分析出Y86-64的汇编代码中的内容，然后结合Y86-64的指令集体系结构，将汇编指令转换成对应的机器代码。`Flex`工具对Y86-64汇编器词法文件["yas.lex"](https://github.com/LittleBee1024/learning_book/blob/main/docs/booknotes/csapp/04/code/y86_64/assembler/yas.lex)的分析过程，可参考博文[《Flex和Bison》](../../../topics/flex_bison/README.md)。由于汇编器只需要将汇编代码和机器代码一一对应，并不涉及语法分析，因此不需要用到`Bison`工具。
 
 例如，书4.1.5节中`long sum(long *start, long count)`的例子，通过汇编器可得到如下机器代码：
-```asm title="asum.yo"
-assembler> ./build/yas ../test_yas/asum.ys
+```asm title="assembler> ./build/yas ../test_yas/asum.ys"
                             | # Execution begins at address 0 
 0x000:                      |   .pos 0
 0x000: 30f40002000000000000 |   irmovq stack, %rsp      # Set up stack pointer
@@ -395,7 +394,43 @@ Yas Lexer parse is done
 
 ### HCL转换工具
 
+为了方便描述电路，书4.2节设计了一种硬件控制语言HCL。本文的["HCL表达式"](#hcl_1)章节介绍了四种HCL表达式类型，每种表达式都可以用一个C函数表达同样的逻辑。`Flex`工具通过词法文件["hcl.lex"](https://github.com/LittleBee1024/learning_book/blob/main/docs/booknotes/csapp/04/code/y86_64/hcl/hcl.lex)可解析出HCL文件中的关键词，`Bison`工具通过语法文件["hcl.y"](https://github.com/LittleBee1024/learning_book/blob/main/docs/booknotes/csapp/04/code/y86_64/hcl/hcl.y)将这些关键词组合成不同的HCL表达式，最终生成对应的C代码。
 
+例如，书4.2.2中的多路选择器["mux4.hcl"](https://github.com/LittleBee1024/learning_book/blob/main/docs/booknotes/csapp/04/code/y86_64/test_hcl/mux4.hcl)，可转换为如下的C代码：
+```cpp title="hcl> ./build/hcl ../test_hcl/mux4.hcl"
+#include <stdio.h>
+#include <stdlib.h>
+int code_val, s0_val, s1_val;
+char **data_names;
+long long gen_s1()
+{
+   return ((code_val) == 2 || (code_val) == 3);
+}
+
+long long gen_s0()
+{
+   return ((code_val) == 1 || (code_val) == 3);
+}
+
+long long gen_Out4()
+{
+   return ((!(s1_val) & !(s0_val)) ? (atoi(data_names[0])) : !(s1_val) ? (atoi(data_names[1])) : !
+      (s0_val) ? (atoi(data_names[2])) : (atoi(data_names[3])));
+}
+
+int main(int argc, char *argv[]) {
+   if (argc < 6) {
+      printf("Please input five arguments: code, A, B, C and D, such as: ./mux4 0 1 2 3 4\n");
+      return -1;
+   }
+   data_names = argv+2;
+   code_val = atoi(argv[1]);
+   s1_val = gen_s1();
+   s0_val = gen_s0();
+   printf("Out = %lld\n", gen_Out4());
+   return 0;
+}
+```
 
 ### Y86-64仿真器
 
