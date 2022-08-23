@@ -434,4 +434,14 @@ int main(int argc, char *argv[]) {
 
 ### Y86-64仿真器
 
+在本文["程序员可见的状态"](#_2)章节中，Y86-64对外接口只有：程序寄存器、条件码、程序计数器和内存。换句话说，我们只要保证这四个部分的行为和Y86-64一致，就可以通过软件模拟出一个Y86-64机器。当运行一个Y86-64程序时，仿真器需要保证程序寄存器和内存的变化，同真正的Y86-64机器一致。
+
+我们通过三种方式实现了Y86-64仿真器：
+
+* 逐个实现每条指令的行为 - [YIS](https://github.com/LittleBee1024/learning_book/blob/main/docs/booknotes/csapp/04/code/y86_64/simulator/sim_yis.h)
+    * 通过`switch`语句，对每条指令通过不同的代码模拟
+* 模拟Y86-64的顺序实现 - [SEQ](https://github.com/LittleBee1024/learning_book/blob/main/docs/booknotes/csapp/04/code/y86_64/simulator/sim_seq.h)
+    * 结合["seq.hcl"](https://github.com/LittleBee1024/learning_book/blob/main/docs/booknotes/csapp/04/code/y86_64/simulator/seq.hcl)硬件描述，用相同的代码实现所有的指令
+* 模拟Y86-64的流水线实现 - [PIPE](https://github.com/LittleBee1024/learning_book/blob/main/docs/booknotes/csapp/04/code/y86_64/simulator/sim_pipe.h)
+    * 结合["pipe.hcl"](https://github.com/LittleBee1024/learning_book/blob/main/docs/booknotes/csapp/04/code/y86_64/simulator/pipe.hcl)硬件描述，用相同的代码实现所有的指令
 
