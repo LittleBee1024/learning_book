@@ -337,3 +337,68 @@ Y86-64的程序可以访问和修改程序寄存器、条件码、程序计数�
 * 不同之处
     * PIPE模型中没有SEQ模型中标号为“Data”的块，这个块是用来在数据源`valP`和`valA`中进行选择的，在PIPE模型中已由译码阶段的“Sel+Fwd A”块完成了
     * PIPE模型中访存阶段的许多信号被传递到较早的阶段
+
+## Y86-64仿真器实例
+本章中的代码参考了["y86_64-tools"](https://github.com/sysprog21/y86_64-tools)项目，基于C++，重新实现了Y86-64的三个主要工具：
+
+* [Y86-64汇编器](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/csapp/04/code/y86_64/assembler)
+    * 将Y86-64的汇编代码`.ys`文件，编译为二进制Y86-64的机器指令`.yo`文件
+* [HCL转换工具](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/csapp/04/code/y86_64/hcl)
+    * 将HCL格式的硬件描述文件，转换为对应的C代码
+* [Y86-64仿真器](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/csapp/04/code/y86_64/simulator)
+    * 一个可运行`.yo`文件的Y86-64仿真器，可打印出程序运行前后寄存器和内存的变化
+
+### Y86-64汇编器
+
+Y86-64汇编器通过`Flex`工具，分析出Y86-64的汇编代码中的内容，然后结合Y86-64的指令集体系结构，将指令转换成对应的二进制文件。
+
+例如，书4.1.5节中`long sum(long *start, long count)`的例子，通过汇编器可得到如下机器代码：
+```asm title="asum.yo"
+assembler> ./build/yas ../test_yas/asum.ys
+                            | # Execution begins at address 0 
+0x000:                      |   .pos 0
+0x000: 30f40002000000000000 |   irmovq stack, %rsp      # Set up stack pointer
+0x00a: 803800000000000000   |   call main               # Execute main program
+0x013: 00                   |   halt                    # Terminate program 
+                            | 
+                            | # Array of 4 elements
+0x018:                      |   .align 8
+0x018: 0d000d000d000000     | array:    .quad 0x000d000d000d
+0x020: c000c000c0000000     |   .quad 0x00c000c000c0
+0x028: 000b000b000b0000     |   .quad 0x0b000b000b00
+0x030: 00a000a000a00000     |   .quad 0xa000a000a000
+                            | 
+0x038: 30f71800000000000000 | main:     irmovq array,%rdi
+0x042: 30f60400000000000000 |   irmovq $4,%rsi
+0x04c: 805600000000000000   |   call sum                # sum(array, 4)
+0x055: 90                   |   ret
+                            | 
+                            | # long sum(long *start, long count)
+                            | # start in %rdi, count in %rsi
+0x056: 30f80800000000000000 | sum:      irmovq $8,%r8        # Constant 8
+0x060: 30f90100000000000000 |   irmovq $1,%r9        # Constant 1
+0x06a: 6300                 |   xorq %rax,%rax       # sum = 0
+0x06c: 6266                 |   andq %rsi,%rsi       # Set CC
+0x06e: 708700000000000000   |   jmp     test         # Goto test
+0x077: 50a70000000000000000 | loop:     mrmovq (%rdi),%r10   # Get *start
+0x081: 60a0                 |   addq %r10,%rax       # Add to sum
+0x083: 6087                 |   addq %r8,%rdi        # start++
+0x085: 6196                 |   subq %r9,%rsi        # count--.  Set CC
+0x087: 747700000000000000   | test:     jne    loop          # Stop when 0
+0x090: 90                   |   ret                  # Return
+                            | 
+                            | # Stack starts here and grows to lower addresses
+0x200:                      |   .pos 0x200
+0x200:                      | stack:
+Yas Lexer parse is done
+```
+
+
+
+### HCL转换工具
+
+
+
+### Y86-64仿真器
+
+

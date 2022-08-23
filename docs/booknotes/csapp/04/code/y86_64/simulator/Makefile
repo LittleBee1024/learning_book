@@ -42,12 +42,12 @@ sim: $(DEP_COMMON_OBJS) $(BUILD_DIR)/seq.o $(BUILD_DIR)/pipe.o $(OBJS)
 	$(CC) $(CFLAGS) $^ -o $(BUILD_DIR)/$@
 
 YAS=../assembler/build/yas
-Y86_64_CODE=../test_yas/asum.yo
+Y86_64_CODE=./test/asum.yo
 
 %.yo: %.ys
 	$(YAS) $< -o $@
 
-test:
+test: $(Y86_64_CODE)
 	@rm -rf test/*.log
 	$(BUILD_DIR)/sim -y $(Y86_64_CODE) > test/yis.log
 	$(BUILD_DIR)/sim -s $(Y86_64_CODE) > test/seq.log
