@@ -138,6 +138,16 @@ The following are some of the valid targets for this Makefile:
     make[3]: Leaving directory '/home/yuxiangw/GitHub/learning_book/docs/topics/cmake/code/liba/build'
     ```
 
+## 源代码导入工程
+
+将其他目录下的源代码和当前目录的源代码一起编译，可以排除因编译器版本不同，而造成目标文件的兼容问题。cmake提供了：
+* [`aux_source_directory(<dir> <variable>)`](https://cmake.org/cmake/help/latest/command/aux_source_directory.html)
+    * 用于将指定目录下所有的源文件记录在`<varible>`中，以便和当前目录的源文件同时编译
+
+### [导入源代码配置文件](./code/src_import/src/CMakeLists.txt)
+* 先通过`aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/src1 SRCS1)`命令，将`src1`目录下的所有源代码文件记录在`SRCS1`变量中
+* 再通过`add_executable(SRC_IMPORT_EXEC ${SRCS1} ${SRCS2} main.cpp)`命令，将其他目录下的源代码和当前目录下的源代码一起编译
+
 ## 自定义工程
 除了常规目标(EXEC，静态库，动态库)，cmake还提供了一些命令用于用户自定义的目标：
 
