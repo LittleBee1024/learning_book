@@ -1,5 +1,6 @@
 #include "./yas.h"
 #include "./yas_instr.h"
+#include "output.h"
 
 #include <cassert>
 #include <stdio.h>
@@ -33,8 +34,8 @@ namespace
 
 namespace YAS
 {
-   Lexer::Lexer(std::unique_ptr<IO::InputInterface> &&in) : m_in(std::move(in)), m_out(nullptr), m_pass(0), m_hitError(false),
-                                                            m_lineno(0), m_lineError(false), m_addr(0)
+   Lexer::Lexer(std::unique_ptr<IO::InputInterface> &&in) : m_in(std::move(in)), m_out(std::make_shared<IO::StdOut>()),
+                                                            m_pass(0), m_hitError(false), m_lineno(0), m_lineError(false), m_addr(0)
    {
       // yas_in is a global variable defined in flex
       assert(m_in->getHandler() != nullptr);
