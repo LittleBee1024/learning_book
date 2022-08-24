@@ -3,6 +3,7 @@
 #include "io_interface.h"
 #include "isa.h"
 
+#include <memory>
 #include <vector>
 
 namespace SIM
@@ -11,7 +12,7 @@ namespace SIM
    {
       static constexpr int SIZE_ALIGN = 32;
    public:
-      Storage(int len, IO::OutputInterface &out);
+      Storage(int len, std::shared_ptr<IO::OutputInterface> out);
       Storage(const Storage &other) = default;
       Storage &operator=(const Storage &) = delete;
       virtual ~Storage() = default;
@@ -26,14 +27,14 @@ namespace SIM
       void reset();
 
    protected:
-      IO::OutputInterface &m_out;
+      std::shared_ptr<IO::OutputInterface> m_out;
       std::vector<byte_t> m_contents;
    };
 
    class MemStore : public Storage
    {
    public:
-      MemStore(int len, IO::OutputInterface &out);
+      MemStore(int len, std::shared_ptr<IO::OutputInterface> out);
 
       /**
        * @brief Load Y86_64 machine code from a file
@@ -47,7 +48,7 @@ namespace SIM
    class RegStore : public Storage
    {
    public:
-      RegStore(int len, IO::OutputInterface &out);
+      RegStore(int len, std::shared_ptr<IO::OutputInterface> out);
 
       word_t getRegVal(REG_ID id) const;
       void setRegVal(REG_ID id, word_t val);

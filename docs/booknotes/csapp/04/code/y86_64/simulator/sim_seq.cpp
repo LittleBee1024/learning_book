@@ -55,7 +55,7 @@ namespace SEQ
 namespace SIM
 {
 
-   Seq::Seq(IO::OutputInterface &out) : SimBase(out)
+   Seq::Seq(std::shared_ptr<IO::OutputInterface> out) : SimBase(out)
    {
    }
 
@@ -100,7 +100,7 @@ namespace SIM
 
    void Seq::fetch()
    {
-      m_out.out("F: predPC = 0x%llx\n", m_pc);
+      m_out->out("F: predPC = 0x%llx\n", m_pc);
 
       if ((SIM::State)SEQ::gen_Stat() != SIM::STAT_OK)
          return;
@@ -113,7 +113,7 @@ namespace SIM
       SEQ::imem_error = !m_mem.getByte(SEQ::valp, &byte0);
       if (SEQ::imem_error)
       {
-         m_out.out("[ERROR] PC = 0x%llx, Invalid instruction address\n", m_pc);
+         m_out->out("[ERROR] PC = 0x%llx, Invalid instruction address\n", m_pc);
          return;
       }
       SEQ::imem_icode = HI4(byte0);
@@ -123,7 +123,7 @@ namespace SIM
       SEQ::instr_valid = SEQ::gen_instr_valid();
       if (!SEQ::instr_valid)
       {
-         m_out.out("[ERROR] PC = 0x%llx, Invalid instruction %.2x\n", m_pc, byte0);
+         m_out->out("[ERROR] PC = 0x%llx, Invalid instruction %.2x\n", m_pc, byte0);
          return;
       }
       SEQ::valp++;
@@ -137,7 +137,7 @@ namespace SIM
          SEQ::imem_error = !m_mem.getByte(SEQ::valp, &byte1);
          if (SEQ::imem_error)
          {
-            m_out.out("[ERROR] PC = 0x%llx, Invalid instruction address\n", m_pc);
+            m_out->out("[ERROR] PC = 0x%llx, Invalid instruction address\n", m_pc);
             return;
          }
          SEQ::ra = HI4(byte1);
@@ -152,7 +152,7 @@ namespace SIM
          SEQ::imem_error = !m_mem.getWord(SEQ::valp, &SEQ::valc);
          if (SEQ::imem_error)
          {
-            m_out.out("[ERROR] PC = 0x%llx, Invalid instruction address\n", m_pc);
+            m_out->out("[ERROR] PC = 0x%llx, Invalid instruction address\n", m_pc);
             return;
          }
          SEQ::valp += sizeof(word_t);
@@ -161,7 +161,7 @@ namespace SIM
 
    void Seq::decode()
    {
-      m_out.out("D: instr = %s, rA = %s, rB = %s, valC = 0x%llx, valP = 0x%llx\n",
+      m_out->out("D: instr = %s, rA = %s, rB = %s, valC = 0x%llx, valP = 0x%llx\n",
                 ISA::decodeInstrName(HPACK(SEQ::icode, SEQ::ifun)), ISA::getRegName((REG_ID)SEQ::ra),
                 ISA::getRegName((REG_ID)SEQ::rb), SEQ::valc, SEQ::valp);
 
@@ -188,7 +188,7 @@ namespace SIM
 
    void Seq::execute()
    {
-      m_out.out("E: instr = %s, valC = 0x%llx, valA = 0x%llx, valB = 0x%llx, valP = 0x%llx\n   srcA = %s, srcB = %s, dstE = %s, dstM = %s\n",
+      m_out->out("E: instr = %s, valC = 0x%llx, valA = 0x%llx, valB = 0x%llx, valP = 0x%llx\n   srcA = %s, srcB = %s, dstE = %s, dstM = %s\n",
                 ISA::decodeInstrName(HPACK(SEQ::icode, SEQ::ifun)), SEQ::valc, SEQ::vala, SEQ::valb, SEQ::valp,
                 ISA::getRegName((REG_ID)SEQ::srcA), ISA::getRegName((REG_ID)SEQ::srcB),
                 ISA::getRegName((REG_ID)SEQ::destE), ISA::getRegName((REG_ID)SEQ::destM));
@@ -206,7 +206,7 @@ namespace SIM
 
    void Seq::memory()
    {
-      m_out.out("M: instr = %s, Cnd = %d, valE = 0x%llx, valA = 0x%llx, valP = 0x%llx\n   dstE = %s, dstM = %s\n",
+      m_out->out("M: instr = %s, Cnd = %d, valE = 0x%llx, valA = 0x%llx, valP = 0x%llx\n   dstE = %s, dstM = %s\n",
                 ISA::decodeInstrName(HPACK(SEQ::icode, SEQ::ifun)), SEQ::cond, SEQ::vale, SEQ::vala, SEQ::valp,
                 ISA::getRegName((REG_ID)SEQ::destE), ISA::getRegName((REG_ID)SEQ::destM));
 
@@ -222,7 +222,7 @@ namespace SIM
          SEQ::dmem_error = !m_mem.getWord(mem_addr, &SEQ::valm);
          if (SEQ::dmem_error)
          {
-            m_out.out("[ERROR] PC = 0x%llx, Couldn't read at address 0x%llx\n", m_pc, mem_addr);
+            m_out->out("[ERROR] PC = 0x%llx, Couldn't read at address 0x%llx\n", m_pc, mem_addr);
             return;
          }
       }
@@ -234,7 +234,7 @@ namespace SIM
          SEQ::dmem_error = !m_mem.getWord(mem_addr, &junk);
          if (SEQ::dmem_error)
          {
-            m_out.out("[ERROR] PC = 0x%llx, Couldn't write at address 0x%llx\n", m_pc, mem_addr);
+            m_out->out("[ERROR] PC = 0x%llx, Couldn't write at address 0x%llx\n", m_pc, mem_addr);
             return;
          }
 
@@ -244,7 +244,7 @@ namespace SIM
 
    void Seq::writeBack()
    {
-      m_out.out("W: instr = %s, valP = 0x%llx, valE = 0x%llx, valM = 0x%llx\n   dstE = %s, dstM = %s\n",
+      m_out->out("W: instr = %s, valP = 0x%llx, valE = 0x%llx, valM = 0x%llx\n   dstE = %s, dstM = %s\n",
                 ISA::decodeInstrName(HPACK(SEQ::icode, SEQ::ifun)), SEQ::vale, SEQ::valm, SEQ::valp,
                 ISA::getRegName((REG_ID)SEQ::destE), ISA::getRegName((REG_ID)SEQ::destM));
 

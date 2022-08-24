@@ -12,7 +12,7 @@ namespace SIM
    class Yis : public SimBase
    {
    public:
-      explicit Yis(IO::OutputInterface &out);
+      explicit Yis(std::shared_ptr<IO::OutputInterface> out);
    private:
       State runOneCycle() override;
    };

@@ -6,6 +6,8 @@
 #include "isa.h"
 #include "io_interface.h"
 
+#include <memory>
+
 namespace SIM
 {
    class SimInterface
@@ -26,7 +28,7 @@ namespace SIM
    class SimBase : public SimInterface
    {
    public:
-      explicit SimBase(IO::OutputInterface &out);
+      explicit SimBase(std::shared_ptr<IO::OutputInterface> out);
       int loadCode(const char *fname) override;
       void compare(const SimInterface &other) const override;
       State run(int maxCycles) override;
@@ -48,7 +50,7 @@ namespace SIM
       static constexpr int REG_SIZE_BYTES = 128;       // 8 bytes * 16 regs
       static constexpr int MEM_SIZE_BYTES = (1 << 13); // 8KB
 
-      IO::OutputInterface &m_out;
+      std::shared_ptr<IO::OutputInterface> m_out;
 
       RegStore m_reg;
       MemStore m_mem;

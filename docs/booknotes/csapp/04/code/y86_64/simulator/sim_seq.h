@@ -12,7 +12,7 @@ namespace SIM
    class Seq : public SimBase
    {
    public:
-      explicit Seq(IO::OutputInterface &out);
+      explicit Seq(std::shared_ptr<IO::OutputInterface> out);
       void reset() override;
 
    private:

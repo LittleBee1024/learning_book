@@ -15,8 +15,8 @@ namespace HCL
    {
    public:
       explicit Parser(std::unique_ptr<IO::InputInterface> &&in);
-      int toC(std::unique_ptr<IO::OutputInterface> &&out) override;
-      int toVerilog(std::unique_ptr<IO::OutputInterface> &&out) override;
+      int toC(std::shared_ptr<IO::OutputInterface> out) override;
+      int toVerilog(std::shared_ptr<IO::OutputInterface> out) override;
 
    public:
       void outFunction(NodePtr var, NodePtr expr, int isbool);

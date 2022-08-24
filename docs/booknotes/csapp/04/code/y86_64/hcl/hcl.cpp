@@ -12,16 +12,16 @@ extern FILE *hcl_in;
 
 namespace HCL
 {
-   Parser::Parser(std::unique_ptr<IO::InputInterface> &&in) : m_in(std::move(in)), m_lineno(0), m_hitError(false), m_outType(OutType::C)
+   Parser::Parser(std::unique_ptr<IO::InputInterface> &&in) : m_in(std::move(in)), m_out(nullptr), m_lineno(0), m_hitError(false), m_outType(OutType::C)
    {
       // hcl_in is a global variable defined in flex
       assert(m_in->getHandler() != nullptr);
       hcl_in = m_in->getHandler();
    }
 
-   int Parser::toC(std::unique_ptr<IO::OutputInterface> &&out)
+   int Parser::toC(std::shared_ptr<IO::OutputInterface> out)
    {
-      m_out = std::make_unique<OutGen>(std::move(out));
+      m_out = std::make_unique<OutGen>(out);
       m_outType = OutType::C;
 
       cleanState();
@@ -32,9 +32,9 @@ namespace HCL
       return SUCCESS;
    }
 
-   int Parser::toVerilog(std::unique_ptr<IO::OutputInterface> &&out)
+   int Parser::toVerilog(std::shared_ptr<IO::OutputInterface> out)
    {
-      m_out = std::make_unique<OutGen>(std::move(out));
+      m_out = std::make_unique<OutGen>(out);
       m_outType = OutType::Verilog;
 
       cleanState();

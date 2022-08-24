@@ -5,11 +5,11 @@
 namespace SIM
 {
 
-   SimBase::SimBase(IO::OutputInterface &out) : m_out(out),
-                                                m_reg(REG_SIZE_BYTES, m_out),
-                                                m_mem(MEM_SIZE_BYTES, m_out),
-                                                m_pc(0),
-                                                m_cc(DEFAULT_CC)
+   SimBase::SimBase(std::shared_ptr<IO::OutputInterface> out) : m_out(out),
+                                                                m_reg(REG_SIZE_BYTES, m_out),
+                                                                m_mem(MEM_SIZE_BYTES, m_out),
+                                                                m_pc(0),
+                                                                m_cc(DEFAULT_CC)
    {
    }
 
@@ -17,7 +17,7 @@ namespace SIM
    {
       int bytes = m_mem.load(fname);
       if (bytes)
-         m_out.out("[INFO] Loaded %d bytes code\n", bytes);
+         m_out->out("[INFO] Loaded %d bytes code\n", bytes);
       return bytes;
    }
 
@@ -27,11 +27,11 @@ namespace SIM
       int i = 0;
       for (i = 0; i < maxCycles && state == SIM::STAT_OK; i++)
       {
-         m_out.out("\nCycle %d. CC=%s, Stat=%s\n", i, ISA::getCCName(m_cc), getStateName(state));
+         m_out->out("\nCycle %d. CC=%s, Stat=%s\n", i, ISA::getCCName(m_cc), getStateName(state));
          state = runOneCycle();
       }
 
-      m_out.out("\nAfter %d cycles, the state becomes %s\n\n", i, SIM::getStateName(state));
+      m_out->out("\nAfter %d cycles, the state becomes %s\n\n", i, SIM::getStateName(state));
       return state;
    }
 
@@ -48,7 +48,7 @@ namespace SIM
       const SimBase *child = dynamic_cast<const SimBase *>(&other);
       if (!child)
       {
-         m_out.out("[ERROR] Compared with an invalid simulator snapshot\n");
+         m_out->out("[ERROR] Compared with an invalid simulator snapshot\n");
          return;
       }
 
@@ -58,7 +58,7 @@ namespace SIM
 
    void SimBase::compareReg(const SimBase &other) const
    {
-      m_out.out("Changes to registers:\n");
+      m_out->out("Changes to registers:\n");
 
       for (int id = REG_RAX; id < REG_NONE; id++)
       {
@@ -66,14 +66,14 @@ namespace SIM
          word_t newVal = m_reg.getRegVal((REG_ID)id);
          if (oldVal != newVal)
          {
-            m_out.out("%s:\t0x%.16llx\t0x%.16llx\n", ISA::getRegName((REG_ID)id), oldVal, newVal);
+            m_out->out("%s:\t0x%.16llx\t0x%.16llx\n", ISA::getRegName((REG_ID)id), oldVal, newVal);
          }
       }
    }
 
    void SimBase::compareMem(const SimBase &other) const
    {
-      m_out.out("Changes to memory:\n");
+      m_out->out("Changes to memory:\n");
 
       assert(m_mem.size() == other.m_mem.size());
       for (size_t i = 0; i < m_mem.size(); i += sizeof(word_t))
@@ -84,7 +84,7 @@ namespace SIM
          m_mem.getWord(i, &newVal);
          if (oldVal != newVal)
          {
-            m_out.out("0x%.4llx:\t0x%.16llx\t0x%.16llx\n", i, oldVal, newVal);
+            m_out->out("0x%.4llx:\t0x%.16llx\t0x%.16llx\n", i, oldVal, newVal);
          }
       }
    }

@@ -32,18 +32,18 @@ enum class SIMType
    PIPE
 };
 
-std::unique_ptr<SIM::SimInterface> createSimulator(SIMType type, IO::OutputInterface &out)
+std::unique_ptr<SIM::SimInterface> createSimulator(SIMType type, std::shared_ptr<IO::OutputInterface> out)
 {
    switch (type)
    {
    case SIMType::YIS:
-      out.out("[INFO] Create Yis Simulator\n");
+      out->out("[INFO] Create Yis Simulator\n");
       return std::make_unique<SIM::Yis>(out);
    case SIMType::SEQ:
-      out.out("[INFO] Create SEQ Simulator\n");
+      out->out("[INFO] Create SEQ Simulator\n");
       return std::make_unique<SIM::Seq>(out);
    case SIMType::PIPE:
-      out.out("[INFO] Create Pipeline Simulator\n");
+      out->out("[INFO] Create Pipeline Simulator\n");
       return std::make_unique<SIM::Pipe>(out);
    default:
       assert(0 && "Invalid Simulator Type\n");
@@ -124,8 +124,8 @@ int main(int argc, char *argv[])
       return -1;
    }
 
-   std::unique_ptr<IO::OutputInterface> out = std::make_unique<IO::StdOut>();
-   std::unique_ptr<SIM::SimInterface> sim = createSimulator(option.type, *out);
+   std::shared_ptr<IO::OutputInterface> out = std::make_shared<IO::StdOut>();
+   std::unique_ptr<SIM::SimInterface> sim = createSimulator(option.type, out);
 
    if (!sim->loadCode(option.infname.c_str()))
    {

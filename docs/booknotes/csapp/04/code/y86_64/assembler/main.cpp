@@ -55,13 +55,13 @@ int main(int argc, char *argv[])
 
    YAS::Lexer lex(std::move(std::make_unique<IO::FileIn>(option.infname.c_str())));
 
-   std::unique_ptr<IO::OutputInterface> out;
+   std::shared_ptr<IO::OutputInterface> out;
    if (option.outfname.empty())
-      out = std::make_unique<IO::StdOut>();
+      out = std::make_shared<IO::StdOut>();
    else
-      out = std::make_unique<IO::FileOut>(option.outfname.c_str());
+      out = std::make_shared<IO::FileOut>(option.outfname.c_str());
 
-   int rc = lex.parse(std::move(out));
+   int rc = lex.parse(out);
 
    if (rc == YAS::ERROR)
       printf("Yas Lexer parse has error\n");

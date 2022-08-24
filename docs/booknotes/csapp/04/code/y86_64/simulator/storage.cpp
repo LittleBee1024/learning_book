@@ -81,7 +81,7 @@ namespace
 
 namespace SIM
 {
-   Storage::Storage(int len, IO::OutputInterface &out) : m_out(out)
+   Storage::Storage(int len, std::shared_ptr<IO::OutputInterface> out) : m_out(out)
    {
       len = (len + SIZE_ALIGN - 1) / SIZE_ALIGN * SIZE_ALIGN;
       m_contents.resize(len, 0);
@@ -141,7 +141,7 @@ namespace SIM
       std::fill(m_contents.begin(), m_contents.end(), 0);
    }
 
-   RegStore::RegStore(int len, IO::OutputInterface& out) : Storage(len, out)
+   RegStore::RegStore(int len, std::shared_ptr<IO::OutputInterface> out) : Storage(len, out)
    {
    }
 
@@ -162,7 +162,7 @@ namespace SIM
       }
    }
 
-   MemStore::MemStore(int len, IO::OutputInterface& out) : Storage(len, out)
+   MemStore::MemStore(int len, std::shared_ptr<IO::OutputInterface> out) : Storage(len, out)
    {
    }
 
@@ -171,7 +171,7 @@ namespace SIM
       std::ifstream ifs(fname);
       if (ifs.fail())
       {
-         m_out.out("[ERROR] Cannot access '%s': No such file\n", fname);
+         m_out->out("[ERROR] Cannot access '%s': No such file\n", fname);
          return 0;
       }
 
@@ -187,7 +187,7 @@ namespace SIM
 
          if (checkCode(code))
          {
-            m_out.out("[ERROR] Invalid code (Line %d): %s\n", lineno, code.c_str());
+            m_out->out("[ERROR] Invalid code (Line %d): %s\n", lineno, code.c_str());
             return 0;
          }
 
@@ -198,7 +198,7 @@ namespace SIM
          {
             if (addr >= (word_t)m_contents.size())
             {
-               m_out.out("[ERROR] Invalid addr (Line %d): 0x%llx\n", lineno, addr);
+               m_out->out("[ERROR] Invalid addr (Line %d): 0x%llx\n", lineno, addr);
                return 0;
             }
             // little-endian, the least-significant byte at the smallest address

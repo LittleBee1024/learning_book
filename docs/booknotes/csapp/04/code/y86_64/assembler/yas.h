@@ -18,7 +18,7 @@ namespace YAS
 
    public:
       explicit Lexer(std::unique_ptr<IO::InputInterface> &&in);
-      int parse(std::unique_ptr<IO::OutputInterface> &&out) override;
+      int parse(std::shared_ptr<IO::OutputInterface> out) override;
 
    public:
       // save a line
@@ -54,7 +54,7 @@ namespace YAS
 
    private:
       std::unique_ptr<IO::InputInterface> m_in;
-      std::unique_ptr<IO::OutputInterface> m_out;
+      std::shared_ptr<IO::OutputInterface> m_out;
 
       int m_pass;
       bool m_hitError;

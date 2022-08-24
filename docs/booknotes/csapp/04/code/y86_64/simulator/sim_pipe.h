@@ -12,7 +12,7 @@ namespace SIM
    class Pipe : public SimBase
    {
    public:
-      explicit Pipe(IO::OutputInterface &out);
+      explicit Pipe(std::shared_ptr<IO::OutputInterface> out);
       void reset() override;
 
    private:
