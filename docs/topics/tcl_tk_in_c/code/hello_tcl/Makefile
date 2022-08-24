@@ -1,4 +1,4 @@
-all: clean main run
+all: clean main
 
 main:
 	gcc -I/usr/include/tcl -c main.c -o main.o

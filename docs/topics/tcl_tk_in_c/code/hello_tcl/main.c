@@ -9,7 +9,7 @@ int main(int argc, char *argv[])
 
    if (argc != 2)
    {
-      fprintf(stderr, "Wrong number of arguments: should be \"%s filename\"\n", argv[0]);
+      fprintf(stderr, "Wrong number of arguments: should be \"%s <file>.tcl\"\n", argv[0]);
       return -1;
    }
 
