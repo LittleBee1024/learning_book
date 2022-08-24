@@ -1,27 +1,20 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <tcl.h>
+
+int Tcl_AppInit(Tcl_Interp *interp)
+{
+   if (Tcl_Init(interp) == TCL_ERROR)
+      return TCL_ERROR;
+
+   // This file is read if no script is supplied in command line
+   Tcl_SetVar(interp, "tcl_rcFileName", "hello.tcl", TCL_GLOBAL_ONLY);
+
+   return TCL_OK;
+}
 
 int main(int argc, char *argv[])
 {
-   Tcl_Interp *interp;
-   const char *result;
-   int code;
-
-   if (argc != 2)
-   {
-      fprintf(stderr, "Wrong number of arguments: should be \"%s <file>.tcl\"\n", argv[0]);
-      return -1;
-   }
-
-   interp = Tcl_CreateInterp();
-   code = Tcl_EvalFile(interp, argv[1]);
-   result = Tcl_GetStringResult(interp);
-   if (code != TCL_OK)
-   {
-      printf("Error was: %s\n", result);
-      return -1;
-   }
-   printf("Result was: %s\n", result);
-   Tcl_DeleteInterp(interp);
+   Tcl_Main(argc, argv, Tcl_AppInit);
    return 0;
 }
