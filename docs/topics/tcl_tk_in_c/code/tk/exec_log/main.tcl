@@ -36,8 +36,8 @@ focus .top.cmd
 # Create a text widget to log the output
 
 frame .t
-set log [listbox .t.log -width 80 -height 10 \
-   -borderwidth 2 -relief raised -setgrid true \
+set log [text .t.log -width 80 -height 10 \
+   -borderwidth 2 -relief raised -setgrid true -state normal -wrap none \
    -yscrollcommand {.t.scrolly set} -xscrollcommand {.t.scrollx set}]
 scrollbar .t.scrolly -orient vertical -command {.t.log yview}
 scrollbar .t.scrollx -orient horizontal -command {.t.log xview}
@@ -50,13 +50,16 @@ pack .t -side top -fill both -expand true
 
 proc Run {} {
    global command input log but
+   # catch command sets input to a file descriptor if command successes,
+   # or to error message if the command fails.
    if [catch {open "|$command |& cat"} input] {
       # print command error
-      $log insert end $input
+      $log insert end $input\n
    } else {
+      # set callback function to Log, called when pipeline generates output
       fileevent $input readable Log
       # print command line
-      $log insert end ">$command"
+      $log insert end ">$command\n"
       $but config -text Stop -command Stop
    }
 }
@@ -68,9 +71,10 @@ proc Log {} {
    if [eof $input] {
       Stop
    } else {
+      # the $input is a file descriptor
       gets $input line
       # print command results
-      $log insert end $line
+      $log insert end $line\n
    }
 }
 
