@@ -30,7 +30,7 @@ pack .top.cmd -side left -fill x -expand true
 
 bind .top.cmd <Return> Run
 bind .top.cmd <Control-c> Stop
-# 开始程序后，主动聚焦在.top.cmd上，某则需要先用鼠标聚焦
+# 开始程序后，主动聚焦在.top.cmd上，否则需要先用鼠标聚焦
 focus .top.cmd
 
 # Create a text widget to log the output
