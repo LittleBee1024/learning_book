@@ -1,3 +1,5 @@
+# Chapter 26 The Grid Geometry Manager
+
 foreach color {red orange yellow green blue purple} {
    label .l1$color -text $color -bg white
    frame .f1$color -background $color -width 100 -height 5
