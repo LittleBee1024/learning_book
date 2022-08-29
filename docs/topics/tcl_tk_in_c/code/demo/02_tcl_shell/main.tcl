@@ -114,9 +114,15 @@ proc Eval {command} {
 # 创建TCL子解释器
 proc SlaveInit {slave} {
    interp create $slave
+   interp alias $slave reset {} ResetAlias $slave
    # 通过PutsAlias重写puts命令，将结果输出到界面中，默认是输出到terminal窗口
    interp alias $slave puts {} PutsAlias $slave
    return $slave
+}
+
+proc ResetAlias {slave} {
+   interp delete $slave
+   SlaveInit $slave
 }
 
 # 定制化puts命令，将puts的结果输出到当前窗口

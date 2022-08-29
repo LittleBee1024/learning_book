@@ -4,8 +4,9 @@
 # browse(dir) is the directory containing all the tcl files
 # Please edit to match your system configuration.
 
-set browse(dir) ./src
+source ../02_tcl_shell/main.tcl
 
+set browse(dir) ./src
 wm minsize . 30 5
 wm title . "Tcl Example Browser"
 
@@ -35,34 +36,23 @@ pack $f.ex -side left
 set m [menu $f.ex.m]
 
 # Create the text to display the example
-proc Scrolled_Text { f args } {
-   frame $f
-   eval {text $f.text -wrap none \
-      -xscrollcommand [list $f.xscroll set] \
-      -yscrollcommand [list $f.yscroll set]} $args
-   scrollbar $f.xscroll -orient horizontal \
-      -command [list $f.text xview]
-   scrollbar $f.yscroll -orient vertical \
-      -command [list $f.text yview]
-   grid $f.text $f.yscroll -sticky news
-   grid $f.xscroll -sticky news
-   grid rowconfigure $f 0 -weight 1
-   grid columnconfigure $f 0 -weight 1
-   return $f.text
-}
+# Scrolled_Text is defined in Example 33–1 on page 500
 
-set browse(text) [Scrolled_Text .body -width 80 -height 10 -setgrid true]
+set browse(text) [Scrolled_Text .body \
+   -width 80 -height 10\
+   -setgrid true]
 pack .body -fill both -expand true
 
-# Look through the example files for their ID number. 
-# For example, "# Example 1-2", x = "# Example 1-2", chap="1", ex="2"
+# Look through the example files for their ID number.
+
 foreach f [lsort -dictionary [glob [file join $browse(dir) *]]] {
    if [catch {open $f} in] {
       puts stderr "Cannot open $f: $in"
       continue
    }
    while {[gets $in line] >= 0} {
-      if [regexp {^# Example ([0-9]+)-([0-9]+)} $line x chap ex] {
+      if [regexp {^# Example ([0-9]+)-([0-9]+)} $line \
+             x chap ex] {
          lappend examples($chap) $ex
          lappend browse(list) $f
          # Read example title
@@ -83,11 +73,17 @@ option add *Menu.tearOff 0
 set limit 8
 set c 0; set i 0
 foreach chap [lsort -integer [array names examples]] {
-   $m add cascade -label "Chapter $chap" -menu $m.sub$i
-   set sub [menu $m.sub$i]
-   incr i
+   if {$i == 0} {
+      $m add cascade -label "Chapter $chap..." \
+         -menu $m.$c
+      set sub1 [menu $m.$c]
+      incr c
+   }
+   set i [expr ($i +1) % $limit]
+   $sub1 add cascade -label "Chapter $chap" -menu $sub1.sub$i
+   set sub2 [menu $sub1.sub$i]
    foreach ex [lsort -integer $examples($chap)] {
-      $sub add command -label "$chap-$ex $title($chap-$ex)" \
+      $sub2 add command -label "$chap-$ex $title($chap-$ex)" \
          -command [list Browse $file($chap-$ex)]
    }
 }
@@ -130,23 +126,6 @@ proc Previous {} {
    Browse [lindex $browse(list) $browse(curix)]
 }
 
-proc EvalEcho {command} {
-   global eval
-   $eval(text) mark set insert end
-   if [catch {$eval(slave) eval $command} result] {
-      $eval(text) insert insert $result error
-   } else {
-      $eval(text) insert insert $result result
-   }
-   if {[$eval(text) compare insert != "insert linestart"]} {
-      $eval(text) insert insert \n
-   }
-   $eval(text) insert insert $eval(prompt) prompt
-   $eval(text) see insert
-   $eval(text) mark set limit insert
-   return
-}
-
 # Run the example in the shell
 
 proc Run {} {
@@ -159,5 +138,12 @@ proc Run {} {
 
 proc Reset {} {
    EvalEcho reset
+}
+
+proc EvalEcho {command} {
+   global eval
+   $eval(text) mark set insert end
+   $eval(text) insert insert $command\n
+   Eval $command
 }
 
