@@ -56,7 +56,7 @@ bind $t <BackSpace> {
    } elseif {[%W compare insert > limit]} {
       # 删除当前字符
       %W delete insert-1c
-      # 修改显示位置（并未发现明显区别）
+      # 修改显示位置，否则窗口不会滚动显示最新的结果
       %W see insert
    }
    # 不满足上述条件时，不删除任何字符

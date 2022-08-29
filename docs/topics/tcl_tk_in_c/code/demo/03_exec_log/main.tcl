@@ -36,11 +36,6 @@ frame .text
 set log [text .text.log -width 80 -height 10 \
    -borderwidth 2 -relief raised -setgrid true -state normal -wrap none \
    -yscrollcommand {.text.scrolly set} -xscrollcommand {.text.scrollx set}]
-# 通过“text marks”将显示框配置成只读，“limit mark”是只读位置和可修改部分的边界，“insert mark”是光标的位置
-$log mark set limit insert
-$log mark gravity limit left
-focus $log
-# 创建滚动条
 scrollbar .text.scrolly -orient vertical -command {.text.log yview}
 scrollbar .text.scrollx -orient horizontal -command {.text.log xview}
 pack .text.scrolly -side right -fill y
@@ -48,41 +43,44 @@ pack .text.scrollx -side bottom -fill x
 pack .text.log -side left -fill both -expand true
 pack .text -side top -fill both -expand true
 
-# Run the program and arrange to read its input
-
+# 执行命令
 proc Run {} {
    global in_command input log button_run
-   # catch command sets input to a file descriptor if command successes,
-   # or to error message if the command fails.
-   if [catch {open "|$in_command |& cat"} input] {
-      # print command error
+   # 通过管道执行命令
+   if [catch {open "|$in_command"} input] {
+      # 发生错误
       $log insert end $input\n
+      # 修改显示位置，否则窗口不会滚动显示最新的结果
+      $log see insert
    } else {
-      # set callback function to Log, called when pipeline generates output
+      # $input是一个文件描述符，设置其可读回调函数Log，用于将执行的结果输出，此步骤为异步
       fileevent $input readable Log
-      # print command line
+      # 打印执行的命令，由于此时命令还没执行完成，下面的话会打印在命令结果之前
       $log insert end ">$in_command\n"
-      $button_run config -text Stop -command Stop
+      # 将按钮文字显示为Stop，表明正则执行命令
+      $button_run config -text Running -command Close
    }
 }
 
-# Read and log output from the program
-
+# 从结果文件描述符$input中读出命令的结果，并打印
+# 由于此动作被设置为可读回调函数，只要有结果没有被读出，会一直调用
 proc Log {} {
    global input log
    if [eof $input] {
-      Stop
+      # 调用结束动作，改变按钮显示内容
+      Close
    } else {
-      # the $input is a file descriptor
+      # 从文件描述符中读取一行
       gets $input line
-      # print command results
+      # 打印一行内容
       $log insert end $line\n
+      # 修改显示位置，否则窗口不会滚动显示最新的结果
+      $log see insert
    }
 }
 
-# Stop the program and fix up the button
-
-proc Stop {} {
+# 关闭结果文件描述符$input，并恢复按钮显示
+proc Close {} {
    global input button_run
    catch {close $input}
    $button_run config -text "Run it" -command Run
