@@ -34,7 +34,8 @@ set eval(prompt) "tcl> "
 $t insert insert $eval(prompt) prompt
 # 设置limit标记为当前输入位置，limit和end之间的内容是要执行的TCL命令
 $t mark set limit insert
-# 设置limit标记的插入位置为左边，默认是右边插入，参见“Text Marks”章节
+# 设置limit标记的gravity属性为left，这样insert动作就不会改变limit位置
+# 默认是right，limit的位置会随insert增加，参见“Mark Gravity”章节
 $t mark gravity limit left
 # 将光标聚焦在输入框
 focus $t
@@ -113,12 +114,12 @@ proc Eval {command} {
 # 创建TCL子解释器
 proc SlaveInit {slave} {
    interp create $slave
-   # 通过PutsAlias重写puts命令
+   # 通过PutsAlias重写puts命令，将结果输出到界面中，默认是输出到terminal窗口
    interp alias $slave puts {} PutsAlias $slave
    return $slave
 }
 
-# 定制化puts命令，将输出显示在窗口中
+# 定制化puts命令，将puts的结果输出到当前窗口
 proc PutsAlias {slave args} {
    if {[llength $args] > 3} {
       error "invalid arguments"
@@ -136,11 +137,10 @@ proc PutsAlias {slave args} {
       set string [lindex $args 1]$newline
    }
    if [regexp (stdout|stderr) $chan] {
+      # 输出puts的结果
       global eval
-      $eval(text) mark gravity limit right
       $eval(text) insert limit $string output
       $eval(text) see limit
-      $eval(text) mark gravity limit left
    } else {
       puts -nonewline $chan $string
    }
