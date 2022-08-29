@@ -1,6 +1,7 @@
 #!/usr/local/bin/wish
-# Chapter 36. The Text Widget
-# Chapter 29. Binding Commands to Events
+# 创建一个可以执行TCL命令的窗口，主要涉及的章节有：
+#  Chapter 36. The Text Widget
+#  Chapter 29. Binding Commands to Events
 
 # 带滚动条的文本输入框，传入frame名称和text的配置参数，返回text实例
 proc Scrolled_Text { f args } {
@@ -8,10 +9,8 @@ proc Scrolled_Text { f args } {
    eval {text $f.text -wrap none \
       -xscrollcommand [list $f.xscroll set] \
       -yscrollcommand [list $f.yscroll set]} $args
-   scrollbar $f.xscroll -orient horizontal \
-      -command [list $f.text xview]
-   scrollbar $f.yscroll -orient vertical \
-      -command [list $f.text yview]
+   scrollbar $f.xscroll -orient horizontal -command [list $f.text xview]
+   scrollbar $f.yscroll -orient vertical -command [list $f.text yview]
    grid $f.text $f.yscroll -sticky news
    grid $f.xscroll -sticky news
    grid rowconfigure $f 0 -weight 1
@@ -19,9 +18,9 @@ proc Scrolled_Text { f args } {
    return $f.text
 }
 # 创建Scrolled_Text实例，返回的是text组件
-set t [Scrolled_Text .eval -width 80 -height 10]
+set t [Scrolled_Text .win -width 80 -height 10]
 # 需要放置frame，而不是返回的$t
-pack .eval -fill both -expand true
+pack .win -fill both -expand true
 
 # 为text输入框创建不同类型的标签，用于格式化，参见“Text Tags”章节
 $t tag configure prompt -underline true
@@ -29,22 +28,26 @@ $t tag configure result -foreground purple
 $t tag configure error -foreground red
 $t tag configure output -foreground blue
 
-# 创建数组eval，其中，以prompt为键值的内容为“tcl> ”
+# 创建数组eval，其中，以“prompt”为键值的内容为“tcl> ”
 set eval(prompt) "tcl> "
 # 在输入框的“insert”位置，插入$eval(prompt)内容，它的格式是标签prompt
 $t insert insert $eval(prompt) prompt
-# 设置limit标记为当前输入位置
+# 设置limit标记为当前输入位置，limit和end之间的内容是要执行的TCL命令
 $t mark set limit insert
 # 设置limit标记的插入位置为左边，默认是右边插入，参见“Text Marks”章节
 $t mark gravity limit left
+# 将光标聚焦在输入框
 focus $t
+# 设置变量“eval(text)”
 set eval(text) $t
 
 # 绑定动作和事件
+# 绑定回车事件，触发TCL命令执行动作“EvalTypein”
 bind $t <Return> {EvalTypein ; break}
+# 绑定回退事件，用于删除字符
 bind $t <BackSpace> {
    # %W代表组件的全名称，参见“The bind Command”章节
-   # [%W tag names] -> sel prompt result error output
+   # 打印所有标签：[%W tag names] -> sel prompt result error output
    # 判断sel标签在1.0和end范围内是否为空，参见“Text Operations”章节
    if {[%W tag nextrange sel 1.0 end] != ""} {
       # 删除选择的多个字符
@@ -58,6 +61,7 @@ bind $t <BackSpace> {
    # 不满足上述条件时，不删除任何字符
    break
 }
+# 绑定输入事件，控制不同位置输入的情况
 bind $t <Key> {
    # 判断插入位置是否在活动窗口内(当前行)，参见“Text Indices”章节
    if [%W compare insert < limit] {
