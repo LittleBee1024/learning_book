@@ -14,8 +14,7 @@ int RandomObjCmd(ClientData clientData, Tcl_Interp *interp, int objc, Tcl_Obj *C
    }
    if (objc == 2)
    {
-      if (Tcl_GetIntFromObj(interp, objv[1], &range) !=
-          TCL_OK)
+      if (Tcl_GetIntFromObj(interp, objv[1], &range) != TCL_OK)
       {
          return TCL_ERROR;
       }

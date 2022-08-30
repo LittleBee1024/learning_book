@@ -56,6 +56,31 @@ int main(int argc, char *argv[])
 ```
 ![tk_hello](./images/tk_hello.png)
 
+### Tcl_EvalFile
+[例子"Tcl_EvalFile"](https://github.com/LittleBee1024/learning_book/tree/main/docs/topics/tcl_tk_in_c/code/api/Tcl_EvalFile)和[例子"Tcl_Main"](https://github.com/LittleBee1024/learning_book/tree/main/docs/topics/tcl_tk_in_c/code/api/Tcl_Main)功能相同，都会产生一个可执行TCL命令的C程序。不同的是，例子"Tcl_EvalFile"不是利用`Tcl_Main`函数实现的，而是利用了更底层的`Tcl_CreateInterp`和`Tcl_EvalFile`函数：
+```cpp title="main.c" hl_lines="3 4"
+int main(int argc, char *argv[])
+{
+   Tcl_Interp *interp = Tcl_CreateInterp();
+   int code = Tcl_EvalFile(interp, argv[1]);
+   const char *result = Tcl_GetStringResult(interp);
+   printf("Result was: %s\n", result);
+   Tcl_DeleteInterp(interp);
+   return 0;
+}
+```
+```bash
+# hello.tcl
+#   proc helloWorld {} {
+#       puts "Hello, World!"
+#       return 1
+#   }
+#   helloWorld
+> ./main hello.tcl
+Hello, World!
+Result was: 1
+```
+
 ### Tcl_CreateCommand
 [例子"Tcl_CreateCommand"](https://github.com/LittleBee1024/learning_book/tree/main/docs/topics/tcl_tk_in_c/code/api/Tcl_CreateCommand)利用C库的`random`函数，创建了一个TCL命令`random`，可在TCL文件中使用此命令，完成了C代码和TCL代码的交互：
 
@@ -80,14 +105,14 @@ int RandomCmd(ClientData clientData, Tcl_Interp *interp, int argc, CONST char *a
 
 int Random_Init(Tcl_Interp *interp)
 {
-   Tcl_CreateCommand(interp, "random", RandomCmd, (ClientData)NULL, (Tcl_CmdDeleteProc *)NULL);
-   return TCL_OK;
+    Tcl_CreateCommand(interp, "random", RandomCmd, (ClientData)NULL, (Tcl_CmdDeleteProc *)NULL);
+    return TCL_OK;
 }
 
 int main(int argc, char *argv[])
 {
-   Tcl_Main(argc, argv, Random_Init);
-   return 0;
+    Tcl_Main(argc, argv, Random_Init);
+    return 0;
 }
 ```
 ```bash
@@ -103,11 +128,40 @@ int main(int argc, char *argv[])
 [TCL] random result: 86
 ```
 
-### Tcl_EvalFile
-[例子"Tcl_EvalFile"](https://github.com/LittleBee1024/learning_book/tree/main/docs/topics/tcl_tk_in_c/code/api/Tcl_EvalFile)
+### Tcl_CreateObjCommand
+[例子"Tcl_CreateObjCommand"](https://github.com/LittleBee1024/learning_book/tree/main/docs/topics/tcl_tk_in_c/code/api/Tcl_CreateObjCommand)和[例子"Tcl_CreateCommand"](https://github.com/LittleBee1024/learning_book/tree/main/docs/topics/tcl_tk_in_c/code/api/Tcl_CreateCommand)功能类似，但使用了另一种创建TCL命令的方式`Tcl_CreateObjCommand`：
+```cpp title="main.c" hl_lines="5 11 12 18"
+int RandomObjCmd(ClientData clientData, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[])
+{
+    Tcl_Obj *resultPtr;
+    int range = 0;
+    Tcl_GetIntFromObj(interp, objv[1], &range);
+    int rand = random();
+    if (range != 0)
+    {
+        rand = rand % range;
+    }
+    resultPtr = Tcl_GetObjResult(interp);
+    Tcl_SetIntObj(resultPtr, rand);
+    return TCL_OK;
+}
 
-### Tcl_Obj
-[例子"Tcl_Obj"](https://github.com/LittleBee1024/learning_book/tree/main/docs/topics/tcl_tk_in_c/code/api/Tcl_Obj)
+int Random_Init(Tcl_Interp *interp)
+{
+    Tcl_CreateObjCommand(interp, "orandom", RandomObjCmd, (ClientData)NULL, (Tcl_CmdDeleteProc *)NULL);
+    return TCL_OK;
+}
+```
+```bash
+# cmd.tcl:
+#   set result [orandom 5]
+#   puts "orandom result: ${result}"
+#   set result [orandom 100]
+#   puts "orandom result: ${result}"
+> ./main cmd.tcl
+orandom result: 3
+orandom result: 86
+```
 
 
 ## Tk组件
