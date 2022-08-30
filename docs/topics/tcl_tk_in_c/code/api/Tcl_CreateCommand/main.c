@@ -27,7 +27,7 @@ int RandomCmd(ClientData clientData, Tcl_Interp *interp, int argc, CONST char *a
          return TCL_ERROR;
       }
    }
-   printf("[INFO] Process random()\n");
+   printf("[  C] Process random()\n");
    int rand = random();
    if (range != 0)
    {
