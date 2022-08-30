@@ -130,8 +130,7 @@ proc Previous {} {
 
 proc Run {} {
    global browse
-   EvalEcho [list source \
-      [file join $browse(dir) $browse(current)]]
+   EvalEcho [list source [file join $browse(dir) $browse(current)]]
 }
 
 # Reset the slave in the eval server
@@ -144,6 +143,7 @@ proc EvalEcho {command} {
    global eval
    $eval(text) mark set insert end
    $eval(text) insert insert $command\n
+   $eval(text) mark set limit insert
    Eval $command
 }
 
