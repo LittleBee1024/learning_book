@@ -292,6 +292,98 @@ pack .l
 
 ## 自定义命令实例
 
+[例子“cpp_cmd"](https://github.com/LittleBee1024/learning_book/tree/main/docs/topics/tcl_tk_in_c/code/demo/01_cpp_cmd)在`C++`中创建了`blob`TCL命令以及其子命令，实现了`C++`和`TCL`的交互编程：
+```cpp title="main.cpp" hl_lines="6 7 25 28 38 46"
+int Blob_Init(Tcl_Interp *interp)
+{
+   if (Tcl_Init(interp) == TCL_ERROR)
+      return TCL_ERROR;
+
+   Blob *blobPtr = new Blob();
+   Tcl_CreateObjCommand(interp, "blob", BlobCmd, (ClientData)blobPtr, BlobCleanup);
+
+   return TCL_OK;
+}
+
+int BlobCmd(ClientData data, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[])
+{
+   const char *subCmds[] = {"add", "find", "remove", nullptr};
+   enum BlobIx
+   {
+      AddIx,   // 4 args
+      FindIx,  // 3 args
+      RemoveIx // 3 args
+   };
+
+   ...
+   int index = 0;
+   Tcl_GetIndexFromObj(interp, objv[1], subCmds, "option", 0, &index);
+   Blob *blobPtr = (Blob *)data;
+   switch (index)
+   {
+   case AddIx:
+   {
+      const char *name = Tcl_GetString(objv[2]);
+      int age = 0;
+      if (Tcl_GetIntFromObj(interp, objv[3], &age) != TCL_OK)
+         return TCL_ERROR;
+      if (blobPtr->add(name, age))
+         return TCL_ERROR;
+      return TCL_OK;
+   }
+   case FindIx:
+   {
+      const char *name = Tcl_GetString(objv[2]);
+      int age = blobPtr->find(name);
+      Tcl_Obj *resultPtr = Tcl_GetObjResult(interp);
+      Tcl_SetIntObj(resultPtr, age);
+      return TCL_OK;
+   }
+   case RemoveIx:
+   {
+      const char *name = Tcl_GetString(objv[2]);
+      blobPtr->remove(name);
+      return TCL_OK;
+   }
+   default:
+   {
+      Tcl_WrongNumArgs(interp, 1, objv, "wrong sub-cmd");
+      return TCL_ERROR;
+   }
+   }
+
+   return TCL_OK;
+}
+```
+```bash title="main.tcl"
+# 执行自定义的“blob”命令
+blob add Jack 100
+set res1 [blob find Jack]
+puts "\[  TCL\] Jack's age is ${res1}"
+blob find Tim
+blob remove Jack
+blob find Jack
+blob remove Jack
+# 无效命令
+blob clear
+```
+```bash
+> ./main cmd.tcl
+[ INFO] Construct Blob
+[ INFO] Add Jack to the Blob, his age is 100
+[ INFO] Find Jack in the Blob, his age is 100
+[  TCL] Jack's age is 100
+[ WARN] Fail to find Tim in the Blob
+[ INFO] Remove Jack from the Blob, his age is 100
+[ WARN] Fail to find Jack in the Blob
+[ WARN] Cannot remove Jack from the Blob because it doesn't exist
+bad option "clear": must be add, find, or remove
+    while executing
+"blob clear"
+    (file "cmd.tcl" line 10)
+```
+
+
 ## TCL Shell实例
 
 ## Exec Log实例
