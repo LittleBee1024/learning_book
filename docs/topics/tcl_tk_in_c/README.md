@@ -269,6 +269,27 @@ puts "hello buttton background: $color"
 
 ### text
 
+[例子“text"](https://github.com/LittleBee1024/learning_book/tree/main/docs/topics/tcl_tk_in_c/code/tk/04_text)利用`text`Tk组件，实现了一个带滚动条的文本框：
+```bash title="main.tcl"
+proc Scrolled_Text { f args } {
+   frame $f
+   eval {text $f.text -wrap none \
+      -xscrollcommand [list $f.xscroll set] \
+      -yscrollcommand [list $f.yscroll set]} $args
+   scrollbar $f.xscroll -orient horizontal -command [list $f.text xview]
+   scrollbar $f.yscroll -orient vertical -command [list $f.text yview]
+   grid $f.text $f.yscroll -sticky news
+   grid $f.xscroll -sticky news
+   grid rowconfigure $f 0 -weight 1
+   grid columnconfigure $f 0 -weight 1
+   return $f.text
+}
+
+set log [Scrolled_Text .l -width 80 -height 10]
+pack .l
+```
+![tk_text](./images/tk_text.png)
+
 ## 自定义命令实例
 
 ## TCL Shell实例
