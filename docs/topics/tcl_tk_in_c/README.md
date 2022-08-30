@@ -293,7 +293,8 @@ pack .l
 ## 自定义命令实例
 
 [例子“cpp_cmd"](https://github.com/LittleBee1024/learning_book/tree/main/docs/topics/tcl_tk_in_c/code/demo/01_cpp_cmd)在`C++`中创建了`blob`TCL命令以及其子命令，实现了`C++`和`TCL`的交互编程：
-```cpp title="main.cpp" hl_lines="6 7 25 28 38 46"
+```cpp title="main.cpp" hl_lines="7 8 26 29 39 47"
+// 参考:《Practical Programming in Tcl and Tk》第47章的The blob Command Example
 int Blob_Init(Tcl_Interp *interp)
 {
    if (Tcl_Init(interp) == TCL_ERROR)
@@ -386,7 +387,269 @@ bad option "clear": must be add, find, or remove
 
 ## TCL Shell实例
 
+[例子“tcl_shell"](https://github.com/LittleBee1024/learning_book/tree/main/docs/topics/tcl_tk_in_c/code/demo/02_tcl_shell)实现了一个带界面的TCL解释器：
+```bash title="main.tcl"
+# 创建一个可以执行TCL命令的窗口，主要涉及的章节有：
+#  Chapter 36. The Text Widget
+#  Chapter 29. Binding Commands to Events
+
+# 带滚动条的文本输入框，传入frame名称和text的配置参数，返回text实例
+proc Scrolled_Text { f args } {
+   frame $f
+   eval {text $f.text -wrap none \
+      -xscrollcommand [list $f.xscroll set] \
+      -yscrollcommand [list $f.yscroll set]} $args
+   scrollbar $f.xscroll -orient horizontal -command [list $f.text xview]
+   scrollbar $f.yscroll -orient vertical -command [list $f.text yview]
+   grid $f.text $f.yscroll -sticky news
+   grid $f.xscroll -sticky news
+   grid rowconfigure $f 0 -weight 1
+   grid columnconfigure $f 0 -weight 1
+   return $f.text
+}
+# 创建Scrolled_Text实例，返回的是text组件
+set t [Scrolled_Text .win -width 80 -height 10]
+# 需要放置frame，而不是返回的$t
+pack .win -fill both -expand true
+
+# 为text输入框创建不同类型的标签，用于格式化，参见“Text Tags”章节
+$t tag configure prompt -underline true
+$t tag configure result -foreground purple
+$t tag configure error -foreground red
+$t tag configure output -foreground blue
+
+# 创建数组eval，其中，以“prompt”为键值的内容为“tcl> ”
+set eval(prompt) "tcl> "
+# 在输入框的“insert”位置，插入$eval(prompt)内容，它的格式是标签prompt
+$t insert insert $eval(prompt) prompt
+# 设置limit标记为当前输入位置，limit和end之间的内容是要执行的TCL命令
+$t mark set limit insert
+# 设置limit标记的gravity属性为left，这样insert动作就不会改变limit位置
+# 默认是right，limit的位置会随insert增加，参见“Mark Gravity”章节
+$t mark gravity limit left
+# 将光标聚焦在输入框
+focus $t
+# 设置变量“eval(text)”
+set eval(text) $t
+
+# 绑定动作和事件
+# 绑定回车事件，触发TCL命令执行动作“EvalTypein”
+bind $t <Return> {EvalTypein ; break}
+# 绑定回退事件，用于删除字符
+bind $t <BackSpace> {
+   # %W代表组件的全名称，参见“The bind Command”章节
+   # 打印所有标签：[%W tag names] -> sel prompt result error output
+   # 判断sel标签在1.0和end范围内是否为空，参见“Text Operations”章节
+   if {[%W tag nextrange sel 1.0 end] != ""} {
+      # 删除选择的多个字符
+      %W delete sel.first sel.last
+   } elseif {[%W compare insert > limit]} {
+      # 删除当前字符
+      %W delete insert-1c
+      # 修改显示位置，否则窗口不会滚动显示最新的结果
+      %W see insert
+   }
+   # 不满足上述条件时，不删除任何字符
+   break
+}
+# 绑定输入事件，控制不同位置输入的情况
+bind $t <Key> {
+   # 判断插入位置是否在活动窗口内(当前行)，参见“Text Indices”章节
+   if [%W compare insert < limit] {
+      # 插入位置不在当前行，设置插入位置到末尾，这样后面的输入都会添加在最后
+      %W mark set insert end
+   }
+}
+
+# 处理用户输入(TCL命令)，输入为limit标记和end标记间的内容
+proc EvalTypein {} {
+   global eval
+   # 在回车位置换行符
+   $eval(text) insert insert \n
+   # limit和end之间的所有内容为输入命令，包括上面的换行符号
+   set command [$eval(text) get limit end]
+   # 判断是否为完整的TCL命令
+   if [info complete $command] {
+      # 更新limit位置为插入位，前面设置了所有的命令输出结果都会显示在limit位置的左侧
+      $eval(text) mark set limit insert
+      Eval $command
+   }
+}
+
+# 执行命令并显示结果
+proc Eval {command} {
+   global eval
+   # 调整插入位置
+   $eval(text) mark set insert end
+   # 利用“eval(slave)”执行TCL命令
+   if [catch {$eval(slave) eval $command} result] {
+      # 执行命令出错，用error标签格式化输出
+      $eval(text) insert insert $result error
+   } else {
+      # 正常执行命令，用result标签格式化输出
+      $eval(text) insert insert $result result
+   }
+   # 如果不是行起始位(例如错误命令时)，换行
+   if {[$eval(text) compare insert != "insert linestart"]} {
+      $eval(text) insert insert \n
+   }
+   # 输出prompt
+   $eval(text) insert insert $eval(prompt) prompt
+   $eval(text) see insert
+   # 更新limit为当前位置
+   $eval(text) mark set limit insert
+   return
+}
+
+# 创建TCL子解释器
+proc SlaveInit {slave} {
+   interp create $slave
+   interp alias $slave reset {} ResetAlias $slave
+   # 通过PutsAlias重写puts命令，将结果输出到界面中，默认是输出到terminal窗口
+   interp alias $slave puts {} PutsAlias $slave
+   return $slave
+}
+
+proc ResetAlias {slave} {
+   global eval
+   interp delete $slave
+   SlaveInit $slave
+   # 清空输入框中的所有内容
+   $eval(text) delete 1.0 end
+}
+
+# 定制化puts命令，将puts的结果输出到当前窗口
+proc PutsAlias {slave args} {
+   if {[llength $args] > 3} {
+      error "invalid arguments"
+   }
+   set newline "\n"
+   if {[string match "-nonewline" [lindex $args 0]]} {
+      set newline ""
+      set args [lreplace $args 0 0]
+   }
+   if {[llength $args] == 1} {
+      set chan stdout
+      set string [lindex $args 0]$newline
+   } else {
+      set chan [lindex $args 0]
+      set string [lindex $args 1]$newline
+   }
+   if [regexp (stdout|stderr) $chan] {
+      # 输出puts的结果
+      global eval
+      $eval(text) insert limit $string output
+      $eval(text) see limit
+   } else {
+      puts -nonewline $chan $string
+   }
+}
+
+# 创建TCL解释器，用于执行TCL命令
+set eval(slave) [SlaveInit shell]
+```
+![tcl_shell](./images/tcl_shell.png)
+
 ## Exec Log实例
+
+[例子“exec_log"](https://github.com/LittleBee1024/learning_book/tree/main/docs/topics/tcl_tk_in_c/code/demo/03_exec_log)实现了终端执行界面，可运行系统支持的命令，并打印结果：
+```bash title="main.tcl"
+# 设置窗口标题
+wm title . ExecLog
+
+# frame用户组件布局，创建“.top”框架
+frame .top -borderwidth 10
+# 将“.top”框架水平平铺在顶部
+pack .top -side top -fill x
+
+# 在“.top”框架内放置按钮
+# “Quit”按钮绑定退出动作
+button .top.quit -text Quit -command exit
+# “Run it”按钮绑定“Run”动作
+set button_run [button .top.run -text "Run it" -command Run]
+# 将按钮放置在“.top”框架的右侧
+pack .top.quit .top.run -side right
+
+# 在“.top”框架内放置输入框：label + entry
+label .top.l -text Command: -padx 0
+# 将entry组件输入的内容，绑定在变量“in_command”中
+entry .top.cmd -width 20 -relief sunken -textvariable in_command
+pack .top.l -side left
+# "-expand true"配置可将输入框自动拉伸
+pack .top.cmd -side left -fill x -expand true
+
+# 将快捷键绑定在组件，并触发相应动作
+bind .top.cmd <Return> Run
+bind .top.cmd <Control-c> Stop
+# 开始程序后，主动聚焦在.top.cmd上，否则需要先用鼠标聚焦
+focus .top.cmd
+
+# 创建“.text”框架，用于文字布局
+frame .text
+# 在文字布局中，创建text组件，包括水平和竖直方向的滚动条
+set log [text .text.log -width 80 -height 10 \
+   -borderwidth 2 -relief raised -setgrid true -state normal -wrap none \
+   -yscrollcommand {.text.scrolly set} -xscrollcommand {.text.scrollx set}]
+scrollbar .text.scrolly -orient vertical -command {.text.log yview}
+scrollbar .text.scrollx -orient horizontal -command {.text.log xview}
+pack .text.scrolly -side right -fill y
+pack .text.scrollx -side bottom -fill x
+pack .text.log -side left -fill both -expand true
+pack .text -side top -fill both -expand true
+
+# 执行命令
+proc Run {} {
+   global in_command input log button_run
+   # 通过管道执行命令
+   if [catch {open "|$in_command"} input] {
+      # 发生错误
+      $log insert end $input\n
+      # 修改显示位置，否则窗口不会滚动显示最新的结果
+      $log see insert
+   } else {
+      # $input是一个文件描述符，设置其可读回调函数Log，用于将执行的结果输出，此步骤为异步
+      fileevent $input readable Log
+      # 恢复显示框可写
+      $log config -state normal
+      # 打印执行的命令，由于此时命令还没执行完成，下面的话会打印在命令结果之前
+      $log insert end ">$in_command\n"
+      # 设置显示框只读
+      $log config -state disabled
+      # 将按钮文字显示为Stop，表明正则执行命令
+      $button_run config -text Running -command Close
+   }
+}
+
+# 从结果文件描述符$input中读出命令的结果，并打印
+# 由于此动作被设置为可读回调函数，只要有结果没有被读出，会一直调用
+proc Log {} {
+   global input log
+   if [eof $input] {
+      # 调用结束动作，改变按钮显示内容
+      Close
+   } else {
+      # 恢复显示框可写
+      $log config -state normal
+      # 从文件描述符中读取一行
+      gets $input line
+      # 打印一行内容
+      $log insert end $line\n
+      # 修改显示位置到末尾，否则窗口不会滚动显示最新的结果
+      $log see end
+      # 设置显示框只读
+      $log config -state disabled
+   }
+}
+
+# 关闭结果文件描述符$input，并恢复按钮显示
+proc Close {} {
+   global input button_run
+   catch {close $input}
+   $button_run config -text "Run it" -command Run
+}
+```
+
+![exec_log](./images/exec_log.png)
 
 ## Browser实例
 
