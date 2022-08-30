@@ -1,48 +1,37 @@
 #!/usr/local/bin/wish
-#  Browser for the Tcl and Tk examples in the book.
+# 浏览“./src”目录中所有的TCL文件，并可通过一个TCL解释器执行，涉及的章节有：
+#  Chapter 30. Buttons and Menus
 
-# browse(dir) is the directory containing all the tcl files
-# Please edit to match your system configuration.
-
+# 依赖“02_tcl_shell”中的TCL解释器，用于执行目录中的TCL文件
 source ../02_tcl_shell/main.tcl
-
 set browse(dir) ./src
 wm minsize . 30 5
 wm title . "Tcl Example Browser"
 
-# Create a row of buttons along the top
-
+# 创建菜单栏
 set f [frame .menubar]
 pack $f -fill x
 button $f.quit -text Quit -command exit
 button $f.next -text Next -command Next
 button $f.prev -text Previous -command Previous
-
-# The Run and Reset buttons use EvalEcho that
-# is defined by the Tcl shell in Example 24–4 on page 389
-
 button $f.load -text Run -command Run
 button $f.reset -text Reset -command Reset
 pack $f.quit $f.reset $f.load $f.next $f.prev -side right
 
-# A label identifies the current example
-
+# 创建标签，用于显示当前打开的TCL文件名
 label $f.label -textvariable browse(current)
 pack $f.label -side right -fill x -expand true
 
-# Create the menubutton and menu
+# 创建多级菜单
 menubutton $f.ex -text Examples -menu $f.ex.m
 pack $f.ex -side left
 set m [menu $f.ex.m]
 
-# Create the text to display the example
-# Scrolled_Text is defined in Example 33–1 on page 500
-
+# 创建文件内容显示窗口
 set browse(text) [Scrolled_Text .body -width 80 -height 10 -setgrid true]
 pack .body -fill both -expand true
 
-# Look through the example files for their ID number.
-
+# 遍历文件夹，并记录文件名和标题等
 foreach f [lsort -dictionary [glob [file join $browse(dir) *]]] {
    if [catch {open $f} in] {
       puts stderr "Cannot open $f: $in"
@@ -53,7 +42,7 @@ foreach f [lsort -dictionary [glob [file join $browse(dir) *]]] {
              x chap ex] {
          lappend examples($chap) $ex
          lappend browse(list) $f
-         # Read example title
+         # 从文件的第一行注释中找到菜单标题
          gets $in line
          set title($chap-$ex) [string trim $line "# "]
          set file($chap-$ex) $f
@@ -63,13 +52,11 @@ foreach f [lsort -dictionary [glob [file join $browse(dir) *]]] {
    }
 }
 
-# Create two levels of cascaded menus.
-# The first level divides up the chapters into chunks.
-# The second level has an entry for each example.
-
+# 关闭子菜单的弹出按钮
 option add *Menu.tearOff 0
 set limit 8
 set c 0; set i 0
+# 根据上面遍历的结果，创建出多级子菜单
 foreach chap [lsort -integer [array names examples]] {
    if {$i == 0} {
       $m add cascade -label "Chapter $chap..." \
@@ -86,10 +73,7 @@ foreach chap [lsort -integer [array names examples]] {
    }
 }
 
-# Display a specified file. The label is updated to
-# reflect what is displayed, and the text is left
-# in a read-only mode after the example is inserted.
-
+# 显示文件内容
 proc Browse { file } {
    global browse
    set browse(current) [file tail $file]
@@ -108,9 +92,9 @@ proc Browse { file } {
    $t config -state disabled
 }
 
-# Browse the next and previous files in the list
-
+# 记录当前显示文件的标号
 set browse(curix) -1
+# 显示下一个文件
 proc Next {} {
    global browse
    if {$browse(curix) < [llength $browse(list)] - 1} {
@@ -118,6 +102,7 @@ proc Next {} {
    }
    Browse [lindex $browse(list) $browse(curix)]
 }
+# 显示上一个文件
 proc Previous {} {
    global browse
    if {$browse(curix) > 0} {
@@ -126,19 +111,18 @@ proc Previous {} {
    Browse [lindex $browse(list) $browse(curix)]
 }
 
-# Run the example in the shell
-
+# 利用“source <file>.tcl”命令，运行TCL文件
 proc Run {} {
    global browse
    EvalEcho [list source [file join $browse(dir) $browse(current)]]
 }
 
-# Reset the slave in the eval server
-
+# 重置TCL解释器，并清空记录
 proc Reset {} {
    EvalEcho reset
 }
 
+# 在TCL解释器中执行TCL命令，并打印结果
 proc EvalEcho {command} {
    global eval
    $eval(text) mark set insert end
