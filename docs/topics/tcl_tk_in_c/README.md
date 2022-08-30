@@ -166,6 +166,93 @@ orandom result: 86
 
 ## Tk组件
 
+### 布局
+
+[例子“pack”](https://github.com/LittleBee1024/learning_book/tree/main/docs/topics/tcl_tk_in_c/code/tk/02_pack)利用`pack`命令将Tk组件显示在屏幕上，是最常见的布局方式：
+```bash
+# 参考:《Practical Programming in Tcl and Tk》第23章"The Pack Geometry Manager"
+# 1.普通布局
+. config -bg black
+frame .one -width 40 -height 40 -bg white
+pack .one -side top
+labelframe .split1 -labelanchor n -text split1 -width 200 -height 20 -bg grey50
+pack .split1 -side top
+
+# 2.存在子布局
+frame .three -bg white
+foreach b {alpha beta gamma} {
+   button .three.$b -text $b
+   pack .three.$b -side left
+}
+pack .three -side top
+labelframe .split2 -text split2 -width 100 -height 20 -bg grey50
+pack .split2 -side top
+
+# 3.存在三层布局
+frame .five -bg white
+foreach b {alpha beta} {
+   button .five.$b -text $b
+   pack .five.$b -side left
+}
+frame .five.right
+foreach b {delta epsilon} {
+   button .five.right.$b -text $b
+   pack .five.right.$b -side bottom
+}
+pack .five.right -side right
+pack .five -side top
+labelframe .split3 -text split3 -width 200 -height 20 -bg grey50
+pack .split3 -side top
+
+# 4. fill填充
+frame .menubar -bg white
+foreach b {alpha beta} {
+   button .menubar.$b -text $b
+}
+pack .menubar.alpha -side left
+pack .menubar.beta -side right
+pack .menubar -side top -fill x
+labelframe .split4 -text split4 -height 20 -bg grey50
+pack .split4 -fill x
+```
+![tk_pack](./images/tk_pack.png)
+
+除了`pack`布局方式外，还可以用`grid`进行布局，如[例子“grid”](https://github.com/LittleBee1024/learning_book/tree/main/docs/topics/tcl_tk_in_c/code/tk/03_grid)
+
+```bash
+# 参考:《Practical Programming in Tcl and Tk》第26章"The Grid Geometry Manager"
+
+foreach color {red orange yellow green blue purple} {
+   label .l1$color -text $color -bg white
+   frame .f1$color -background $color -width 100 -height 5
+   # 放置label和frame
+   grid .l1$color .f1$color
+   # 调整对齐方式：west
+   grid .l1$color -sticky w
+   # north south
+   grid .f1$color -sticky ns
+}
+
+label .lsplit -text --------
+frame .fsplit -width 100 -height 20
+grid .lsplit .fsplit
+
+foreach color {red orange yellow green blue purple} {
+   label .l2$color -text $color -bg white
+   frame .f2$color -background $color -width 100 -height 5
+   grid .l2$color .f2$color
+   # 外部和内部边框
+   grid .l2$color -column 1 -sticky w -padx 10 -ipady 5
+   grid .f2$color -column 0 -sticky ns -pady 5
+}
+```
+
+![tk_grid](./images/tk_grid.png)
+
+### button
+
+### text
+
 ## 自定义命令实例
 
 ## TCL Shell实例
