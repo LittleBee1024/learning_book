@@ -169,7 +169,7 @@ orandom result: 86
 ### 布局
 
 [例子“pack”](https://github.com/LittleBee1024/learning_book/tree/main/docs/topics/tcl_tk_in_c/code/tk/02_pack)利用`pack`命令将Tk组件显示在屏幕上，是最常见的布局方式：
-```bash
+```bash title="main.tcl"
 # 参考:《Practical Programming in Tcl and Tk》第23章"The Pack Geometry Manager"
 # 1.普通布局
 . config -bg black
@@ -219,7 +219,7 @@ pack .split4 -fill x
 
 除了`pack`布局方式外，还可以用`grid`进行布局，如[例子“grid”](https://github.com/LittleBee1024/learning_book/tree/main/docs/topics/tcl_tk_in_c/code/tk/03_grid)
 
-```bash
+```bash title="main.tcl"
 # 参考:《Practical Programming in Tcl and Tk》第26章"The Grid Geometry Manager"
 
 foreach color {red orange yellow green blue purple} {
@@ -250,6 +250,22 @@ foreach color {red orange yellow green blue purple} {
 ![tk_grid](./images/tk_grid.png)
 
 ### button
+
+[例子“button”](https://github.com/LittleBee1024/learning_book/tree/main/docs/topics/tcl_tk_in_c/code/tk/01_button)实现了一个简单的按键功能，点击按键可在终端显示“Hello, World!”：
+
+```bash title="main.tcl"
+# 将按钮实例存于“$hello_button”，后面对按钮的操作都可以通过“$hello_button”完成
+set hello_button [button .hello -text "Hello, world!" -command {puts stdout "Hello, World!"}]
+# 配置按钮背景色
+$hello_button config -background green
+# 将按钮在屏幕上显示
+pack $hello_button -padx 20 -pady 10
+# 获取按钮的属性
+set color [$hello_button cget -background]
+puts "hello buttton background: $color"
+```
+
+![tk_button](./images/tk_button.png)
 
 ### text
 
