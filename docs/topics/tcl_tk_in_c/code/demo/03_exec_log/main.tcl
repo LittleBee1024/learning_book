@@ -55,8 +55,12 @@ proc Run {} {
    } else {
       # $input是一个文件描述符，设置其可读回调函数Log，用于将执行的结果输出，此步骤为异步
       fileevent $input readable Log
+      # 恢复显示框可写
+      $log config -state normal
       # 打印执行的命令，由于此时命令还没执行完成，下面的话会打印在命令结果之前
       $log insert end ">$in_command\n"
+      # 设置显示框只读
+      $log config -state disabled
       # 将按钮文字显示为Stop，表明正则执行命令
       $button_run config -text Running -command Close
    }
@@ -70,12 +74,16 @@ proc Log {} {
       # 调用结束动作，改变按钮显示内容
       Close
    } else {
+      # 恢复显示框可写
+      $log config -state normal
       # 从文件描述符中读取一行
       gets $input line
       # 打印一行内容
       $log insert end $line\n
-      # 修改显示位置，否则窗口不会滚动显示最新的结果
-      $log see insert
+      # 修改显示位置到末尾，否则窗口不会滚动显示最新的结果
+      $log see end
+      # 设置显示框只读
+      $log config -state disabled
    }
 }
 

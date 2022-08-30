@@ -124,7 +124,8 @@ proc ResetAlias {slave} {
    global eval
    interp delete $slave
    SlaveInit $slave
-   $eval(text) delete 0.0 end
+   # 清空输入框中的所有内容
+   $eval(text) delete 1.0 end
 }
 
 # 定制化puts命令，将puts的结果输出到当前窗口

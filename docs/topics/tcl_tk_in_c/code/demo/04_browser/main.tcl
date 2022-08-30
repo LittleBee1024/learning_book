@@ -38,9 +38,7 @@ set m [menu $f.ex.m]
 # Create the text to display the example
 # Scrolled_Text is defined in Example 33–1 on page 500
 
-set browse(text) [Scrolled_Text .body \
-   -width 80 -height 10\
-   -setgrid true]
+set browse(text) [Scrolled_Text .body -width 80 -height 10 -setgrid true]
 pack .body -fill both -expand true
 
 # Look through the example files for their ID number.
@@ -97,6 +95,7 @@ proc Browse { file } {
    set browse(current) [file tail $file]
    set browse(curix) [lsearch $browse(list) $file]
    set t $browse(text)
+   # 恢复为可写
    $t config -state normal
    $t delete 1.0 end
    if [catch {open $file} in] {
@@ -105,6 +104,7 @@ proc Browse { file } {
       $t insert end [read $in]
       close $in
    }
+   # 更改为只读
    $t config -state disabled
 }
 
