@@ -130,7 +130,8 @@ int main(int argc, char *argv[])
 
 ### Tcl_CreateObjCommand
 [例子"Tcl_CreateObjCommand"](https://github.com/LittleBee1024/learning_book/tree/main/docs/topics/tcl_tk_in_c/code/api/Tcl_CreateObjCommand)和[例子"Tcl_CreateCommand"](https://github.com/LittleBee1024/learning_book/tree/main/docs/topics/tcl_tk_in_c/code/api/Tcl_CreateCommand)功能类似，但使用了另一种创建TCL命令的方式`Tcl_CreateObjCommand`：
-```cpp title="main.c" hl_lines="5 11 12 18"
+```cpp title="main.c" hl_lines="6 12 13 19"
+// 参考:《Practical Programming in Tcl and Tk》第47章的"A C Command Procedure"
 int RandomObjCmd(ClientData clientData, Tcl_Interp *interp, int objc, Tcl_Obj *CONST objv[])
 {
     Tcl_Obj *resultPtr;
@@ -163,10 +164,9 @@ orandom result: 3
 orandom result: 86
 ```
 
-
 ## Tk组件
 
-## 自定义命令
+## 自定义命令实例
 
 ## TCL Shell实例
 
