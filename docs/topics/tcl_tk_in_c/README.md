@@ -4,6 +4,68 @@
 
 ## C接口
 
+### Tcl_Main
+[例子"Tcl_Main"](https://github.com/LittleBee1024/learning_book/tree/main/docs/topics/tcl_tk_in_c/code/api/Tcl_Main)在`main`函数中调用了`Tcl_Main`启动了一个TCL解释器，会解析并运行`argv`中传入的TCL文件"hello.tcl"，在终端打印“hello”字样：
+
+```cpp title="main.cpp" hl_lines="11"
+int Tcl_AppInit(Tcl_Interp *interp)
+{
+   if (Tcl_Init(interp) == TCL_ERROR)
+      return TCL_ERROR;
+
+   return TCL_OK;
+}
+
+int main(int argc, char *argv[])
+{
+   Tcl_Main(argc, argv, Tcl_AppInit);
+   return 0;
+}
+```
+```bash
+# hello.tcl
+# puts "hello"
+> ./main hello.tcl
+hello
+```
+
+### Tk_Main
+[例子"Tk_Main"](https://github.com/LittleBee1024/learning_book/tree/main/docs/topics/tcl_tk_in_c/code/api/Tk_Main)在`main`函数中调用了`Tk_Main`启动了一个TCL/TK解释器，会解析并运行`argv`中传入的TCL/TK文件"hello.tcl"，打开一个带“Hello, world!”字样的按钮：
+```cpp title="main.cpp" hl_lines="13"
+int AppInit(Tcl_Interp *interp)
+{
+   if (Tcl_Init(interp) == TCL_ERROR)
+      return TCL_ERROR;
+   if (Tk_Init(interp) == TCL_ERROR)
+      return TCL_ERROR;
+
+   return TCL_OK;
+}
+
+int main(int argc, char *argv[])
+{
+   Tk_Main(argc, argv, AppInit);
+   return 0;
+}
+```
+```bash
+# hello.tcl
+# button .b -text "Hello, world!" -command exit
+# pack .b
+> ./main hello.tcl
+```
+![tk_hello](./images/tk_hello.png)
+
+### Tcl_CreateCommand
+[例子"Tcl_CreateCommand"](https://github.com/LittleBee1024/learning_book/tree/main/docs/topics/tcl_tk_in_c/code/api/Tcl_CreateCommand)
+
+### Tcl_EvalFile
+[例子"Tcl_EvalFile"](https://github.com/LittleBee1024/learning_book/tree/main/docs/topics/tcl_tk_in_c/code/api/Tcl_EvalFile)
+
+### Tcl_Obj
+[例子"Tcl_Obj"](https://github.com/LittleBee1024/learning_book/tree/main/docs/topics/tcl_tk_in_c/code/api/Tcl_Obj)
+
+
 ## Tk组件
 
 ## 自定义命令
