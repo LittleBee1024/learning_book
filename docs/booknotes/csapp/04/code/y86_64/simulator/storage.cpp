@@ -1,72 +1,9 @@
 #include "./simulator/storage.h"
 
-#include <algorithm>
-#include <fstream>
 #include <assert.h>
 
 namespace
 {
-   const std::string WHITE_SPACE = " \n\r\t\f\v";
-
-   std::string ltrim(const std::string &s)
-   {
-      size_t start = s.find_first_not_of(WHITE_SPACE);
-      return (start == std::string::npos) ? "" : s.substr(start);
-   }
-
-   std::string rtrim(const std::string &s)
-   {
-      size_t end = s.find_last_not_of(WHITE_SPACE);
-      return (end == std::string::npos) ? "" : s.substr(0, end + 1);
-   }
-
-   bool startsWith(const std::string &s, const std::string &start)
-   {
-      if (&start == &s)
-         return true;
-      if (start.length() > s.length())
-         return false;
-      for (size_t i = 0; i < start.length(); ++i)
-      {
-         if (start[i] != s[i])
-            return false;
-      }
-      return true;
-   }
-
-   std::string getCode(const std::string &line)
-   {
-      auto end = line.find_first_of('|');
-      std::string code = (end == std::string::npos) ? "" : line.substr(0, end);
-      return rtrim(ltrim(code));
-   }
-
-   bool checkCode(const std::string &code)
-   {
-      if (!startsWith(code, "0x") || !startsWith(code, "0X"))
-         return false;
-
-      auto found = code.find(':');
-      return found != std::string::npos;
-   }
-
-   word_t getAddr(const std::string &code)
-   {
-      auto end = code.find_first_of(':');
-      assert(end != std::string::npos);
-      std::string addr = code.substr(0, end);
-      return std::stoll(addr, nullptr, 16);
-   }
-
-   std::string getInstruction(const std::string &code)
-   {
-      auto start = code.find_first_of(':');
-      assert(start != std::string::npos);
-      std::string instr = ltrim(code.substr(start + 1));
-      assert(instr.find(' ') == std::string::npos);
-      return instr;
-   }
-
    byte_t toNum(char ch, char cl)
    {
       assert(isxdigit(ch));
@@ -166,46 +103,17 @@ namespace SIM
    {
    }
 
-   int MemStore::load(const char *fname)
+   void MemStore::loadOneInstr(int lineno, word_t addr, std::string instr)
    {
-      std::ifstream ifs(fname);
-      if (ifs.fail())
+      for (size_t i = 0; i < instr.size(); i += 2)
       {
-         m_out->out("[ERROR] Cannot access '%s': No such file\n", fname);
-         return 0;
-      }
-
-      std::string line;
-      int lineno = 0;
-      int numBytes = 0;
-      while (std::getline(ifs, line))
-      {
-         lineno++;
-         std::string code = getCode(line);
-         if (code.empty())
-            continue;
-
-         if (checkCode(code))
+         if (addr >= (word_t)m_contents.size())
          {
-            m_out->out("[ERROR] Invalid code (Line %d): %s\n", lineno, code.c_str());
-            return 0;
+            m_out->out("[ERROR] Invalid addr (Line %d): 0x%llx\n", lineno, addr);
+            return;
          }
-
-         word_t addr = getAddr(code);
-         std::string instr = getInstruction(code);
-         assert(instr.size() % 2 == 0);
-         for (size_t i = 0; i < instr.size(); i += 2)
-         {
-            if (addr >= (word_t)m_contents.size())
-            {
-               m_out->out("[ERROR] Invalid addr (Line %d): 0x%llx\n", lineno, addr);
-               return 0;
-            }
-            // little-endian, the least-significant byte at the smallest address
-            m_contents[addr++] = toNum(instr[i], instr[i + 1]);
-            numBytes++;
-         }
+         // little-endian, the least-significant byte at the smallest address
+         m_contents[addr++] = toNum(instr[i], instr[i + 1]);
       }
-      return numBytes;
    }
 }

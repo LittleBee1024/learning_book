@@ -1,6 +1,80 @@
 #include "./simulator/sim_interface.h"
 
 #include <assert.h>
+#include <algorithm>
+#include <fstream>
+
+namespace
+{
+   const std::string WHITE_SPACE = " \n\r\t\f\v";
+
+   std::string ltrim(const std::string &s)
+   {
+      size_t start = s.find_first_not_of(WHITE_SPACE);
+      return (start == std::string::npos) ? "" : s.substr(start);
+   }
+
+   std::string rtrim(const std::string &s)
+   {
+      size_t end = s.find_last_not_of(WHITE_SPACE);
+      return (end == std::string::npos) ? "" : s.substr(0, end + 1);
+   }
+
+   bool startsWith(const std::string &s, const std::string &start)
+   {
+      if (&start == &s)
+         return true;
+      if (start.length() > s.length())
+         return false;
+      for (size_t i = 0; i < start.length(); ++i)
+      {
+         if (start[i] != s[i])
+            return false;
+      }
+      return true;
+   }
+
+   std::string getBinaryCode(const std::string &line)
+   {
+      auto end = line.find_first_of('|');
+      std::string code = (end == std::string::npos) ? "" : line.substr(0, end);
+      return rtrim(ltrim(code));
+   }
+
+   std::string getComment(const std::string &line)
+   {
+      auto start = line.find_first_of('|');
+      assert(start != std::string::npos);
+      std::string code = ltrim(line.substr(start + 1));
+      return code;
+   }
+
+   bool checkCode(const std::string &code)
+   {
+      if (!startsWith(code, "0x") || !startsWith(code, "0X"))
+         return false;
+
+      auto found = code.find(':');
+      return found != std::string::npos;
+   }
+
+   word_t getAddr(const std::string &code)
+   {
+      auto end = code.find_first_of(':');
+      assert(end != std::string::npos);
+      std::string addr = code.substr(0, end);
+      return std::stoll(addr, nullptr, 16);
+   }
+
+   std::string getInstruction(const std::string &code)
+   {
+      auto start = code.find_first_of(':');
+      assert(start != std::string::npos);
+      std::string instr = ltrim(code.substr(start + 1));
+      assert(instr.find(' ') == std::string::npos);
+      return instr;
+   }
+}
 
 namespace SIM
 {
@@ -18,10 +92,56 @@ namespace SIM
 
    int SimBase::loadCode(const char *fname)
    {
-      int bytes = m_mem.load(fname);
-      if (bytes)
-         m_out->out("[INFO] Loaded %d bytes code\n", bytes);
+      int bytes = parseCode(fname);
+      for (const auto &code : m_code)
+         m_mem.loadOneInstr(code.lineno, code.addr, code.instr);
+
+      m_out->out("[INFO] Loaded %d bytes code\n", bytes);
       return bytes;
+   }
+
+   int SimBase::parseCode(const char *fname)
+   {
+      m_code.clear();
+
+      std::ifstream ifs(fname);
+      if (ifs.fail())
+      {
+         m_out->out("[ERROR] Cannot access '%s': No such file\n", fname);
+         return 0;
+      }
+
+      std::string line;
+      int lineno = 0;
+      int numBytes = 0;
+      while (std::getline(ifs, line))
+      {
+         lineno++;
+         std::string binCode = getBinaryCode(line);
+         std::string comment = getComment(line);
+         if (binCode.empty())
+            continue;
+
+         if (checkCode(binCode))
+         {
+            m_out->out("[ERROR] Invalid binary code (Line %d): %s\n", lineno, binCode.c_str());
+            return 0;
+         }
+
+         word_t addr = getAddr(binCode);
+         std::string instr = getInstruction(binCode);
+         // has valid machine code
+         if (!instr.empty())
+         {
+            assert(comment.size() > 0);
+            constexpr int HEX_LEN_PER_BYTE = 2;
+            assert(instr.size() % HEX_LEN_PER_BYTE == 0);
+            m_code.emplace_back(lineno, addr, instr, comment);
+            numBytes += instr.size() / HEX_LEN_PER_BYTE;
+         }
+      }
+
+      return numBytes;
    }
 
    State SimBase::run(int maxCycles)
@@ -44,6 +164,7 @@ namespace SIM
       m_pc = 0;
       m_cc = DEFAULT_CC;
       m_curCyc = 0;
+      m_code.clear();
    }
 
    void SimBase::takeSnapshot()

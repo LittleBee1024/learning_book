@@ -7,6 +7,7 @@
 #include "./_common/io_interface.h"
 
 #include <memory>
+#include <vector>
 
 namespace SIM
 {
@@ -44,6 +45,9 @@ namespace SIM
       word_t computeALU(ALU op, word_t argA, word_t argB);
       cc_t computeCC(ALU op, word_t argA, word_t argB);
 
+   private:
+      int parseCode(const char *fname);
+
    protected:
       static constexpr int REG_SIZE_BYTES = 128;       // 8 bytes * 16 regs
       static constexpr int MEM_SIZE_BYTES = (1 << 13); // 8KB
@@ -59,5 +63,17 @@ namespace SIM
       // snapshot
       RegStore m_regCopy;
       MemStore m_memCopy;
+
+      // parsed code contents
+      struct Code
+      {
+         Code(int l, word_t a, const std::string &i, const std::string &c)
+             : lineno(l), addr(a), instr(i), comment(c) {}
+         int lineno;
+         word_t addr;
+         std::string instr;
+         std::string comment;
+      };
+      std::vector<Code> m_code;
    };
 }

@@ -35,14 +35,7 @@ namespace SIM
    {
    public:
       MemStore(int len, std::shared_ptr<IO::OutputInterface> out);
-
-      /**
-       * @brief Load Y86_64 machine code from a file
-       *
-       * @param fname, file name of machine code
-       * @return int, the number of bytes has been read
-       */
-      int load(const char *fname);
+      void loadOneInstr(int lineno, word_t addr, std::string instr);
    };
 
    class RegStore : public Storage
