@@ -487,6 +487,6 @@ proc findFile {tlist ext} {
    return ""
 }
 
-# Trigger loadCode command
+# Trigger simCode C function
 set codeFile [findFile $argv yo]
 if {$codeFile != ""} { loadCode $codeFile}
