@@ -13,7 +13,7 @@ namespace SIM
       m_sim = s;
    }
 
-   void SimRender::displayInstr() const
+   int SimRender::displayInstr() const
    {
       std::string tclCmd;
       char buf[1024];
@@ -28,5 +28,7 @@ namespace SIM
       {
          G_SIM_LOG("[ERROR] Failed to display code: %s\n", Tcl_GetStringResult(m_interp));
       }
+
+      return rc;
    }
 }

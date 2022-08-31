@@ -22,9 +22,7 @@ int simLoadCodeCmd(ClientData clientData, Tcl_Interp *interp, int argc, char *ar
    sim_load_code(codeFile);
 
    SIM::SimRender r(interp, SIM::SimSingleton::getInstance());
-   r.displayInstr();
-
-   return TCL_OK;
+   return r.displayInstr();
 }
 
 int simRunCmd(ClientData clientData, Tcl_Interp *interp, int argc, char *argv[])
