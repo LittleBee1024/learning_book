@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "hcl.h"
+#include "./hcl/hcl.h"
 
 #define YYSTYPE HCL::NodePtr
 extern int hcl_lex(HCL::Parser*);

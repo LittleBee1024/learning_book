@@ -1,4 +1,4 @@
-#include "./outgen.h"
+#include "./hcl/outgen.h"
 
 #include <stdio.h>
 #include <stdlib.h>

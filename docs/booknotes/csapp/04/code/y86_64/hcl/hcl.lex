@@ -1,8 +1,8 @@
 /* Grammar for Y86-64 HCL */
 
 %{
-#include "hcl.h"
-#include "node.h"
+#include "./hcl/hcl.h"
+#include "./hcl/node.h"
 
 // Has to define YYSTYPE before "hcl_yacc_gen.hpp"
 #define YYSTYPE HCL::NodePtr

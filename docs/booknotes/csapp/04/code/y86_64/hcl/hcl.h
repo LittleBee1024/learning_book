@@ -1,8 +1,8 @@
 #pragma once
 
-#include "./hcl_interface.h"
-#include "./node.h"
-#include "./outgen.h"
+#include "./hcl/hcl_interface.h"
+#include "./hcl/node.h"
+#include "./hcl/outgen.h"
 
 #include <memory>
 #include <vector>

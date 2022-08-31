@@ -1,4 +1,4 @@
-#include "./hcl.h"
+#include "./hcl/hcl.h"
 
 #include <stdarg.h>
 #include <string.h>
