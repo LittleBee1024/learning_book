@@ -9,6 +9,8 @@ namespace SIM
 
    State Yis::runOneCycle()
    {
+      m_out->out("\n[INFO] Cycle %d starts with CC='%s'\n", m_curCyc, ISA::getCCName(m_cc));
+
       word_t ftpc = m_pc; // fall-through PC
       m_out->out("F: predPC = 0x%llx\n", ftpc);
 

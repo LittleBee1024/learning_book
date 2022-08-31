@@ -27,8 +27,8 @@ namespace SIM
       SIM::State state = SIM::STAT_OK;
       for (m_curCyc = 0; m_curCyc < maxCycles && state == SIM::STAT_OK; m_curCyc++)
       {
-         m_out->out("\n[INFO] Cycle %d. CC=%s, Stat=%s\n", m_curCyc, ISA::getCCName(m_cc), getStateName(state));
          state = runOneCycle();
+         m_out->out("[INFO] Cycle %lld is done with state=%s\n", m_curCyc, getStateName(state));
       }
 
       m_out->out("\nAfter %d cycles, the state becomes %s\n\n", m_curCyc, SIM::getStateName(state));

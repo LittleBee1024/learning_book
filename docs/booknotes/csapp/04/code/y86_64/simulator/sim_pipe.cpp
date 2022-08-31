@@ -23,6 +23,8 @@ namespace SIM
 
    State Pipe::runOneCycle()
    {
+      m_out->out("\n[INFO] Cycle %d starts with CC='%s' for instruction %lld\n", m_curCyc, ISA::getCCName(m_cc), m_numInstr);
+
       updateCurrentPipeRegs();
 
       doFetchStageForComingDecodeRegs();
@@ -33,7 +35,6 @@ namespace SIM
 
       doStallCheck();
 
-      m_out->out("[INFO] Cycle %lld is done for instruction %lld\n", m_curCyc, m_numInstr);
       if (PIPE::pipe_regs.writeback.current.status != STAT_BUBBLE)
          m_numInstr++;
 

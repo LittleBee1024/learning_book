@@ -1,141 +1,175 @@
 [INFO] Create Yis Simulator
 [INFO] Loaded 141 bytes code
 
-[INFO] Cycle 0. CC=Z=1 S=0 O=0, Stat=OK
+[INFO] Cycle 0 starts with CC='Z=1 S=0 O=0'
 F: predPC = 0x0
 D: instr = irmovq, rA = ----, rB = %rsp, valC = 0x200, valP = 0xa
+[INFO] Cycle 0 is done with state=OK
 
-[INFO] Cycle 1. CC=Z=1 S=0 O=0, Stat=OK
+[INFO] Cycle 1 starts with CC='Z=1 S=0 O=0'
 F: predPC = 0xa
 D: instr = call, rA = ----, rB = ----, valC = 0x38, valP = 0x13
+[INFO] Cycle 1 is done with state=OK
 
-[INFO] Cycle 2. CC=Z=1 S=0 O=0, Stat=OK
+[INFO] Cycle 2 starts with CC='Z=1 S=0 O=0'
 F: predPC = 0x38
 D: instr = irmovq, rA = ----, rB = %rdi, valC = 0x18, valP = 0x42
+[INFO] Cycle 2 is done with state=OK
 
-[INFO] Cycle 3. CC=Z=1 S=0 O=0, Stat=OK
+[INFO] Cycle 3 starts with CC='Z=1 S=0 O=0'
 F: predPC = 0x42
 D: instr = irmovq, rA = ----, rB = %rsi, valC = 0x4, valP = 0x4c
+[INFO] Cycle 3 is done with state=OK
 
-[INFO] Cycle 4. CC=Z=1 S=0 O=0, Stat=OK
+[INFO] Cycle 4 starts with CC='Z=1 S=0 O=0'
 F: predPC = 0x4c
 D: instr = call, rA = ----, rB = ----, valC = 0x56, valP = 0x55
+[INFO] Cycle 4 is done with state=OK
 
-[INFO] Cycle 5. CC=Z=1 S=0 O=0, Stat=OK
+[INFO] Cycle 5 starts with CC='Z=1 S=0 O=0'
 F: predPC = 0x56
 D: instr = irmovq, rA = ----, rB = %r8, valC = 0x8, valP = 0x60
+[INFO] Cycle 5 is done with state=OK
 
-[INFO] Cycle 6. CC=Z=1 S=0 O=0, Stat=OK
+[INFO] Cycle 6 starts with CC='Z=1 S=0 O=0'
 F: predPC = 0x60
 D: instr = irmovq, rA = ----, rB = %r9, valC = 0x1, valP = 0x6a
+[INFO] Cycle 6 is done with state=OK
 
-[INFO] Cycle 7. CC=Z=1 S=0 O=0, Stat=OK
+[INFO] Cycle 7 starts with CC='Z=1 S=0 O=0'
 F: predPC = 0x6a
 D: instr = xorq, rA = %rax, rB = %rax, valC = 0x0, valP = 0x6c
+[INFO] Cycle 7 is done with state=OK
 
-[INFO] Cycle 8. CC=Z=1 S=0 O=0, Stat=OK
+[INFO] Cycle 8 starts with CC='Z=1 S=0 O=0'
 F: predPC = 0x6c
 D: instr = andq, rA = %rsi, rB = %rsi, valC = 0x0, valP = 0x6e
+[INFO] Cycle 8 is done with state=OK
 
-[INFO] Cycle 9. CC=Z=0 S=0 O=0, Stat=OK
+[INFO] Cycle 9 starts with CC='Z=0 S=0 O=0'
 F: predPC = 0x6e
 D: instr = jmp, rA = ----, rB = ----, valC = 0x87, valP = 0x77
+[INFO] Cycle 9 is done with state=OK
 
-[INFO] Cycle 10. CC=Z=0 S=0 O=0, Stat=OK
+[INFO] Cycle 10 starts with CC='Z=0 S=0 O=0'
 F: predPC = 0x87
 D: instr = jne, rA = ----, rB = ----, valC = 0x77, valP = 0x90
+[INFO] Cycle 10 is done with state=OK
 
-[INFO] Cycle 11. CC=Z=0 S=0 O=0, Stat=OK
+[INFO] Cycle 11 starts with CC='Z=0 S=0 O=0'
 F: predPC = 0x77
 D: instr = mrmovq, rA = %r10, rB = %rdi, valC = 0x0, valP = 0x81
+[INFO] Cycle 11 is done with state=OK
 
-[INFO] Cycle 12. CC=Z=0 S=0 O=0, Stat=OK
+[INFO] Cycle 12 starts with CC='Z=0 S=0 O=0'
 F: predPC = 0x81
 D: instr = addq, rA = %r10, rB = %rax, valC = 0x0, valP = 0x83
+[INFO] Cycle 12 is done with state=OK
 
-[INFO] Cycle 13. CC=Z=0 S=0 O=0, Stat=OK
+[INFO] Cycle 13 starts with CC='Z=0 S=0 O=0'
 F: predPC = 0x83
 D: instr = addq, rA = %r8, rB = %rdi, valC = 0x0, valP = 0x85
+[INFO] Cycle 13 is done with state=OK
 
-[INFO] Cycle 14. CC=Z=0 S=0 O=0, Stat=OK
+[INFO] Cycle 14 starts with CC='Z=0 S=0 O=0'
 F: predPC = 0x85
 D: instr = subq, rA = %r9, rB = %rsi, valC = 0x0, valP = 0x87
+[INFO] Cycle 14 is done with state=OK
 
-[INFO] Cycle 15. CC=Z=0 S=0 O=0, Stat=OK
+[INFO] Cycle 15 starts with CC='Z=0 S=0 O=0'
 F: predPC = 0x87
 D: instr = jne, rA = ----, rB = ----, valC = 0x77, valP = 0x90
+[INFO] Cycle 15 is done with state=OK
 
-[INFO] Cycle 16. CC=Z=0 S=0 O=0, Stat=OK
+[INFO] Cycle 16 starts with CC='Z=0 S=0 O=0'
 F: predPC = 0x77
 D: instr = mrmovq, rA = %r10, rB = %rdi, valC = 0x0, valP = 0x81
+[INFO] Cycle 16 is done with state=OK
 
-[INFO] Cycle 17. CC=Z=0 S=0 O=0, Stat=OK
+[INFO] Cycle 17 starts with CC='Z=0 S=0 O=0'
 F: predPC = 0x81
 D: instr = addq, rA = %r10, rB = %rax, valC = 0x0, valP = 0x83
+[INFO] Cycle 17 is done with state=OK
 
-[INFO] Cycle 18. CC=Z=0 S=0 O=0, Stat=OK
+[INFO] Cycle 18 starts with CC='Z=0 S=0 O=0'
 F: predPC = 0x83
 D: instr = addq, rA = %r8, rB = %rdi, valC = 0x0, valP = 0x85
+[INFO] Cycle 18 is done with state=OK
 
-[INFO] Cycle 19. CC=Z=0 S=0 O=0, Stat=OK
+[INFO] Cycle 19 starts with CC='Z=0 S=0 O=0'
 F: predPC = 0x85
 D: instr = subq, rA = %r9, rB = %rsi, valC = 0x0, valP = 0x87
+[INFO] Cycle 19 is done with state=OK
 
-[INFO] Cycle 20. CC=Z=0 S=0 O=0, Stat=OK
+[INFO] Cycle 20 starts with CC='Z=0 S=0 O=0'
 F: predPC = 0x87
 D: instr = jne, rA = ----, rB = ----, valC = 0x77, valP = 0x90
+[INFO] Cycle 20 is done with state=OK
 
-[INFO] Cycle 21. CC=Z=0 S=0 O=0, Stat=OK
+[INFO] Cycle 21 starts with CC='Z=0 S=0 O=0'
 F: predPC = 0x77
 D: instr = mrmovq, rA = %r10, rB = %rdi, valC = 0x0, valP = 0x81
+[INFO] Cycle 21 is done with state=OK
 
-[INFO] Cycle 22. CC=Z=0 S=0 O=0, Stat=OK
+[INFO] Cycle 22 starts with CC='Z=0 S=0 O=0'
 F: predPC = 0x81
 D: instr = addq, rA = %r10, rB = %rax, valC = 0x0, valP = 0x83
+[INFO] Cycle 22 is done with state=OK
 
-[INFO] Cycle 23. CC=Z=0 S=0 O=0, Stat=OK
+[INFO] Cycle 23 starts with CC='Z=0 S=0 O=0'
 F: predPC = 0x83
 D: instr = addq, rA = %r8, rB = %rdi, valC = 0x0, valP = 0x85
+[INFO] Cycle 23 is done with state=OK
 
-[INFO] Cycle 24. CC=Z=0 S=0 O=0, Stat=OK
+[INFO] Cycle 24 starts with CC='Z=0 S=0 O=0'
 F: predPC = 0x85
 D: instr = subq, rA = %r9, rB = %rsi, valC = 0x0, valP = 0x87
+[INFO] Cycle 24 is done with state=OK
 
-[INFO] Cycle 25. CC=Z=0 S=0 O=0, Stat=OK
+[INFO] Cycle 25 starts with CC='Z=0 S=0 O=0'
 F: predPC = 0x87
 D: instr = jne, rA = ----, rB = ----, valC = 0x77, valP = 0x90
+[INFO] Cycle 25 is done with state=OK
 
-[INFO] Cycle 26. CC=Z=0 S=0 O=0, Stat=OK
+[INFO] Cycle 26 starts with CC='Z=0 S=0 O=0'
 F: predPC = 0x77
 D: instr = mrmovq, rA = %r10, rB = %rdi, valC = 0x0, valP = 0x81
+[INFO] Cycle 26 is done with state=OK
 
-[INFO] Cycle 27. CC=Z=0 S=0 O=0, Stat=OK
+[INFO] Cycle 27 starts with CC='Z=0 S=0 O=0'
 F: predPC = 0x81
 D: instr = addq, rA = %r10, rB = %rax, valC = 0x0, valP = 0x83
+[INFO] Cycle 27 is done with state=OK
 
-[INFO] Cycle 28. CC=Z=0 S=0 O=0, Stat=OK
+[INFO] Cycle 28 starts with CC='Z=0 S=0 O=0'
 F: predPC = 0x83
 D: instr = addq, rA = %r8, rB = %rdi, valC = 0x0, valP = 0x85
+[INFO] Cycle 28 is done with state=OK
 
-[INFO] Cycle 29. CC=Z=0 S=0 O=0, Stat=OK
+[INFO] Cycle 29 starts with CC='Z=0 S=0 O=0'
 F: predPC = 0x85
 D: instr = subq, rA = %r9, rB = %rsi, valC = 0x0, valP = 0x87
+[INFO] Cycle 29 is done with state=OK
 
-[INFO] Cycle 30. CC=Z=1 S=0 O=0, Stat=OK
+[INFO] Cycle 30 starts with CC='Z=1 S=0 O=0'
 F: predPC = 0x87
 D: instr = jne, rA = ----, rB = ----, valC = 0x77, valP = 0x90
+[INFO] Cycle 30 is done with state=OK
 
-[INFO] Cycle 31. CC=Z=1 S=0 O=0, Stat=OK
+[INFO] Cycle 31 starts with CC='Z=1 S=0 O=0'
 F: predPC = 0x90
 D: instr = ret, rA = ----, rB = ----, valC = 0x0, valP = 0x91
+[INFO] Cycle 31 is done with state=OK
 
-[INFO] Cycle 32. CC=Z=1 S=0 O=0, Stat=OK
+[INFO] Cycle 32 starts with CC='Z=1 S=0 O=0'
 F: predPC = 0x55
 D: instr = ret, rA = ----, rB = ----, valC = 0x0, valP = 0x56
+[INFO] Cycle 32 is done with state=OK
 
-[INFO] Cycle 33. CC=Z=1 S=0 O=0, Stat=OK
+[INFO] Cycle 33 starts with CC='Z=1 S=0 O=0'
 F: predPC = 0x13
 D: instr = halt, rA = ----, rB = ----, valC = 0x0, valP = 0x14
+[INFO] Cycle 33 is done with state=HALT
 
 After 34 cycles, the state becomes HALT
 
