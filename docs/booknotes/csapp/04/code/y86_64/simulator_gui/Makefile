@@ -9,7 +9,7 @@ BUILD_DIR=build
 all: clean $(TARGET)
 
 clean:
-	@rm -rf $(BUILD_DIR)
+	@rm -rf $(BUILD_DIR) *.o *.log
 
 # Source code in current folder
 SRCS=main.cpp c_api_sim.cpp singleton.cpp
