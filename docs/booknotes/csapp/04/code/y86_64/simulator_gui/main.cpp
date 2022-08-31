@@ -15,5 +15,8 @@ int main(int argc, char *argv[])
    rc = sim_step_run(100);
    assert(rc == 0);
 
+   rc = sim_diff();
+   assert(rc == 0);
+
    return 0;
 }

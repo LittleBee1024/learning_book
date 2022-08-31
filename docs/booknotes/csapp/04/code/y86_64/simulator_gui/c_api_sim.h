@@ -26,5 +26,12 @@ extern "C"
     * @return 0: SUCESS, -1: ERROR
     */
    int sim_step_run(int step_num);
+
+   /**
+    * @brief Dump the differences in registers and memory after running a program
+    * 
+    * @return 0: SUCESS, -1: ERROR
+    */
+   int sim_diff();
 }
 

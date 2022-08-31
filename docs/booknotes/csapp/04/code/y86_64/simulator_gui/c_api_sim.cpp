@@ -20,6 +20,7 @@ int sim_load_code(const char *filename)
       G_SIM_LOG("[ ERR] Failed to load code file %s\n", filename);
       return C_ERR;
    }
+   yis->takeSnapshot();
    return C_OK;
 }
 
@@ -44,5 +45,13 @@ int sim_step_run(int step_num)
       return C_ERR;
    }
 
+   return C_OK;
+}
+
+int sim_diff()
+{
+   auto yis = SIM::SimSingleton::getInstance();
+   yis->diffReg();
+   yis->diffMem();
    return C_OK;
 }
