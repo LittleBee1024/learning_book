@@ -15,9 +15,12 @@ clean:
 SRCS=main.cpp c_api_sim.cpp singleton.cpp
 OBJS=$(SRCS:%.cpp=$(BUILD_DIR)/%.o)
 
+TCL_INCLUDE=/usr/include/tcl
+TCL_LINK=-L/usr/lib/x86_64-linux-gnu -ltcl -ltk
+
 $(BUILD_DIR)/%.o: %.cpp
 	@mkdir -p '$(@D)'
-	$(CC) $(CFLAGS) -I.. -c $< -o $@
+	$(CC) $(CFLAGS) -I.. -I$(TCL_INCLUDE) -c $< -o $@
 
 # Source code in dependent folder
 DEP_SIM_DIR=../simulator
@@ -38,8 +41,11 @@ $(BUILD_DIR)/%.o: $(DEP_COMMON_DIR)/%.cpp
 
 # Final target
 $(TARGET): $(OBJS) $(DEP_SIM_OBJS) $(DEP_COMMON_OBJS)
-	$(CC) $(CFLAGS) $^ -o $(BUILD_DIR)/$@
+	$(CC) $(CFLAGS) $^ $(TCL_LINK) -o $(BUILD_DIR)/$@
 
 # Test and debug
 Y86_64_CODE=./test/asum.yo
+TCL_CMD=./sim.tcl
+run:
+	$(BUILD_DIR)/$(TARGET) -c $(Y86_64_CODE) -t $(TCL_CMD)
 
