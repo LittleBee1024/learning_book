@@ -3,13 +3,12 @@ CFLAGS=-Wall -g
 LEX=flex
 
 TARGET=yas
+BUILD_DIR=build
 
 all: clean $(TARGET)
 
 clean:
 	@rm -rf *.o main $(BUILD_DIR)
-
-BUILD_DIR=build
 
 # Source code in current folder
 SRCS=yas_instr.cpp yas.cpp main.cpp

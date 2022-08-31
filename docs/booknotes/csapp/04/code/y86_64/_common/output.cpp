@@ -1,4 +1,4 @@
-#include "./output.h"
+#include "./_common/output.h"
 
 #include <stdio.h>
 #include <stdarg.h>

@@ -1,4 +1,4 @@
-#include "./input.h"
+#include "./_common/input.h"
 
 namespace IO
 {
