@@ -75,7 +75,11 @@ int main(int argc, char *argv[])
       return -1;
    }
 
-   char *tkargv[2];
+   // 0: exec filename
+   // 1: gui tcl filename
+   // 2: Y86-64 code filename
+   // 3: nullptr
+   char *tkargv[TKARGS + 1];
    for (size_t i = 0; i < TKARGS; i++)
    {
       if ((tkargv[i] = (char *)malloc(MAXBUF * sizeof(char))) == nullptr)
@@ -86,6 +90,8 @@ int main(int argc, char *argv[])
    }
    strcpy(tkargv[0], argv[0]);
    strcpy(tkargv[1], option.guiFile.c_str());
+   strcpy(tkargv[2], option.codeFile.c_str());
+   tkargv[3] = nullptr;
 
    Tk_Main(TKARGS, tkargv, AppInit);
    return 0;
