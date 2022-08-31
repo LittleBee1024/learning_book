@@ -12,7 +12,8 @@ extern "C"
    int sim_reset();
 
    /**
-    * @brief Load machine code file to simulator
+    * @brief Load machine code file to the simulator, then take a snapshot of the simulator for the comparation
+    *        after running the code
     * 
     * @param filename The machine code filename(./yo)
     * @return 0: SUCESS, -1: ERROR
