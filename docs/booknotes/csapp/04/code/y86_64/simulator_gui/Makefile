@@ -48,5 +48,5 @@ $(TARGET): $(OBJS) $(DEP_SIM_OBJS) $(DEP_COMMON_OBJS)
 Y86_64_CODE=./test/asum.yo
 TCL_CMD=./sim.tcl
 run:
-	$(BUILD_DIR)/$(TARGET) -c $(Y86_64_CODE) -t $(TCL_CMD)
+	$(BUILD_DIR)/$(TARGET) -c $(Y86_64_CODE) -g $(TCL_CMD)
 

@@ -13,7 +13,7 @@
 
 void usage(char *pname)
 {
-   printf("Usage: %s -c <file>.yo -t <file>.tcl\n", pname);
+   printf("Usage: %s -c <file>.yo -g <file>.tcl\n", pname);
    printf("\t<file>.yo  : Y86-64 code file *.yo\n");
    printf("\t<file>.tcl : TCL/TK commands for GUI\n");
 }
@@ -43,14 +43,14 @@ int AppInit(Tcl_Interp *interp)
 struct Options
 {
    std::string codeFile;
-   std::string tclFile;
+   std::string guiFile;
 };
 
 int main(int argc, char *argv[])
 {
    Options option;
    int ch;
-   while ((ch = getopt(argc, argv, "hc:t:")) != -1)
+   while ((ch = getopt(argc, argv, "hc:g:")) != -1)
    {
       switch (ch)
       {
@@ -60,8 +60,8 @@ int main(int argc, char *argv[])
       case 'c':
          option.codeFile = optarg;
          break;
-      case 't':
-         option.tclFile = optarg;
+      case 'g':
+         option.guiFile = optarg;
          break;
       default:
          break;
@@ -69,7 +69,7 @@ int main(int argc, char *argv[])
       }
    }
 
-   if (!endsWith(option.codeFile, ".yo") || !endsWith(option.tclFile, ".tcl"))
+   if (!endsWith(option.codeFile, ".yo") || !endsWith(option.guiFile, ".tcl"))
    {
       usage(argv[0]);
       return -1;
@@ -85,7 +85,7 @@ int main(int argc, char *argv[])
       }
    }
    strcpy(tkargv[0], argv[0]);
-   strcpy(tkargv[1], option.tclFile.c_str());
+   strcpy(tkargv[1], option.guiFile.c_str());
 
    Tk_Main(TKARGS, tkargv, AppInit);
    return 0;
