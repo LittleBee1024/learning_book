@@ -15,6 +15,7 @@ clean:
 SRCS=main.cpp c_api_sim.cpp singleton.cpp
 OBJS=$(SRCS:%.cpp=$(BUILD_DIR)/%.o)
 
+# Update with the correct TCL/TK path on your system
 TCL_INCLUDE=/usr/include/tcl
 TCL_LINK=-L/usr/lib/x86_64-linux-gnu -ltcl -ltk
 
