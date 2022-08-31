@@ -31,6 +31,9 @@ namespace SIM
 
    class SimBase : public SimInterface
    {
+      // A TCL/TK class for GUI
+      friend class SimRender;
+
    public:
       explicit SimBase(std::shared_ptr<IO::OutputInterface> out);
       int loadCode(const char *fname) override;

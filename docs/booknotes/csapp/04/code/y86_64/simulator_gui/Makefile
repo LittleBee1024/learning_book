@@ -12,7 +12,7 @@ clean:
 	@rm -rf $(BUILD_DIR) *.o *.log
 
 # Source code in current folder
-SRCS=main.cpp c_api_sim.cpp singleton.cpp tcl_cmd.cpp
+SRCS=main.cpp c_api_sim.cpp singleton.cpp tcl_cmd.cpp sim_render.cpp
 OBJS=$(SRCS:%.cpp=$(BUILD_DIR)/%.o)
 
 # Update with the correct TCL/TK path on your system
@@ -45,8 +45,11 @@ $(TARGET): $(OBJS) $(DEP_SIM_OBJS) $(DEP_COMMON_OBJS)
 	$(CC) $(CFLAGS) $^ $(TCL_LINK) -o $(BUILD_DIR)/$@
 
 # Test and debug
-Y86_64_CODE=./test/asum.yo
+Y86_64_CODE=./code/asum.yo
 TCL_GUI=./gui.tcl
 run:
 	$(BUILD_DIR)/$(TARGET) -c $(Y86_64_CODE) -g $(TCL_GUI)
 
+debug:
+	gdb -q $(BUILD_DIR)/$(TARGET) \
+	-ex "start -c $(Y86_64_CODE) -g $(TCL_GUI)"

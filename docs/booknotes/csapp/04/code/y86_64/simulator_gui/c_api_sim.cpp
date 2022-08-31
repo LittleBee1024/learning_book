@@ -17,7 +17,7 @@ int sim_load_code(const char *filename)
    auto yis = SIM::SimSingleton::getInstance();
    if (yis->loadCode(filename) == 0)
    {
-      G_SIM_LOG("[ ERR] Failed to load code file %s\n", filename);
+      G_SIM_LOG("[ERROR] Failed to load code file %s\n", filename);
       return C_ERR;
    }
    yis->takeSnapshot();
@@ -38,7 +38,7 @@ const char *sim_step_run(int step_num)
 
    if (i != step_num && state != SIM::STAT_HLT)
    {
-      G_SIM_LOG("[ ERR] Step %d fails\n", i);
+      G_SIM_LOG("[ERROR] Step %d fails\n", i);
       return SIM::getStateName(state);
    }
 
