@@ -1,7 +1,7 @@
 /* Grammar for Y86-64 Assembler */
 
 %{
-#include "yas.h"
+#include "./assembler/yas.h"
 #define YY_DECL int yas_lex(YAS::Lexer *lex)
 %}
 

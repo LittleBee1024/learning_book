@@ -1,7 +1,7 @@
-#include "io_interface.h"
-#include "input.h"
-#include "output.h"
-#include "./yas.h"
+#include "./assembler/yas.h"
+#include "./_common/io_interface.h"
+#include "./_common/input.h"
+#include "./_common/output.h"
 
 #include <string>
 #include <memory>

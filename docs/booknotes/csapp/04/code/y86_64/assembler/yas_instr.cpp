@@ -1,6 +1,5 @@
-#include "./yas_instr.h"
-
-#include "isa.h"
+#include "./assembler/yas_instr.h"
+#include "./_common/isa.h"
 
 #include <string.h>
 

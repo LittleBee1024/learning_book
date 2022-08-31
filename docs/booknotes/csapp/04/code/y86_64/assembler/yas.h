@@ -1,7 +1,7 @@
 #pragma once
 
-#include "./yas_interface.h"
-#include "./token.h"
+#include "./assembler/yas_interface.h"
+#include "./assembler/token.h"
 
 #include <deque>
 #include <string>

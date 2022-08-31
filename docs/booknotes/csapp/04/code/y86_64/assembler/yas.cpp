@@ -1,6 +1,6 @@
-#include "./yas.h"
-#include "./yas_instr.h"
-#include "output.h"
+#include "./assembler/yas.h"
+#include "./assembler/yas_instr.h"
+#include "./_common/output.h"
 
 #include <cassert>
 #include <stdio.h>
