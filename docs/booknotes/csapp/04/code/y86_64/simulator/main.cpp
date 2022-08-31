@@ -51,34 +51,6 @@ std::unique_ptr<SIM::SimInterface> createSimulator(SIMType type, std::shared_ptr
    }
 }
 
-std::unique_ptr<SIM::SimInterface> takeSnapshot(SIMType type, const SIM::SimInterface *sim)
-{
-   switch (type)
-   {
-   case SIMType::YIS:
-   {
-      auto child = dynamic_cast<const SIM::Yis *>(sim);
-      assert(child != nullptr);
-      return std::make_unique<SIM::Yis>(*child);
-   }
-   case SIMType::SEQ:
-   {
-      auto child = dynamic_cast<const SIM::Seq *>(sim);
-      assert(child != nullptr);
-      return std::make_unique<SIM::Seq>(*child);
-   }
-   case SIMType::PIPE:
-   {
-      auto child = dynamic_cast<const SIM::Pipe *>(sim);
-      assert(child != nullptr);
-      return std::make_unique<SIM::Pipe>(*child);
-   }
-   default:
-      assert(0 && "Invalid Simulator Type\n");
-      return nullptr;
-   }
-}
-
 struct Options
 {
    std::string infname;
@@ -133,10 +105,10 @@ int main(int argc, char *argv[])
       return -1;
    }
 
-   std::unique_ptr<SIM::SimInterface> snapshot = takeSnapshot(option.type, sim.get());
-
+   sim->takeSnapshot();
    sim->run(option.maxCycles);
-   sim->compare(*snapshot);
+   sim->diffReg();
+   sim->diffMem();
 
    return 0;
 }

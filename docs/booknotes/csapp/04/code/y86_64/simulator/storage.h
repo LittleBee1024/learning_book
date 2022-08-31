@@ -14,7 +14,7 @@ namespace SIM
    public:
       Storage(int len, std::shared_ptr<IO::OutputInterface> out);
       Storage(const Storage &other) = default;
-      Storage &operator=(const Storage &) = delete;
+      Storage &operator=(const Storage &) = default;
       virtual ~Storage() = default;
 
       bool getByte(word_t pos, byte_t *dest) const;
