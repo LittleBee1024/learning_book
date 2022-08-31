@@ -1,7 +1,7 @@
-#include "./sim_seq.h"
-#include "./seq.h"
+#include "./simulator/sim_seq.h"
+#include "./simulator/seq.h"
 
-#include "isa.h"
+#include "./_common/isa.h"
 
 namespace SEQ
 {

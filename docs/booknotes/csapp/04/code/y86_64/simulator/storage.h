@@ -1,7 +1,7 @@
 #pragma once
 
-#include "io_interface.h"
-#include "isa.h"
+#include "./_common/io_interface.h"
+#include "./_common/isa.h"
 
 #include <memory>
 #include <vector>

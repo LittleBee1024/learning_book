@@ -1,5 +1,5 @@
-quote '#include "state.h"'
-quote '#include "seq.h"'
+quote '#include "./simulator/state.h"'
+quote '#include "./simulator/seq.h"'
 quote 'namespace SEQ {'
 
 ####################################################################

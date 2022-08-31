@@ -1,10 +1,10 @@
-#include "io_interface.h"
-#include "output.h"
-#include "./sim_interface.h"
-#include "./sim_yis.h"
-#include "./sim_seq.h"
-#include "./sim_pipe.h"
-#include "./state.h"
+#include "./simulator/sim_interface.h"
+#include "./simulator/sim_yis.h"
+#include "./simulator/sim_seq.h"
+#include "./simulator/sim_pipe.h"
+#include "./simulator/state.h"
+#include "./_common/io_interface.h"
+#include "./_common/output.h"
 
 #include <memory>
 #include <unistd.h>

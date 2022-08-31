@@ -1,4 +1,4 @@
-#include "./sim_interface.h"
+#include "./simulator/sim_interface.h"
 
 #include <assert.h>
 

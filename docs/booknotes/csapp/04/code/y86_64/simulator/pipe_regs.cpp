@@ -1,4 +1,4 @@
-#include "./pipe_regs.h"
+#include "./simulator/pipe_regs.h"
 
 namespace SIM
 {

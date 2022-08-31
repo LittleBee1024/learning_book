@@ -1,49 +1,54 @@
 CC=g++
 CFLAGS=-Wall -g
 
+TARGET=sim
 BUILD_DIR=build
 
-SRCS=state.cpp storage.cpp sim_interface.cpp sim_seq.cpp sim_yis.cpp pipe_regs.cpp sim_pipe.cpp main.cpp
-OBJS=$(SRCS:%.cpp=$(BUILD_DIR)/%.o)
+.PHONY: all $(TARGET) test
 
-DEP_COMMON_DIR=../_common
-DEP_COMMON_SRCS=output.cpp isa.cpp
-DEP_COMMON_OBJS=$(DEP_COMMON_SRCS:%.cpp=$(BUILD_DIR)/%.o)
-
-.PHONY: all sim test
-
-all: clean sim
+all: clean $(TARGET)
 
 clean:
 	@rm -rf $(BUILD_DIR)
 
+# Source code in current folder
+SRCS=state.cpp storage.cpp sim_interface.cpp sim_seq.cpp sim_yis.cpp pipe_regs.cpp sim_pipe.cpp main.cpp
+OBJS=$(SRCS:%.cpp=$(BUILD_DIR)/%.o)
+
 $(BUILD_DIR)/%.o: %.cpp
 	@mkdir -p '$(@D)'
-	$(CC) $(CFLAGS) -I$(DEP_COMMON_DIR) -c $< -o $@
+	$(CC) $(CFLAGS) -I.. -c $< -o $@
 
-$(BUILD_DIR)/%.o: $(DEP_COMMON_DIR)/%.cpp
-	@mkdir -p '$(@D)'
-	$(CC) $(CFLAGS) -I$(DEP_COMMON_DIR) -c $< -o $@
-
+# Use HCL tool to generate source code
 HCL=../hcl/build/hcl
 $(BUILD_DIR)/seq.o: seq.hcl
 	@echo "Building the seq.hcl of SEQ"
 	@mkdir -p '$(@D)'
 	$(HCL) seq.hcl -o $(BUILD_DIR)/seq.cpp
-	$(CC) $(CFLAGS) -I. -I$(DEP_COMMON_DIR) -c $(BUILD_DIR)/seq.cpp -o $@
+	$(CC) $(CFLAGS) -I.. -c $(BUILD_DIR)/seq.cpp -o $@
 
 $(BUILD_DIR)/pipe.o: pipe.hcl
 	@echo "Building the seq.hcl of PIPELINE"
 	@mkdir -p '$(@D)'
 	$(HCL) pipe.hcl -o $(BUILD_DIR)/pipe.cpp
-	$(CC) $(CFLAGS) -I. -I$(DEP_COMMON_DIR) -c $(BUILD_DIR)/pipe.cpp -o $@
+	$(CC) $(CFLAGS) -I.. -c $(BUILD_DIR)/pipe.cpp -o $@
 
-sim: $(DEP_COMMON_OBJS) $(BUILD_DIR)/seq.o $(BUILD_DIR)/pipe.o $(OBJS)
+# Source code in dependent folder
+DEP_COMMON_DIR=../_common
+DEP_COMMON_SRCS=output.cpp isa.cpp
+DEP_COMMON_OBJS=$(DEP_COMMON_SRCS:%.cpp=$(BUILD_DIR)/%.o)
+
+$(BUILD_DIR)/%.o: $(DEP_COMMON_DIR)/%.cpp
+	@mkdir -p '$(@D)'
+	$(CC) $(CFLAGS) -I.. -c $< -o $@
+
+# Final target
+$(TARGET): $(DEP_COMMON_OBJS) $(BUILD_DIR)/seq.o $(BUILD_DIR)/pipe.o $(OBJS)
 	$(CC) $(CFLAGS) $^ -o $(BUILD_DIR)/$@
 
+# Test and debug
 YAS=../assembler/build/yas
 Y86_64_CODE=./test/asum.yo
-
 %.yo: %.ys
 	$(YAS) $< -o $@
 

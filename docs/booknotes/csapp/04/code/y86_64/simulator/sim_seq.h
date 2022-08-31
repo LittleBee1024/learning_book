@@ -1,10 +1,10 @@
 #pragma once
 
-#include "./sim_interface.h"
-#include "./seq.h"
-#include "./state.h"
+#include "./simulator/sim_interface.h"
+#include "./simulator/seq.h"
+#include "./simulator/state.h"
 
-#include "io_interface.h"
+#include "./_common/io_interface.h"
 
 namespace SIM
 {

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "isa.h"
+#include "./_common/isa.h"
 
 /* Defined in sim_seq.cpp */
 namespace SEQ

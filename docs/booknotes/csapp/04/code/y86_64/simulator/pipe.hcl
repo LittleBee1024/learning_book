@@ -1,5 +1,5 @@
-quote '#include "state.h"'
-quote '#include "pipe.h"'
+quote '#include "./simulator/state.h"'
+quote '#include "./simulator/pipe.h"'
 quote 'namespace PIPE {'
 
 ####################################################################

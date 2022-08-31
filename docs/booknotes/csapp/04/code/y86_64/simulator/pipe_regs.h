@@ -1,7 +1,7 @@
 #pragma once
 
-#include "./state.h"
-#include "isa.h"
+#include "./simulator/state.h"
+#include "./_common/isa.h"
 
 namespace SIM
 {

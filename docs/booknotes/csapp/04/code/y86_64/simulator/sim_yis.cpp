@@ -1,5 +1,5 @@
-#include "./sim_yis.h"
-#include "isa.h"
+#include "./simulator/sim_yis.h"
+#include "./_common/isa.h"
 
 namespace SIM
 {

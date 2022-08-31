@@ -1,7 +1,7 @@
 #pragma once
 
-#include "./pipe_regs.h"
-#include "isa.h"
+#include "./simulator/pipe_regs.h"
+#include "./_common/isa.h"
 
 /* Defined in sim_pipe.cpp */
 namespace PIPE

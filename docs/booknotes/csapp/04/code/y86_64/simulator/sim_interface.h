@@ -1,10 +1,10 @@
 #pragma once
 
-#include "./state.h"
-#include "./storage.h"
+#include "./simulator/state.h"
+#include "./simulator/storage.h"
 
-#include "isa.h"
-#include "io_interface.h"
+#include "./_common/isa.h"
+#include "./_common/io_interface.h"
 
 #include <memory>
 

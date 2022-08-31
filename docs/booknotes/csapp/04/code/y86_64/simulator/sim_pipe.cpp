@@ -1,7 +1,7 @@
-#include "./sim_pipe.h"
-#include "./pipe.h"
+#include "./simulator/sim_pipe.h"
+#include "./simulator/pipe.h"
 
-#include "isa.h"
+#include "./_common/isa.h"
 
 namespace PIPE
 {
