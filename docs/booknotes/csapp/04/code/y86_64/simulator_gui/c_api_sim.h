@@ -20,13 +20,6 @@ extern "C"
    int sim_yis_load_code(const char *filename);
 
    /**
-    * @brief Run YIS simulator
-    * 
-    * @return 0: SUCESS, -1: ERROR
-    */
-   int sim_yis_run();
-
-   /**
     * @brief Run YIS simulator in serveral steps after loading code
     * 
     * @param step_num The number of running steps

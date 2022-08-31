@@ -23,15 +23,6 @@ int sim_yis_load_code(const char *filename)
    return C_OK;
 }
 
-int sim_yis_run()
-{
-   auto yis = SIM::YisSingleton::getInstance();
-   SIM::State state = yis->run(10000/*MAX*/);
-   if (state == SIM::STAT_OK || state == SIM::STAT_HLT)
-      return C_OK;
-   return C_ERR;
-}
-
 int sim_yis_step_run(int step_num)
 {
    auto yis = SIM::YisSingleton::getInstance();
@@ -41,6 +32,7 @@ int sim_yis_step_run(int step_num)
    for (i = 0; i < step_num && state == SIM::STAT_OK; i++)
    {
       state = yis->runOneCycle();
+      G_SIM_LOG("[INFO] The cycle is done with State=%s\n", SIM::getStateName(state));
    }
 
    if (state == SIM::STAT_HLT)
