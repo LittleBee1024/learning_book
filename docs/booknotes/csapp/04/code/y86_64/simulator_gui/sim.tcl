@@ -89,10 +89,11 @@ set simStat "OK"
 # Line to display simulation status
 frame .stat
 pack .stat -in .flags -side left
-label .stat.statlab -width 7 -text "Stat" -font $bigLabFont -height $sectionHeight
-label .stat.statdpy -width 3 -font $dpyFont -relief ridge -bg white -textvariable simStat
-label .stat.fill -width 6 -text ""
-pack .stat.statlab .stat.statdpy .stat.fill  -in .stat -side left
+label .stat.statlab -width 7 -text "Status" -font $bigLabFont -height $sectionHeight
+label .stat.statdpy -width 10 -font $dpyFont -relief ridge -bg white -textvariable simStat
+# Gap between Stat and Condition Codes
+label .stat.fill -width 5 -text ""
+pack .stat.statlab .stat.statdpy .stat.fill -in .stat -side left
 
 ##############################################################################
 # Condition Code Display                                                     #
@@ -201,7 +202,7 @@ proc simGo {} {
       # run the simulator 1 cycle
       after $simDelay
       set simStat [simRun 1]
-      if {$simStat != "AOK" && $simStat != "BUB"} {set simGoOK 0}
+      if {$simStat != "OK" && $simStat != "BUBBLE"} {set simGoOK 0}
       update
    }
    # Disable the Stop button
