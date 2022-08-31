@@ -24,7 +24,7 @@ int sim_load_code(const char *filename)
    return C_OK;
 }
 
-int sim_step_run(int step_num)
+const char *sim_step_run(int step_num)
 {
    auto yis = SIM::SimSingleton::getInstance();
 
@@ -36,16 +36,13 @@ int sim_step_run(int step_num)
       G_SIM_LOG("[INFO] The cycle is done with State=%s\n", SIM::getStateName(state));
    }
 
-   if (state == SIM::STAT_HLT)
-      return C_OK;
-
-   if (i != step_num)
+   if (i != step_num && state != SIM::STAT_HLT)
    {
       G_SIM_LOG("[ ERR] Step %d fails\n", i);
-      return C_ERR;
+      return SIM::getStateName(state);
    }
 
-   return C_OK;
+   return SIM::getStateName(state);
 }
 
 int sim_diff()
