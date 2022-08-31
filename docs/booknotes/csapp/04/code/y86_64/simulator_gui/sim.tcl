@@ -1,8 +1,7 @@
 
 ##########################################################################
-# Parsing of command line flags                                          #
+# Help processes and variables                                           #
 ##########################################################################
-
 proc flagVal {flag default} {
    global argv
    foreach t $argv {
@@ -18,11 +17,6 @@ proc findFlag {flag} {
    }
    return 0
 }
-
-##########################################################################
-# Register File Implementation.  Shown as array of 8 columns             #
-##########################################################################
-
 
 # Font used to display register contents
 set fontSize [expr 10 * [flagVal "f" 12]]
@@ -82,7 +76,7 @@ proc setCC {zv cv ov} {
 }
 
 ##############################################################################
-# Start Display                                                              #
+# Main Window                                                                #
 ##############################################################################
 ### Create display for misc. state
 frame .flags
@@ -415,7 +409,7 @@ proc simResetAll {} {
 }
 
 ###############################################################################
-#    Memory Display                                                           #
+#    Memory Window                                                            #
 ###############################################################################
 toplevel .m
 wm title .m "Memory Contents"
