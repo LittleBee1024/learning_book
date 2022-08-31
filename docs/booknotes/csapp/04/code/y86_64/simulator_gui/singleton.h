@@ -5,11 +5,11 @@
 
 #include <memory>
 
-#define G_SIM_LOG(fmt, ...) ( SIM::simOut->out(fmt, __VA_ARGS__) )
+#define G_SIM_LOG(fmt, ...) ( SIM::g_out->out(fmt, __VA_ARGS__) )
 
 namespace SIM
 {
-   extern std::shared_ptr<IO::OutputInterface> simOut;
+   extern std::shared_ptr<IO::OutputInterface> g_out;
 
    class SimSingleton
    {

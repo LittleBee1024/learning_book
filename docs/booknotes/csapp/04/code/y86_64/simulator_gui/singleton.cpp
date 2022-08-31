@@ -8,11 +8,11 @@
 
 namespace SIM
 {
-   std::shared_ptr<IO::OutputInterface> simOut = std::make_shared<IO::FileOut>(SYS_LOG);
+   std::shared_ptr<IO::OutputInterface> g_out = std::make_shared<IO::FileOut>(SYS_LOG);
 
    SimInterface *SimSingleton::getInstance()
    {
-      static Yis yis(simOut);
+      static Yis yis(g_out);
       return &yis;
    }
 }

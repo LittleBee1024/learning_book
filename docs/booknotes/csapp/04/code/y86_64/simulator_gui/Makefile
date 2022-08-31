@@ -42,3 +42,4 @@ $(TARGET): $(OBJS) $(DEP_SIM_OBJS) $(DEP_COMMON_OBJS)
 
 # Test and debug
 Y86_64_CODE=./test/asum.yo
+
