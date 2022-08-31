@@ -48,6 +48,5 @@ namespace SIM
 
    private:
       word_t m_numInstr = 0;
-      word_t m_numCyc = 0;
    };
 }

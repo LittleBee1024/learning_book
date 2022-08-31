@@ -9,7 +9,8 @@ namespace SIM
                                                                 m_reg(REG_SIZE_BYTES, m_out),
                                                                 m_mem(MEM_SIZE_BYTES, m_out),
                                                                 m_pc(0),
-                                                                m_cc(DEFAULT_CC)
+                                                                m_cc(DEFAULT_CC),
+                                                                m_curCyc(0)
    {
    }
 
@@ -24,14 +25,13 @@ namespace SIM
    State SimBase::run(int maxCycles)
    {
       SIM::State state = SIM::STAT_OK;
-      int i = 0;
-      for (i = 0; i < maxCycles && state == SIM::STAT_OK; i++)
+      for (m_curCyc = 0; m_curCyc < maxCycles && state == SIM::STAT_OK; m_curCyc++)
       {
-         m_out->out("\n[INFO] Cycle %d. CC=%s, Stat=%s\n", i, ISA::getCCName(m_cc), getStateName(state));
+         m_out->out("\n[INFO] Cycle %d. CC=%s, Stat=%s\n", m_curCyc, ISA::getCCName(m_cc), getStateName(state));
          state = runOneCycle();
       }
 
-      m_out->out("\nAfter %d cycles, the state becomes %s\n\n", i, SIM::getStateName(state));
+      m_out->out("\nAfter %d cycles, the state becomes %s\n\n", m_curCyc, SIM::getStateName(state));
       return state;
    }
 
@@ -41,6 +41,7 @@ namespace SIM
       m_mem.reset();
       m_pc = 0;
       m_cc = DEFAULT_CC;
+      m_curCyc = 0;
    }
 
    void SimBase::compare(const SimInterface &other) const

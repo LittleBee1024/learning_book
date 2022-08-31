@@ -56,5 +56,6 @@ namespace SIM
       MemStore m_mem;
       word_t m_pc;
       cc_t m_cc;
+      word_t m_curCyc;
    };
 }

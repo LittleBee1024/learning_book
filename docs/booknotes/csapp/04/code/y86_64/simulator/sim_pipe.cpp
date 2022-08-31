@@ -33,10 +33,9 @@ namespace SIM
 
       doStallCheck();
 
-      m_out->out("[INFO] Cycle %lld is done for instruction %lld\n", m_numCyc, m_numInstr);
+      m_out->out("[INFO] Cycle %lld is done for instruction %lld\n", m_curCyc, m_numInstr);
       if (PIPE::pipe_regs.writeback.current.status != STAT_BUBBLE)
          m_numInstr++;
-      m_numCyc++;
 
       return (SIM::State)PIPE::gen_Stat(); // status is set in write back stage
    }
@@ -44,7 +43,6 @@ namespace SIM
    void Pipe::reset()
    {
       m_numInstr = 0;
-      m_numCyc = 0;
       SimBase::reset();
       PIPE::imem_icode = I_NOP;
       PIPE::imem_ifun = F_NONE;
