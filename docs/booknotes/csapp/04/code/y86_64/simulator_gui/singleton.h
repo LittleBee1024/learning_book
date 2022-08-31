@@ -19,6 +19,6 @@ namespace SIM
    private:
       SimSingleton() = delete;
       SimSingleton(const SimSingleton &) = delete;
-      void operator=(const SimSingleton &) = delete;
+      SimSingleton &operator=(const SimSingleton &) = delete;
    };
 }
