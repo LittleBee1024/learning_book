@@ -331,6 +331,7 @@ proc updateStage {name txts} {
 ##########################################################################
 toplevel .c
 wm title .c "Program Code"
+wm minsize .c 500 500
 frame .c.cntl
 pack .c.cntl -in .c -side top -anchor w
 label .c.filelab -width 10 -text "File"
@@ -414,6 +415,7 @@ proc simResetAll {} {
 ###############################################################################
 toplevel .m
 wm title .m "Memory Contents"
+wm minsize .m 300 100
 frame .m.t
 pack .m.t -in .m -side top -anchor w
 
