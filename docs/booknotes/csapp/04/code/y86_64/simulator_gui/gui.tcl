@@ -487,5 +487,6 @@ proc findFile {tlist ext} {
    return ""
 }
 
+# Trigger loadCode command
 set codeFile [findFile $argv yo]
 if {$codeFile != ""} { loadCode $codeFile}
