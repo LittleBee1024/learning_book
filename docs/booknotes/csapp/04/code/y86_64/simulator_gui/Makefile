@@ -12,7 +12,7 @@ clean:
 	@rm -rf $(BUILD_DIR) *.o *.log
 
 # Source code in current folder
-SRCS=main.cpp c_api_sim.cpp singleton.cpp
+SRCS=main.cpp c_api_sim.cpp singleton.cpp tcl_cmd.cpp
 OBJS=$(SRCS:%.cpp=$(BUILD_DIR)/%.o)
 
 # Update with the correct TCL/TK path on your system

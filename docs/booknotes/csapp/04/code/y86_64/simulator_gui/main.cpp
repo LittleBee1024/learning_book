@@ -1,3 +1,5 @@
+#include "./simulator_gui/tcl_cmd.h"
+
 #include <tcl.h>
 #include <tk.h>
 
@@ -27,6 +29,13 @@ int AppInit(Tcl_Interp *interp)
       return TCL_ERROR;
    if (Tk_Init(interp) == TCL_ERROR)
       return TCL_ERROR;
+
+   Tcl_CreateCommand(interp, "simReset", (Tcl_CmdProc *)simResetCmd,
+                     (ClientData) nullptr, (Tcl_CmdDeleteProc *)nullptr);
+   Tcl_CreateCommand(interp, "simCode", (Tcl_CmdProc *)simLoadCodeCmd,
+                     (ClientData) nullptr, (Tcl_CmdDeleteProc *)nullptr);
+   Tcl_CreateCommand(interp, "simRun", (Tcl_CmdProc *)simRunCmd,
+                     (ClientData) nullptr, (Tcl_CmdDeleteProc *)nullptr);
 
    return TCL_OK;
 }
