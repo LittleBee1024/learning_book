@@ -367,7 +367,7 @@ proc loadCode {file} {
 createCode
 
 # Add a line of code to the display
-proc addCodeLine {line addr op text} {
+proc addCodeLine {addr op text} {
    global codeRowCount
    # Create new line in display
    global codeFont
