@@ -60,9 +60,9 @@ namespace
 
    std::string getInstruction(const std::string &code)
    {
-      auto end = code.find_first_of(':');
-      assert(end != std::string::npos);
-      std::string instr = ltrim(code.substr(end + 1));
+      auto start = code.find_first_of(':');
+      assert(start != std::string::npos);
+      std::string instr = ltrim(code.substr(start + 1));
       assert(instr.find(' ') == std::string::npos);
       return instr;
    }
