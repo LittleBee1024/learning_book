@@ -1,7 +1,7 @@
 [INFO] Create Pipeline Simulator
 [INFO] Loaded 141 bytes code
 
-Cycle 0. CC=Z=1 S=0 O=0, Stat=OK
+[INFO] Cycle 0. CC=Z=1 S=0 O=0, Stat=OK
 F: predPC = 0x0
 D: instr = nop, rA = ----, rB = ----, valC = 0x0, valP = 0x0, Stat = BUBBLE
 E: instr = nop, valC = 0x0, valA = 0x0, valB = 0x0
@@ -9,9 +9,9 @@ E: instr = nop, valC = 0x0, valA = 0x0, valB = 0x0
 M: instr = nop, Cnd = 0, valE = 0x0, valA = 0x0
    dstE = ----, dstM = ----, Stat = BUBBLE
 W: instr = nop, valE = 0x0, valM = 0x0, dstE = ----, dstM = ----, Stat = BUBBLE
-[INFO] 1 cycle is done for instruction 0
+[INFO] Cycle 0 is done for instruction 0
 
-Cycle 1. CC=Z=1 S=0 O=0, Stat=OK
+[INFO] Cycle 1. CC=Z=1 S=0 O=0, Stat=OK
 F: predPC = 0xa
 D: instr = irmovq, rA = ----, rB = %rsp, valC = 0x200, valP = 0xa, Stat = OK
 E: instr = nop, valC = 0x0, valA = 0x0, valB = 0x0
@@ -19,9 +19,9 @@ E: instr = nop, valC = 0x0, valA = 0x0, valB = 0x0
 M: instr = nop, Cnd = 1, valE = 0x0, valA = 0x0
    dstE = ----, dstM = ----, Stat = BUBBLE
 W: instr = nop, valE = 0x0, valM = 0x0, dstE = ----, dstM = ----, Stat = BUBBLE
-[INFO] 2 cycle is done for instruction 0
+[INFO] Cycle 1 is done for instruction 0
 
-Cycle 2. CC=Z=1 S=0 O=0, Stat=OK
+[INFO] Cycle 2. CC=Z=1 S=0 O=0, Stat=OK
 F: predPC = 0x38
 D: instr = call, rA = ----, rB = ----, valC = 0x38, valP = 0x13, Stat = OK
 E: instr = irmovq, valC = 0x200, valA = 0x0, valB = 0x0
@@ -29,9 +29,9 @@ E: instr = irmovq, valC = 0x200, valA = 0x0, valB = 0x0
 M: instr = nop, Cnd = 1, valE = 0x0, valA = 0x0
    dstE = ----, dstM = ----, Stat = BUBBLE
 W: instr = nop, valE = 0x0, valM = 0x0, dstE = ----, dstM = ----, Stat = BUBBLE
-[INFO] 3 cycle is done for instruction 0
+[INFO] Cycle 2 is done for instruction 0
 
-Cycle 3. CC=Z=1 S=0 O=0, Stat=OK
+[INFO] Cycle 3. CC=Z=1 S=0 O=0, Stat=OK
 F: predPC = 0x42
 D: instr = irmovq, rA = ----, rB = %rdi, valC = 0x18, valP = 0x42, Stat = OK
 E: instr = call, valC = 0x38, valA = 0x13, valB = 0x200
@@ -39,9 +39,9 @@ E: instr = call, valC = 0x38, valA = 0x13, valB = 0x200
 M: instr = irmovq, Cnd = 1, valE = 0x200, valA = 0x0
    dstE = %rsp, dstM = ----, Stat = OK
 W: instr = nop, valE = 0x0, valM = 0x0, dstE = ----, dstM = ----, Stat = BUBBLE
-[INFO] 4 cycle is done for instruction 0
+[INFO] Cycle 3 is done for instruction 0
 
-Cycle 4. CC=Z=1 S=0 O=0, Stat=OK
+[INFO] Cycle 4. CC=Z=1 S=0 O=0, Stat=OK
 F: predPC = 0x4c
 D: instr = irmovq, rA = ----, rB = %rsi, valC = 0x4, valP = 0x4c, Stat = OK
 E: instr = irmovq, valC = 0x18, valA = 0x0, valB = 0x0
@@ -49,9 +49,9 @@ E: instr = irmovq, valC = 0x18, valA = 0x0, valB = 0x0
 M: instr = call, Cnd = 1, valE = 0x1f8, valA = 0x13
    dstE = %rsp, dstM = ----, Stat = OK
 W: instr = irmovq, valE = 0x200, valM = 0x0, dstE = %rsp, dstM = ----, Stat = OK
-[INFO] 5 cycle is done for instruction 1
+[INFO] Cycle 4 is done for instruction 0
 
-Cycle 5. CC=Z=1 S=0 O=0, Stat=OK
+[INFO] Cycle 5. CC=Z=1 S=0 O=0, Stat=OK
 F: predPC = 0x56
 D: instr = call, rA = ----, rB = ----, valC = 0x56, valP = 0x55, Stat = OK
 E: instr = irmovq, valC = 0x4, valA = 0x0, valB = 0x0
@@ -59,9 +59,9 @@ E: instr = irmovq, valC = 0x4, valA = 0x0, valB = 0x0
 M: instr = irmovq, Cnd = 1, valE = 0x18, valA = 0x0
    dstE = %rdi, dstM = ----, Stat = OK
 W: instr = call, valE = 0x1f8, valM = 0x0, dstE = %rsp, dstM = ----, Stat = OK
-[INFO] 6 cycle is done for instruction 2
+[INFO] Cycle 5 is done for instruction 1
 
-Cycle 6. CC=Z=1 S=0 O=0, Stat=OK
+[INFO] Cycle 6. CC=Z=1 S=0 O=0, Stat=OK
 F: predPC = 0x60
 D: instr = irmovq, rA = ----, rB = %r8, valC = 0x8, valP = 0x60, Stat = OK
 E: instr = call, valC = 0x56, valA = 0x55, valB = 0x1f8
@@ -69,9 +69,9 @@ E: instr = call, valC = 0x56, valA = 0x55, valB = 0x1f8
 M: instr = irmovq, Cnd = 1, valE = 0x4, valA = 0x0
    dstE = %rsi, dstM = ----, Stat = OK
 W: instr = irmovq, valE = 0x18, valM = 0x0, dstE = %rdi, dstM = ----, Stat = OK
-[INFO] 7 cycle is done for instruction 3
+[INFO] Cycle 6 is done for instruction 2
 
-Cycle 7. CC=Z=1 S=0 O=0, Stat=OK
+[INFO] Cycle 7. CC=Z=1 S=0 O=0, Stat=OK
 F: predPC = 0x6a
 D: instr = irmovq, rA = ----, rB = %r9, valC = 0x1, valP = 0x6a, Stat = OK
 E: instr = irmovq, valC = 0x8, valA = 0x0, valB = 0x0
@@ -79,9 +79,9 @@ E: instr = irmovq, valC = 0x8, valA = 0x0, valB = 0x0
 M: instr = call, Cnd = 1, valE = 0x1f0, valA = 0x55
    dstE = %rsp, dstM = ----, Stat = OK
 W: instr = irmovq, valE = 0x4, valM = 0x0, dstE = %rsi, dstM = ----, Stat = OK
-[INFO] 8 cycle is done for instruction 4
+[INFO] Cycle 7 is done for instruction 3
 
-Cycle 8. CC=Z=1 S=0 O=0, Stat=OK
+[INFO] Cycle 8. CC=Z=1 S=0 O=0, Stat=OK
 F: predPC = 0x6c
 D: instr = xorq, rA = %rax, rB = %rax, valC = 0x0, valP = 0x6c, Stat = OK
 E: instr = irmovq, valC = 0x1, valA = 0x0, valB = 0x0
@@ -89,9 +89,9 @@ E: instr = irmovq, valC = 0x1, valA = 0x0, valB = 0x0
 M: instr = irmovq, Cnd = 1, valE = 0x8, valA = 0x0
    dstE = %r8, dstM = ----, Stat = OK
 W: instr = call, valE = 0x1f0, valM = 0x0, dstE = %rsp, dstM = ----, Stat = OK
-[INFO] 9 cycle is done for instruction 5
+[INFO] Cycle 8 is done for instruction 4
 
-Cycle 9. CC=Z=1 S=0 O=0, Stat=OK
+[INFO] Cycle 9. CC=Z=1 S=0 O=0, Stat=OK
 F: predPC = 0x6e
 D: instr = andq, rA = %rsi, rB = %rsi, valC = 0x0, valP = 0x6e, Stat = OK
 E: instr = xorq, valC = 0x0, valA = 0x0, valB = 0x0
@@ -99,9 +99,9 @@ E: instr = xorq, valC = 0x0, valA = 0x0, valB = 0x0
 M: instr = irmovq, Cnd = 1, valE = 0x1, valA = 0x0
    dstE = %r9, dstM = ----, Stat = OK
 W: instr = irmovq, valE = 0x8, valM = 0x0, dstE = %r8, dstM = ----, Stat = OK
-[INFO] 10 cycle is done for instruction 6
+[INFO] Cycle 9 is done for instruction 5
 
-Cycle 10. CC=Z=1 S=0 O=0, Stat=OK
+[INFO] Cycle 10. CC=Z=1 S=0 O=0, Stat=OK
 F: predPC = 0x87
 D: instr = jmp, rA = ----, rB = ----, valC = 0x87, valP = 0x77, Stat = OK
 E: instr = andq, valC = 0x0, valA = 0x4, valB = 0x4
@@ -109,9 +109,9 @@ E: instr = andq, valC = 0x0, valA = 0x4, valB = 0x4
 M: instr = xorq, Cnd = 1, valE = 0x0, valA = 0x0
    dstE = %rax, dstM = ----, Stat = OK
 W: instr = irmovq, valE = 0x1, valM = 0x0, dstE = %r9, dstM = ----, Stat = OK
-[INFO] 11 cycle is done for instruction 7
+[INFO] Cycle 10 is done for instruction 6
 
-Cycle 11. CC=Z=0 S=0 O=0, Stat=OK
+[INFO] Cycle 11. CC=Z=0 S=0 O=0, Stat=OK
 F: predPC = 0x77
 D: instr = jne, rA = ----, rB = ----, valC = 0x77, valP = 0x90, Stat = OK
 E: instr = jmp, valC = 0x87, valA = 0x77, valB = 0x0
@@ -119,9 +119,9 @@ E: instr = jmp, valC = 0x87, valA = 0x77, valB = 0x0
 M: instr = andq, Cnd = 0, valE = 0x4, valA = 0x4
    dstE = %rsi, dstM = ----, Stat = OK
 W: instr = xorq, valE = 0x0, valM = 0x0, dstE = %rax, dstM = ----, Stat = OK
-[INFO] 12 cycle is done for instruction 8
+[INFO] Cycle 11 is done for instruction 7
 
-Cycle 12. CC=Z=0 S=0 O=0, Stat=OK
+[INFO] Cycle 12. CC=Z=0 S=0 O=0, Stat=OK
 F: predPC = 0x81
 D: instr = mrmovq, rA = %r10, rB = %rdi, valC = 0x0, valP = 0x81, Stat = OK
 E: instr = jne, valC = 0x77, valA = 0x90, valB = 0x0
@@ -129,9 +129,9 @@ E: instr = jne, valC = 0x77, valA = 0x90, valB = 0x0
 M: instr = jmp, Cnd = 1, valE = 0x0, valA = 0x77
    dstE = ----, dstM = ----, Stat = OK
 W: instr = andq, valE = 0x4, valM = 0x0, dstE = %rsi, dstM = ----, Stat = OK
-[INFO] 13 cycle is done for instruction 9
+[INFO] Cycle 12 is done for instruction 8
 
-Cycle 13. CC=Z=0 S=0 O=0, Stat=OK
+[INFO] Cycle 13. CC=Z=0 S=0 O=0, Stat=OK
 F: predPC = 0x83
 D: instr = addq, rA = %r10, rB = %rax, valC = 0x0, valP = 0x83, Stat = OK
 E: instr = mrmovq, valC = 0x0, valA = 0x0, valB = 0x18
@@ -139,9 +139,9 @@ E: instr = mrmovq, valC = 0x0, valA = 0x0, valB = 0x18
 M: instr = jne, Cnd = 1, valE = 0x0, valA = 0x90
    dstE = ----, dstM = ----, Stat = OK
 W: instr = jmp, valE = 0x0, valM = 0x0, dstE = ----, dstM = ----, Stat = OK
-[INFO] 14 cycle is done for instruction 10
+[INFO] Cycle 13 is done for instruction 9
 
-Cycle 14. CC=Z=0 S=0 O=0, Stat=OK
+[INFO] Cycle 14. CC=Z=0 S=0 O=0, Stat=OK
 F: predPC = 0x83
 D: instr = addq, rA = %r10, rB = %rax, valC = 0x0, valP = 0x83, Stat = OK
 E: instr = nop, valC = 0x0, valA = 0x0, valB = 0x0
@@ -149,9 +149,9 @@ E: instr = nop, valC = 0x0, valA = 0x0, valB = 0x0
 M: instr = mrmovq, Cnd = 1, valE = 0x18, valA = 0x0
    dstE = ----, dstM = %r10, Stat = OK
 W: instr = jne, valE = 0x0, valM = 0x0, dstE = ----, dstM = ----, Stat = OK
-[INFO] 15 cycle is done for instruction 11
+[INFO] Cycle 14 is done for instruction 10
 
-Cycle 15. CC=Z=0 S=0 O=0, Stat=OK
+[INFO] Cycle 15. CC=Z=0 S=0 O=0, Stat=OK
 F: predPC = 0x85
 D: instr = addq, rA = %r8, rB = %rdi, valC = 0x0, valP = 0x85, Stat = OK
 E: instr = addq, valC = 0x0, valA = 0xd000d000d, valB = 0x0
@@ -159,9 +159,9 @@ E: instr = addq, valC = 0x0, valA = 0xd000d000d, valB = 0x0
 M: instr = nop, Cnd = 1, valE = 0x0, valA = 0x0
    dstE = ----, dstM = ----, Stat = BUBBLE
 W: instr = mrmovq, valE = 0x18, valM = 0xd000d000d, dstE = ----, dstM = %r10, Stat = OK
-[INFO] 16 cycle is done for instruction 12
+[INFO] Cycle 15 is done for instruction 11
 
-Cycle 16. CC=Z=0 S=0 O=0, Stat=OK
+[INFO] Cycle 16. CC=Z=0 S=0 O=0, Stat=OK
 F: predPC = 0x87
 D: instr = subq, rA = %r9, rB = %rsi, valC = 0x0, valP = 0x87, Stat = OK
 E: instr = addq, valC = 0x0, valA = 0x8, valB = 0x18
@@ -169,9 +169,9 @@ E: instr = addq, valC = 0x0, valA = 0x8, valB = 0x18
 M: instr = addq, Cnd = 1, valE = 0xd000d000d, valA = 0xd000d000d
    dstE = %rax, dstM = ----, Stat = OK
 W: instr = nop, valE = 0x0, valM = 0x0, dstE = ----, dstM = ----, Stat = BUBBLE
-[INFO] 17 cycle is done for instruction 12
+[INFO] Cycle 16 is done for instruction 12
 
-Cycle 17. CC=Z=0 S=0 O=0, Stat=OK
+[INFO] Cycle 17. CC=Z=0 S=0 O=0, Stat=OK
 F: predPC = 0x77
 D: instr = jne, rA = ----, rB = ----, valC = 0x77, valP = 0x90, Stat = OK
 E: instr = subq, valC = 0x0, valA = 0x1, valB = 0x4
@@ -179,9 +179,9 @@ E: instr = subq, valC = 0x0, valA = 0x1, valB = 0x4
 M: instr = addq, Cnd = 1, valE = 0x20, valA = 0x8
    dstE = %rdi, dstM = ----, Stat = OK
 W: instr = addq, valE = 0xd000d000d, valM = 0x0, dstE = %rax, dstM = ----, Stat = OK
-[INFO] 18 cycle is done for instruction 13
+[INFO] Cycle 17 is done for instruction 12
 
-Cycle 18. CC=Z=0 S=0 O=0, Stat=OK
+[INFO] Cycle 18. CC=Z=0 S=0 O=0, Stat=OK
 F: predPC = 0x81
 D: instr = mrmovq, rA = %r10, rB = %rdi, valC = 0x0, valP = 0x81, Stat = OK
 E: instr = jne, valC = 0x77, valA = 0x90, valB = 0x0
@@ -189,9 +189,9 @@ E: instr = jne, valC = 0x77, valA = 0x90, valB = 0x0
 M: instr = subq, Cnd = 0, valE = 0x3, valA = 0x1
    dstE = %rsi, dstM = ----, Stat = OK
 W: instr = addq, valE = 0x20, valM = 0x0, dstE = %rdi, dstM = ----, Stat = OK
-[INFO] 19 cycle is done for instruction 14
+[INFO] Cycle 18 is done for instruction 13
 
-Cycle 19. CC=Z=0 S=0 O=0, Stat=OK
+[INFO] Cycle 19. CC=Z=0 S=0 O=0, Stat=OK
 F: predPC = 0x83
 D: instr = addq, rA = %r10, rB = %rax, valC = 0x0, valP = 0x83, Stat = OK
 E: instr = mrmovq, valC = 0x0, valA = 0x0, valB = 0x20
@@ -199,9 +199,9 @@ E: instr = mrmovq, valC = 0x0, valA = 0x0, valB = 0x20
 M: instr = jne, Cnd = 1, valE = 0x0, valA = 0x90
    dstE = ----, dstM = ----, Stat = OK
 W: instr = subq, valE = 0x3, valM = 0x0, dstE = %rsi, dstM = ----, Stat = OK
-[INFO] 20 cycle is done for instruction 15
+[INFO] Cycle 19 is done for instruction 14
 
-Cycle 20. CC=Z=0 S=0 O=0, Stat=OK
+[INFO] Cycle 20. CC=Z=0 S=0 O=0, Stat=OK
 F: predPC = 0x83
 D: instr = addq, rA = %r10, rB = %rax, valC = 0x0, valP = 0x83, Stat = OK
 E: instr = nop, valC = 0x0, valA = 0x0, valB = 0x0
@@ -209,9 +209,9 @@ E: instr = nop, valC = 0x0, valA = 0x0, valB = 0x0
 M: instr = mrmovq, Cnd = 1, valE = 0x20, valA = 0x0
    dstE = ----, dstM = %r10, Stat = OK
 W: instr = jne, valE = 0x0, valM = 0x0, dstE = ----, dstM = ----, Stat = OK
-[INFO] 21 cycle is done for instruction 16
+[INFO] Cycle 20 is done for instruction 15
 
-Cycle 21. CC=Z=0 S=0 O=0, Stat=OK
+[INFO] Cycle 21. CC=Z=0 S=0 O=0, Stat=OK
 F: predPC = 0x85
 D: instr = addq, rA = %r8, rB = %rdi, valC = 0x0, valP = 0x85, Stat = OK
 E: instr = addq, valC = 0x0, valA = 0xc000c000c0, valB = 0xd000d000d
@@ -219,9 +219,9 @@ E: instr = addq, valC = 0x0, valA = 0xc000c000c0, valB = 0xd000d000d
 M: instr = nop, Cnd = 1, valE = 0x0, valA = 0x0
    dstE = ----, dstM = ----, Stat = BUBBLE
 W: instr = mrmovq, valE = 0x20, valM = 0xc000c000c0, dstE = ----, dstM = %r10, Stat = OK
-[INFO] 22 cycle is done for instruction 17
+[INFO] Cycle 21 is done for instruction 16
 
-Cycle 22. CC=Z=0 S=0 O=0, Stat=OK
+[INFO] Cycle 22. CC=Z=0 S=0 O=0, Stat=OK
 F: predPC = 0x87
 D: instr = subq, rA = %r9, rB = %rsi, valC = 0x0, valP = 0x87, Stat = OK
 E: instr = addq, valC = 0x0, valA = 0x8, valB = 0x20
@@ -229,9 +229,9 @@ E: instr = addq, valC = 0x0, valA = 0x8, valB = 0x20
 M: instr = addq, Cnd = 1, valE = 0xcd00cd00cd, valA = 0xc000c000c0
    dstE = %rax, dstM = ----, Stat = OK
 W: instr = nop, valE = 0x0, valM = 0x0, dstE = ----, dstM = ----, Stat = BUBBLE
-[INFO] 23 cycle is done for instruction 17
+[INFO] Cycle 22 is done for instruction 17
 
-Cycle 23. CC=Z=0 S=0 O=0, Stat=OK
+[INFO] Cycle 23. CC=Z=0 S=0 O=0, Stat=OK
 F: predPC = 0x77
 D: instr = jne, rA = ----, rB = ----, valC = 0x77, valP = 0x90, Stat = OK
 E: instr = subq, valC = 0x0, valA = 0x1, valB = 0x3
@@ -239,9 +239,9 @@ E: instr = subq, valC = 0x0, valA = 0x1, valB = 0x3
 M: instr = addq, Cnd = 1, valE = 0x28, valA = 0x8
    dstE = %rdi, dstM = ----, Stat = OK
 W: instr = addq, valE = 0xcd00cd00cd, valM = 0x0, dstE = %rax, dstM = ----, Stat = OK
-[INFO] 24 cycle is done for instruction 18
+[INFO] Cycle 23 is done for instruction 17
 
-Cycle 24. CC=Z=0 S=0 O=0, Stat=OK
+[INFO] Cycle 24. CC=Z=0 S=0 O=0, Stat=OK
 F: predPC = 0x81
 D: instr = mrmovq, rA = %r10, rB = %rdi, valC = 0x0, valP = 0x81, Stat = OK
 E: instr = jne, valC = 0x77, valA = 0x90, valB = 0x0
@@ -249,9 +249,9 @@ E: instr = jne, valC = 0x77, valA = 0x90, valB = 0x0
 M: instr = subq, Cnd = 0, valE = 0x2, valA = 0x1
    dstE = %rsi, dstM = ----, Stat = OK
 W: instr = addq, valE = 0x28, valM = 0x0, dstE = %rdi, dstM = ----, Stat = OK
-[INFO] 25 cycle is done for instruction 19
+[INFO] Cycle 24 is done for instruction 18
 
-Cycle 25. CC=Z=0 S=0 O=0, Stat=OK
+[INFO] Cycle 25. CC=Z=0 S=0 O=0, Stat=OK
 F: predPC = 0x83
 D: instr = addq, rA = %r10, rB = %rax, valC = 0x0, valP = 0x83, Stat = OK
 E: instr = mrmovq, valC = 0x0, valA = 0x0, valB = 0x28
@@ -259,9 +259,9 @@ E: instr = mrmovq, valC = 0x0, valA = 0x0, valB = 0x28
 M: instr = jne, Cnd = 1, valE = 0x0, valA = 0x90
    dstE = ----, dstM = ----, Stat = OK
 W: instr = subq, valE = 0x2, valM = 0x0, dstE = %rsi, dstM = ----, Stat = OK
-[INFO] 26 cycle is done for instruction 20
+[INFO] Cycle 25 is done for instruction 19
 
-Cycle 26. CC=Z=0 S=0 O=0, Stat=OK
+[INFO] Cycle 26. CC=Z=0 S=0 O=0, Stat=OK
 F: predPC = 0x83
 D: instr = addq, rA = %r10, rB = %rax, valC = 0x0, valP = 0x83, Stat = OK
 E: instr = nop, valC = 0x0, valA = 0x0, valB = 0x0
@@ -269,9 +269,9 @@ E: instr = nop, valC = 0x0, valA = 0x0, valB = 0x0
 M: instr = mrmovq, Cnd = 1, valE = 0x28, valA = 0x0
    dstE = ----, dstM = %r10, Stat = OK
 W: instr = jne, valE = 0x0, valM = 0x0, dstE = ----, dstM = ----, Stat = OK
-[INFO] 27 cycle is done for instruction 21
+[INFO] Cycle 26 is done for instruction 20
 
-Cycle 27. CC=Z=0 S=0 O=0, Stat=OK
+[INFO] Cycle 27. CC=Z=0 S=0 O=0, Stat=OK
 F: predPC = 0x85
 D: instr = addq, rA = %r8, rB = %rdi, valC = 0x0, valP = 0x85, Stat = OK
 E: instr = addq, valC = 0x0, valA = 0xb000b000b00, valB = 0xcd00cd00cd
@@ -279,9 +279,9 @@ E: instr = addq, valC = 0x0, valA = 0xb000b000b00, valB = 0xcd00cd00cd
 M: instr = nop, Cnd = 1, valE = 0x0, valA = 0x0
    dstE = ----, dstM = ----, Stat = BUBBLE
 W: instr = mrmovq, valE = 0x28, valM = 0xb000b000b00, dstE = ----, dstM = %r10, Stat = OK
-[INFO] 28 cycle is done for instruction 22
+[INFO] Cycle 27 is done for instruction 21
 
-Cycle 28. CC=Z=0 S=0 O=0, Stat=OK
+[INFO] Cycle 28. CC=Z=0 S=0 O=0, Stat=OK
 F: predPC = 0x87
 D: instr = subq, rA = %r9, rB = %rsi, valC = 0x0, valP = 0x87, Stat = OK
 E: instr = addq, valC = 0x0, valA = 0x8, valB = 0x28
@@ -289,9 +289,9 @@ E: instr = addq, valC = 0x0, valA = 0x8, valB = 0x28
 M: instr = addq, Cnd = 1, valE = 0xbcd0bcd0bcd, valA = 0xb000b000b00
    dstE = %rax, dstM = ----, Stat = OK
 W: instr = nop, valE = 0x0, valM = 0x0, dstE = ----, dstM = ----, Stat = BUBBLE
-[INFO] 29 cycle is done for instruction 22
+[INFO] Cycle 28 is done for instruction 22
 
-Cycle 29. CC=Z=0 S=0 O=0, Stat=OK
+[INFO] Cycle 29. CC=Z=0 S=0 O=0, Stat=OK
 F: predPC = 0x77
 D: instr = jne, rA = ----, rB = ----, valC = 0x77, valP = 0x90, Stat = OK
 E: instr = subq, valC = 0x0, valA = 0x1, valB = 0x2
@@ -299,9 +299,9 @@ E: instr = subq, valC = 0x0, valA = 0x1, valB = 0x2
 M: instr = addq, Cnd = 1, valE = 0x30, valA = 0x8
    dstE = %rdi, dstM = ----, Stat = OK
 W: instr = addq, valE = 0xbcd0bcd0bcd, valM = 0x0, dstE = %rax, dstM = ----, Stat = OK
-[INFO] 30 cycle is done for instruction 23
+[INFO] Cycle 29 is done for instruction 22
 
-Cycle 30. CC=Z=0 S=0 O=0, Stat=OK
+[INFO] Cycle 30. CC=Z=0 S=0 O=0, Stat=OK
 F: predPC = 0x81
 D: instr = mrmovq, rA = %r10, rB = %rdi, valC = 0x0, valP = 0x81, Stat = OK
 E: instr = jne, valC = 0x77, valA = 0x90, valB = 0x0
@@ -309,9 +309,9 @@ E: instr = jne, valC = 0x77, valA = 0x90, valB = 0x0
 M: instr = subq, Cnd = 0, valE = 0x1, valA = 0x1
    dstE = %rsi, dstM = ----, Stat = OK
 W: instr = addq, valE = 0x30, valM = 0x0, dstE = %rdi, dstM = ----, Stat = OK
-[INFO] 31 cycle is done for instruction 24
+[INFO] Cycle 30 is done for instruction 23
 
-Cycle 31. CC=Z=0 S=0 O=0, Stat=OK
+[INFO] Cycle 31. CC=Z=0 S=0 O=0, Stat=OK
 F: predPC = 0x83
 D: instr = addq, rA = %r10, rB = %rax, valC = 0x0, valP = 0x83, Stat = OK
 E: instr = mrmovq, valC = 0x0, valA = 0x0, valB = 0x30
@@ -319,9 +319,9 @@ E: instr = mrmovq, valC = 0x0, valA = 0x0, valB = 0x30
 M: instr = jne, Cnd = 1, valE = 0x0, valA = 0x90
    dstE = ----, dstM = ----, Stat = OK
 W: instr = subq, valE = 0x1, valM = 0x0, dstE = %rsi, dstM = ----, Stat = OK
-[INFO] 32 cycle is done for instruction 25
+[INFO] Cycle 31 is done for instruction 24
 
-Cycle 32. CC=Z=0 S=0 O=0, Stat=OK
+[INFO] Cycle 32. CC=Z=0 S=0 O=0, Stat=OK
 F: predPC = 0x83
 D: instr = addq, rA = %r10, rB = %rax, valC = 0x0, valP = 0x83, Stat = OK
 E: instr = nop, valC = 0x0, valA = 0x0, valB = 0x0
@@ -329,9 +329,9 @@ E: instr = nop, valC = 0x0, valA = 0x0, valB = 0x0
 M: instr = mrmovq, Cnd = 1, valE = 0x30, valA = 0x0
    dstE = ----, dstM = %r10, Stat = OK
 W: instr = jne, valE = 0x0, valM = 0x0, dstE = ----, dstM = ----, Stat = OK
-[INFO] 33 cycle is done for instruction 26
+[INFO] Cycle 32 is done for instruction 25
 
-Cycle 33. CC=Z=0 S=0 O=0, Stat=OK
+[INFO] Cycle 33. CC=Z=0 S=0 O=0, Stat=OK
 F: predPC = 0x85
 D: instr = addq, rA = %r8, rB = %rdi, valC = 0x0, valP = 0x85, Stat = OK
 E: instr = addq, valC = 0x0, valA = 0xa000a000a000, valB = 0xbcd0bcd0bcd
@@ -339,9 +339,9 @@ E: instr = addq, valC = 0x0, valA = 0xa000a000a000, valB = 0xbcd0bcd0bcd
 M: instr = nop, Cnd = 1, valE = 0x0, valA = 0x0
    dstE = ----, dstM = ----, Stat = BUBBLE
 W: instr = mrmovq, valE = 0x30, valM = 0xa000a000a000, dstE = ----, dstM = %r10, Stat = OK
-[INFO] 34 cycle is done for instruction 27
+[INFO] Cycle 33 is done for instruction 26
 
-Cycle 34. CC=Z=0 S=0 O=0, Stat=OK
+[INFO] Cycle 34. CC=Z=0 S=0 O=0, Stat=OK
 F: predPC = 0x87
 D: instr = subq, rA = %r9, rB = %rsi, valC = 0x0, valP = 0x87, Stat = OK
 E: instr = addq, valC = 0x0, valA = 0x8, valB = 0x30
@@ -349,9 +349,9 @@ E: instr = addq, valC = 0x0, valA = 0x8, valB = 0x30
 M: instr = addq, Cnd = 1, valE = 0xabcdabcdabcd, valA = 0xa000a000a000
    dstE = %rax, dstM = ----, Stat = OK
 W: instr = nop, valE = 0x0, valM = 0x0, dstE = ----, dstM = ----, Stat = BUBBLE
-[INFO] 35 cycle is done for instruction 27
+[INFO] Cycle 34 is done for instruction 27
 
-Cycle 35. CC=Z=0 S=0 O=0, Stat=OK
+[INFO] Cycle 35. CC=Z=0 S=0 O=0, Stat=OK
 F: predPC = 0x77
 D: instr = jne, rA = ----, rB = ----, valC = 0x77, valP = 0x90, Stat = OK
 E: instr = subq, valC = 0x0, valA = 0x1, valB = 0x1
@@ -359,9 +359,9 @@ E: instr = subq, valC = 0x0, valA = 0x1, valB = 0x1
 M: instr = addq, Cnd = 1, valE = 0x38, valA = 0x8
    dstE = %rdi, dstM = ----, Stat = OK
 W: instr = addq, valE = 0xabcdabcdabcd, valM = 0x0, dstE = %rax, dstM = ----, Stat = OK
-[INFO] 36 cycle is done for instruction 28
+[INFO] Cycle 35 is done for instruction 27
 
-Cycle 36. CC=Z=1 S=0 O=0, Stat=OK
+[INFO] Cycle 36. CC=Z=1 S=0 O=0, Stat=OK
 F: predPC = 0x81
 D: instr = mrmovq, rA = %r10, rB = %rdi, valC = 0x0, valP = 0x81, Stat = OK
 E: instr = jne, valC = 0x77, valA = 0x90, valB = 0x0
@@ -369,9 +369,9 @@ E: instr = jne, valC = 0x77, valA = 0x90, valB = 0x0
 M: instr = subq, Cnd = 0, valE = 0x0, valA = 0x1
    dstE = %rsi, dstM = ----, Stat = OK
 W: instr = addq, valE = 0x38, valM = 0x0, dstE = %rdi, dstM = ----, Stat = OK
-[INFO] 37 cycle is done for instruction 29
+[INFO] Cycle 36 is done for instruction 28
 
-Cycle 37. CC=Z=1 S=0 O=0, Stat=OK
+[INFO] Cycle 37. CC=Z=1 S=0 O=0, Stat=OK
 F: predPC = 0x83
 D: instr = nop, rA = ----, rB = ----, valC = 0x0, valP = 0x0, Stat = BUBBLE
 E: instr = nop, valC = 0x0, valA = 0x0, valB = 0x0
@@ -379,9 +379,9 @@ E: instr = nop, valC = 0x0, valA = 0x0, valB = 0x0
 M: instr = jne, Cnd = 0, valE = 0x0, valA = 0x90
    dstE = ----, dstM = ----, Stat = OK
 W: instr = subq, valE = 0x0, valM = 0x0, dstE = %rsi, dstM = ----, Stat = OK
-[INFO] 38 cycle is done for instruction 30
+[INFO] Cycle 37 is done for instruction 29
 
-Cycle 38. CC=Z=1 S=0 O=0, Stat=OK
+[INFO] Cycle 38. CC=Z=1 S=0 O=0, Stat=OK
 F: predPC = 0x91
 D: instr = ret, rA = ----, rB = ----, valC = 0x0, valP = 0x91, Stat = OK
 E: instr = nop, valC = 0x0, valA = 0x0, valB = 0x0
@@ -389,9 +389,9 @@ E: instr = nop, valC = 0x0, valA = 0x0, valB = 0x0
 M: instr = nop, Cnd = 1, valE = 0x0, valA = 0x0
    dstE = ----, dstM = ----, Stat = BUBBLE
 W: instr = jne, valE = 0x0, valM = 0x0, dstE = ----, dstM = ----, Stat = OK
-[INFO] 39 cycle is done for instruction 31
+[INFO] Cycle 38 is done for instruction 30
 
-Cycle 39. CC=Z=1 S=0 O=0, Stat=OK
+[INFO] Cycle 39. CC=Z=1 S=0 O=0, Stat=OK
 F: predPC = 0x91
 D: instr = nop, rA = ----, rB = ----, valC = 0x0, valP = 0x0, Stat = BUBBLE
 E: instr = ret, valC = 0x0, valA = 0x1f0, valB = 0x1f0
@@ -399,9 +399,9 @@ E: instr = ret, valC = 0x0, valA = 0x1f0, valB = 0x1f0
 M: instr = nop, Cnd = 1, valE = 0x0, valA = 0x0
    dstE = ----, dstM = ----, Stat = BUBBLE
 W: instr = nop, valE = 0x0, valM = 0x0, dstE = ----, dstM = ----, Stat = BUBBLE
-[INFO] 40 cycle is done for instruction 31
+[INFO] Cycle 39 is done for instruction 31
 
-Cycle 40. CC=Z=1 S=0 O=0, Stat=OK
+[INFO] Cycle 40. CC=Z=1 S=0 O=0, Stat=OK
 F: predPC = 0x91
 D: instr = nop, rA = ----, rB = ----, valC = 0x0, valP = 0x0, Stat = BUBBLE
 E: instr = nop, valC = 0x0, valA = 0x0, valB = 0x0
@@ -409,9 +409,9 @@ E: instr = nop, valC = 0x0, valA = 0x0, valB = 0x0
 M: instr = ret, Cnd = 1, valE = 0x1f8, valA = 0x1f0
    dstE = %rsp, dstM = ----, Stat = OK
 W: instr = nop, valE = 0x0, valM = 0x0, dstE = ----, dstM = ----, Stat = BUBBLE
-[INFO] 41 cycle is done for instruction 31
+[INFO] Cycle 40 is done for instruction 31
 
-Cycle 41. CC=Z=1 S=0 O=0, Stat=OK
+[INFO] Cycle 41. CC=Z=1 S=0 O=0, Stat=OK
 F: predPC = 0x91
 D: instr = nop, rA = ----, rB = ----, valC = 0x0, valP = 0x0, Stat = BUBBLE
 E: instr = nop, valC = 0x0, valA = 0x0, valB = 0x0
@@ -419,9 +419,9 @@ E: instr = nop, valC = 0x0, valA = 0x0, valB = 0x0
 M: instr = nop, Cnd = 1, valE = 0x0, valA = 0x0
    dstE = ----, dstM = ----, Stat = BUBBLE
 W: instr = ret, valE = 0x1f8, valM = 0x55, dstE = %rsp, dstM = ----, Stat = OK
-[INFO] 42 cycle is done for instruction 32
+[INFO] Cycle 41 is done for instruction 31
 
-Cycle 42. CC=Z=1 S=0 O=0, Stat=OK
+[INFO] Cycle 42. CC=Z=1 S=0 O=0, Stat=OK
 F: predPC = 0x56
 D: instr = ret, rA = ----, rB = ----, valC = 0x0, valP = 0x56, Stat = OK
 E: instr = nop, valC = 0x0, valA = 0x0, valB = 0x0
@@ -429,9 +429,9 @@ E: instr = nop, valC = 0x0, valA = 0x0, valB = 0x0
 M: instr = nop, Cnd = 1, valE = 0x0, valA = 0x0
    dstE = ----, dstM = ----, Stat = BUBBLE
 W: instr = nop, valE = 0x0, valM = 0x0, dstE = ----, dstM = ----, Stat = BUBBLE
-[INFO] 43 cycle is done for instruction 32
+[INFO] Cycle 42 is done for instruction 32
 
-Cycle 43. CC=Z=1 S=0 O=0, Stat=OK
+[INFO] Cycle 43. CC=Z=1 S=0 O=0, Stat=OK
 F: predPC = 0x56
 D: instr = nop, rA = ----, rB = ----, valC = 0x0, valP = 0x0, Stat = BUBBLE
 E: instr = ret, valC = 0x0, valA = 0x1f8, valB = 0x1f8
@@ -439,9 +439,9 @@ E: instr = ret, valC = 0x0, valA = 0x1f8, valB = 0x1f8
 M: instr = nop, Cnd = 1, valE = 0x0, valA = 0x0
    dstE = ----, dstM = ----, Stat = BUBBLE
 W: instr = nop, valE = 0x0, valM = 0x0, dstE = ----, dstM = ----, Stat = BUBBLE
-[INFO] 44 cycle is done for instruction 32
+[INFO] Cycle 43 is done for instruction 32
 
-Cycle 44. CC=Z=1 S=0 O=0, Stat=OK
+[INFO] Cycle 44. CC=Z=1 S=0 O=0, Stat=OK
 F: predPC = 0x56
 D: instr = nop, rA = ----, rB = ----, valC = 0x0, valP = 0x0, Stat = BUBBLE
 E: instr = nop, valC = 0x0, valA = 0x0, valB = 0x0
@@ -449,9 +449,9 @@ E: instr = nop, valC = 0x0, valA = 0x0, valB = 0x0
 M: instr = ret, Cnd = 1, valE = 0x200, valA = 0x1f8
    dstE = %rsp, dstM = ----, Stat = OK
 W: instr = nop, valE = 0x0, valM = 0x0, dstE = ----, dstM = ----, Stat = BUBBLE
-[INFO] 45 cycle is done for instruction 32
+[INFO] Cycle 44 is done for instruction 32
 
-Cycle 45. CC=Z=1 S=0 O=0, Stat=OK
+[INFO] Cycle 45. CC=Z=1 S=0 O=0, Stat=OK
 F: predPC = 0x56
 D: instr = nop, rA = ----, rB = ----, valC = 0x0, valP = 0x0, Stat = BUBBLE
 E: instr = nop, valC = 0x0, valA = 0x0, valB = 0x0
@@ -459,9 +459,9 @@ E: instr = nop, valC = 0x0, valA = 0x0, valB = 0x0
 M: instr = nop, Cnd = 1, valE = 0x0, valA = 0x0
    dstE = ----, dstM = ----, Stat = BUBBLE
 W: instr = ret, valE = 0x200, valM = 0x13, dstE = %rsp, dstM = ----, Stat = OK
-[INFO] 46 cycle is done for instruction 33
+[INFO] Cycle 45 is done for instruction 32
 
-Cycle 46. CC=Z=1 S=0 O=0, Stat=OK
+[INFO] Cycle 46. CC=Z=1 S=0 O=0, Stat=OK
 F: predPC = 0x14
 D: instr = halt, rA = ----, rB = ----, valC = 0x0, valP = 0x14, Stat = HALT
 E: instr = nop, valC = 0x0, valA = 0x0, valB = 0x0
@@ -469,9 +469,9 @@ E: instr = nop, valC = 0x0, valA = 0x0, valB = 0x0
 M: instr = nop, Cnd = 1, valE = 0x0, valA = 0x0
    dstE = ----, dstM = ----, Stat = BUBBLE
 W: instr = nop, valE = 0x0, valM = 0x0, dstE = ----, dstM = ----, Stat = BUBBLE
-[INFO] 47 cycle is done for instruction 33
+[INFO] Cycle 46 is done for instruction 33
 
-Cycle 47. CC=Z=1 S=0 O=0, Stat=OK
+[INFO] Cycle 47. CC=Z=1 S=0 O=0, Stat=OK
 F: predPC = 0x15
 D: instr = halt, rA = ----, rB = ----, valC = 0x0, valP = 0x15, Stat = HALT
 E: instr = halt, valC = 0x0, valA = 0x0, valB = 0x0
@@ -479,9 +479,9 @@ E: instr = halt, valC = 0x0, valA = 0x0, valB = 0x0
 M: instr = nop, Cnd = 1, valE = 0x0, valA = 0x0
    dstE = ----, dstM = ----, Stat = BUBBLE
 W: instr = nop, valE = 0x0, valM = 0x0, dstE = ----, dstM = ----, Stat = BUBBLE
-[INFO] 48 cycle is done for instruction 33
+[INFO] Cycle 47 is done for instruction 33
 
-Cycle 48. CC=Z=1 S=0 O=0, Stat=OK
+[INFO] Cycle 48. CC=Z=1 S=0 O=0, Stat=OK
 F: predPC = 0x16
 D: instr = halt, rA = ----, rB = ----, valC = 0x0, valP = 0x16, Stat = HALT
 E: instr = halt, valC = 0x0, valA = 0x0, valB = 0x0
@@ -489,9 +489,9 @@ E: instr = halt, valC = 0x0, valA = 0x0, valB = 0x0
 M: instr = halt, Cnd = 1, valE = 0x0, valA = 0x0
    dstE = ----, dstM = ----, Stat = HALT
 W: instr = nop, valE = 0x0, valM = 0x0, dstE = ----, dstM = ----, Stat = BUBBLE
-[INFO] 49 cycle is done for instruction 33
+[INFO] Cycle 48 is done for instruction 33
 
-Cycle 49. CC=Z=1 S=0 O=0, Stat=OK
+[INFO] Cycle 49. CC=Z=1 S=0 O=0, Stat=OK
 F: predPC = 0x17
 D: instr = halt, rA = ----, rB = ----, valC = 0x0, valP = 0x17, Stat = HALT
 E: instr = halt, valC = 0x0, valA = 0x0, valB = 0x0
@@ -499,7 +499,7 @@ E: instr = halt, valC = 0x0, valA = 0x0, valB = 0x0
 M: instr = nop, Cnd = 0, valE = 0x0, valA = 0x0
    dstE = ----, dstM = ----, Stat = BUBBLE
 W: instr = halt, valE = 0x0, valM = 0x0, dstE = ----, dstM = ----, Stat = HALT
-[INFO] 50 cycle is done for instruction 34
+[INFO] Cycle 49 is done for instruction 33
 
 After 50 cycles, the state becomes HALT
 

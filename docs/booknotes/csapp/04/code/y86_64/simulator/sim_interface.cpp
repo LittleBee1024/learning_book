@@ -27,7 +27,7 @@ namespace SIM
       int i = 0;
       for (i = 0; i < maxCycles && state == SIM::STAT_OK; i++)
       {
-         m_out->out("\nCycle %d. CC=%s, Stat=%s\n", i, ISA::getCCName(m_cc), getStateName(state));
+         m_out->out("\n[INFO] Cycle %d. CC=%s, Stat=%s\n", i, ISA::getCCName(m_cc), getStateName(state));
          state = runOneCycle();
       }
 

@@ -1,139 +1,139 @@
 [INFO] Create Yis Simulator
 [INFO] Loaded 141 bytes code
 
-Cycle 0. CC=Z=1 S=0 O=0, Stat=OK
+[INFO] Cycle 0. CC=Z=1 S=0 O=0, Stat=OK
 F: predPC = 0x0
 D: instr = irmovq, rA = ----, rB = %rsp, valC = 0x200, valP = 0xa
 
-Cycle 1. CC=Z=1 S=0 O=0, Stat=OK
+[INFO] Cycle 1. CC=Z=1 S=0 O=0, Stat=OK
 F: predPC = 0xa
 D: instr = call, rA = ----, rB = ----, valC = 0x38, valP = 0x13
 
-Cycle 2. CC=Z=1 S=0 O=0, Stat=OK
+[INFO] Cycle 2. CC=Z=1 S=0 O=0, Stat=OK
 F: predPC = 0x38
 D: instr = irmovq, rA = ----, rB = %rdi, valC = 0x18, valP = 0x42
 
-Cycle 3. CC=Z=1 S=0 O=0, Stat=OK
+[INFO] Cycle 3. CC=Z=1 S=0 O=0, Stat=OK
 F: predPC = 0x42
 D: instr = irmovq, rA = ----, rB = %rsi, valC = 0x4, valP = 0x4c
 
-Cycle 4. CC=Z=1 S=0 O=0, Stat=OK
+[INFO] Cycle 4. CC=Z=1 S=0 O=0, Stat=OK
 F: predPC = 0x4c
 D: instr = call, rA = ----, rB = ----, valC = 0x56, valP = 0x55
 
-Cycle 5. CC=Z=1 S=0 O=0, Stat=OK
+[INFO] Cycle 5. CC=Z=1 S=0 O=0, Stat=OK
 F: predPC = 0x56
 D: instr = irmovq, rA = ----, rB = %r8, valC = 0x8, valP = 0x60
 
-Cycle 6. CC=Z=1 S=0 O=0, Stat=OK
+[INFO] Cycle 6. CC=Z=1 S=0 O=0, Stat=OK
 F: predPC = 0x60
 D: instr = irmovq, rA = ----, rB = %r9, valC = 0x1, valP = 0x6a
 
-Cycle 7. CC=Z=1 S=0 O=0, Stat=OK
+[INFO] Cycle 7. CC=Z=1 S=0 O=0, Stat=OK
 F: predPC = 0x6a
 D: instr = xorq, rA = %rax, rB = %rax, valC = 0x0, valP = 0x6c
 
-Cycle 8. CC=Z=1 S=0 O=0, Stat=OK
+[INFO] Cycle 8. CC=Z=1 S=0 O=0, Stat=OK
 F: predPC = 0x6c
 D: instr = andq, rA = %rsi, rB = %rsi, valC = 0x0, valP = 0x6e
 
-Cycle 9. CC=Z=0 S=0 O=0, Stat=OK
+[INFO] Cycle 9. CC=Z=0 S=0 O=0, Stat=OK
 F: predPC = 0x6e
 D: instr = jmp, rA = ----, rB = ----, valC = 0x87, valP = 0x77
 
-Cycle 10. CC=Z=0 S=0 O=0, Stat=OK
+[INFO] Cycle 10. CC=Z=0 S=0 O=0, Stat=OK
 F: predPC = 0x87
 D: instr = jne, rA = ----, rB = ----, valC = 0x77, valP = 0x90
 
-Cycle 11. CC=Z=0 S=0 O=0, Stat=OK
+[INFO] Cycle 11. CC=Z=0 S=0 O=0, Stat=OK
 F: predPC = 0x77
 D: instr = mrmovq, rA = %r10, rB = %rdi, valC = 0x0, valP = 0x81
 
-Cycle 12. CC=Z=0 S=0 O=0, Stat=OK
+[INFO] Cycle 12. CC=Z=0 S=0 O=0, Stat=OK
 F: predPC = 0x81
 D: instr = addq, rA = %r10, rB = %rax, valC = 0x0, valP = 0x83
 
-Cycle 13. CC=Z=0 S=0 O=0, Stat=OK
+[INFO] Cycle 13. CC=Z=0 S=0 O=0, Stat=OK
 F: predPC = 0x83
 D: instr = addq, rA = %r8, rB = %rdi, valC = 0x0, valP = 0x85
 
-Cycle 14. CC=Z=0 S=0 O=0, Stat=OK
+[INFO] Cycle 14. CC=Z=0 S=0 O=0, Stat=OK
 F: predPC = 0x85
 D: instr = subq, rA = %r9, rB = %rsi, valC = 0x0, valP = 0x87
 
-Cycle 15. CC=Z=0 S=0 O=0, Stat=OK
+[INFO] Cycle 15. CC=Z=0 S=0 O=0, Stat=OK
 F: predPC = 0x87
 D: instr = jne, rA = ----, rB = ----, valC = 0x77, valP = 0x90
 
-Cycle 16. CC=Z=0 S=0 O=0, Stat=OK
+[INFO] Cycle 16. CC=Z=0 S=0 O=0, Stat=OK
 F: predPC = 0x77
 D: instr = mrmovq, rA = %r10, rB = %rdi, valC = 0x0, valP = 0x81
 
-Cycle 17. CC=Z=0 S=0 O=0, Stat=OK
+[INFO] Cycle 17. CC=Z=0 S=0 O=0, Stat=OK
 F: predPC = 0x81
 D: instr = addq, rA = %r10, rB = %rax, valC = 0x0, valP = 0x83
 
-Cycle 18. CC=Z=0 S=0 O=0, Stat=OK
+[INFO] Cycle 18. CC=Z=0 S=0 O=0, Stat=OK
 F: predPC = 0x83
 D: instr = addq, rA = %r8, rB = %rdi, valC = 0x0, valP = 0x85
 
-Cycle 19. CC=Z=0 S=0 O=0, Stat=OK
+[INFO] Cycle 19. CC=Z=0 S=0 O=0, Stat=OK
 F: predPC = 0x85
 D: instr = subq, rA = %r9, rB = %rsi, valC = 0x0, valP = 0x87
 
-Cycle 20. CC=Z=0 S=0 O=0, Stat=OK
+[INFO] Cycle 20. CC=Z=0 S=0 O=0, Stat=OK
 F: predPC = 0x87
 D: instr = jne, rA = ----, rB = ----, valC = 0x77, valP = 0x90
 
-Cycle 21. CC=Z=0 S=0 O=0, Stat=OK
+[INFO] Cycle 21. CC=Z=0 S=0 O=0, Stat=OK
 F: predPC = 0x77
 D: instr = mrmovq, rA = %r10, rB = %rdi, valC = 0x0, valP = 0x81
 
-Cycle 22. CC=Z=0 S=0 O=0, Stat=OK
+[INFO] Cycle 22. CC=Z=0 S=0 O=0, Stat=OK
 F: predPC = 0x81
 D: instr = addq, rA = %r10, rB = %rax, valC = 0x0, valP = 0x83
 
-Cycle 23. CC=Z=0 S=0 O=0, Stat=OK
+[INFO] Cycle 23. CC=Z=0 S=0 O=0, Stat=OK
 F: predPC = 0x83
 D: instr = addq, rA = %r8, rB = %rdi, valC = 0x0, valP = 0x85
 
-Cycle 24. CC=Z=0 S=0 O=0, Stat=OK
+[INFO] Cycle 24. CC=Z=0 S=0 O=0, Stat=OK
 F: predPC = 0x85
 D: instr = subq, rA = %r9, rB = %rsi, valC = 0x0, valP = 0x87
 
-Cycle 25. CC=Z=0 S=0 O=0, Stat=OK
+[INFO] Cycle 25. CC=Z=0 S=0 O=0, Stat=OK
 F: predPC = 0x87
 D: instr = jne, rA = ----, rB = ----, valC = 0x77, valP = 0x90
 
-Cycle 26. CC=Z=0 S=0 O=0, Stat=OK
+[INFO] Cycle 26. CC=Z=0 S=0 O=0, Stat=OK
 F: predPC = 0x77
 D: instr = mrmovq, rA = %r10, rB = %rdi, valC = 0x0, valP = 0x81
 
-Cycle 27. CC=Z=0 S=0 O=0, Stat=OK
+[INFO] Cycle 27. CC=Z=0 S=0 O=0, Stat=OK
 F: predPC = 0x81
 D: instr = addq, rA = %r10, rB = %rax, valC = 0x0, valP = 0x83
 
-Cycle 28. CC=Z=0 S=0 O=0, Stat=OK
+[INFO] Cycle 28. CC=Z=0 S=0 O=0, Stat=OK
 F: predPC = 0x83
 D: instr = addq, rA = %r8, rB = %rdi, valC = 0x0, valP = 0x85
 
-Cycle 29. CC=Z=0 S=0 O=0, Stat=OK
+[INFO] Cycle 29. CC=Z=0 S=0 O=0, Stat=OK
 F: predPC = 0x85
 D: instr = subq, rA = %r9, rB = %rsi, valC = 0x0, valP = 0x87
 
-Cycle 30. CC=Z=1 S=0 O=0, Stat=OK
+[INFO] Cycle 30. CC=Z=1 S=0 O=0, Stat=OK
 F: predPC = 0x87
 D: instr = jne, rA = ----, rB = ----, valC = 0x77, valP = 0x90
 
-Cycle 31. CC=Z=1 S=0 O=0, Stat=OK
+[INFO] Cycle 31. CC=Z=1 S=0 O=0, Stat=OK
 F: predPC = 0x90
 D: instr = ret, rA = ----, rB = ----, valC = 0x0, valP = 0x91
 
-Cycle 32. CC=Z=1 S=0 O=0, Stat=OK
+[INFO] Cycle 32. CC=Z=1 S=0 O=0, Stat=OK
 F: predPC = 0x55
 D: instr = ret, rA = ----, rB = ----, valC = 0x0, valP = 0x56
 
-Cycle 33. CC=Z=1 S=0 O=0, Stat=OK
+[INFO] Cycle 33. CC=Z=1 S=0 O=0, Stat=OK
 F: predPC = 0x13
 D: instr = halt, rA = ----, rB = ----, valC = 0x0, valP = 0x14
 
