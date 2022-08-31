@@ -14,10 +14,9 @@ namespace SIM
    public:
       explicit Pipe(std::shared_ptr<IO::OutputInterface> out);
       void reset() override;
-
-   private:
       State runOneCycle() override;
 
+   private:
       // update current pipeline registers base on its comming pipeline registers
       void updateCurrentPipeRegs();
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "./simulator/sim_yis.h"
+#include "./simulator/sim_interface.h"
 #include "./_common/io_interface.h"
 
 #include <memory>
@@ -11,15 +11,14 @@ namespace SIM
 {
    extern std::shared_ptr<IO::OutputInterface> simOut;
 
-   class YisSingleton
+   class SimSingleton
    {
    public:
-      static Yis *getInstance();
-      //static void out(const char *format, ...);
+      static SimInterface *getInstance();
 
    private:
-      YisSingleton() = delete;
-      YisSingleton(const YisSingleton &) = delete;
-      void operator=(const YisSingleton &) = delete;
+      SimSingleton() = delete;
+      SimSingleton(const SimSingleton &) = delete;
+      void operator=(const SimSingleton &) = delete;
    };
 }

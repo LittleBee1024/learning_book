@@ -6,13 +6,13 @@ int main(int argc, char *argv[])
 {
    int rc = 0;
 
-   rc = sim_yis_reset();
+   rc = sim_reset();
    assert(rc == 0);
 
-   rc = sim_yis_load_code("./code/asum.yo");
+   rc = sim_load_code("./code/asum.yo");
    assert(rc == 0);
 
-   rc = sim_yis_step_run(100);
+   rc = sim_step_run(100);
    assert(rc == 0);
 
    return 0;

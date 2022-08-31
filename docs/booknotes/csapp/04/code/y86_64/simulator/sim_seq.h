@@ -14,10 +14,9 @@ namespace SIM
    public:
       explicit Seq(std::shared_ptr<IO::OutputInterface> out);
       void reset() override;
-
-   private:
       State runOneCycle() override;
 
+   private:
       void fetch();
       void decode();
       void execute();

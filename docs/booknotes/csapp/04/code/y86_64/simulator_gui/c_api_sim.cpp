@@ -5,16 +5,16 @@
 #define C_OK 0
 #define C_ERR -1
 
-int sim_yis_reset()
+int sim_reset()
 {
-   auto yis = SIM::YisSingleton::getInstance();
+   auto yis = SIM::SimSingleton::getInstance();
    yis->reset();
    return C_OK;
 }
 
-int sim_yis_load_code(const char *filename)
+int sim_load_code(const char *filename)
 {
-   auto yis = SIM::YisSingleton::getInstance();
+   auto yis = SIM::SimSingleton::getInstance();
    if (yis->loadCode(filename) == 0)
    {
       G_SIM_LOG("[ ERR] Failed to load code file %s\n", filename);
@@ -23,9 +23,9 @@ int sim_yis_load_code(const char *filename)
    return C_OK;
 }
 
-int sim_yis_step_run(int step_num)
+int sim_step_run(int step_num)
 {
-   auto yis = SIM::YisSingleton::getInstance();
+   auto yis = SIM::SimSingleton::getInstance();
 
    SIM::State state = SIM::STAT_OK;
    int i = 0;

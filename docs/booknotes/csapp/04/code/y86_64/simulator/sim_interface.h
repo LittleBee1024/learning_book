@@ -17,6 +17,7 @@ namespace SIM
       virtual State run(int maxCycles) = 0;
       virtual void compare(const SimInterface &other) const = 0;
       virtual void reset() = 0;
+      virtual State runOneCycle() = 0;
 
    public:
       SimInterface() = default;
@@ -33,9 +34,6 @@ namespace SIM
       void compare(const SimInterface &other) const override;
       State run(int maxCycles) override;
       void reset() override;
-
-   protected:
-      virtual State runOneCycle() = 0;
 
    protected:
       bool checkCond(cc_t cc, COND cType);
