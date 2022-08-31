@@ -22,6 +22,7 @@ namespace IO
       vsnprintf(buffer, sizeof(buffer), format, args);
       va_end(args);
       m_out << buffer;
+      m_out << std::flush;
    }
 
    void MemOut::out(const char *format, ...)
