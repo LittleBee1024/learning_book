@@ -11,7 +11,6 @@ namespace SIM
    {
    public:
       explicit Yis(std::shared_ptr<IO::OutputInterface> out);
-   private:
       State runOneCycle() override;
    };
 

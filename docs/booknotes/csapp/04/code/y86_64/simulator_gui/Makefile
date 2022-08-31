@@ -12,7 +12,7 @@ clean:
 	@rm -rf $(BUILD_DIR)
 
 # Source code in current folder
-SRCS=c_api_sim.cpp main.cpp
+SRCS=main.cpp c_api_sim.cpp singleton.cpp
 OBJS=$(SRCS:%.cpp=$(BUILD_DIR)/%.o)
 
 $(BUILD_DIR)/%.o: %.cpp
