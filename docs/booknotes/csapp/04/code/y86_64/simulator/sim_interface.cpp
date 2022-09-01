@@ -92,11 +92,14 @@ namespace SIM
 
    int SimBase::loadCode(const char *fname)
    {
+      m_out->out("[INFO] Reset memory before loading code\n");
+      m_mem.reset();
+
       int bytes = parseCode(fname);
       for (const auto &code : m_code)
          m_mem.loadOneInstr(code.lineno, code.addr, code.instr);
 
-      m_out->out("[INFO] Loaded %d bytes code\n", bytes);
+      m_out->out("[INFO] Loaded %d bytes code to memory\n", bytes);
       return bytes;
    }
 
@@ -147,10 +150,11 @@ namespace SIM
    State SimBase::run(int maxCycles)
    {
       SIM::State state = SIM::STAT_OK;
-      for (m_curCyc = 0; m_curCyc < maxCycles && state == SIM::STAT_OK; m_curCyc++)
+      m_curCyc = 0;
+      while (m_curCyc < maxCycles && state == SIM::STAT_OK)
       {
          state = runOneCycle();
-         m_out->out("[INFO] Cycle %lld is done with state=%s\n", m_curCyc, SIM::getStateName(state));
+         m_out->out("[INFO] Cycle %lld is done with state=%s\n", m_curCyc - 1, SIM::getStateName(state));
       }
 
       m_out->out("\nAfter %d cycles, the state becomes %s\n\n", m_curCyc, SIM::getStateName(state));
@@ -160,11 +164,10 @@ namespace SIM
    void SimBase::reset()
    {
       m_reg.reset();
-      m_mem.reset();
       m_pc = 0;
       m_cc = DEFAULT_CC;
       m_curCyc = 0;
-      m_code.clear();
+      m_out->out("[INFO] Reset simulator registers and status\n");
    }
 
    void SimBase::takeSnapshot()

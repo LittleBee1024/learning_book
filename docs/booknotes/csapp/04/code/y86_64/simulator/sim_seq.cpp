@@ -61,7 +61,7 @@ namespace SIM
 
    State Seq::runOneCycle()
    {
-      m_out->out("\n[INFO] Cycle %d starts with CC='%s'\n", m_curCyc, ISA::getCCName(m_cc));
+      m_out->out("\n[INFO] Cycle %d starts with CC='%s'\n", m_curCyc++, ISA::getCCName(m_cc));
       fetch();
       decode();
       execute();

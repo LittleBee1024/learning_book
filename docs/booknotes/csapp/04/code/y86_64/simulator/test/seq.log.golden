@@ -1,5 +1,6 @@
 [INFO] Create SEQ Simulator
-[INFO] Loaded 141 bytes code
+[INFO] Reset memory before loading code
+[INFO] Loaded 141 bytes code to memory
 
 [INFO] Cycle 0 starts with CC='Z=1 S=0 O=0'
 F: predPC = 0x0

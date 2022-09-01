@@ -23,7 +23,7 @@ namespace SIM
 
    State Pipe::runOneCycle()
    {
-      m_out->out("\n[INFO] Cycle %d starts with CC='%s' for instruction %lld\n", m_curCyc, ISA::getCCName(m_cc), m_numInstr);
+      m_out->out("\n[INFO] Cycle %d starts with CC='%s' for instruction %lld\n", m_curCyc++, ISA::getCCName(m_cc), m_numInstr);
 
       updateCurrentPipeRegs();
 

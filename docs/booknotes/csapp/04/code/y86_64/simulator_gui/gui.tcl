@@ -404,7 +404,7 @@ proc simLabel {addrs labs} {
 
 proc simResetAll {} {
    global simStat
-   set simStat "AOK"
+   set simStat "OK"
    simReset
    simLabel {} {}
    clearMem
