@@ -433,6 +433,9 @@ set haveMem 0
 
 proc createMem {nminAddr nmemCnt} {
    global minAddr memCnt haveMem codeFont dpyFont normalBg
+
+   if {$minAddr == $nminAddr && $memCnt == $nmemCnt} { return }
+
    set minAddr $nminAddr
    set memCnt $nmemCnt
 
