@@ -1,5 +1,4 @@
 #include "./simulator_gui/singleton.h"
-#include "./simulator/sim_yis.h"
 #include "./_common/output.h"
 
 #include <stdarg.h>
@@ -10,7 +9,7 @@ namespace SIM
 {
    std::shared_ptr<IO::OutputInterface> g_out = std::make_shared<IO::FileOut>(SYS_LOG);
 
-   SimInterface *SimSingleton::getInstance()
+   Yis *SimSingleton::getInstance()
    {
       static Yis yis(g_out);
       return &yis;

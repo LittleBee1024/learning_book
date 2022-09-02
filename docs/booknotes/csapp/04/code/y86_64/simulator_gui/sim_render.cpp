@@ -9,11 +9,8 @@
 
 namespace SIM
 {
-   SimRender::SimRender(Tcl_Interp *interp, const SimInterface *sim) : m_interp(interp)
+   SimRender::SimRender(Tcl_Interp *interp, const Yis *sim) : m_interp(interp), m_sim(sim)
    {
-      const SimBase *s = dynamic_cast<const SimBase *>(sim);
-      assert(s != nullptr);
-      m_sim = s;
    }
 
    void SimRender::displayInstr() const

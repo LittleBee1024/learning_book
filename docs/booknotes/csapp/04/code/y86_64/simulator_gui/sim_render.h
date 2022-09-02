@@ -1,6 +1,6 @@
 #pragma once
 
-#include "./simulator/sim_interface.h"
+#include "./simulator/sim_yis.h"
 
 #include <tcl.h>
 #include <tk.h>
@@ -10,7 +10,7 @@ namespace SIM
    class SimRender
    {
    public:
-      SimRender(Tcl_Interp *interp, const SimInterface *sim);
+      SimRender(Tcl_Interp *interp, const Yis *sim);
       ~SimRender() = default;
       SimRender(const SimRender&) = delete;
       SimRender &operator=(const SimRender &) = delete;
@@ -29,6 +29,6 @@ namespace SIM
 
    private:
       Tcl_Interp *m_interp;
-      const SimBase *m_sim;
+      const Yis *m_sim;
    };
 }

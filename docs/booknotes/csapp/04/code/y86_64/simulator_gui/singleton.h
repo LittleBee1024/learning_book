@@ -1,6 +1,6 @@
 #pragma once
 
-#include "./simulator/sim_interface.h"
+#include "./simulator/sim_yis.h"
 #include "./_common/io_interface.h"
 
 #include <memory>
@@ -14,7 +14,7 @@ namespace SIM
    class SimSingleton
    {
    public:
-      static SimInterface *getInstance();
+      static Yis *getInstance();
 
    private:
       SimSingleton() = delete;
