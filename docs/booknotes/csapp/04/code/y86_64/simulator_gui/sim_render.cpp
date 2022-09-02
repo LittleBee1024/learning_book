@@ -83,6 +83,17 @@ namespace SIM
 
    void SimRender::updateDecodeStage() const
    {
+      std::stringstream tclCmd;
+      tclCmd << "updateStage D {" 
+             << std::hex << std::setw(16) << std::setfill('0') << m_sim->m_stage.d.valA << " "
+             << std::setw(16) << std::setfill('0') << m_sim->m_stage.d.valB << " "
+             << ISA::getRegName(m_sim->m_stage.d.dstE) << " "
+             << ISA::getRegName(m_sim->m_stage.d.dstM) << " "
+             << ISA::getRegName(m_sim->m_stage.d.srcA) << " "
+             << ISA::getRegName(m_sim->m_stage.d.srcB) << "}\n";
+
+      if (Tcl_Eval(m_interp, tclCmd.str().c_str()) != TCL_OK)
+         G_SIM_LOG("[ERROR] Failed to update Decode stage: %s\n", Tcl_GetStringResult(m_interp));
    }
 
    void SimRender::updateExecuteStage() const
