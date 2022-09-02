@@ -23,8 +23,7 @@ namespace SIM
          tclCmd.append(buf);
       }
 
-      int rc = Tcl_Eval(m_interp, tclCmd.c_str());
-      if (rc != TCL_OK)
+      if (Tcl_Eval(m_interp, tclCmd.c_str()) != TCL_OK)
          G_SIM_LOG("[ERROR] Failed to display code: %s\n", Tcl_GetStringResult(m_interp));
    }
 
@@ -33,8 +32,7 @@ namespace SIM
       char tclCmd[1024];
       sprintf(tclCmd, "simLabel {%lld} {*}\n", m_sim->m_pc);
 
-      int rc = Tcl_Eval(m_interp, tclCmd);
-      if (rc != TCL_OK)
+      if (Tcl_Eval(m_interp, tclCmd) != TCL_OK)
          G_SIM_LOG("[ERROR] Failed to display PC: %s\n", Tcl_GetStringResult(m_interp));
 
       updatePC();
@@ -54,8 +52,7 @@ namespace SIM
       char tclCmd[1024];
       sprintf(tclCmd, "setCC %d %d %d", GET_ZF(m_sim->m_cc), GET_SF(m_sim->m_cc), GET_OF(m_sim->m_cc));
 
-      int rc = Tcl_Eval(m_interp, tclCmd);
-      if (rc != TCL_OK)
+      if (Tcl_Eval(m_interp, tclCmd) != TCL_OK)
          G_SIM_LOG("[ERROR] Failed to display CC: %s\n", Tcl_GetStringResult(m_interp));
    }
 
@@ -65,13 +62,23 @@ namespace SIM
       tclCmd << "updateStage OPC {"
              << std::uppercase << std::hex << std::setw(16) << std::setfill('0') << m_sim->m_pc
              << "}\n";
-      int rc = Tcl_Eval(m_interp, tclCmd.str().c_str());
-      if (rc != TCL_OK)
+
+      if (Tcl_Eval(m_interp, tclCmd.str().c_str()) != TCL_OK)
          G_SIM_LOG("[ERROR] Failed to update OPC stage: %s\n", Tcl_GetStringResult(m_interp));
    }
 
    void SimRender::updateFetchStage() const
    {
+      std::stringstream tclCmd;
+      tclCmd << "updateStage F {" 
+             << ISA::decodeInstrName(HPACK(m_sim->m_stage.f.icode, m_sim->m_stage.f.ifun)) << " "
+             << ISA::getRegName(m_sim->m_stage.f.rA) << " "
+             << ISA::getRegName(m_sim->m_stage.f.rB) << " "
+             << std::hex << std::setw(16) << std::setfill('0') << m_sim->m_stage.f.valC << " "
+             << std::setw(16) << std::setfill('0') << m_sim->m_stage.f.valP << "}\n";
+
+      if (Tcl_Eval(m_interp, tclCmd.str().c_str()) != TCL_OK)
+         G_SIM_LOG("[ERROR] Failed to update Fetch stage: %s\n", Tcl_GetStringResult(m_interp));
    }
 
    void SimRender::updateDecodeStage() const
