@@ -14,7 +14,9 @@ namespace SIM
       ~SimRender() = default;
       SimRender(const SimRender&) = delete;
       SimRender &operator=(const SimRender &) = delete;
-      int displayInstr() const;
+      void displayInstr() const;
+      void displayCurPC() const;
+      void displayStates() const;
 
    private:
       Tcl_Interp *m_interp;

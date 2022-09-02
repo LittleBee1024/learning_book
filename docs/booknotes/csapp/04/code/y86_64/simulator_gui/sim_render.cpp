@@ -13,7 +13,7 @@ namespace SIM
       m_sim = s;
    }
 
-   int SimRender::displayInstr() const
+   void SimRender::displayInstr() const
    {
       std::string tclCmd;
       char buf[1024];
@@ -22,13 +22,27 @@ namespace SIM
          sprintf(buf, "addCodeLine %lld {%s} {%s}\n", code.addr, code.instr.c_str(), code.comment.c_str());
          tclCmd.append(buf);
       }
-      int rc = Tcl_Eval(m_interp, tclCmd.c_str());
 
+      int rc = Tcl_Eval(m_interp, tclCmd.c_str());
       if (rc != TCL_OK)
       {
          G_SIM_LOG("[ERROR] Failed to display code: %s\n", Tcl_GetStringResult(m_interp));
       }
+   }
 
-      return rc;
+   void SimRender::displayStates() const
+   {
+   }
+
+   void SimRender::displayCurPC() const
+   {
+      char buf[1024];
+      sprintf(buf, "simLabel {%lld} {*}\n", m_sim->m_pc);
+
+      int rc = Tcl_Eval(m_interp, buf);
+      if (rc != TCL_OK)
+      {
+         G_SIM_LOG("[ERROR] Failed to display PC: %s\n", Tcl_GetStringResult(m_interp));
+      }
    }
 }

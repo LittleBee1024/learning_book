@@ -35,7 +35,9 @@ int simLoadCodeCmd(ClientData clientData, Tcl_Interp *interp, int argc, char *ar
    sim_load_code(codeFile);
 
    SIM::SimRender r(interp, SIM::SimSingleton::getInstance());
-   return r.displayInstr();
+   r.displayInstr();
+
+   return TCL_OK;
 }
 
 /**
@@ -60,7 +62,13 @@ int simRunCmd(ClientData clientData, Tcl_Interp *interp, int argc, char *argv[])
       return TCL_ERROR;
    }
 
+   SIM::SimRender r(interp, SIM::SimSingleton::getInstance());
+
+   r.displayCurPC();
    const char *status = sim_step_run(step_num);
+   r.displayStates();
+
+   // Pass simulator status to the TCL result, it has to be at last
    Tcl_SetResult(interp, (char *)status, TCL_STATIC);
    return TCL_OK;
 }
