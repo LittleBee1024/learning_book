@@ -98,10 +98,22 @@ namespace SIM
 
    void SimRender::updateExecuteStage() const
    {
+      std::stringstream tclCmd;
+      tclCmd << "updateStage E {" << (m_sim->m_stage.e.cnd ? "Y" : "N") << " "
+             << std::hex << std::setw(16) << std::setfill('0') << m_sim->m_stage.e.valE << "}\n";
+
+      if (Tcl_Eval(m_interp, tclCmd.str().c_str()) != TCL_OK)
+         G_SIM_LOG("[ERROR] Failed to update Execute stage: %s\n", Tcl_GetStringResult(m_interp));
    }
 
    void SimRender::updateMemoryStage() const
    {
+      std::stringstream tclCmd;
+      tclCmd << "updateStage M {" 
+             << std::hex << std::setw(16) << std::setfill('0') << m_sim->m_stage.m.valM << "}\n";
+
+      if (Tcl_Eval(m_interp, tclCmd.str().c_str()) != TCL_OK)
+         G_SIM_LOG("[ERROR] Failed to update Memory stage: %s\n", Tcl_GetStringResult(m_interp));
    }
 
    void SimRender::updatePCUpdateStage() const
