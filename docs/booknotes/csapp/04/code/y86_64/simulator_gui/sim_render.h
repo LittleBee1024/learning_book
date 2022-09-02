@@ -17,6 +17,7 @@ namespace SIM
       void displayInstr() const;
       void displayCurPC() const;
       void displayStages() const;
+      void displayCC() const;
 
    private:
       void updatePC() const;

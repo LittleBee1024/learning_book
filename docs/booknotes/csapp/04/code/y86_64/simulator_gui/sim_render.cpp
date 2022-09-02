@@ -1,5 +1,6 @@
 #include "./simulator_gui/sim_render.h"
 #include "./simulator_gui/singleton.h"
+#include "./_common/isa.h"
 
 #include <stdio.h>
 #include <assert.h>
@@ -49,6 +50,16 @@ namespace SIM
       updateExecuteStage();
       updateMemoryStage();
       updatePCUpdateStage();
+   }
+
+   void SimRender::displayCC() const
+   {
+      char tclCmd[1024];
+      sprintf(tclCmd, "setCC %d %d %d", GET_ZF(m_sim->m_cc), GET_SF(m_sim->m_cc), GET_OF(m_sim->m_cc));
+
+      int rc = Tcl_Eval(m_interp, tclCmd);
+      if (rc != TCL_OK)
+         G_SIM_LOG("[ERROR] Failed to display CC: %s\n", Tcl_GetStringResult(m_interp));
    }
 
    void SimRender::updatePC() const
