@@ -105,7 +105,7 @@ int main(int argc, char *argv[])
       return -1;
    }
 
-   sim->takeSnapshot();
+   sim->save();
    sim->run(option.maxCycles);
    sim->diffReg();
    sim->diffMem();

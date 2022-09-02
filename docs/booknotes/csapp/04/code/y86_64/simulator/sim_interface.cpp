@@ -164,16 +164,23 @@ namespace SIM
    void SimBase::reset()
    {
       m_reg.reset();
+      m_mem.reset();
       m_pc = 0;
       m_cc = DEFAULT_CC;
       m_curCyc = 0;
       m_out->out("[INFO] Reset simulator registers and status\n");
    }
 
-   void SimBase::takeSnapshot()
+   void SimBase::save()
    {
       m_regCopy = m_reg;
       m_memCopy = m_mem;
+   }
+
+   void SimBase::recover()
+   {
+      m_reg = m_regCopy;
+      m_mem = m_memCopy;
    }
 
    void SimBase::diffReg() const

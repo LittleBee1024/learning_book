@@ -9,6 +9,7 @@ int sim_reset()
 {
    auto yis = SIM::SimSingleton::getInstance();
    yis->reset();
+   yis->recover();
    return C_OK;
 }
 
@@ -20,7 +21,7 @@ int sim_load_code(const char *filename)
       G_SIM_LOG("[ERROR] Failed to load code file %s\n", filename);
       return C_ERR;
    }
-   yis->takeSnapshot();
+   yis->save();
    return C_OK;
 }
 

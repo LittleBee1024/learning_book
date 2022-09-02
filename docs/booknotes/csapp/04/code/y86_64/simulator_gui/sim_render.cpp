@@ -70,6 +70,42 @@ namespace SIM
          G_SIM_LOG("[ERROR] Failed to display CC: %s\n", Tcl_GetStringResult(m_interp));
    }
 
+   void SimRender::displayMem() const
+   {
+      int startDiffAddr = 0;
+      int endDiffAddr = 0;
+
+      std::stringstream setMemCmd;
+      for (size_t i = 0; i < m_sim->m_mem.size(); i += sizeof(word_t))
+      {
+         word_t oldVal = 0;
+         m_sim->m_memCopy.getWord(i, &oldVal);
+         word_t newVal = 0;
+         m_sim->m_mem.getWord(i, &newVal);
+         if (oldVal != newVal)
+         {
+            setMemCmd << "setMem " << i << " " << newVal << "\n";
+            if (startDiffAddr == 0)
+               startDiffAddr = i;
+            endDiffAddr = i + sizeof(word_t);
+         }
+      }
+
+      // align to show address
+      constexpr int SHOW_ALIGN = 16;
+      startDiffAddr = startDiffAddr / SHOW_ALIGN * SHOW_ALIGN;
+
+      int showBytes = endDiffAddr - startDiffAddr;
+      std::stringstream createMemCmd;
+      createMemCmd << "createMem " << startDiffAddr << " " << showBytes << "\n";
+
+      if (Tcl_Eval(m_interp, createMemCmd.str().c_str()) != TCL_OK)
+         G_SIM_LOG("[ERROR] Failed to create memory: %s\n", Tcl_GetStringResult(m_interp));
+
+      if (Tcl_Eval(m_interp, setMemCmd.str().c_str()) != TCL_OK)
+         G_SIM_LOG("[ERROR] Failed to set memory: %s\n", Tcl_GetStringResult(m_interp));
+   }
+
    void SimRender::updatePC() const
    {
       std::stringstream tclCmd;

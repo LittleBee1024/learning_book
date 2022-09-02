@@ -15,7 +15,8 @@ namespace SIM
    {
    public:
       virtual int loadCode(const char *fname) = 0;
-      virtual void takeSnapshot() = 0;
+      virtual void save() = 0;
+      virtual void recover() = 0;
       virtual State run(int maxCycles) = 0;
       virtual void reset() = 0;
       virtual State runOneCycle() = 0;
@@ -34,7 +35,8 @@ namespace SIM
    public:
       explicit SimBase(std::shared_ptr<IO::OutputInterface> out);
       int loadCode(const char *fname) override;
-      void takeSnapshot() override;
+      void save() override;
+      void recover() override;
       State run(int maxCycles) override;
       void reset() override;
       void diffReg() const override;

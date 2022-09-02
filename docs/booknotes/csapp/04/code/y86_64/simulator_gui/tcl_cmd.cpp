@@ -76,6 +76,7 @@ int simRunCmd(ClientData clientData, Tcl_Interp *interp, int argc, char *argv[])
    r.displayStages();
    r.displayRegisters();
    r.displayCC();
+   r.displayMem();
 
    // Pass simulator status to the TCL result, it has to be at last
    Tcl_SetResult(interp, (char *)status, TCL_STATIC);
