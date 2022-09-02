@@ -97,6 +97,7 @@ namespace SIM
       switch (m_stage.f.icode)
       {
       case I_HALT:
+         m_stage.p.newPC = m_stage.f.valP;
          return STAT_HLT;
       case I_NOP:
       {

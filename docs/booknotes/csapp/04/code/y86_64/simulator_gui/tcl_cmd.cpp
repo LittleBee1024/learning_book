@@ -17,6 +17,7 @@ int simResetCmd(ClientData clientData, Tcl_Interp *interp, int argc, char *argv[
    SIM::SimRender r(interp, SIM::SimSingleton::getInstance());
    r.displayCurPC();
    r.displayStages();
+   r.displayRegisters();
    r.displayCC();
 
    Tcl_SetResult(interp, (char *)SIM::getStateName(SIM::STAT_OK), TCL_STATIC);
@@ -73,6 +74,7 @@ int simRunCmd(ClientData clientData, Tcl_Interp *interp, int argc, char *argv[])
    r.displayCurPC();
    const char *status = sim_step_run(step_num);
    r.displayStages();
+   r.displayRegisters();
    r.displayCC();
 
    // Pass simulator status to the TCL result, it has to be at last

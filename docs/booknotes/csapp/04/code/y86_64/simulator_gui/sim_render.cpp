@@ -47,6 +47,20 @@ namespace SIM
       updatePCUpdateStage();
    }
 
+   void SimRender::displayRegisters() const
+   {
+      std::stringstream tclCmd;
+      int id = 0;
+      for (id = REG_RAX; id < REG_NONE; id++)
+      {
+         word_t val = m_sim->m_reg.getRegVal((REG_ID)id);
+         tclCmd << "setReg " << id << " " << val << " 0\n";
+      }
+
+      if (Tcl_Eval(m_interp, tclCmd.str().c_str()) != TCL_OK)
+         G_SIM_LOG("[ERROR] Failed to display Registers: %s\n", Tcl_GetStringResult(m_interp));
+   }
+
    void SimRender::displayCC() const
    {
       char tclCmd[1024];
@@ -74,7 +88,7 @@ namespace SIM
              << ISA::decodeInstrName(HPACK(m_sim->m_stage.f.icode, m_sim->m_stage.f.ifun)) << " "
              << ISA::getRegName(m_sim->m_stage.f.rA) << " "
              << ISA::getRegName(m_sim->m_stage.f.rB) << " "
-             << std::hex << std::setw(16) << std::setfill('0') << m_sim->m_stage.f.valC << " "
+             << std::uppercase << std::hex << std::setw(16) << std::setfill('0') << m_sim->m_stage.f.valC << " "
              << std::setw(16) << std::setfill('0') << m_sim->m_stage.f.valP << "}\n";
 
       if (Tcl_Eval(m_interp, tclCmd.str().c_str()) != TCL_OK)
@@ -85,7 +99,7 @@ namespace SIM
    {
       std::stringstream tclCmd;
       tclCmd << "updateStage D {" 
-             << std::hex << std::setw(16) << std::setfill('0') << m_sim->m_stage.d.valA << " "
+             << std::uppercase << std::hex << std::setw(16) << std::setfill('0') << m_sim->m_stage.d.valA << " "
              << std::setw(16) << std::setfill('0') << m_sim->m_stage.d.valB << " "
              << ISA::getRegName(m_sim->m_stage.d.dstE) << " "
              << ISA::getRegName(m_sim->m_stage.d.dstM) << " "
@@ -100,7 +114,7 @@ namespace SIM
    {
       std::stringstream tclCmd;
       tclCmd << "updateStage E {" << (m_sim->m_stage.e.cnd ? "Y" : "N") << " "
-             << std::hex << std::setw(16) << std::setfill('0') << m_sim->m_stage.e.valE << "}\n";
+             << std::uppercase << std::hex << std::setw(16) << std::setfill('0') << m_sim->m_stage.e.valE << "}\n";
 
       if (Tcl_Eval(m_interp, tclCmd.str().c_str()) != TCL_OK)
          G_SIM_LOG("[ERROR] Failed to update Execute stage: %s\n", Tcl_GetStringResult(m_interp));
@@ -110,7 +124,7 @@ namespace SIM
    {
       std::stringstream tclCmd;
       tclCmd << "updateStage M {" 
-             << std::hex << std::setw(16) << std::setfill('0') << m_sim->m_stage.m.valM << "}\n";
+             << std::uppercase << std::hex << std::setw(16) << std::setfill('0') << m_sim->m_stage.m.valM << "}\n";
 
       if (Tcl_Eval(m_interp, tclCmd.str().c_str()) != TCL_OK)
          G_SIM_LOG("[ERROR] Failed to update Memory stage: %s\n", Tcl_GetStringResult(m_interp));
@@ -120,7 +134,7 @@ namespace SIM
    {
       std::stringstream tclCmd;
       tclCmd << "updateStage NPC {"
-             << std::uppercase << std::hex << std::setw(16) << std::setfill('0') << m_sim->m_pc
+             << std::uppercase << std::hex << std::setw(16) << std::setfill('0') << m_sim->m_stage.p.newPC
              << "}\n";
       int rc = Tcl_Eval(m_interp, tclCmd.str().c_str());
       if (rc != TCL_OK)
