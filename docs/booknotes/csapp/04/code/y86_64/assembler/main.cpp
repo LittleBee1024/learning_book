@@ -41,8 +41,13 @@ int main(int argc, char *argv[])
       }
    }
 
+   if (optind > argc -1)
+   {
+      usage(argv[0]);
+      return -1;
+   }
    option.infname = argv[optind];
-   if (optind != argc - 1 || !endsWith(option.infname, ".ys"))
+   if (!endsWith(option.infname, ".ys"))
    {
       usage(argv[0]);
       return -1;
