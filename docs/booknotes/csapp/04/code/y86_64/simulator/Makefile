@@ -35,7 +35,7 @@ $(BUILD_DIR)/pipe.o: pipe.hcl
 
 # Source code in dependent folder
 DEP_COMMON_DIR=../_common
-DEP_COMMON_SRCS=output.cpp isa.cpp
+DEP_COMMON_SRCS=input.cpp output.cpp isa.cpp
 DEP_COMMON_OBJS=$(DEP_COMMON_SRCS:%.cpp=$(BUILD_DIR)/%.o)
 
 $(BUILD_DIR)/%.o: $(DEP_COMMON_DIR)/%.cpp

@@ -5,6 +5,7 @@
 #include "./simulator/state.h"
 #include "./_common/io_interface.h"
 #include "./_common/output.h"
+#include "./_common/input.h"
 
 #include <memory>
 #include <unistd.h>
@@ -96,10 +97,11 @@ int main(int argc, char *argv[])
       return -1;
    }
 
+   std::shared_ptr<IO::InputInterface> in = std::make_shared<IO::FileIn>(option.infname.c_str());
    std::shared_ptr<IO::OutputInterface> out = std::make_shared<IO::StdOut>();
    std::unique_ptr<SIM::SimInterface> sim = createSimulator(option.type, out);
 
-   if (!sim->loadCode(option.infname.c_str()))
+   if (!sim->loadCode(in))
    {
       out->out("[ERROR] Failed to load code\n");
       return -1;

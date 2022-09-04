@@ -45,7 +45,7 @@ namespace
    {
       auto start = line.find_first_of('|');
       assert(start != std::string::npos);
-      std::string code = ltrim(line.substr(start + 1));
+      std::string code = rtrim(ltrim(line.substr(start + 1)));
       return code;
    }
 
@@ -90,12 +90,12 @@ namespace SIM
    {
    }
 
-   int SimBase::loadCode(const char *fname)
+   int SimBase::loadCode(std::shared_ptr<IO::InputInterface> in)
    {
       m_out->out("[INFO] Reset memory before loading code\n");
       m_mem.reset();
 
-      int bytes = parseCode(fname);
+      int bytes = parseCode(in);
       for (const auto &code : m_code)
          m_mem.loadOneInstr(code.lineno, code.addr, code.instr);
 
@@ -103,21 +103,19 @@ namespace SIM
       return bytes;
    }
 
-   int SimBase::parseCode(const char *fname)
+   int SimBase::parseCode(std::shared_ptr<IO::InputInterface> in)
    {
       m_code.clear();
 
-      std::ifstream ifs(fname);
-      if (ifs.fail())
-      {
-         m_out->out("[ERROR] Cannot access '%s': No such file\n", fname);
+      FILE *stream = in->getHandler();
+      if (stream == nullptr)
          return 0;
-      }
 
-      std::string line;
+      constexpr int MAX_LINE_LEN = 1024;
+      char line[MAX_LINE_LEN];
       int lineno = 0;
       int numBytes = 0;
-      while (std::getline(ifs, line))
+      while (fgets(line, MAX_LINE_LEN, stream) != nullptr)
       {
          lineno++;
          std::string binCode = getBinaryCode(line);

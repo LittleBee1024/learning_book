@@ -14,7 +14,7 @@ namespace SIM
    class SimInterface
    {
    public:
-      virtual int loadCode(const char *fname) = 0;
+      virtual int loadCode(std::shared_ptr<IO::InputInterface> in) = 0;
       virtual void save() = 0;
       virtual void recover() = 0;
       virtual State run(int maxCycles) = 0;
@@ -34,7 +34,7 @@ namespace SIM
    {
    public:
       explicit SimBase(std::shared_ptr<IO::OutputInterface> out);
-      int loadCode(const char *fname) override;
+      int loadCode(std::shared_ptr<IO::InputInterface> in) override;
       void save() override;
       void recover() override;
       State run(int maxCycles) override;
@@ -48,7 +48,7 @@ namespace SIM
       cc_t computeCC(ALU op, word_t argA, word_t argB);
 
    private:
-      int parseCode(const char *fname);
+      int parseCode(std::shared_ptr<IO::InputInterface> in);
 
    protected:
       static constexpr int REG_SIZE_BYTES = 128;       // 8 bytes * 16 regs

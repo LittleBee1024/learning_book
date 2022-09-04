@@ -1,6 +1,10 @@
 #include "./simulator_gui/c_api_sim.h"
 #include "./simulator_gui/singleton.h"
 #include "./simulator/state.h"
+#include "./_common/io_interface.h"
+#include "./_common/input.h"
+
+#include <memory>
 
 #define C_OK 0
 #define C_ERR -1
@@ -16,7 +20,9 @@ int sim_reset()
 int sim_load_code(const char *filename)
 {
    auto yis = SIM::SimSingleton::getInstance();
-   if (yis->loadCode(filename) == 0)
+
+   std::shared_ptr<IO::InputInterface> in = std::make_shared<IO::FileIn>(filename);
+   if (yis->loadCode(in) == 0)
    {
       G_SIM_LOG("[ERROR] Failed to load code file %s\n", filename);
       return C_ERR;
