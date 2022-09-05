@@ -1,14 +1,12 @@
 #include "./simulator/storage.h"
 
 #include <assert.h>
+#include <string>
 
 namespace
 {
    byte_t toNum(char ch, char cl)
    {
-      assert(isxdigit(ch));
-      assert(isxdigit(cl));
-
       std::string hexNum;
       hexNum.push_back(ch);
       hexNum.push_back(cl);
