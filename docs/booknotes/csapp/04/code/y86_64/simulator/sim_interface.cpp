@@ -44,7 +44,6 @@ namespace
    std::string getComment(const std::string &line)
    {
       auto start = line.find_first_of('|');
-      assert(start != std::string::npos);
       std::string code = rtrim(ltrim(line.substr(start + 1)));
       return code;
    }
