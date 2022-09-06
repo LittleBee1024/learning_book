@@ -37,7 +37,7 @@
             let addr = c_arr_on_heap + i * BigInt64Array.BYTES_PER_ELEMENT
             const int64_low32 = BigInt(Module.HEAP32[addr >> 2])
             const int64_high32 = BigInt(Module.HEAP32[(addr + 4) >> 2])
-            const int64_value = (int64_high32 << BigInt(32)) + int64_low32
+            const int64_value = (int64_high32 << BigInt(32)) ^ int64_low32
             console.log(int64_value.toString(16))
          }
 
