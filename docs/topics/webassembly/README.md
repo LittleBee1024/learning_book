@@ -205,10 +205,10 @@ Module.HEAPF64 | Float64Array | double
 
 上面的`HEAP_`函数没有针对64位数据的操作，但是`emcc`提供了更上一层的方法`setValue`和`getValue`，支持`i8`, `i16`, `i32`, `i64`, `float`, `double`中的任意类型，详情可参考[手册](https://emscripten.org/docs/api_reference/preamble.js.html?highlight=heap32#accessing-memory)。默认情况下，这两个函数不会被export，因此在编译时需要添加`"EXPORTED_FUNCTIONS=[getValue, setValue]"`选项。
 
-[例子"mem_64"](https://github.com/LittleBee1024/learning_book/tree/main/docs/topics/webassembly/code/mem_64)实现了C代码和JS代码对64位整数的读写：
-```c title="api.c" hl_lines="4"
-int64_t g_int64 = -5;
+> 注意：当前版本的`emcc`的`getValue`对于64位整数的读取和32位整数的读取完全一样，因此如果当前数据超过`2^32`大小会存在问题，请通过分别读取低32位和高32位获取完整的64位数据。而`setValue`没有此问题。
 
+[例子"mem_64"](https://github.com/LittleBee1024/learning_book/tree/main/docs/topics/webassembly/code/mem_64)实现了C代码和JS代码对64位整数的读写：
+```c title="api.c" hl_lines="2"
 EMSCRIPTEN_KEEPALIVE
 int64_t* GetInt64Ptr()
 {
@@ -220,24 +220,22 @@ void PrintData() {
    printf("[%s]: g_int64 addr = %p, val = %lld\n", __func__, &g_int64, g_int64);
 }
 ```
-```html title="index.html" hl_lines="4 5 9"
+```html title="index.html" hl_lines="5 6 7 11"
 <script>
     function button() {
         // Get 64-bit data
-        var int64_ptr = Module._GetInt64Ptr();
-        var int64_value = Module.getValue(int64_ptr, "i64")
-        console.log("Module.getValue[" + int64_ptr + "] = " + int64_value);
+        const int64_ptr = Module._GetInt64Ptr();
+        const int64_low32 = BigInt(Module.HEAP32[int64_ptr >> 2])
+        const int64_high32 = BigInt(Module.HEAP32[(int64_ptr + 4) >> 2])
+        const int64_value = int64_high32 << BigInt(32) + int64_low32
+        console.log("Module.getValue[" + int64_ptr + "] = " + int64_value.toString(16));
 
         // Set 64-bit data
-        Module.setValue(int64_ptr, -11, "i64")
+        Module.setValue(int64_ptr, -1 * Math.pow(2, 33), "i64")
         Module._PrintData()
     }
 </script>
 ```
-
-通过`Module._GetInt64Ptr`获取C代码中64位整数的地址，利用`getValue/setValue`就可以对此地址进行读写：
-
-![web_mem_64](./images/web_mem_64.png)
 
 ### 数组类型的传递
 和基本数据类型指针传递不同，数组类型传递需要知道数组大小。在JS代码中拿到数组的起始地址和长度后，将全部内容拷贝到JS本地变量中。同时，JS应该负责内存的释放。
