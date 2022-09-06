@@ -227,7 +227,7 @@ void PrintData() {
         const int64_ptr = Module._GetInt64Ptr();
         const int64_low32 = BigInt(Module.HEAP32[int64_ptr >> 2])
         const int64_high32 = BigInt(Module.HEAP32[(int64_ptr + 4) >> 2])
-        const int64_value = int64_high32 << BigInt(32) + int64_low32
+        const int64_value = (int64_high32 << BigInt(32)) + int64_low32
         console.log("Module.getValue[" + int64_ptr + "] = " + int64_value.toString(16));
 
         // Set 64-bit data
@@ -304,14 +304,14 @@ void PrintData() {
 ```c title="api.c" hl_lines="2"
 EMSCRIPTEN_KEEPALIVE
 int64_t* DoubleArr64(const int64_t* buf, const int len) {
-   int64_t* ret_buf = (int64_t*)malloc(len * sizeof(int64_t));
+    int64_t* ret_buf = (int64_t*)malloc(len * sizeof(int64_t));
 
-   for (int i = 0; i < len; i++) {
-      printf("[%s]: Array from JS buf[%d] = %lld\n", __func__, i, buf[i]);
-      ret_buf[i] = buf[i] * 2;
-   }
+    for (int i = 0; i < len; i++) {
+        printf("[%s]: Array from JS buf[%d] = %lld(0x%llx)\n", __func__, i, buf[i], buf[i]);
+        ret_buf[i] = buf[i] * 2;
+    }
 
-   return ret_buf;
+    return ret_buf;
 }
 ```
 ```html title="index.html" hl_lines="10 14 20"
@@ -331,12 +331,13 @@ int64_t* DoubleArr64(const int64_t* buf, const int len) {
         const c_arr_on_heap = Module._DoubleArr64(js_arr_on_heap, len);
         console.log("Address of C buffer: " + c_arr_on_heap);
 
-        const data = []
         for (let i = 0; i < len; i++) {
             let addr = c_arr_on_heap + i * BigInt64Array.BYTES_PER_ELEMENT
-            data.push(Module.getValue(addr, "i64"))
+            const int64_low32 = BigInt(Module.HEAP32[addr >> 2])
+            const int64_high32 = BigInt(Module.HEAP32[(addr + 4) >> 2])
+            const int64_value = (int64_high32 << BigInt(32)) + int64_low32
+            console.log(int64_value.toString(16))
         }
-        console.log(data);
 
         Module._free(js_arr_on_heap);
         Module._free(c_arr_on_heap);

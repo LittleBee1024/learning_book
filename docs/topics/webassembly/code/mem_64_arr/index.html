@@ -26,19 +26,20 @@
 
          for (let i = 0; i < len; i++){
             let addr = js_arr_on_heap + i * BigInt64Array.BYTES_PER_ELEMENT
-            Module.setValue(addr, i + 1, "i64")
+            Module.setValue(addr, Math.pow(2, 32) + i + 1, "i64")
          }
 
          // Return buffer from C to JS
          const c_arr_on_heap = Module._DoubleArr64(js_arr_on_heap, len);
          console.log("Address of C buffer: " + c_arr_on_heap);
 
-         const data = []
          for (let i = 0; i < len; i++) {
             let addr = c_arr_on_heap + i * BigInt64Array.BYTES_PER_ELEMENT
-            data.push(Module.getValue(addr, "i64"))
+            const int64_low32 = BigInt(Module.HEAP32[addr >> 2])
+            const int64_high32 = BigInt(Module.HEAP32[(addr + 4) >> 2])
+            const int64_value = (int64_high32 << BigInt(32)) + int64_low32
+            console.log(int64_value.toString(16))
          }
-         console.log(data);
 
          Module._free(js_arr_on_heap);
          Module._free(c_arr_on_heap);

@@ -24,7 +24,7 @@
          const int64_ptr = Module._GetInt64Ptr();
          const int64_low32 = BigInt(Module.HEAP32[int64_ptr >> 2])
          const int64_high32 = BigInt(Module.HEAP32[(int64_ptr + 4) >> 2])
-         const int64_value = int64_high32 << BigInt(32) + int64_low32
+         const int64_value = (int64_high32 << BigInt(32)) + int64_low32
          console.log("Module.getValue[" + int64_ptr + "] = " + int64_value.toString(16));
 
          // Set 64-bit data
