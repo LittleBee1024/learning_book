@@ -1,0 +1,36 @@
+<!doctype html>
+
+<html>
+
+<head>
+   <meta charset="utf-8">
+   <title>Demo</title>
+</head>
+
+<body>
+   <p>WebAssembly Memory Demo about 64-bit integer</p>
+   <button onclick="button()">Click Me</button>
+   <script>
+      // Set up wasm module callback function to print info
+      Module = {};
+      Module.onRuntimeInitialized = function () {
+         console.log(Module)
+         // Print C function
+         console.log(Module['asm'])
+      }
+      // Set up button function
+      function button() {
+         // Get 64-bit data
+         var int64_ptr = Module._GetInt64Ptr();
+         var int64_value = Module.getValue(int64_ptr, "i64")
+         console.log("Module.getValue[" + int64_ptr + "] = " + int64_value);
+
+         // Set 64-bit data
+         Module.setValue(int64_ptr, -11, "i64")
+         Module._PrintData()
+      }
+   </script>
+   <script src="api.js"></script>
+</body>
+
+</html>

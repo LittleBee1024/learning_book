@@ -142,8 +142,7 @@ Module.HEAPF64 | Float64Array | double
 
 如果基本数据类型按指针传递，可以通过`Module.HEAP_[addr]`的方式在JS中直接获取内存的值，其中`addr`就是C代码返回的变量指针。C代码中的非局部变量都构建在`ArrayBuffer`对象上，因此JS可以通过相应的view进行访问。JS代码拿到C代码返回的内存指针后，经过偏移计算，就可以得到变量在view中的偏移。在JS中将内存内容拷贝到本地，就完成了从C代码项JS代码传数据的功能。
 
-#### [代码实例](./code/mem)
-![web_mem](./images/web_mem.png)
+[例子"mem"](https://github.com/LittleBee1024/learning_book/tree/main/docs/topics/webassembly/code/mem)实现了C代码和JS代码对基本数据类型的读写：
 
 * [Cpp代码](./code/mem/api.c)
     * C代码中的全局变量存在于`ArrayBuffer`对象，在JS中可通过对应的View加地址访问
@@ -169,6 +168,7 @@ Module.HEAPF64 | Float64Array | double
         printf("[%s]: g_double addr = %p, val = %lf\n", __func__, &g_double, g_double);
     }
     ```
+
 * [HTML代码](./code/mem/index.html)
     * 通过`Module.HEAP32[addr]`可以访问内存中的`int32`变量，其他类型方法雷同
     ```html
@@ -197,11 +197,52 @@ Module.HEAPF64 | Float64Array | double
     </script>
     ```
 
+* 实验结果
+
+    ![web_mem](./images/web_mem.png)
+
+### 64位数据类型的传递
+
+上面的`HEAP_`函数没有针对64位数据的操作，但是`emcc`提供了更上一层的方法`setValue`和`getValue`，支持`i8`, `i16`, `i32`, `i64`, `float`, `double`中的任意类型，详情可参考[手册](https://emscripten.org/docs/api_reference/preamble.js.html?highlight=heap32#accessing-memory)。默认情况下，这两个函数不会被export，因此在编译时需要添加`"EXPORTED_FUNCTIONS=[getValue, setValue]"`选项。
+
+[例子"mem_64"](https://github.com/LittleBee1024/learning_book/tree/main/docs/topics/webassembly/code/mem_64)实现了C代码和JS代码对64位整数的读写：
+```c title="api.c" hl_lines="4"
+int64_t g_int64 = -5;
+
+EMSCRIPTEN_KEEPALIVE
+int64_t* GetInt64Ptr()
+{
+   return &g_int64;
+}
+
+EMSCRIPTEN_KEEPALIVE
+void PrintData() {
+   printf("[%s]: g_int64 addr = %p, val = %lld\n", __func__, &g_int64, g_int64);
+}
+```
+```html title="index.html" hl_lines="4 5 9"
+<script>
+    function button() {
+        // Get 64-bit data
+        var int64_ptr = Module._GetInt64Ptr();
+        var int64_value = Module.getValue(int64_ptr, "i64")
+        console.log("Module.getValue[" + int64_ptr + "] = " + int64_value);
+
+        // Set 64-bit data
+        Module.setValue(int64_ptr, -11, "i64")
+        Module._PrintData()
+    }
+</script>
+```
+
+通过`Module._GetInt64Ptr`获取C代码中64位整数的地址，利用`getValue/setValue`就可以对此地址进行读写：
+
+![web_mem_64](./images/web_mem_64.png)
+
 ### 数组类型的传递
 和基本数据类型指针传递不同，数组类型传递需要知道数组大小。在JS代码中拿到数组的起始地址和长度后，将全部内容拷贝到JS本地变量中。同时，JS应该负责内存的释放。
 
-#### [代码实例](./code/mem_arr)
-![web_mem_arr](./images/web_mem_arr.png)
+[例子"web_mem_arr"](https://github.com/LittleBee1024/learning_book/tree/main/docs/topics/webassembly/code/web_mem_arr)实现了C代码和JS代码对基本数组类型的读写：
 
 * [Cpp代码](./code/mem_arr/api.c)
     * C代码接收JS传过来的数组起始地址和数组大小，并创建了一个新的数组返回给JS
@@ -219,6 +260,7 @@ Module.HEAPF64 | Float64Array | double
     return ret_buf;
     }
     ```
+
 * [HTML代码](./code/mem_arr/index.html)
     * 从打印的结果可以看出，虽然我们释放了内存，但是每次按下按钮，构建的内存地址都是不变的，说明编译器对其做了优化。
     ```html
@@ -251,6 +293,10 @@ Module.HEAPF64 | Float64Array | double
         }
     </script>
     ```
+
+* 实验结果
+
+    ![web_mem_arr](./images/web_mem_arr.png)
 
 ## 参考
 * [Emscripten编译选项](https://emscripten.org/docs/tools_reference/emcc.html)
