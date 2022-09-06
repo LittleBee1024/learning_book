@@ -298,6 +298,54 @@ void PrintData() {
 
     ![web_mem_arr](./images/web_mem_arr.png)
 
+
+### 64位数组类型的传递
+
+[例子"mem_64_arr"](https://github.com/LittleBee1024/learning_book/tree/main/docs/topics/webassembly/code/mem_64_arr)和64位整数类型一样，利用`getValue/setValue`就可以对64位数组类型进行了读写：
+
+```c title="api.c" hl_lines="2"
+EMSCRIPTEN_KEEPALIVE
+int64_t* DoubleArr64(const int64_t* buf, const int len) {
+   int64_t* ret_buf = (int64_t*)malloc(len * sizeof(int64_t));
+
+   for (int i = 0; i < len; i++) {
+      printf("[%s]: Array from JS buf[%d] = %lld\n", __func__, i, buf[i]);
+      ret_buf[i] = buf[i] * 2;
+   }
+
+   return ret_buf;
+}
+```
+```html title="index.html" hl_lines="10 14 20"
+<script>
+    ...
+    function button() {
+        const len = 10;
+        const js_arr_on_heap = Module._malloc(BigInt64Array.BYTES_PER_ELEMENT * len);
+        console.log("Address of JS buffer: " + js_arr_on_heap);
+
+        for (let i = 0; i < len; i++){
+            let addr = js_arr_on_heap + i * BigInt64Array.BYTES_PER_ELEMENT
+            Module.setValue(addr, i + 1, "i64")
+        }
+
+        // Return buffer from C to JS
+        const c_arr_on_heap = Module._DoubleArr64(js_arr_on_heap, len);
+        console.log("Address of C buffer: " + c_arr_on_heap);
+
+        const data = []
+        for (let i = 0; i < len; i++) {
+            let addr = c_arr_on_heap + i * BigInt64Array.BYTES_PER_ELEMENT
+            data.push(Module.getValue(addr, "i64"))
+        }
+        console.log(data);
+
+        Module._free(js_arr_on_heap);
+        Module._free(c_arr_on_heap);
+    }
+</script>
+```
+
 ## 参考
 * [Emscripten编译选项](https://emscripten.org/docs/tools_reference/emcc.html)
 

@@ -1,0 +1,50 @@
+<!doctype html>
+
+<html>
+
+<head>
+   <meta charset="utf-8">
+   <title>Demo</title>
+</head>
+
+<body>
+   <p>WebAssembly Memory 64-Bit Array Demo</p>
+   <button onclick="button()">Click Me</button>
+   <script>
+      // Set up wasm module callback function to print info
+      Module = {};
+      Module.onRuntimeInitialized = function () {
+         console.log(Module)
+         // Print C function
+         console.log(Module['asm'])
+      }
+      // Set up button function
+      function button() {
+         const len = 10;
+         const js_arr_on_heap = Module._malloc(BigInt64Array.BYTES_PER_ELEMENT * len);
+         console.log("Address of JS buffer: " + js_arr_on_heap);
+
+         for (let i = 0; i < len; i++){
+            let addr = js_arr_on_heap + i * BigInt64Array.BYTES_PER_ELEMENT
+            Module.setValue(addr, i + 1, "i64")
+         }
+
+         // Return buffer from C to JS
+         const c_arr_on_heap = Module._DoubleArr64(js_arr_on_heap, len);
+         console.log("Address of C buffer: " + c_arr_on_heap);
+
+         const data = []
+         for (let i = 0; i < len; i++) {
+            let addr = c_arr_on_heap + i * BigInt64Array.BYTES_PER_ELEMENT
+            data.push(Module.getValue(addr, "i64"))
+         }
+         console.log(data);
+
+         Module._free(js_arr_on_heap);
+         Module._free(c_arr_on_heap);
+      }
+   </script>
+   <script src="api.js"></script>
+</body>
+
+</html>
