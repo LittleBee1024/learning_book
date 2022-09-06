@@ -154,7 +154,7 @@ namespace SIM
          m_out->out("[INFO] Cycle %lld is done with state=%s\n", m_curCyc - 1, SIM::getStateName(state));
       }
 
-      m_out->out("\nAfter %d cycles, the state becomes %s\n\n", m_curCyc, SIM::getStateName(state));
+      m_out->out("\nAfter %lld cycles, the state becomes %s\n\n", m_curCyc, SIM::getStateName(state));
       return state;
    }
 

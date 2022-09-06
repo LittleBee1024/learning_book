@@ -15,7 +15,7 @@ namespace SIM
 
    State Yis::runOneCycle()
    {
-      m_out->out("\n[INFO] Cycle %d starts with CC='%s'\n", m_curCyc++, ISA::getCCName(m_cc));
+      m_out->out("\n[INFO] Cycle %lld starts with CC='%s'\n", m_curCyc++, ISA::getCCName(m_cc));
 
       m_stage.reset();
 
