@@ -347,6 +347,10 @@ Y86-64的程序可以访问和修改程序寄存器、条件码、程序计数�
     * 将HCL格式的硬件描述文件，转换为对应的C代码
 * [Y86-64仿真器](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/csapp/04/code/y86_64/simulator)
     * 一个可运行`.yo`文件的Y86-64仿真器，可打印出程序运行前后寄存器和内存的变化
+* 图形化界面
+    * [基于`TCL/TK`的桌面界面](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/csapp/04/code/y86_64/simulator_gui)
+        ![y86_64_gui_tk](./images/y86_64_gui_tk.png)
+    * [基于`Vue3+Webassembly`的网页界面](https://littlebee1024.github.io/lbee_simulator/)
 
 ### Y86-64汇编器
 
