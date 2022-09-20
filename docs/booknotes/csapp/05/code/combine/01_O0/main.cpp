@@ -98,6 +98,19 @@ void combine4(vec_ptr v, data_t *dest)
    *dest = acc;
 }
 
+void combine5(vec_ptr v, data_t *dest)
+{
+   long len = vec_length(v);
+   data_t *data = get_vec_start(v);
+   data_t acc = *dest;
+   for (long i = 0; i < len; i += 2)
+   {
+      acc = (acc + data[i]) + data[i+1];
+   }
+   *dest = acc;
+}
+
+
 int main()
 {
    long arr_len = 1000000;
@@ -131,6 +144,12 @@ int main()
    __TIMER_LOG("combine4 time: ")
    {
       combine4(arr, &sum4);
+   }
+
+   data_t sum5 = 0;
+   __TIMER_LOG("combine5 time: ")
+   {
+      combine5(arr, &sum5);
    }
 
    free_vec(arr);
