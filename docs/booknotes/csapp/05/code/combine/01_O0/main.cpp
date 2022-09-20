@@ -214,7 +214,7 @@ int main()
    data_t sum7 = 0;
    __TIMER_LOG("combine7 time: ")
    {
-      combine6(arr, &sum7);
+      combine7(arr, &sum7);
    }
 
    free_vec(arr);

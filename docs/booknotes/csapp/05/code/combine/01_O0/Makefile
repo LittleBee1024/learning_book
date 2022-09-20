@@ -16,7 +16,12 @@ main: $(OBJS)
 	$(CC) $(LDFLAGS) $(OBJS) -o $@
 
 clean:
-	@rm -rf main *.o *.i *.s
+	@rm -rf main *.o *.i *.s *.out *.log
 
 debug:
 	gdb -q ./main -ex "start"
+
+profile: clean
+	g++ -Og -pg main.cpp -o main
+	./main
+	gprof main | tee prof.log
