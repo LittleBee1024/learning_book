@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <assert.h>
 
-typedef float data_t;
+typedef long data_t;
 typedef struct
 {
    long len;
@@ -103,17 +103,70 @@ void combine5(vec_ptr v, data_t *dest)
    long len = vec_length(v);
    data_t *data = get_vec_start(v);
    data_t acc = *dest;
-   for (long i = 0; i < len; i += 2)
+
+   long i = 0;
+   long len_floor = len - (len % 2);
+   // combine 2 elements at a time
+   for (; i < len; i += 2)
    {
       acc = (acc + data[i]) + data[i+1];
+   }
+   // finish any remaining elements
+   for (; i < len; i++)
+   {
+      acc += data[i];
    }
    *dest = acc;
 }
 
+void combine6(vec_ptr v, data_t *dest)
+{
+   long len = vec_length(v);
+   data_t *data = get_vec_start(v);
+   data_t acc0 = *dest;
+   data_t acc1 = 0;
+
+   long i = 0;
+   long len_floor = len - (len % 2);
+   // combine 2 elements at a time
+   for (; i < len_floor; i += 2)
+   {
+      acc0 += data[i];
+      acc1 += data[i+1];
+   }
+   // finish any remaining elements
+   for (; i < len; i++)
+   {
+      acc0 += data[i];
+   }
+
+   *dest = acc0 + acc1;
+}
+
+void combine7(vec_ptr v, data_t *dest)
+{
+   long len = vec_length(v);
+   data_t *data = get_vec_start(v);
+   data_t acc = *dest;
+
+   long i = 0;
+   long len_floor = len - (len % 2);
+   // combine 2 elements at a time
+   for (; i < len; i += 2)
+   {
+      acc += (data[i] + data[i+1]);
+   }
+   // finish any remaining elements
+   for (; i < len; i++)
+   {
+      acc += data[i];
+   }
+   *dest = acc;
+}
 
 int main()
 {
-   long arr_len = 1000000;
+   long arr_len = 10000001;
    vec_ptr arr = new_vec(arr_len);
    for(long i = 0; i < arr_len; i++)
    {
@@ -150,6 +203,18 @@ int main()
    __TIMER_LOG("combine5 time: ")
    {
       combine5(arr, &sum5);
+   }
+
+   data_t sum6 = 0;
+   __TIMER_LOG("combine6 time: ")
+   {
+      combine6(arr, &sum6);
+   }
+
+   data_t sum7 = 0;
+   __TIMER_LOG("combine7 time: ")
+   {
+      combine6(arr, &sum7);
    }
 
    free_vec(arr);

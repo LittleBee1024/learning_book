@@ -107,3 +107,85 @@ void combine4(vec_ptr v, data_t *dest)
 
 * 通过临时变量累积每次循环的结果，可减少对内存的访问次数，从而优化运行时间
 * 编译器会自行优化函数调用的次数(如：通过将函数内联)，因此可将此种优化方式交给编译器
+
+### 循环展开并累积在多个值中
+
+```cpp
+// 循环展开
+void combine5(vec_ptr v, data_t *dest)
+{
+    long len = vec_length(v);
+    data_t *data = get_vec_start(v);
+    data_t acc = *dest;
+
+    long i = 0;
+    long len_floor = len - (len % 2);
+    // combine 2 elements at a time
+    for (; i < len; i += 2)
+    {
+        acc = (acc + data[i]) + data[i+1];
+    }
+    // finish any remaining elements
+    for (; i < len; i++)
+    {
+        acc += data[i];
+    }
+    *dest = acc;
+}
+
+// 累积在acc0和acc1两个变量中
+void combine6(vec_ptr v, data_t *dest)
+{
+    long len = vec_length(v);
+    data_t *data = get_vec_start(v);
+    data_t acc0 = *dest;
+    data_t acc1 = 0;
+
+    long i = 0;
+    long len_floor = len - (len % 2);
+    // combine 2 elements at a time
+    for (; i < len_floor; i += 2)
+    {
+        acc0 += data[i];
+        acc1 += data[i+1];
+    }
+    // finish any remaining elements
+    for (; i < len; i++)
+    {
+        acc0 += data[i];
+    }
+
+    *dest = acc0 + acc1;
+}
+
+// 先结合，后累积
+void combine7(vec_ptr v, data_t *dest)
+{
+    long len = vec_length(v);
+    data_t *data = get_vec_start(v);
+    data_t acc = *dest;
+
+    long i = 0;
+    long len_floor = len - (len % 2);
+    // combine 2 elements at a time
+    for (; i < len; i += 2)
+    {
+        acc += (data[i] + data[i+1]);
+    }
+    // finish any remaining elements
+    for (; i < len; i++)
+    {
+        acc += data[i];
+    }
+    *dest = acc;
+}
+```
+对比实验结果，可发现：
+
+* `combine5`通过循环展开，一次循环累积两个只。但是由于关键路径并没有变短，优化效果并不明显
+* `combine6`在`combine5`的基础上增加了一个临时变量，将关键路径缩短了一般，运行时间缩短明显
+* `combine7`虽然没有增加临时变量，但是在循环中只累积一次，同样缩短了关键路径，提高了效率
+
+总之，循环展开和并行地累积在多个值中，是提高程序性能的可靠方法。
+
+
