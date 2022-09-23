@@ -156,7 +156,7 @@ Contents of section .rodata:
 .line | 调试时的行号表
 .note | 额外的编译信息，比如程序的公司名、发布版本号等
 .strtab | String Table字符串表，用于存储ELF文件中用到的各种字符串
-.symtab | Symbol Table符号表
+.symtab | Symbol Table符号表，包括：全局函数和变量(本模块定义/引用的)，局部静态函数和变量
 .shstrtab | Section String Table段名表
 .plt .got | 动态链接的跳转表和全局入口表
 .init .fini | 程序初始化与终结代码段，出现在C++代码中
