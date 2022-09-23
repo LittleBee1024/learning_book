@@ -336,7 +336,9 @@ b.o: multiple definition of `global`
 a.o: first defined here
 ```
 
-符号的定义分为**强符号(Strong Symbol)**定义和**弱符号(Weak Symbol)**定义。通过GCC修饰符`__attribute__((weak))`可以定义弱符号，包括弱全局变量和弱函数。例如，["weak.c"](./code/strong_weak_sym/weak.c)定义了弱变量`bar`和弱函数`foo`，
+符号的定义分为**强符号(Strong Symbol)**定义和**弱符号(Weak Symbol)**定义。通过GCC修饰符`__attribute__((weak))`可以定义弱符号，包括弱全局变量和弱函数。
+
+例如，["weak.c"](./code/strong_weak_sym/weak.c)定义了弱变量`bar`和弱函数`foo`：
 ```cpp
 int __attribute__((weak)) bar = 3;
 
@@ -345,7 +347,22 @@ void __attribute__((weak)) foo(int a, int b)
    printf("weak version foo(%d, %d) with bar %d, sizeof(bar) = %zu\n", a, b, bar, sizeof(bar));
 }
 ```
-当编译目标中没有强符号["strong.c"](./code/strong_weak_sym/strong.c)，使用弱符号的定义。当存在强符号时，使用强符号的定义。
+["strong.c"](./code/strong_weak_sym/strong.c)定义了强变量`bar`和强函数`foo`：
+```cpp
+#include <stdio.h>
+
+long bar = 100;
+
+void foo(int a, int b)
+{
+   printf("strong version foo(%d, %d) with bar %ld, sizeof(bar) = %zu\n", a, b, bar, sizeof(bar));
+}
+```
+
+Linux链接器使用如下规则处理多重定义的符号：
+* 规则1：不允许有多个同名的强符号
+* 规则2：如果有一个强符号和多个弱符号同名，那么选择强符号
+* 规则3：如果有多个弱符号同名，那么从这些弱符号中任意选择一个
 
 ```bash
 # strong.o中强类型的`bar`变量和`foo`函数
