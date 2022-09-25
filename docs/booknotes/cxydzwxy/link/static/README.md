@@ -1,6 +1,6 @@
 # 静态链接
 
-> [《程序员的自我修养--链接、装载与库》 - 俞甲子，石凡，潘爱民](https://1drv.ms/b/s!AkcJSyT7tq80cUuHb2eRcJkkBjM?e=YUwBqB)，第四章的读书笔记，本文中的所有代码可在[GitHub仓库](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/link/static/code)中找到
+> [《程序员的自我修养--链接、装载与库》 - 俞甲子，石凡，潘爱民](https://1drv.ms/b/s!AkcJSyT7tq80cUuHb2eRcJkkBjM?e=YUwBqB)，第四章的读书笔记；以及[《深入理解计算机系统》 - Randal E. Bryant - 第三版](https://1drv.ms/b/s!AkcJSyT7tq80bJdqo_mT5IeFTsg?e=W297XG)，第7.6.3章节的读书笔记。本文中的所有代码可在[GitHub仓库](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/link/static/code)中找到
 
 ## 静态链接过程
 
@@ -55,30 +55,30 @@ VMA标识`Virtual Memory Address`，即虚拟地址。在链接之前，目标�
 ### 符号解析与重定位
 
 * 重定位之前的`main`函数
-```asm
+```asm hl_lines="5 8"
 0000000000000000 <main>:
    0:   f3 0f 1e fa             endbr64 
    4:   55                      push   %rbp
    5:   48 89 e5                mov    %rsp,%rbp
-   8:   c7 05 00 00 00 00 02    movl   $0x2,0x0(%rip)        # 12 <main+0x12>
+   8:   c7 05 00 00 00 00 02    movl   $0x2,0x0(%rip)           # 12 <main+0x12>，重定位shared变量前
    f:   00 00 00 
   12:   b8 00 00 00 00          mov    $0x0,%eax
-  17:   e8 00 00 00 00          callq  1c <main+0x1c>
+  17:   e8 00 00 00 00          callq  1c <main+0x1c>           # 重定位swap函数前
   1c:   b8 00 00 00 00          mov    $0x0,%eax
   21:   5d                      pop    %rbp
   22:   c3                      retq
 ```
 
 * 重定位之后的`main`函数
-```asm
+```asm hl_lines="5 8"
 0000000000401000 <main>:
   401000:       f3 0f 1e fa             endbr64 
   401004:       55                      push   %rbp
   401005:       48 89 e5                mov    %rsp,%rbp
-  401008:       c7 05 ee 2f 00 00 02    movl   $0x2,0x2fee(%rip)        # 404000 <shared>
+  401008:       c7 05 ee 2f 00 00 02    movl   $0x2,0x2fee(%rip)  # 404000 <shared>，重定位shared变量后
   40100f:       00 00 00 
   401012:       b8 00 00 00 00          mov    $0x0,%eax
-  401017:       e8 07 00 00 00          callq  401023 <swap>
+  401017:       e8 07 00 00 00          callq  401023 <swap>      # 重定位swap函数后
   40101c:       b8 00 00 00 00          mov    $0x0,%eax
   401021:       5d                      pop    %rbp
   401022:       c3                      retq
