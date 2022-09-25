@@ -1,6 +1,6 @@
 # 编译
 
-> [《程序员的自我修养--链接、装载与库》 - 俞甲子，石凡，潘爱民](https://1drv.ms/b/s!AkcJSyT7tq80cUuHb2eRcJkkBjM?e=YUwBqB)，第二、三章的读书笔记，本文中的所有代码可在[GitHub仓库](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/compile/code)中找到
+> [《程序员的自我修养--链接、装载与库》 - 俞甲子，石凡，潘爱民](https://1drv.ms/b/s!AkcJSyT7tq80cUuHb2eRcJkkBjM?e=YUwBqB)，第二、三章的读书笔记；以及[《深入理解计算机系统》 - Randal E. Bryant - 第三版](https://1drv.ms/b/s!AkcJSyT7tq80bJdqo_mT5IeFTsg?e=W297XG)，第七章的读书笔记。本文中的所有代码可在[GitHub仓库](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/compile/code)中找到
 
 ## 生成一个可执行文件
 C语言生成一个可执行文件需要4个步骤：
@@ -397,6 +397,52 @@ Linux链接器使用如下规则处理多重定义的符号：
 > readelf -s program2 | egrep 'bar|foo'
     58: 0000000000004018     8 OBJECT  GLOBAL DEFAULT   25 bar
     67: 00000000000011a4    62 FUNC    GLOBAL DEFAULT   16 foo
+```
+
+### COMMON符号
+当编译器在编译某个模块时，遇到一个弱全局符号，比如说`x`，它并不知道其他模块是否也定义了`x`。如果是，它无法预测链接器该使用`x`多重定义中的哪一个。所以编译器把`x`分配成`COMMON`，把决定权留给链接器。另一方面，如果`x`被明确初始化，那么它是一个强符号，所以编译器可用很自信地将它分配成`.data`(初始化为非零)或`.bss`(初始化为零)。类似地，对于静态符号，编译器可以自信地把它们分配成`.data`或`.bss`。
+
+[例子"common"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/compile/code/common)编译了两个模块`main.o`和`f.o`，其中：
+
+* `f.o`定义了弱符号`x`，存于`COMMON`段
+* `main.o`定义了强符号`x`、`y`、`z`和`v`
+     * `x`、`y`、`z`被初始化为非零，因此存于`.data`段
+     * `v`被初始化为零，因此存于`.bss`段
+
+```bash
+> readelf -s f.o
+  ...
+  73: 0000000000000008     8 OBJECT  GLOBAL DEFAULT  COM x
+
+> readelf -s main.o
+  ...
+  73: 0000000000000000     4 OBJECT  GLOBAL DEFAULT   22 x
+  74: 0000000000000004     4 OBJECT  GLOBAL DEFAULT   22 y
+  75: 0000000000000008     4 OBJECT  GLOBAL DEFAULT   22 z
+  76: 0000000000000000     4 OBJECT  GLOBAL DEFAULT   23 v
+
+> readelf -S main.o
+  ...
+  [22] .data             PROGBITS         0000000000000000  000001d4
+       000000000000000c  0000000000000000  WA       0     0     4
+  [23] .bss              NOBITS           0000000000000000  000001e0
+       0000000000000004  0000000000000000  WA       0     0     4
+```
+
+`f.c`定义的`x`是`double`类型，而`main.c`定义的`x`是`int`类型，这在链接时会触发警告。并且在运行时，`f`函数对`x`的写操作，会影响`y`的值：
+``` hl_lines="2 11"
+> gcc  main.o f.o -o main
+/usr/bin/ld: warning: alignment 4 of symbol `x' in main.o is smaller than 8 in f.o
+
+> ./main
+[main] &x=0x0x55892d153010, sizeof(x)=4
+[main] &y=0x0x55892d153014, sizeof(y)=4
+[main] &z=0x0x55892d153018, sizeof(z)=4
+[main] &v=0x0x55892d153020, sizeof(v)=4
+[main] before f(), x = 0x1, y = 0x2, z = 0x3
+[f] &x=0x0x55892d153010, sizeof(x)=8
+[f] x = -0.000000
+[main] after f(), x = 0x0, y = 0x80000000, z = 0x3
 ```
 
 ## 调试信息
