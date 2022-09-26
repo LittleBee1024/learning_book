@@ -17,3 +17,9 @@ main: $(OBJS)
 
 clean:
 	@rm -rf main *.o *.log
+
+debug:
+	gdb -q ./main \
+	-ex "catch signal" \
+	-ex "b dumpstack" \
+	-ex "run"
