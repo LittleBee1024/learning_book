@@ -55,7 +55,7 @@ void dumpstack()
    fflush(stdout);
 }
 
-void myAbort()
+void abort()
 {
    // reset SIGABRT signal handler to default one in case that it is triggered recursively
    signal(SIGABRT, SIG_DFL);
@@ -66,7 +66,7 @@ void dumpStackThenAbort(int sig, siginfo_t *info, void *)
 {
    dumpStuff(sig, info);
    dumpstack();
-   myAbort();
+   abort();
 }
 
 void init()
@@ -80,21 +80,21 @@ void init()
 
 void run()
 {
-   /* Test1: any signal using "kill -<signum> <pid>" */
-   // while(1)
-   // {
-   //    printf("sleep\n");
-   //    sleep(5);
-   // }
-
-   /* Test2: SIGFPE signal */
+   /* Test1: SIGFPE signal */
    int a = 1;
    int b = 0;
    printf("%d", a / b);
 
-   /* Test3: SIGSEGV signal */
+   /* Test2: SIGSEGV signal */
    int *i = nullptr;
    printf("%d\n", *i);
+
+   /* Test3: any signal using "kill -<signum> <pid>" */
+   while(1)
+   {
+      printf("sleep\n");
+      sleep(5);
+   }
 }
 
 int main()
