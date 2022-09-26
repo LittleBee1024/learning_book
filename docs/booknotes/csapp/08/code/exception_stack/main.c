@@ -85,16 +85,19 @@ void init()
 
 void run()
 {
+   // Test1: any signal using "kill -<signum> <pid>""
    while(1)
    {
       printf("sleep\n");
       sleep(5);
    }
 
+   // Test2: SIGFPE signal
    int a = 1;
    int b = 0;
    printf("%d", a / b);
 
+   // Test3: SIGSEGV signal
    int *i = nullptr;
    printf("%d\n", *i);
 }
@@ -102,7 +105,6 @@ void run()
 int main()
 {
    init();
-
    run();
    return 0;
 }
