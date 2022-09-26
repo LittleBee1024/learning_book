@@ -29,7 +29,7 @@ void dumpStuff(int s, siginfo_t *info)
       fprintf(stderr, "signal handler: Program Terminated due to signal %d.\n", s);
 }
 
-void dumpstack()
+void dumpStack()
 {
    static char fname[1024];
    int thId = syscall(SYS_gettid);
@@ -64,7 +64,7 @@ void abort()
 void dumpStackThenAbort(int sig, siginfo_t *info, void *)
 {
    dumpStuff(sig, info);
-   dumpstack();
+   dumpStack();
    abort();
 }
 
