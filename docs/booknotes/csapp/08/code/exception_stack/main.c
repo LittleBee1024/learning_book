@@ -8,7 +8,7 @@
 #include <string.h>
 
 typedef void (*SigactionHandler)(int, siginfo_t *, void *);
-void CreateSignalHandler(int s, SigactionHandler handler)
+void createSignalHandler(int s, SigactionHandler handler)
 {
    struct sigaction sa
    {
@@ -43,26 +43,21 @@ void dumpstack()
    }
 
    printf("Saving stack at fault to file '%s'...\n", fname);
-   fprintf(fp, "--------------------\n");
 
    void *bt[1024];
    int size = backtrace(bt, 64 /*maximum number of addresses*/);
    backtrace_symbols_fd(bt, size, fileno(fp));
 
+   fprintf(fp, "--------------------\n");
    fclose(fp);
+
    fflush(stderr);
    fflush(stdout);
 }
 
 void myAbort()
 {
-   static bool aborting = false;
-   if (aborting)
-   {
-      sleep(1);
-      return;
-   }
-   aborting = true;
+   // reset SIGABRT signal handler to default one in case that it is triggered recursively
    signal(SIGABRT, SIG_DFL);
    std::abort();
 }
@@ -76,28 +71,28 @@ void dumpStackThenAbort(int sig, siginfo_t *info, void *)
 
 void init()
 {
-   CreateSignalHandler(SIGABRT, dumpStackThenAbort);
-   CreateSignalHandler(SIGBUS, dumpStackThenAbort);
-   CreateSignalHandler(SIGILL, dumpStackThenAbort);
-   CreateSignalHandler(SIGSEGV, dumpStackThenAbort);
-   CreateSignalHandler(SIGFPE, dumpStackThenAbort);
+   createSignalHandler(SIGABRT, dumpStackThenAbort);
+   createSignalHandler(SIGBUS, dumpStackThenAbort);
+   createSignalHandler(SIGILL, dumpStackThenAbort);
+   createSignalHandler(SIGSEGV, dumpStackThenAbort);
+   createSignalHandler(SIGFPE, dumpStackThenAbort);
 }
 
 void run()
 {
-   // Test1: any signal using "kill -<signum> <pid>""
-   while(1)
-   {
-      printf("sleep\n");
-      sleep(5);
-   }
+   /* Test1: any signal using "kill -<signum> <pid>" */
+   // while(1)
+   // {
+   //    printf("sleep\n");
+   //    sleep(5);
+   // }
 
-   // Test2: SIGFPE signal
+   /* Test2: SIGFPE signal */
    int a = 1;
    int b = 0;
    printf("%d", a / b);
 
-   // Test3: SIGSEGV signal
+   /* Test3: SIGSEGV signal */
    int *i = nullptr;
    printf("%d\n", *i);
 }
