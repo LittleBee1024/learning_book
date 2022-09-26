@@ -24,9 +24,9 @@ void createSignalHandler(int s, SigactionHandler handler)
 void dumpStuff(int s, siginfo_t *info)
 {
    if (s == SIGSEGV)
-      printf("signal handler: Program Terminated due to Segment Violation at address %p.\n", info->si_addr);
+      fprintf(stderr, "signal handler: Program Terminated due to Segment Violation at address %p.\n", info->si_addr);
    else
-      printf("signal handler: Program Terminated due to signal %d.\n", s);
+      fprintf(stderr, "signal handler: Program Terminated due to signal %d.\n", s);
 }
 
 void dumpstack()
@@ -42,7 +42,7 @@ void dumpstack()
       return;
    }
 
-   printf("Saving stack at fault to file '%s'...\n", fname);
+   fprintf(stderr, "Saving stack at fault to file '%s'...\n", fname);
 
    void *bt[1024];
    int size = backtrace(bt, 64 /*maximum number of addresses*/);
@@ -52,7 +52,6 @@ void dumpstack()
    fclose(fp);
 
    fflush(stderr);
-   fflush(stdout);
 }
 
 void abort()
@@ -80,14 +79,14 @@ void init()
 
 void run()
 {
-   /* Test1: SIGFPE signal */
+   /* Test1: SIGSEGV signal */
+   int *i = nullptr;
+   printf("%d\n", *i);
+
+   /* Test2: SIGFPE signal */
    int a = 1;
    int b = 0;
    printf("%d", a / b);
-
-   /* Test2: SIGSEGV signal */
-   int *i = nullptr;
-   printf("%d\n", *i);
 
    /* Test3: any signal using "kill -<signum> <pid>" */
    while(1)
