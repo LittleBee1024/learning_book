@@ -100,7 +100,7 @@ Aborted (core dumped)
 
 ### Linux陷阱(系统调用)
 
-Linux提供了几百种系统调用，每个系统调用都有一个唯一的整数号，对应于一个到内核中的偏移量（注意：这个跳转表和异常表不一样）。在x86-64系统上，系统调用是通过一条称为`syscall`的陷阱指令来提供的。所有系统调用的参数都是通过通用寄存器而不是栈传递的。
+Linux提供了几百种系统调用，每个系统调用都有一个唯一的整数号，对应于一个到内核中的偏移量(注意：这个跳转表和异常表不一样)，详情参见[网页](https://blog.rchapman.org/posts/Linux_System_Call_Table_for_x86_64/)。在x86-64系统上，系统调用是通过一条称为`syscall`的陷阱指令来提供的。所有系统调用的参数都是通过通用寄存器而不是栈传递的。
 
 [例子"write_syscall"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/csapp/08/code/write_syscall)用4种方法在终端打印“hello world”字符串。其中，汇编代码实现的`asm_write`函数展示了`syscall`指令的工作情况：
 ```cpp hl_lines="11"
