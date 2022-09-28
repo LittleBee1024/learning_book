@@ -193,15 +193,15 @@ hello, world3
 
 Linux信号是一种更高层的软件形式的异常。常见的信号有：
 
-* SIGFPE 
+* SIGFPE
     * 如果一个进程试图除以0，那么内核就发送给它一个SIGFPE信号(号码8)
-* SIGILL 
+* SIGILL
     * 如果一个进程执行一条非法指令，那么内核就发送给它一个SIGILL信号(号码4)
 * SIGSEGV
     * 如果进程进行非法内存引用，内核就发送它一个SIGSEGV信号(号码11)
-* SIGINT  
+* SIGINT
     * 如果当进程在前台运行时，你键入Ctrl+C，那么内核会发送一个SIGINT信号(号码2)给这个前台进程组中的每个进程
 * SIGKILL
     * 一个进程可以通过向另一个进程发送一个SIGINT信号(号码9)强制终止它
-* SIGCHLD 
+* SIGCHLD
     * 当一个子进程终止或者停止时，内核会发送一个SIGCHLD信号(号码17)给父进程
