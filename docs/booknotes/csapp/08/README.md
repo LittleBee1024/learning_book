@@ -55,6 +55,49 @@
 * 缺页
     * 当发生缺页故障，异常处理程序将虚拟内存的一个页面映射到物理内存的一个页面，然后重新执行这条产生故障的指令
 
+[例子"div_zero_fault"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/csapp/08/code/div_zero_fault)自定义了“除法错误”的处理程序。类似地，[例子"seg_fault"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/csapp/08/code/seg_fault)自定义了“段故障”的处理程序。故障的异常处理程序会返回到当前指令，因此只要异常处理程序不主动终止程序，会不断被触发。
+
+```cpp title="Divide by Zero Fault" hl_lines="13 19 24"
+void sig_handler(int signo)
+{
+    static int num = 0;
+    if (signo == SIGFPE)
+    {
+        printf("Divide by zero fault happens %d times\n", num++);
+    }
+
+    const int SIGFPE_NUM = 5;
+    if (num == SIGFPE_NUM)
+    {
+        printf("Abort the program after %d divide by zero fault\n", num);
+        std::abort();
+    }
+}
+
+int main()
+{
+    signal(SIGFPE, sig_handler);
+
+    printf("Trigger divide by zero fault\n");
+    int a = 1;
+    int b = 0;
+    a = a / b;
+
+    return 0;
+}
+```
+```bash
+> ./main
+Trigger divide by zero fault
+Divide by zero fault happens 0 times
+Divide by zero fault happens 1 times
+Divide by zero fault happens 2 times
+Divide by zero fault happens 3 times
+Divide by zero fault happens 4 times
+Abort the program after 5 divide by zero fault
+Aborted (core dumped)
+```
+
 ### Linux陷阱(系统调用)
 
 x86-64通过陷阱指令`syscall`的触发陷阱异常，每个系统调用

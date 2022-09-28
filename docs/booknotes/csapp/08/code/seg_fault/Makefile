@@ -15,8 +15,5 @@ all: clean main
 main: $(OBJS)
 	$(CC) $(LDFLAGS) $(OBJS) -o $@
 
-asm:
-	$(CC) -S main.c -o main.s
-
 clean:
-	@rm -rf main *.o *.log *.s
+	@rm -rf main *.o *.log
