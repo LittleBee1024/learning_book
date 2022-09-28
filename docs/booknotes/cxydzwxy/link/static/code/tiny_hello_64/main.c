@@ -4,14 +4,14 @@ void print()
 {
    // int write(int fd, char* buffer, int size);
    // write(rdi, rsi, rdx);
-   //    fd = stdout (0)
+   //    fd = stdout (1)
    //    buffer = str
    //    size = 13
    // WRITE system call ID = 1 (rax)
    asm(
       "movq $13,%%rdx \n\t"
       "movq %0,%%rsi \n\t"
-      "movq $0,%%rdi \n\t"
+      "movq $1,%%rdi \n\t"
       "movq $1,%%rax \n\t"
       "syscall \n\t"
       ::"r"(str):"rdi","rsi","rdx"
