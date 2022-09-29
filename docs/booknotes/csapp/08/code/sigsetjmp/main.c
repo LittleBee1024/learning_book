@@ -28,14 +28,17 @@ handler_t *Signal(int signum, handler_t *handler)
 
 int main()
 {
-   if (!sigsetjmp(buf, SIG_JMP_VAL))
+   switch (sigsetjmp(buf, SIG_JMP_VAL))
    {
+   case 0:
       Signal(SIGINT, handler);
       printf("starting\n");
-   }
-   else
-   {
+      break;
+   case SIG_JMP_VAL:
       printf("restarting\n");
+      break;
+   default:
+      printf("Unknown error condition in foo\n");
    }
 
    while (1)
