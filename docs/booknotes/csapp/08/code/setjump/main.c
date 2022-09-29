@@ -1,13 +1,13 @@
 #include <stdio.h>
 #include <setjmp.h> // jmp_buf
 
+jmp_buf buf;
+
 #define ERR_FOO 1
 #define ERR_BAR 2
 
 int error_foo_trigger = 0;
 int error_bar_trigger = 1;
-
-jmp_buf buf;
 
 void bar(void)
 {
