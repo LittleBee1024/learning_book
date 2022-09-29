@@ -19,7 +19,7 @@ int setSignal(int signum, sighandler_t handler)
 void handler(int sig)
 {
    int childPID = waitpid(-1, NULL, 0);
-   printf("[Signal] Handler %d signal from child %d\n", sig, childPID);
+   printf("[Signal] Handle %d signal from child %d\n", sig, childPID);
    // extend the time of signal handler
    sleep(1);
 }
@@ -38,7 +38,7 @@ int main()
       }
    }
 
-   printf("Parent processing\n");
+   printf("[Parent] Processing\n");
    while (1)
    {
       sleep(1);
