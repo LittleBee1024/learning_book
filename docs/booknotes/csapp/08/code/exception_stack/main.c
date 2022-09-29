@@ -13,8 +13,10 @@ void createSignalHandler(int s, SigactionHandler handler)
    struct sigaction sa
    {
    };
+   // SA_RESTART - restart syscalls if possible
    sa.sa_flags = SA_SIGINFO | SA_RESTART;
-   sigemptyset(&sa.sa_mask);
+   // sa_mask: the signal which triggered the handler will be blocked, unless the SA_NODEFER flag is used
+   sigemptyset(&sa.sa_mask); // Block sigs of type being handled
    sa.sa_sigaction = handler;
    int rc = sigaction(s, &sa, NULL);
    if (rc != 0 && errno != EINVAL)
