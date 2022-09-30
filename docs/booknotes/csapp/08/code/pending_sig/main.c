@@ -39,8 +39,7 @@ int main()
    }
 
    printf("[Parent] Processing\n");
-   int i = 2;
-   while (i--)
+   while (true)
    {
       sleep(1);
    }

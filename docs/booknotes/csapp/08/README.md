@@ -225,5 +225,86 @@ Linux信号是一种更高层的软件形式的异常。常见的信号有：
     * 任何时刻，一种类型至多只会有一个待处理信号。如果一个进程有一个类型为k的待处理信号，那么任何接下来发送到这个进程的类型为k的信号都会被简单地丢弃
 
 
+[例子"pending_sig"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/csapp/08/code/pending_sig)在父进程中捕获“SIGCHLD”信号，并利用`waitpid`回收终止的子进程资源，以防止出现僵尸进程：
 
+```cpp hl_lines="12 17"
+int setSignal(int signum, sighandler_t handler)
+{
+    struct sigaction action;
 
+    action.sa_handler = handler;
+    // sigaction函数的默认行为是：触发处理函数的信号，在处理函数执行过程中是被阻塞的
+    sigemptyset(&action.sa_mask);
+    // 如果可能，在处理函数结束后继续执行被中断的系统调用。否则，被中断的慢速系统调用
+    // 在信号处理程序返回时不再继续，而是立即返回给用户一个错误条件，并将errno设置为EINTR
+    action.sa_flags = SA_RESTART;
+
+    return sigaction(signum, &action, NULL);
+}
+
+void handler(int sig)
+{
+    int childPID = waitpid(-1, NULL, 0);
+    printf("[Signal] Handle %d signal from child %d\n", sig, childPID);
+    // 延长信号处理时间，以产生待处理信号
+    sleep(1);
+}
+
+int main()
+{
+    setSignal(SIGCHLD, handler);
+
+    for (int i = 0; i < 3; i++)
+    {
+        if (fork() == 0)
+        {
+            printf("[Child] Hello from child %d\n", (int)getpid());
+            return 0;
+        }
+    }
+
+    printf("[Parent] Processing\n");
+    ...
+}
+```
+```bash hl_lines="4 13"
+> ./main
+[Child] Hello from child 47360
+[Parent] Processing
+[Child] Hello from child 47362
+[Signal] Handle 17 signal from child 47360
+[Child] Hello from child 47361
+[Signal] Handle 17 signal from child 47361
+^Z
+> ps
+    PID TTY          TIME CMD
+   2427 pts/4    00:00:01 bash
+  47359 pts/4    00:00:00 main
+  47362 pts/4    00:00:00 main <defunct>
+  47399 pts/4    00:00:00 ps
+```
+
+从例子的输出中我们注意到，尽管子进程发送了3个“SIGCHLD”信号给父进程，但是其中只有两个信号被接收了(分别来自`PID-47360`和`PID-47361`)，来自`PID-47362`的“SIGCHLD”信号被丢弃了。因此父进程只回收了两个子进程。子进程“47362”变成了ig僵死进程。其过程如下：
+
+* 父进程接收并捕获了第一个“SIGCHL”信号
+* 当处理程序还在处理第一个信号时，
+    * 第二个信号就传送并添加到了待处理信号集合里
+    * 同时，第三个信号也到达了，因为已经有一个待处理的“SIGCHL”信号，第三个“SIGCHL”信号直接被丢弃
+* 所以虽然子进程一共发了三个“SIGCHL”信号，但是父进程只触发了两次信号处理程序，也就只回收了两个子进程(哪两个子进程由`waitpid`决定)
+
+由此得到的教训是：**不可以用信号来对其他进程中发生的事件计数**。
+
+为了修复上面的问题，可修改信号处理程序，让一次处理回收尽可能多的僵死进程。可参考[例子"pending_sig2"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/csapp/08/code/pending_sig2)：
+
+```cpp hl_lines="4"
+void handler(int sig)
+{
+    int childPID = 0;
+    while((childPID = waitpid(-1, NULL, 0)) > 0)
+    {
+        printf("[Signal] Handle %d signal from child %d\n", sig, childPID);
+    }
+    // extend the time of signal handler
+    sleep(1);
+}
+```
