@@ -316,4 +316,75 @@ void handler(int sig)
 }
 ```
 
+### 同步流以避免并发错误
 
+信号处理程序和其他进程是并发运行的，当对某一全局的变量进行操作的时候，需要考虑操作的**互斥性**和**顺序性**。
+
+[例子"sig_mask"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/csapp/08/code/sig_mask)在主程序中向列表中添加子进程号，在信号处理程序中从列表中删除子进程号。因此需要保证：
+
+* `addjob`和`deletejob`不能同时被调用
+* 对于同一个子进程PID，应先`addjob`，再在终止时`deletejob`
+
+```cpp hl_lines="9 11 30 35 40 42"
+void handler(int sig)
+{
+    sigset_t mask_all, mask_recover;
+    sigfillset(&mask_all);
+    int pid = 0;
+    while ((pid = waitpid(-1, NULL, 0)) > 0)
+    {
+        // 在操作列表前将所有信号屏蔽，防止“deletejob”被并发执行
+        sigprocmask(SIG_BLOCK, &mask_all, &mask_recover);
+        deletejob(pid);
+        sigprocmask(SIG_SETMASK, &mask_recover, NULL);
+    }
+}
+
+int main(int argc, char **argv)
+{
+    sigset_t mask_all, mask_recover;
+    sigfillset(&mask_all);
+
+    sigset_t mask_chld;
+    sigemptyset(&mask_chld);
+    sigaddset(&mask_chld, SIGCHLD);
+
+    setSignal(SIGCHLD, handler);
+    initjobs();
+
+    for (int i = 0; i < 3; i++)
+    {
+        // 屏蔽“SIGCHLD”信号，防止子进程过早结束，导致“deletejob”先于“addjob”被调用
+        sigprocmask(SIG_BLOCK, &mask_chld, &mask_recover);
+        int pid = fork();
+        if (pid == 0)
+        {
+            // 在子进程中恢复“SIGCHLD”信号，因为子进程对信号的设置是继承与父进程的
+            sigprocmask(SIG_SETMASK, &mask_recover, NULL);
+            printf("[Child] Hello from child %d\n", (int)getpid());
+            return 0;
+        }
+        // 在操作列表前将所有信号屏蔽，防止“addjob”和“deletejob”被并发执行
+        sigprocmask(SIG_BLOCK, &mask_all, NULL);
+        addjob(pid);
+        sigprocmask(SIG_SETMASK, &mask_recover, NULL);
+    }
+
+    printf("[Parent] Processing\n");
+    ...
+}
+```
+```bash
+> ./main 
+[Global] Init jobs
+[Global] Add 51694 PID to jobs
+[Global] Add 51695 PID to jobs
+[Global] Add 51696 PID to jobs
+[Parent] Processing
+[Child] Hello from child 51696
+[Global] Remove 51696 PID from jobs
+[Child] Hello from child 51695
+[Global] Remove 51695 PID from jobs
+[Child] Hello from child 51694
+[Global] Remove 51694 PID from jobs
+```
