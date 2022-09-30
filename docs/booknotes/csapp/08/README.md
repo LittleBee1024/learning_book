@@ -393,9 +393,12 @@ int main(int argc, char **argv)
 
 C语言提供了一种用户级异常控制流形式，称为非本地跳转(nonlocal jump)，它将控制直接从一共函数转移到另一个当前正在执行的函数，而不需要警告正常的调用-返回序列。常规代码由`setjum`和`longjmp`函数完成非本地跳转。在信号处理程序中由`sigsetjmp`和`siglongjmp`函数完成非本地跳转。
 
+* `setjmp`/`sigsetjmp`函数在env缓冲区中保存当前调用环境，以供后面的`longjmp`/`siglongjmp`使用，并返回0，返回值不能被赋值给变量，只能用在`switch`或条件语句中
+* `longjmp`/`siglongjmp`函数从env缓冲区中恢复调用环境，然后触发以供从最近异常初始化env的`setjmp`调用的返回，且带有非零的返回值
+
 [例子"setjmp"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/csapp/08/code/setjmp)实现了类似`C++`中的`exception`功能，当`foo`函数出错时，跳过`bar`函数，直接在`main`中捕获到出错信息：
 
-```cpp hl_lines="1 6 17"
+```cpp hl_lines="1 6 17 23"
 jmp_buf buf;
 
 void foo(void)
@@ -434,7 +437,7 @@ Detected an error condition in foo
 
 [例子"sigsetjmp"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/csapp/08/code/sigsetjmp)使“SIGINT”信号处理程序分支到一个特殊的代码位置，而不是返回到被信号到达中断了的指令的位置。当用户在键盘上键入“Ctrl+C”时，这个程序用信号和非本地跳转实现了软重启。
 
-```cpp hl_lines="1 5 10"
+```cpp hl_lines="1 5 10 17"
 sigjmp_buf buf;
 
 void handler(int sig)
