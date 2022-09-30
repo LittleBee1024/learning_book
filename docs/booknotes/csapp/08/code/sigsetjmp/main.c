@@ -7,23 +7,20 @@ sigjmp_buf buf;
 
 #define SIG_JMP_VAL 1
 
-void handler(int sig)
+int setSignal(int signum, sighandler_t handler)
 {
-   siglongjmp(buf, SIG_JMP_VAL);
-}
-
-typedef void handler_t(int);
-handler_t *Signal(int signum, handler_t *handler)
-{
-   struct sigaction action, old_action;
+   struct sigaction action;
 
    action.sa_handler = handler;
    sigemptyset(&action.sa_mask); /* Block sigs of type being handled */
    action.sa_flags = SA_RESTART; /* Restart syscalls if possible */
 
-   if (sigaction(signum, &action, &old_action) < 0)
-      fprintf(stderr, "Signal error");
-   return (old_action.sa_handler);
+   return sigaction(signum, &action, NULL);
+}
+
+void handler(int sig)
+{
+   siglongjmp(buf, SIG_JMP_VAL);
 }
 
 int main()
@@ -31,7 +28,7 @@ int main()
    switch (sigsetjmp(buf, SIG_JMP_VAL))
    {
    case 0:
-      Signal(SIGINT, handler);
+      setSignal(SIGINT, handler);
       printf("starting\n");
       break;
    case SIG_JMP_VAL:
