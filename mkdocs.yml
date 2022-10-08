@@ -145,6 +145,7 @@ nav:
       - booknotes/csapp/04/README.md
       - booknotes/csapp/05/README.md
       - booknotes/csapp/08/README.md
+      - booknotes/csapp/09/README.md
   - 专题:
     - topics/webassembly/README.md
     - topics/cmake/README.md
