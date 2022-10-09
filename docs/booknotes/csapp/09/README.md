@@ -241,6 +241,8 @@ void *mmap(void *start, size_t length, int prot, int flags, int fd, off_t offset
 
 ### 空闲块组织
 
+#### 隐式空闲链表
+
 ![heap_block](./images/heap_block.png)
 
 如上图所示，一个块由头部、有效载荷和填充组成。头部编码了当前块的大小(包括头部和所有的填充)，以及当前块是否已分配。
@@ -250,6 +252,25 @@ void *mmap(void *start, size_t length, int prot, int flags, int fd, off_t offset
 ![heap_implicit_free_list](./images/heap_implicit_free_list.png)
 
 隐式空闲链表的优点是简单，但缺点是效率低，任何操作的开销都与堆中已分配和空闲块的总数呈线性关系。
+
+#### 显式空闲链表
+
+显式空闲链表将空闲块组织为某种形式的显式数据结构。因为程序不需要空闲块的主体，因此可在每个空闲块中加入一个`pred`前驱和`succ`后继指针，将所有空闲块组织成一个显式的双向链表，如下图所示：
+
+![heap_explicit_free_list](./images/heap_explicit_free_list.png)
+
+显式空闲链表使首次适配的分配时间从块总数的线性时间减少到了空闲块数量的线性时间。不过，释放一个块的时间可以是线性的，也可能是个常数，这取决于我们所选择的空闲链表中块的排序策略。
+
+显式链表的缺点是空闲块必须足够大，以包含所有需要的指针，以及头部和可能的脚部。这就导致了更大的最小块大小，也潜在地提高了内部碎片的程度。
+
+#### 分离的空闲链表
+
+单向空闲块链表的分配需要与空闲块数量呈线性关系。为了减少分配时间，可维护多个空闲链表，其中每个链表中的块有大致相等的大小。这种方法称为**分离存储(segregated storage)**。常见的两种分离方法有：
+
+* 简单分离存储(simple segregated storage)
+    * 每个空闲链表包含大小相等的块
+* 分离适配(segregated fit)
+    * 每个空闲链表包含潜在的大小不同的块，例如伙伴系统(buddy system)，块大小按照2的幂划分
 
 ### 放置
 
