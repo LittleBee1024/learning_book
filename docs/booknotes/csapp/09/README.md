@@ -188,3 +188,27 @@ Linux通过将一个虚拟内存区域与一个磁盘上的对象关联起来，
 ![loader_map](./images/loader_map.png)
 
 ### mmap函数内的存映射
+
+```cpp
+#include <unistd.h>
+#include <sys/mman.h>
+
+void *mmap(void *start, size_t length, int prot, int flags, int fd, off_t offset);
+```
+
+如上`mmap`的函数签名所示，`mmap`函数要求内核创建一个新的虚拟内存区域，最好是从地址`start`开始的一个区域，并将文件描述符`fd`指定的对象的一个连续的片(chunk)映射到这个新的区域。连续的对象片大小为`length`字节，从距文件开始处偏移量为`offset`字节的地方开始。`start`地址仅仅是一个暗示，通常被定义为`NULL`。下图描述了这些参数的意义。
+
+![mmap_vm](./images/mmap_vm.png)
+
+参数`prot`包含描述新映射的虚拟内存区域的访问权限：
+
+* `PROT_EXEC`：可被CPU执行
+* `PROT_READ`：可读
+* `PROT_WRITE`：可写
+* `PROT_NONE`：不能被访问
+
+参数`flags`由描述被映射对象类型的位组成：
+
+* `MAP_ANON`：被映射的对象是一个匿名对象，相应的虚拟页请求二进制零
+* `MAP_PRIVATE`：被映射的对象是一个私有的、写时复制的对象
+* `MAP_SHARED`：被映射的对象是一个共享对象
