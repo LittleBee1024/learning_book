@@ -149,6 +149,49 @@ hello, world3
 * 进程
 * 线程
 
+### 加载和运行
+
+![main_stack](./images/main_stack.png)
+
+当进程的`main`函数开始执行时，用户栈的组织结构如上图所示。从栈底到栈顶依次是：
+
+* 参数和环境字符串
+* 以`NULL`结尾的`envp[]`指针数组，每个指针指向一个环境变量字符串
+* 以`NULL`结尾的`argv[]`指针数组，每个指针指向一个参数字符串
+* 系统启动函数`libc_start_main`的栈帧，函数调用栈的结构可参考[《Debug Hacks - 调试前的必知必会》](../../debug_hacks/basic/README.md#_4)
+
+[例子"main_stack"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/csapp/08/code/main_stack)打印了可执行文件的命令行参数和环境变量：
+```cpp
+int main(int argc, char *argv[], char *envp[])
+{
+   printf("Command line arguments:\n");
+    int i = 0;
+    while(argv[i] != NULL)
+    {
+        printf("\targv[%d]: %s\n", i, argv[i]);
+        i++;
+    }
+
+    printf("Environment variables:\n");
+    i = 0;
+    while(envp[i] != NULL)
+    {
+        printf("\tenvp[%d]: %s\n", i, envp[i]);
+        i++;
+    }
+    return 0;
+}
+```
+```bash
+> ./main arg1 arg2
+Command line arguments:
+        argv[0]: ./main
+        argv[1]: arg1
+        argv[2]: arg2
+Environment variables:
+        envp[0]: ...
+```
+
 ### 上下文切换
 
 操作系统内核使用一种称为**上下文切换**(context switch)的较高层形式的异常控制流来实现多任务。上下文切换机制是建立在之前的那些较低层异常机制之上的。
