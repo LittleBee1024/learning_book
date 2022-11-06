@@ -6,7 +6,7 @@
 
 int main()
 {
-   int rc = mkdir("dir1", 0777);
+   int rc = mkdir("./dir1/", 0777);
    assert(rc == 0);
    const char *path = "dir2/dir3";
    char cmd[100];
