@@ -29,7 +29,7 @@ udev on /dev type devtmpfs (rw)
 
 ## 常规文件系统
 
-常规文件系统十对常规文件和目录的组织集合，由`mkfs`命令创建，其类型有：
+常规文件系统是对常规文件和目录的组织集合，由`mkfs`命令创建，其类型有：
 
 * 传统的ext2文件系统
 * 各种原始UNIX文件系统，如，Minix、System V以及BSD文件系统
@@ -38,4 +38,15 @@ udev on /dev type devtmpfs (rw)
 * Apple Macintosh的HFS
 * 一系列网络文件系统，如，SUN的NFS、IBM和微软的SMB、Novell的NCP等
 * 一系列日志文件系统，包括ext3、ext4、Reiserfs、JFS、XFS以及Btrfs等
+
+### 磁盘和分区
+
+常规文件和目录通常都存放在磁盘设备里(比如，CD-ROM、flash内存卡以及虚拟磁盘等)。每块磁盘被划分为一个或多个分区。内核将每个分区视为位于`/dev`路径下的单独设备。磁盘分区一般存放三种信息：
+
+* 文件系统
+    * 用来存放常规文件
+* 数据区域
+    * 可做为裸设备对其进行访问，如数据库管理系统就使用了该技术
+* 交换区域
+    * 供内核的内存管理使用，如Linux系统中的`/proc/swaps`可查看已激活的交换区域信息
 
