@@ -114,7 +114,7 @@ Linux内核用三个相关的数据结构来表示打开的文件：
     * 可能是通过调用`dup()`、`dup2()`或`fcntl(...,F_DUPFD,...)`形成的，参考例子[fd_share](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/csapp/10/code/fd_share)
 * 多个进程中值相同的文件描述符指向同一个打开的文件句柄
     * 如图中，进程A的`fd2`和进程B的`fd2`
-    * 可能是在调用`fork()`后形成的
+    * 可能是在调用`fork()`后形成的，参考例子[fd_fork](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/csapp/10/code/fd_fork)
 * 不同的打开文件句柄指向i-node表中的相同条目
     * 如图中，打开文件表的i-node指针`1976`
     * 可能是对同一个文件发起`open()`调用后形成的
