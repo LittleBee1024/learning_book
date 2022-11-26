@@ -117,7 +117,7 @@ Linux内核用三个相关的数据结构来表示打开的文件：
     * 可能是在调用`fork()`后形成的，参考例子[fd_fork](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/csapp/10/code/fd_fork)
 * 不同的打开文件句柄指向i-node表中的相同条目
     * 如图中，打开文件表的i-node指针`1976`
-    * 可能是对同一个文件发起`open()`调用后形成的
+    * 可能是对同一个文件发起`open()`调用后形成的，参考例子[fd_open](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/csapp/10/code/fd_open)
 
 由上图可知，对于指向同一打开文件句柄的多个文件描述符，它们共享同一文件偏移量，打开的文件标志等属性。如果其中一个文件描述符修改了上述文件属性，会影响其他文件描述符，除了文件描述符标志(close-on-exec标志)，这一标志是文件描述符所私有的。
 
