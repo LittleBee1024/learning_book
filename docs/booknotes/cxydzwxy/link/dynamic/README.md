@@ -596,6 +596,7 @@ main_so6: clean inner outer_inner_so
         * 不影响运行期间的搜索路径
     * `-Wl,-rpath=<path>`和`-Xlinker -rpath <path>`
         * `-rpath`选项会影响运行期间的搜索路径，`ldd`会从此选项指定的目录种寻找
+        * `readelf -d <ELF>`可查看目标文件中指定的`rpath`路径
     * `export LD_LIBRARY_PATH=<path>`
         * 不影响运行期间的搜索路径
 * 运行期间
