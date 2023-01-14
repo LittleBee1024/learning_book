@@ -85,7 +85,11 @@ markdown_extensions:
   - pymdownx.highlight
   - pymdownx.inlinehilite
   # Enable content tabs
-  - pymdownx.superfences
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
   - pymdownx.tabbed:
       alternate_style: true
   # Enable footnote feature
@@ -147,6 +151,8 @@ nav:
       - booknotes/csapp/08/README.md
       - booknotes/csapp/09/README.md
       - booknotes/csapp/10/README.md
+    - 机器学习:
+      - booknotes/ml/naive_bayes/README.md
   - 专题:
     - topics/webassembly/README.md
     - topics/cmake/README.md
