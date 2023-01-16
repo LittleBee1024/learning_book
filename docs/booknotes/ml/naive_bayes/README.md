@@ -16,7 +16,7 @@ flowchart TB
 ```mermaid
 flowchart TB
     subgraph B[预测]
-    A2{{测试数据X}} --输入--> Model[训练的模型] --结合贝叶斯定理\n选择后验概率最大的Y--> Res[Y的预测值]
+    Data{{测试数据X}} --输入--> Model[朴素贝叶斯模型] --结合贝叶斯定理\n选择后验概率最大的Y--> Res[Y的预测值]
     end
 ```
 
