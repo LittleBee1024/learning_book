@@ -49,6 +49,46 @@ $$w^* = \sum_{i=1}^{N} \alpha_{i}^* y_{i} x_{i}$$
 
 $$b^* = y_{j} - \sum_{i=1}^{N} \alpha_{i}^* y_{i} (x_{i} \cdot x_{j})$$
 
+#### 例子
+
+已知一个如下图所示的训练数据集，其正例点是$x_{1}=(3,3)^T$，$x_{2}=(4,3)^T$，负例点是$x_{3}=(1,1)^T$。试用线性可分支持向量机的对偶问题，求解分离超平面。
+
+![](./images/svm_example1.png)
+
+**解** 根据所给数据，对偶问题是
+
+$$\begin{align*}
+\min _{\alpha}\quad
+&\frac{1}{2} \sum_{i=1}^{N} \sum_{j=1}^{N} \alpha_{i} \alpha_{j} y_{i} y_{j}\left(x_{i} \cdot x_{j}\right)-\sum_{i=1}^{N} \alpha_{i} \\
+&= \frac{1}{2} (18\alpha_{1}^2 + 25\alpha_{2}^2 + 2\alpha_{3}^2 + 42\alpha_{1}\alpha_{2} - 12\alpha_{1}\alpha_{3} - 14\alpha_{2}\alpha_{3}) - \alpha_{1} - \alpha_{2} - \alpha_{3} \\
+s.t. \quad
+&\alpha_{1} + \alpha_{2} - \alpha_{3} = 0 \\
+&\alpha_{i} \geqslant 0, \quad i=1,2,3
+\end{align*}$$
+
+将$\alpha_{3}=\alpha_{1}+\alpha_{2}$代入目标函数，求$s(\alpha_{1},\alpha_{2})$最小值：
+$$s(\alpha_{1},\alpha_{2}) = 4\alpha_{1}^2+\frac{13}{2}\alpha_{2}^2+10\alpha_{1}\alpha_{2}-2\alpha_{1}-2\alpha_{2}$$
+
+对$\alpha_{1},\alpha_{2}$求偏导数并令其为0，易知$s(\alpha_{1},\alpha_{2})$在点$(\frac{3}{2},-1)^T$取极值，但该点不满足约束条件$\alpha_{2} \geqslant 0$，所以最小值应在边界上达到。
+
+当$\alpha_{1} = 0$时，最小值是$s(0,\frac{2}{13})=-\frac{2}{13}$；当$\alpha_{1} = 0$时，最小值是$s(\frac{1}{4},0)=-\frac{1}{4}$。因此，$s(\alpha_{1},\alpha_{2})$在$(\frac{1}{4},0)^T$达到最小，此时$\alpha_{3}=\frac{1}{4}$。
+
+这样，$\alpha_{1}^*=\alpha_{3}^*=\frac{1}{4}$对应的实例点$x_{1},x_{3}$是支持向量。
+
+根据$\alpha_{1}^*,\alpha_{2}^*,\alpha_{3}^*$的值求$w^*$，并选取正分量$\alpha_{1}^*$求$b^*$：
+
+$$\begin{align*}
+w^{(1)*} &= \sum_{i=1}^{3} \alpha_{i}^* y_{i} x_{i}^
+{(1)} = \frac{1}{4}*3 -  \frac{1}{4}*1 = \frac{1}{2} \\
+w^{(2)*} &= \frac{1}{2} \\
+b^* &= y_{1} - \sum_{i=1}^{3} \alpha_{i}^* y_{i} (x_{i} \cdot x_{1}) \\
+&= 1 - (\frac{1}{4}*18 - \frac{1}{4}*6) = -2
+\end{align*}$$
+
+因此，分离超平面为：
+
+$$\frac{1}{2}x^{(1)}+\frac{1}{2}x^{(2)}-2 = 0$$
+
 ### 线性支持向量机
 
 ### 非线性支持向量机
