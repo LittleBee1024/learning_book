@@ -35,7 +35,7 @@ $$w^{*} \cdot x+b^{*}=0$$
 
 $$f(x)=\operatorname{sign}\left(w^{*} \cdot x+b^{*}\right)$$
 
-利用拉格朗日对偶性可将上述原始问题转化为对偶问题，其证明过程可参考[文章](https://zhuanlan.zhihu.com/p/77560876)：
+利用拉格朗日对偶性可将上述原始问题转化为对偶问题([参考](https://zhuanlan.zhihu.com/p/77560876))：
 
 $$\min \frac{1}{2} \sum_{i=1}^{N} \sum_{j=1}^{N} \alpha_{i} \alpha_{j} y_{i} y_{j}\left(x_{i} \cdot x_{j}\right)-\sum_{i=1}^{N} \alpha_{i}$$
 
