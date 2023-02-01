@@ -181,10 +181,22 @@ $$K(x,z) = \phi(x) \cdot \phi(z)$$
 
 其中，$\phi$是输入空间$\mathbf{R}^n$到特征空间$\mathcal{H}$的映射，特征空间$\mathcal{H}$一般是高维的。
 
-在线性支持向量机的对偶问题只涉及输入实例之间的内积，用核函数代替后，对偶问题的目标函数成为：
+由于线性支持向量机的对偶问题只涉及输入实例之间的内积，用核函数代替后，对偶问题的目标函数成为：
 
 $$W(\alpha) = \frac{1}{2} \sum_{i=1}^{N} \sum_{j=1}^{N} \alpha_{i} \alpha_{j} y_{i} y_{j}K(x_{i} \cdot x_{j})-\sum_{i=1}^{N} \alpha_{i}$$
 
 同样，分类决策函数变为：
 
 $$f(x)=\operatorname{sign}(\sum_{i=1}^{N} \alpha_i^* y_iK(x, x_i)+b^{*})$$
+
+#### 常用核函数
+
+* 多项式核函数(polynomial kernel function)
+
+$$K(x,z) = (x \cdot z + 1)^p$$
+
+* 高斯核函数(Gaussian kernel function)
+
+$$K(x,z) = \operatorname{exp}(-\frac{\|x-z\|^2}{2 \sigma ^2})$$
+
+
