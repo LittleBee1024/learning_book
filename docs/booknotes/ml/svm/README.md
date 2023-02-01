@@ -117,7 +117,11 @@ $$\min _{w, b, \xi} \frac{1}{2}\|w\|^{2}+C \sum_{i=1}^{N} \xi_{i}$$
 
 这里，$C > 0$称为惩罚参数，一般由应用问题决定。$C$值越大对误分类的惩罚越大，误分点越少。
 
-引入松弛变量$\xi_i$后，硬间隔最大化问题转化为软间隔最大化的问题，其原始问题的对偶问题变为：
+引入松弛变量$\xi_i$后，硬间隔最大化问题转化为软间隔最大化的问题，其原始问题的拉格朗日函数是：
+
+$$L(w,b,\xi,\alpha,\mu) \equiv \frac{1}{2}\|w\|^{2} + C \sum_{i=1}^{N}\xi_i - \sum_{i=1}^{N}\alpha_i(y_i(w \cdot x_i+b)-1+\xi_i) - \sum_{i=1}^{N}\mu_i \xi_i $$
+
+其中，$\alpha_i \geqslant 0$ 且 $\mu_i \geqslant 0$，对拉格朗日求极值，得到原始问题的对偶问题：
 
 $$\min _{\alpha} \frac{1}{2} \sum_{i=1}^{N} \sum_{j=1}^{N} \alpha_{i} \alpha_{j} y_{i} y_{j}\left(x_{i} \cdot x_{j}\right)-\sum_{i=1}^{N} \alpha_{i}$$
 
