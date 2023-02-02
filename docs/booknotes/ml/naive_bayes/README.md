@@ -60,7 +60,7 @@ $$P(x_i | y_k)=\frac{1}{\sqrt{2\pi\sigma^2_{yk}}}exp(-\frac{(x_i-\mu_{yk})^2}{2\
 
 方差： $\sigma^2=\frac{\sum(X-\mu)^2}{N}$
 
-训练出概率分布模型后，将测试数据$x$输入分到后验概率最大的类$y$：
+训练出概率分布模型后，将测试数据 $x$ 输入分到后验概率最大的类 $y$：
 
 $$y=\arg \max _{c_{k}} P\left(Y=c_{k}\right) \prod_{j=1}^{n} P\left(X_{j}=x^{(j)} | Y=c_{k}\right)$$
 
