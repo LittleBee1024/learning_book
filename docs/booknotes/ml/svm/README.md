@@ -217,6 +217,16 @@ SMO算法的基本思路是：如果所有变量的解都满足此最优化问�
 * 求解两个变量二次规划的解析方法
 * 选择变量的启发式方法
 
+对于训练样本点 $(x_i, y_i)$的KKT条件是：
+
+$$\alpha_i = 0 \Leftrightarrow y_ig(x_i) \geqslant 1$$
+
+$$0 < \alpha_i < C \Leftrightarrow y_ig(x_i) = 1$$
+
+$$\alpha_i = C \Leftrightarrow y_ig(x_i) \leqslant 1$$
+
+其中， $g(x_i) = \sum_{j=1}^{N} a_j y_j K(x_i, x_j) + b$。
+
 ## 实验
 
 
