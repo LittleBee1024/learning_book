@@ -33,11 +33,11 @@ $$s.t. \quad y_{i}\left(w \cdot x_{i}+b\right)-1 \geqslant 0, \quad i=1,2, \cdot
 
 求得最优化问题的解为 $w^\ast$， $b^\ast$，得到线性可分支持向量机，分离超平面是：
 
-$$w^{*} \cdot x+b^{*}=0$$
+$$w^\ast \cdot x+b^\ast=0$$
 
 分类决策函数是：
 
-$$f(x)=\operatorname{sign}\left(w^{*} \cdot x+b^{*}\right)$$
+$$f(x)=\operatorname{sign}\left(w^\ast \cdot x+b^\ast\right)$$
 
 利用拉格朗日对偶性可将上述原始问题转化为对偶问题([参考](https://zhuanlan.zhihu.com/p/77560876))：
 
@@ -91,9 +91,9 @@ $$s(\alpha_{1},\alpha_{2}) = 4\alpha_{1}^2+\frac{13}{2}\alpha_{2}^2+10\alpha_{1}
 根据 $\alpha_{1}^\ast,\alpha_{2}^\ast,\alpha_{3}^\ast$ 的值求 $w^\ast$，并选取正分量 $\alpha_{1}^\ast$ 求 $b^\ast$：
 
 $$\begin{align*}
-w^{(1)*} &= \sum_{i=1}^{3} \alpha_{i}^\ast y_{i} x_{i}^
+w^{(1)\ast} &= \sum_{i=1}^{3} \alpha_{i}^\ast y_{i} x_{i}^
 {(1)} = \frac{1}{4}*3 -  \frac{1}{4}*1 = \frac{1}{2} \\
-w^{(2)*} &= \sum_{i=1}^{3} \alpha_{i}^\ast y_{i} x_{i}^
+w^{(2)\ast} &= \sum_{i=1}^{3} \alpha_{i}^\ast y_{i} x_{i}^
 {(2)} = \frac{1}{4}*3 -  \frac{1}{4}*1 = \frac{1}{2} \\
 b^\ast &= y_{1} - \sum_{i=1}^{3} \alpha_{i}^\ast y_{i} (x_{i} \cdot x_{1}) \\
 &= 1 - (\frac{1}{4}*18 - \frac{1}{4}*6) = -2
@@ -187,7 +187,7 @@ $$W(\alpha) = \frac{1}{2} \sum_{i=1}^{N} \sum_{j=1}^{N} \alpha_{i} \alpha_{j} y_
 
 同样，分类决策函数变为：
 
-$$f(x)=\operatorname{sign}(\sum_{i=1}^{N} \alpha_i^\ast y_iK(x, x_i)+b^{*})$$
+$$f(x)=\operatorname{sign}(\sum_{i=1}^{N} \alpha_i^\ast y_iK(x, x_i)+b^\ast)$$
 
 #### 常用核函数
 
