@@ -65,14 +65,14 @@ $$b^\ast = y_{j} - \sum_{i=1}^{N} \alpha_{i}^\ast y_{i} (x_{i} \cdot x_{j})$$
 
 **解** 根据所给数据，对偶问题是
 
-$$\begin{align*}
+$$\begin{aligned}
 \min _{\alpha}\quad
 &\frac{1}{2} \sum_{i=1}^{N} \sum_{j=1}^{N} \alpha_{i} \alpha_{j} y_{i} y_{j}\left(x_{i} \cdot x_{j}\right)-\sum_{i=1}^{N} \alpha_{i} \\
 &= \frac{1}{2} (18\alpha_{1}^2 + 25\alpha_{2}^2 + 2\alpha_{3}^2 + 42\alpha_{1}\alpha_{2} - 12\alpha_{1}\alpha_{3} - 14\alpha_{2}\alpha_{3}) - \alpha_{1} - \alpha_{2} - \alpha_{3} \\
 s.t. \quad
 &\alpha_{1} + \alpha_{2} - \alpha_{3} = 0 \\
 &\alpha_{i} \geqslant 0, \quad i=1,2,3
-\end{align*}$$
+\end{aligned}$$
 
 将 $\alpha_{3}=\alpha_{1}+\alpha_{2}$ 代入目标函数，求 $s(\alpha_{1},\alpha_{2})$ 最小值：
 
@@ -90,14 +90,13 @@ $$s(\alpha_{1},\alpha_{2}) = 4\alpha_{1}^2+\frac{13}{2}\alpha_{2}^2+10\alpha_{1}
 
 根据 $\alpha_{1}^\ast,\alpha_{2}^\ast,\alpha_{3}^\ast$ 的值求 $w^\ast$，并选取正分量 $\alpha_{1}^\ast$ 求 $b^\ast$：
 
-$$\begin{align*}
+$$\begin{aligned}
 w^{(1)\ast} &= \sum_{i=1}^{3} \alpha_{i}^\ast y_{i} x_{i}^
 {(1)} = \frac{1}{4}*3 -  \frac{1}{4}*1 = \frac{1}{2} \\
 w^{(2)\ast} &= \sum_{i=1}^{3} \alpha_{i}^\ast y_{i} x_{i}^
 {(2)} = \frac{1}{4}*3 -  \frac{1}{4}*1 = \frac{1}{2} \\
-b^\ast &= y_{1} - \sum_{i=1}^{3} \alpha_{i}^\ast y_{i} (x_{i} \cdot x_{1}) \\
-&= 1 - (\frac{1}{4}*18 - \frac{1}{4}*6) = -2
-\end{align*}$$
+b^\ast &= y_{1} - \sum_{i=1}^{3} \alpha_{i}^\ast y_{i} (x_{i} \cdot x_{1}) = 1 - (\frac{1}{4}*18 - \frac{1}{4}*6) = -2
+\end{aligned}$$
 
 因此，分离超平面为：
 
