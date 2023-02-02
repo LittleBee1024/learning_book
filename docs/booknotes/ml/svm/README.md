@@ -199,4 +199,22 @@ $$K(x,z) = (x \cdot z + 1)^p$$
 
 $$K(x,z) = \operatorname{exp}(-\frac{\|x-z\|^2}{2 \sigma ^2})$$
 
+### SMO算法
+
+序列最小最优化(sequential minimal optimization, SMO)算法可以快速求解SVM中的凸二次规划问题，其对偶问题是：
+
+$$\min _{\alpha} \frac{1}{2} \sum_{i=1}^{N} \sum_{j=1}^{N} \alpha_{i} \alpha_{j} y_{i} y_{j}K(x_{i} , x_{j})-\sum_{i=1}^{N} \alpha_{i}$$
+
+$$s.t. \quad \sum_{i=1}^{N} \alpha_{i} y_{i}=0$$
+
+$$0 \leqslant \alpha_{i} \leqslant C, \quad i=1,2, \cdots, N$$
+
+在这个问题中，变量是拉格朗日乘子，一个变量$\alpha_i$对应于一个样本点$(x_i,y_i)$，变量的总数等于训练样本容量$N$。
+
+SMO算法的基本思路是：如果所有变量的解都满足此最优化问题的KKT条件，那么这个最优化问题的解就得到了。否则，选择两个变量，固定其他变量，针对这两个变量构建一个二次规划问题。这时的子问题只关注两个变量，可大大提高计算速度。子问题有两个变量，一个是违反KKT条件最严重的那一个，另一个由约束条件$\sum \alpha_i y_i = 0$自动确定。如此，SMO算法将原问题不断分解为子问题并对子问题求解，进而达到求解原问题的目的。
+
+整个SMO算法包括：
+
+* 求解两个变量二次规划的解析方法
+* 选择变量的启发式方法
 
