@@ -321,9 +321,103 @@ plot_svc_decision_function(model_soft, ax[1])
 
 ### 非线性支持向量机
 
+`sklearn`提供了多种核函数的非线性支持向量机。下面我们分别选择“多项式核(二次)”和“高斯核”，对非线性数据进行分类预测：
+
+* 多项式核
+    * ["svm_nonlinear_poly.ipynb"](https://github.com/LittleBee1024/learning_book/blob/main/docs/booknotes/ml/svm/code/svm_nonlinear_poly.ipynb)
+
+* 高斯核
+    * ["svm_nonlinear_rbf.ipynb"](https://github.com/LittleBee1024/learning_book/blob/main/docs/booknotes/ml/svm/code/svm_nonlinear_rbf.ipynb)
+
+#### 准备数据
+
+我们利用`sklearn`提供的`make_circles`产生了可以被椭圆分隔的两组数据，即非线性可分。
+
+```python
+import matplotlib.pyplot as plt
+from sklearn.datasets import make_circles
+
+def load_data(test_size_perc):
+    size = 500
+    test_size = int(size * test_size_perc)
+    X, y = make_circles(size, factor=.1, noise=.2)
+    X_train = X[:-test_size]
+    y_train = 2 * y[:-test_size] - 1 # convert to 1 or -1
+    X_test = X[-test_size:]
+    y_test = 2 * y[-test_size:] - 1 # convert to 1 or -1
+    return X_train, X_test, y_train, y_test
+
+X_train, X_test, y_train, y_test = load_data(0.2)
+
+# Plotting the training set
+fig, ax = plt.subplots()
+# adding major gridlines
+ax.grid(color='grey', linestyle='-', linewidth=0.25, alpha=0.5)
+ax.scatter(X_train[:,0], X_train[:,1], c=y_train, cmap='RdBu')
+ax.scatter(X_test[:,0], X_test[:,1], c=y_test, alpha=0.1, cmap='RdBu')
+```
+同样的，我们选取一部分数据进行测试，即下图中透明的点：
+![](./images/svm_nonlinear_data.png)
+
 #### 多项式核
 
+训练采用二次多项式核的支持向量机模型：
+
+```python
+from sklearn.svm import SVC
+
+model = SVC(kernel='poly', degree=2)
+model.fit(X_train, y_train)
+```
+
+测试模型，对比测试数据的预测结果和实际结果：
+
+```python
+from sklearn.metrics import accuracy_score
+predictions_poly = model.predict(X_test)
+accuracy_poly = accuracy_score(y_test, predictions_poly)
+print("SVM 2nd degree polynomial kernel accuracy: " + str(accuracy_poly))
+```
+
+二次多项式核的支持向量机的准确度如下：
+
+```bash
+SVM 2nd degree polynomial kernel accuracy: 0.98
+```
+
+下图展示了该模型的分离超平面和支持向量：
+
+![](./images/svm_nonlinear_poly.png)
+
 #### 高斯核
+
+训练采用高斯核支持向量机模型：
+
+```python
+from sklearn.svm import SVC
+
+model = SVC(kernel='rbf', C=100, gamma='auto')
+model.fit(x_train, y_train)
+```
+
+测试模型，对比测试数据的预测结果和实际结果：
+
+```python
+from sklearn.metrics import accuracy_score
+predictions_rbf = model.predict(x_test)
+accuracy_rbf = accuracy_score(y_test, predictions_rbf)
+print("SVM RBF kernel accuracy: " + str(accuracy_rbf))
+```
+
+高斯核的支持向量机的准确度如下：
+
+```bash
+SVM RBF kernel accuracy: 0.98
+```
+
+下图展示了该模型的分离超平面和支持向量：
+
+![](./images/svm_nonlinear_rbf.png)
 
 ### 支持向量机SMO实现
 
