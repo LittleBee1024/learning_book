@@ -217,7 +217,7 @@ SMO算法的基本思路是：如果所有变量的解都满足此最优化问�
 * 求解两个变量二次规划的解析方法
 * 选择变量的启发式方法
 
-对于训练样本点 $(x_i, y_i)$的KKT条件是：
+其中，对于训练样本点 $(x_i, y_i)$的KKT条件是：
 
 $$\alpha_i = 0 \Leftrightarrow y_ig(x_i) \geqslant 1$$
 
@@ -228,5 +228,103 @@ $$\alpha_i = C \Leftrightarrow y_ig(x_i) \leqslant 1$$
 其中， $g(x_i) = \sum_{j=1}^{N} a_j y_j K(x_i, x_j) + b$。
 
 ## 实验
+
+### 线性支持向量机
+
+["svm_linear.ipynb"](https://github.com/LittleBee1024/learning_book/blob/main/docs/booknotes/ml/svm/code/svm_linear.ipynb)利用`sklearn`的线性支持向量机，对鸢尾花数据集进行了分类学习。其中，根据惩罚参数`C`的选择不同，我们对比了硬间隔最大化和软间隔最大化的区别。
+
+#### 准备数据
+
+如下图，我们选取两种鸢尾花，一部分数据用于线性支持向量机的训练(图中实心的点)，另一部分用于测试(图中透明的点)。
+
+![](./images/svm_linear_data.png)
+
+
+#### 训练模型
+
+我们使用`sklearn`支持向量机分类器`SVC`来训练一个线性支持向量机模型。
+
+`SVC`有一个参数`C`，称为惩罚参数，其值一般由应用问题决定。当C值大时对误分类的惩罚增大，当C值小时对误分类的惩罚减小。如果数据线性可分，我们可以增大`C`，以增加准确度。如果数据线性不可分，则应该减小`C`，以容许一定量的误分类存在。
+
+```python
+from sklearn.svm import SVC # 支持向量分类器
+# C值大，减少误分类，针对线性可分数据，硬间隔最大化
+model_hard = SVC(kernel='linear', C=1E10)
+model_hard.fit(X_train, y_train)
+# C值小，容许误分类，针对线性不可分数据，软间隔最大化
+model_soft = SVC(kernel='linear', C=1)
+model_soft.fit(X_train, y_train)
+```
+
+#### 预测分类
+
+下面的代码通过对比测试数据的实际结果和预测结果，发现两个模型的准确率都达到了100%。
+```python
+from sklearn.metrics import accuracy_score
+
+predictions_hard = model_hard.predict(X_test)
+accuracy_hard = accuracy_score(y_test, predictions_hard)
+print("SVM hard linear kernel accuracy: " + str(accuracy_hard))
+
+predictions_soft = model_soft.predict(X_test)
+accuracy_soft = accuracy_score(y_test, predictions_hard)
+print("SVM soft linear kernel accuracy: " + str(accuracy_soft))
+```
+输出结果：
+```bash
+SVM hard linear kernel accuracy: 1.0
+SVM soft linear kernel accuracy: 1.0
+```
+
+为了更进一步地展示模型的特点，下面我们画出了两个模型的决策边界和支持向量机。
+```python
+def plot_svc_decision_function(model, ax):
+    assert ax is not None
+    xlim = ax.get_xlim()
+    ylim = ax.get_ylim()
+
+    # 创建网格来展示数据
+    x = np.linspace(xlim[0], xlim[1], 30)
+    y = np.linspace(ylim[0], ylim[1], 30)
+    Y, X = np.meshgrid(y, x)
+    xy = np.vstack([X.ravel(), Y.ravel()]).T
+    # 超平面S在坐标(x,y)下对应的值
+    P = model.decision_function(xy).reshape(X.shape)
+
+    # 绘制边界和间距，即超平面S的等高线：f(x,y)=0, f(x,y)=1, f(x,y)=-1
+    ax.contour(X, Y, P, colors='k', levels=[-1, 0, 1], alpha=0.5, linestyles=['--', '-', '--'])
+
+    # 绘制支持向量
+    ax.scatter(model.support_vectors_[:, 0], model.support_vectors_[:, 1], s=200, edgecolors='k', facecolors='none')
+
+    ax.set_xlim(xlim)
+    ax.set_ylim(ylim)
+
+fig, ax = plt.subplots(2, 1, constrained_layout=True)
+
+ax[0].scatter(X_train[:, 0], X_train[:, 1], c=y_train, s=50, cmap='RdBu')
+ax[0].scatter(X_test[:, 0], X_test[:, 1], c=y_test, s=50, alpha=0.3, cmap='RdBu')
+ax[0].set_ylabel('sepal_width')
+ax[0].set_title("hard max margin")
+plot_svc_decision_function(model_hard, ax[0])
+
+ax[1].scatter(X_train[:, 0], X_train[:, 1], c=y_train, s=50, cmap='RdBu')
+ax[1].scatter(X_test[:, 0], X_test[:, 1], c=y_test, s=50, alpha=0.3, cmap='RdBu')
+ax[1].set_xlabel('sepal_length')
+ax[1].set_ylabel('sepal_width')
+ax[1].set_title("soft max margin")
+plot_svc_decision_function(model_soft, ax[1])
+
+```
+可以发现，硬间隔最大化由于惩罚参数`C`较大，所有样本都正确分布在了决策边界两侧，支持向量位于边界上。而软间隔最大化，支持向量可分布边界内(甚至允许存在误分点)，对于样本的噪声有更大的容忍度。
+![](images/svm_linear_pred.png)
+
+### 非线性支持向量机
+
+#### 多项式核
+
+#### 高斯核
+
+### 支持向量机SMO实现
 
 
