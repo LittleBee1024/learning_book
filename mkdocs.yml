@@ -155,6 +155,7 @@ nav:
       - booknotes/ml/naive_bayes/README.md
       - booknotes/ml/perceptron/README.md
       - booknotes/ml/svm/README.md
+      - booknotes/ml/decision_tree/README.md
   - 专题:
     - topics/webassembly/README.md
     - topics/cmake/README.md
