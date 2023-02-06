@@ -26,6 +26,27 @@ $$\begin{aligned} P(X&=x | Y=c_{k} )=P\left(X^{(1)}=x^{(1)}, \cdots, X^{(n)}=x^{
 
 这是一个较强的假设。由于这一假设，模型包含的条件概率的数量大为减少，朴素贝叶斯法的学习与预测大为简化。因而朴素贝叶斯法高效，且易于实现。其缺点是分类的性能不一定很高。
 
+朴素贝叶斯法分类时，对给定的输入 $x$，通过学习到的模型计算后验概率分布 $P(Y=c_k | X=x)$，将后验概率最大的类作为 $x$ 的类输出。后验概率计算根据贝叶斯定理进行：
+
+$$P(Y=c_k | X=x) = \frac{P(X=x | Y=c_k)P(Y=c_k)}{\sum_{k} P(X=x | Y=c_k)P(Y=c_k)}$$
+
+根据“条件独立性”假设，得到：
+
+$$P(Y=c_k | X=x) = \frac{P(Y=c_k) \prod_{j}P(X^{(j)}=x^{(j)}|Y=c_k)}{\sum_{k} P(Y=c_k) \prod_{j}P(X^{(j)}=x^{(j)}|Y=c_k} , k=1,2,...,K$$
+
+为了找到后验概率最大的分类(一共 $K$ 种分类)， 只需要计算下面公式：
+
+$$y=\arg \max _{c_{k}} P\left(Y=c_{k}\right) \prod_{j=1}^{n} P\left(X_{j}=x^{(j)} | Y=c_{k}\right)$$
+
+后验概率最大等价于0-1损失函数时的期望风险最小化。
+
+根据特征概率模型 $P(X^{(j)=}x^{(j)}|Y=c_k)$ 的不同，常见的朴素贝叶斯模型有：
+
+* 高斯模型
+* 多项式模型
+* 伯努利模型
+
+
 ## [高斯朴素贝叶斯分类器](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/ml/naive_bayes/code/gaussianNB.ipynb)
 ### 准备数据
 本文的训练/测试数据都来自`sklearn`的高斯混合模型(Gaussian Mixture Model)：
