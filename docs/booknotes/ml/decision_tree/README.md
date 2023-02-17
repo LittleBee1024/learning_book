@@ -190,3 +190,11 @@ $\operatorname{Gini}(D,A_4=3)$ 最小，选择 $A_4=3$ 为最优切分点。
 对于本问题，按照CART算法所生成的决策树与按照ID3算法所生成的决策树完全一致。
 
 ## 实验
+
+决策树分类器的算法相对清晰，这里提供两个例子：
+
+* 基于ID3算法实现决策树分类器
+    * [“decision_tree.py”](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/ml/decision_tree/code/decision_tree.py)
+
+* 利用`sklearn.tree`中的`DecisionTreeClassifier`直接对数据进行决策树分类
+    * [“decision_tree_classifier.ipynb”](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/ml/decision_tree/code/decision_tree_classifier.ipynb)
