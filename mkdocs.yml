@@ -152,6 +152,7 @@ nav:
       - booknotes/csapp/09/README.md
       - booknotes/csapp/10/README.md
     - 机器学习:
+      - booknotes/ml/linear_reg/README.md
       - booknotes/ml/naive_bayes/README.md
       - booknotes/ml/decision_tree/README.md
       - booknotes/ml/perceptron/README.md
