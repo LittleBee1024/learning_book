@@ -61,7 +61,7 @@ $$ \theta^{(next step)} = \theta - \eta \bigtriangledown_{\theta} MSE(\theta)$$
 
 梯度向量的计算包含了整个训练集 $X$，因此这个算法称为**批量梯度下降**。
 
-[例子“batch_gradient_descent.ipynb”](https://github.com/LittleBee1024/learning_book/blob/main/docs/booknotes/ml/linear_reg/code/normal_equation.ipynb)分别选择了“0.02, 0.1, 0.5”三种学习率，观察每次迭代的变化情况。
+[例子“batch_gradient_descent.ipynb”](https://github.com/LittleBee1024/learning_book/blob/main/docs/booknotes/ml/linear_reg/code/batch_gradient_descent.ipynb)分别选择了“0.02, 0.1, 0.5”三种学习率，观察每次迭代的变化情况。
 
 ![](./images/batch_gd.png)
 
