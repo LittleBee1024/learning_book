@@ -61,7 +61,7 @@ $$ \theta^{(next step)} = \theta - \eta \bigtriangledown_{\theta} MSE(\theta)$$
 
 梯度向量的计算包含了整个训练集 $X$，因此这个算法称为**批量梯度下降**。
 
-[例子“batch_gradient_descent.ipynb”](https://github.com/LittleBee1024/learning_book/blob/main/docs/booknotes/ml/linear_reg/code/batch_gradient_descent.ipynb)分别选择了“0.02, 0.1, 0.5”三种学习率，观察每次迭代的变化情况。
+[例子“gradient_descent.ipynb”](https://github.com/LittleBee1024/learning_book/blob/main/docs/booknotes/ml/linear_reg/code/gradient_descent.ipynb)中“批量梯度下降”相关章节，分别选择了“0.02, 0.1, 0.5”三种学习率，观察每次迭代的变化情况，其结果如下图：
 
 ![](./images/batch_gd.png)
 
@@ -79,13 +79,15 @@ $$ \theta^{(next step)} = \theta - \eta \bigtriangledown_{\theta} MSE(\theta)$$
 
 虽然随机性可以很好地跳过局部最优值(损失函数不规则)，但同时它却不能达到最小值(在附件摆动)。解决办法是逐渐降低学习率。开始时，走的每一步较大(有助于跳过局部最小值)，然后学习率变得越来越小，从而使算法达到局部最小值。
 
-[例子“stochastic_gradient_descent.ipynb”](https://github.com/LittleBee1024/learning_book/blob/main/docs/booknotes/ml/linear_reg/code/stochastic_gradient_descent.ipynb)实现了这样的随机梯度下降算法，其中`learning_schedule`决定了每次迭代的学习率函数，迭代次数越大，其值越小。
+[例子“gradient_descent.ipynb”](https://github.com/LittleBee1024/learning_book/blob/main/docs/booknotes/ml/linear_reg/code/gradient_descent.ipynb)中“随机梯度下降”章节，实现了随机梯度下降算法，其中`learning_schedule`决定了每次迭代的学习率函数，迭代次数越大，其值越小。
 
 ### 小批量梯度下降
 
 在迭代的每一步，批量梯度使用整个训练集，随机梯度仅仅使用一个实例。但是，在小批量梯度下降中，它使用一个随机的小型实例集。它比随机梯度的主要优点在于你可以通过矩阵运算的硬件优化得到一个较好的训练表现，尤其当你使用GPU进行运算的时候。
 
-## 总结
+[例子“gradient_descent.ipynb”](https://github.com/LittleBee1024/learning_book/blob/main/docs/booknotes/ml/linear_reg/code/gradient_descent.ipynb)中“小批量梯度下降”章节，实现了这一算法。
+
+### 总结
 
 下表比较了线性回归的不同算法：
 
@@ -96,8 +98,8 @@ $$ \theta^{(next step)} = \theta - \eta \bigtriangledown_{\theta} MSE(\theta)$$
 | Stochastic GD   | Fast | Yes | Fast | >=2 | Yes | SGDRegressor     |
 | Mini-batch GD   | Fast | Yes | Fast | >=2 | Yes | N/A              |
 
-其中，`m`表示样本数，`n`表示特征数。
+其中，`m`表示样本数，`n`表示特征数。[例子“sklearn_reg.ipynb”](https://github.com/LittleBee1024/learning_book/blob/main/docs/booknotes/ml/linear_reg/code/sklearn_reg.ipynb)利用了`sklear`提供的回归模型进行了相关实验。
 
-下图显示了训练期间三种梯度下降算法在参数空间中所采用的路径。它们都接近最小值，但批量梯度的路径最后停在了最小值，而随机梯度和小批量梯度最后都在最小值附件摆动。
+下图显示了训练期间三种梯度下降算法在参数空间中所采用的路径。它们都接近最小值，但批量梯度的路径最后停在了最小值，而随机梯度和小批量梯度最后都在最小值附件摆动，其相关代码可参考[例子“gradient_descent.ipynb”](https://github.com/LittleBee1024/learning_book/blob/main/docs/booknotes/ml/linear_reg/code/gradient_descent.ipynb)中的最后一部分总结。
 
 ![](./images/reg_vs.png)
