@@ -82,3 +82,22 @@ $$ \theta^{(next step)} = \theta - \eta \bigtriangledown_{\theta} MSE(\theta)$$
 [例子“stochastic_gradient_descent.ipynb”](https://github.com/LittleBee1024/learning_book/blob/main/docs/booknotes/ml/linear_reg/code/stochastic_gradient_descent.ipynb)实现了这样的随机梯度下降算法，其中`learning_schedule`决定了每次迭代的学习率函数，迭代次数越大，其值越小。
 
 ### 小批量梯度下降
+
+在迭代的每一步，批量梯度使用整个训练集，随机梯度仅仅使用一个实例。但是，在小批量梯度下降中，它使用一个随机的小型实例集。它比随机梯度的主要优点在于你可以通过矩阵运算的硬件优化得到一个较好的训练表现，尤其当你使用GPU进行运算的时候。
+
+## 总结
+
+下表比较了线性回归的不同算法：
+
+| Algorithm | Large m | Out-of-core support | Large n | Hyper-params | Scaling required | Scikit-Learn |
+| --- | --- | --- | --- | --- | --- | --- |
+| Normal Equation | Fast | No  | Slow | 0   | No  | LinearRegression |
+| Batch GD        | Slow | No  | Fast | 2   | Yes | N/A              |
+| Stochastic GD   | Fast | Yes | Fast | >=2 | Yes | SGDRegressor     |
+| Mini-batch GD   | Fast | Yes | Fast | >=2 | Yes | N/A              |
+
+其中，`m`表示样本数，`n`表示特征数。
+
+下图显示了训练期间三种梯度下降算法在参数空间中所采用的路径。它们都接近最小值，但批量梯度的路径最后停在了最小值，而随机梯度和小批量梯度最后都在最小值附件摆动。
+
+![](./images/reg_vs.png)
