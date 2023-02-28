@@ -103,3 +103,8 @@ $$ \theta^{(next step)} = \theta - \eta \bigtriangledown_{\theta} MSE(\theta)$$
 下图显示了训练期间三种梯度下降算法在参数空间中所采用的路径。它们都接近最小值，但批量梯度的路径最后停在了最小值，而随机梯度和小批量梯度最后都在最小值附件摆动，其相关代码可参考[例子“gradient_descent.ipynb”](https://github.com/LittleBee1024/learning_book/blob/main/docs/booknotes/ml/linear_reg/code/gradient_descent.ipynb)中的最后一部分总结。
 
 ![](./images/reg_vs.png)
+
+## 多项式回归
+
+
+## 线性模型的正则化
