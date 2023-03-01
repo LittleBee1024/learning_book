@@ -115,4 +115,8 @@ $$ \theta^{(next step)} = \theta - \eta \bigtriangledown_{\theta} MSE(\theta)$$
 
 ## 线性模型的正则化
 
+### 岭(Ridge)回归
 
+### Lasso回归
+
+### 弹性网络(ElasticNet)
