@@ -106,5 +106,13 @@ $$ \theta^{(next step)} = \theta - \eta \bigtriangledown_{\theta} MSE(\theta)$$
 
 ## 多项式回归
 
+如果训练数据不是线性的，也可以通过特征扩展，利用线性回归模型进行预测。
+
+`sklearn`提供了`PolynomialFeatures`类进行训练数据集的转换。例如，如果有两个特征 $a, b$，使用3阶(degree=3)的`PolynomialFeatures`，不仅会产生 $a^2,a^3,b^2,b^3$，还会产生其他组合 $ab, a^2b, ab^2$。
+
+完成对训练数据集的转换后，就可以通过`LinearRegression`进行线性预测了。[例子“polynomial_reg.ipynb”](https://github.com/LittleBee1024/learning_book/blob/main/docs/booknotes/ml/linear_reg/code/polynomial_reg.ipynb)对非线性数据(二次多项式)，通过线性模型进行了预测。
+
 
 ## 线性模型的正则化
+
+
