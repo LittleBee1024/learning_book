@@ -135,4 +135,10 @@ $$J(\theta) = MSE(\theta) + \alpha \frac{1}{2} \sum_{i=1}^{n}\theta_i^2$$
 
 ### Lasso回归
 
+Lasso回归和岭回归一样，也在损失函数上添加了一个正则化项，但是它使用权重向量的 $ \ell^1 $ 范数，而不是去那种向量$ \ell^2 $ 范数平方的一半。
+
+Lasso回归的损失函数是：
+
+$$J(\theta) = MSE(\theta) + \alpha \sum_{i=1}^{n}\left | \theta_i \right |$$
+
 ### 弹性网络(ElasticNet)
