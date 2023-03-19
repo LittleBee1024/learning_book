@@ -142,3 +142,18 @@ Lasso回归的损失函数是：
 $$J(\theta) = MSE(\theta) + \alpha \sum_{i=1}^{n}\left | \theta_i \right |$$
 
 ### 弹性网络(ElasticNet)
+
+弹性网络介于Ridge回归和Lasso回归之间。它的正则项是Ridge回归和Lasso回归正则项的简单混合，同时你可以控制他们的混合率 $r$。当 $r=0$ 时，弹性网络就是Ridge回归；当 $r=1$ 时，就是Lasso回归。
+
+弹性网络损失函数是：
+
+$$J(\theta) = MSE(\theta) + r\alpha \sum_{i=1}^{n}\left | \theta_i \right | + \frac{1-r}{2} \alpha \sum_{i=1}^{n}\theta_i^2$$
+
+### 总结
+
+我们应该如何选择线性回归，岭回归，Lasso回归或者弹性网络呢？
+
+一般来说，有一点正则项的表现更好，因此通常应该避免使用简单的线性回归。岭回归是一个很好的首选项，但是如果你的特征仅有少数是真正有用的，应该选择Lasso回归或弹性网络。因为，他们能将无用特征的权重降为零。
+
+[例子“regularized_linear_models.ipynb”](https://github.com/LittleBee1024/learning_book/blob/main/docs/booknotes/ml/linear_reg/code/regularized_linear_models.ipynb)对三种线性模型的正则化方法进行了对比。
+
