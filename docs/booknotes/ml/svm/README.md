@@ -227,7 +227,22 @@ $$\alpha_i = C \Leftrightarrow y_ig(x_i) \leqslant 1$$
 
 其中， $g(x_i) = \sum_{j=1}^{N} a_j y_j K(x_i, x_j) + b$。
 
+
+### SVM回归
+
+SVM算法不仅支持线性核非线性的分类任务，还支持线性核非线性的回归任务。可以使用`sklearn`的`LinearSVR`类实现线性SVM回归，而`SVR`类(支持核技巧)可实现非线性SVM回归。
+
+[例子"svm_regression.ipynb"](https://github.com/LittleBee1024/learning_book/blob/main/docs/booknotes/ml/svm/code/svm_regression.ipynb)利用`sklearn`的`LinearSVR`核`SVR`完成了SVM的线性和非线性回归。
+
 ## 实验
+
+`sklearn`提供了三种SVM分类模型，其特点如下：
+
+| Class | Time Complexity | Out-of-core support | Scaling required | Kernel trick |
+| ----- | --------------- | ------------------- | ---------------- | ------------ |
+| LinearSVC | `O(m*n)` | No | Yes | No |
+| SGDClassifier | `O(m*n)` | Yes | Yes | No |
+| SVC | `O(m^2*n) to O(m^3*n)` | No | Yes | Yes |
 
 ### 线性支持向量机
 
