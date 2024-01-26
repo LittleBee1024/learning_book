@@ -65,7 +65,7 @@ int GlobalFunc(int i)
 
 其对应的原始数据可通过`objdump -s --section=.debug_info foo.o`命令查看：
 
-* `05 6900 01 02 14 44 00000002 916c 00`
+* `05 6900 01 02 14 44000000 02 916c 00`
 
 参数`int i`的DIE含义包括：
 
