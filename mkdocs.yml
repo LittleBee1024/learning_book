@@ -157,6 +157,8 @@ nav:
       - booknotes/ml/decision_tree/README.md
       - booknotes/ml/perceptron/README.md
       - booknotes/ml/svm/README.md
+    - 高效C/C++调试:
+      - booknotes/cpp_debug/01/README.md
   - 专题:
     - topics/webassembly/README.md
     - topics/cmake/README.md
