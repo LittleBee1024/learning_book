@@ -1,32 +1,32 @@
 CC=g++
-CFLAGS=
-LDFLAGS=
 
-SRCS=main.c mm_symbol.c
-OBJS=$(SRCS:.c=.o)
+SRCS=main.c
 
 .PHONY: clean main debug
 
-all: main sym
-
-%.o:%.c
-	$(CC) $(CFLAGS) -c $<
-
-main: $(OBJS)
-	$(CC) $(LDFLAGS) $(OBJS) -o $@
+all: clean sym sym_d main
 
 sym:
-	g++ -g -c -fPIC -o mm_symbol2.o mm_symbol.c
+	$(CC) -fPIC -shared -c mm_symbol.c -o mm_symbol.o
+	$(CC) -fPIC -shared mm_symbol.o -o libsym.so
+
+sym_d:
+	$(CC) -fPIC -shared -g -c mm_symbol.c -o mm_symbol_d.o
+	$(CC) -fPIC -shared mm_symbol_d.o -o libsym_d.so
+
+main:
+	$(CC) -c main.c -o main.o
+	$(CC) main.o -L. -lsym -o main -Wl,-rpath=.
 
 clean:
-	@rm -rf main *.o *.i *.s
+	@rm -rf main *.o *.i *.s *.so
 
 debug:
 	gdb -q ./main \
 	-ex 'run' \
 	-ex 'ptype FreeBlock' \
 	-ex 'p g_blocks' \
-	-ex 'add-symbol-file mm_symbol2.o' \
+	-ex 'add-symbol-file mm_symbol_d.o' \
 	-ex 'ptype FreeBlock' \
 	-ex 'p g_blocks'
 
