@@ -10,3 +10,4 @@ struct FreeBlock
 };
 
 extern FreeBlock g_blocks[2];
+void init();
