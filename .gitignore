@@ -41,3 +41,6 @@ client
 *.yo
 **/test_hcl/*.c
 **/test_hcl/*.v
+
+main_d
+*.sym
