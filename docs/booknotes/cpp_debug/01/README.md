@@ -93,5 +93,67 @@ GDB的断点就是利用`ptrace`实现的。假设函数`main`的起始地址为
 * GDB收到信号后，采取相应的动作。例如，如果存在断点且满足条件，GDB会等待用户调试命令
 * 如果我们继续执行程序，GDB会替换回`0x400590`处的原始指令，并使用`PTRACE_SINGLESTEP`请求执行单个指令
 
+## 调试技巧
 
+### add-symbol-file
+
+如果我们要调试的程序没有`debug`信息，可以通过`add-symbol-file`命令手动导入`debug`信息进行调试。["add-symbol-file"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cpp_debug/01/code/add-symbol-file)例子展示了如果利用`add-symbol-file`命令调试缺失调试信息的程序。
+
+```bash
+sh> gdb -q ./main
+Reading symbols from ./main...
+(No debugging symbols found in ./main)
+(gdb) b main
+Breakpoint 1 at 0x401136
+# 由于可执行文件“main”不包含调试信息，所以断点信息不全
+(gdb) info b
+Num     Type           Disp Enb Address            What
+1       breakpoint     keep y   0x0000000000401136 <main+4>
+# 用“add-symbol-file”导入包含调试信息的“main_d”
+(gdb) add-symbol-file main_d
+Reading symbols from main_d...
+# 断点在"main.c:6"处
+(gdb) info b
+Num     Type           Disp Enb Address            What
+1       breakpoint     keep y   0x000000000040113a in main() at main.c:6
+# 启动程序后，停在了断点处
+(gdb) r
+Breakpoint 1, main () at main.c:6
+6          init();
+# 由于“libsym.so”不包含调试信息，所以无法在“mm_symbol.c:init”处打断点
+(gdb) b mm_symbol.c:init
+No source file named mm_symbol.c.
+Make breakpoint pending on future shared library load? (y or [n]) y
+Breakpoint 2 (mm_symbol.c:init) pending.
+(gdb) info b
+Num     Type           Disp Enb Address            What
+1       breakpoint     keep y   0x000000000040113a in main() at main.c:6
+        breakpoint already hit 1 time
+2       breakpoint     keep y   <PENDING>          mm_symbol.c:init
+(gdb) info sharedlibrary 
+From                To                  Syms Read   Shared Object Library
+0x00007ffff7dd5030  0x00007ffff7df4214  Yes (*)     /lib64/ld-linux-x86-64.so.2
+0x00007ffff7ff1040  0x00007ffff7ff115d  Yes (*)     ./libsym.so
+# 导入"libsym_d.so"的调试信息“libsym.sym”到指定地址“0x00007ffff7ff1040”
+# 共享库地址可通过“info sharedlibrary”找到，“libsym.sym”由
+# “objcopy --only-keep-debug libsym_d.so libsym.sym”
+# 命令产生，当然也可以直接从“libsym_d.so”导入调试信息。
+(gdb) add-symbol-file libsym.sym 0x00007ffff7ff1040
+Reading symbols from libsym.sym...
+# 调试信息导入成功后，成功在“mm_symbol.c:init”处打上了断点
+(gdb) info b
+Num     Type           Disp Enb Address            What
+1       breakpoint     keep y   0x000000000040113a in main() at main.c:6
+        breakpoint already hit 1 time
+2       breakpoint     keep y   0x00007ffff7ff10f9 in init() at mm_symbol.c:7
+(gdb) c
+Continuing.
+Breakpoint 2, init () at mm_symbol.c:7
+7          g_blocks[0].size = 1;
+(gdb) c
+Continuing.
+g_blocks[0]=0x404040, g_blocks[0].size=1, g_blocks[0].prev=(nil), g_blocks[0].next=0x404058
+g_blocks[1]=0x404058, g_blocks[1].size=2, g_blocks[1].prev=0x404040, g_blocks[1].next=(nil)
+[Inferior 1 (process 22107) exited normally]
+```
 

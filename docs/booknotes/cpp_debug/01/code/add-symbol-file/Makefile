@@ -28,7 +28,7 @@ main_d:
 	objcopy --only-keep-debug main_d main.sym
 
 clean:
-	@rm -rf main *.o *.i *.s *.so *.sym
+	@rm -rf main *.o *.i *.s *.so *.sym main_d
 
 debug:
 	gdb -q ./main \
