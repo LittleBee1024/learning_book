@@ -157,3 +157,17 @@ g_blocks[1]=0x404058, g_blocks[1].size=2, g_blocks[1].prev=0x404040, g_blocks[1]
 [Inferior 1 (process 22107) exited normally]
 ```
 
+### 条件断点
+
+下面是常见的条件断点设置方法：
+
+```bash
+# 忽略断点(1) 100次
+(gdb) ignore 1 100
+# 在变量index为5的条件下在函数foo入口处停止
+(gdb) break foo if index==5
+# 在指令地址0x12345678处设置断点，且函数`GetRefCount`返回值为0时才生效
+# GDB还提供了常用的函数用于设置条件断点，如字符串比较函数“$_streq”，更多函数可参见：
+#   https://sourceware.org/gdb/current/onlinedocs/gdb.html/Convenience-Funs.html
+(gdb) break *0x12345678 if GetRefCount(this)==0
+```
