@@ -207,3 +207,38 @@ Num     Type           Disp Enb Address            What
         stop only if times >= 2
         breakpoint already hit 1 time
 ```
+
+### 改变执行及其副作用
+
+调试器除了可以用来观察被追踪的进程状态，还能够改变被调试进程的状态，从而改变其本来预设的执行路径。其中，最直接的方式是改变变量的值。例如，下面的命令将变量`gFlags`的值设置为5：
+```bash
+(gdb) set var gFlags=5
+```
+
+下面的代码，调试器调用了函数`malloc`来分配一个8字节的内存块，并打印出返回的内存地址：
+```bash
+(gdb) print /x malloc(8)
+     $1 = 0x501010
+```
+
+下面的条件断点将启用临时跟踪和日志记录，每次变量`sum`的值发生改变时，GDB命令都会调用`Logme`函数将值打印到文件中。但是由于`Logme`函数一直返回零，所以程序并不会中断。
+```bash
+(gdb) watch sum if Logme(sum)>0
+```
+
+["set_var"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cpp_debug/01/code/set_var)例子展示了如何利用`set var`命令改变变量的值，并利用`watch`命令记录`sum`值的变化情况：
+
+```bash
+sh> make debug
+# GDB会执行下面两条指令
+# (gdb) set var gFlags=5
+# (gdb) watch sum if Logme(sum)>0
+...
+# 调式结束后，在"test.log"中，gFlags的值是5而不是0，
+# var记录了sum变量的值变化过程
+sh> cat test.log
+gFlags=5, var=1
+gFlags=5, var=3
+gFlags=5, var=6
+gFlags=5, var=10
+```
