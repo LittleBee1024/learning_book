@@ -99,6 +99,8 @@ GDB的断点就是利用`ptrace`实现的。假设函数`main`的起始地址为
 
 如果我们要调试的程序没有`debug`信息，可以通过`add-symbol-file`命令手动导入`debug`信息进行调试。["add-symbol-file"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cpp_debug/01/code/add-symbol-file)例子展示了如何利用`add-symbol-file`命令调试缺失调试信息的程序。
 
+需要**注意**的是：要想成功导入调试信息，需保证调试信息必须和被调试程序一致，包括优化等级等。否则，断点仍会因为地址不对而无法工作。
+
 ```bash
 sh> gdb -q ./main
 Reading symbols from ./main...
