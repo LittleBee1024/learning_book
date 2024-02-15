@@ -97,7 +97,7 @@ GDB的断点就是利用`ptrace`实现的。假设函数`main`的起始地址为
 
 ### add-symbol-file
 
-如果我们要调试的程序没有`debug`信息，可以通过`add-symbol-file`命令手动导入`debug`信息进行调试。["add-symbol-file"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cpp_debug/01/code/add-symbol-file)例子展示了如果利用`add-symbol-file`命令调试缺失调试信息的程序。
+如果我们要调试的程序没有`debug`信息，可以通过`add-symbol-file`命令手动导入`debug`信息进行调试。["add-symbol-file"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cpp_debug/01/code/add-symbol-file)例子展示了如何利用`add-symbol-file`命令调试缺失调试信息的程序。
 
 ```bash
 sh> gdb -q ./main
@@ -170,4 +170,38 @@ g_blocks[1]=0x404058, g_blocks[1].size=2, g_blocks[1].prev=0x404040, g_blocks[1]
 # GDB还提供了常用的函数用于设置条件断点，如字符串比较函数“$_streq”，更多函数可参见：
 #   https://sourceware.org/gdb/current/onlinedocs/gdb.html/Convenience-Funs.html
 (gdb) break *0x12345678 if GetRefCount(this)==0
+```
+
+### 监测点
+
+断点可以设置在代码中，也可以设置在数据对象上。后者被称为监测点，或者数据断点。
+
+断点和监测点使用不同的机制实现。如前面所述，调试器是通过将指定位置的指令替换为短陷阱指令来设置断点，原来的指令代码被保存在缓冲区。当程序执行到陷阱指令，也就是达到断点时，内核会停止程序运行并通知调试器，后者从等待中醒来，显示所跟踪程序的状态，然后等待用户的下一条命令。
+
+监测点不能用指令断点的方法实现，因为数据对象是不可执行的。所以它的实现是要么定期地(软件模式)查询数据的值，要么使用CPU支持的调试寄存器(硬件模式)。软件监测点是通过单步运行程序并在每一步检查被跟踪的变量来实现的，这种方式使程序比正常运行要慢数百倍。
+
+由于单步运行(软件模式)不能保证在多线程环境下的结果一致性，因此在多线程和多处理器的环境下，这种方法可能无法捕获到数据被访问的瞬间。硬件监测点则没有这个问题，因为被跟踪的变量的计算是由硬件完成的，调试器不用介入，它根本不会减慢程序的执行速度。但是由于CPU调试寄存器个数的限制，如果监测点表达式很复杂或需要设置很多监测点，调试器会**隐式**地回归到软件监测点。
+
+["watch"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cpp_debug/01/code/watch)例子展示了如何利用`watch sum if times >= 2`命令设置监控点，监控`sum`值的变化，并在`times`大于等于2的条件下触发。
+
+```bash
+sh> gdb -q ./main -ex 'b main' -ex 'run' -ex 'watch sum if times >= 2' -ex 'c'
+Breakpoint 1, main () at main.cpp:5
+5           int sum = 0;
+Hardware watchpoint 2: sum
+Continuing.
+1: sum=1
+Hardware watchpoint 2: sum
+Old value = 1
+New value = 3
+main () at main.cpp:14
+14          printf("%d: sum=%d\n", times, sum);
+# 在"times"等于2，"sum"等于3处，成功停住
+(gdb) info b
+Num     Type           Disp Enb Address            What
+1       breakpoint     keep y   0x000000000040112a in main() at main.cpp:5
+        breakpoint already hit 1 time
+2       hw watchpoint  keep y                      sum
+        stop only if times >= 2
+        breakpoint already hit 1 time
 ```
