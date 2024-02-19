@@ -1,11 +1,10 @@
-compile:
-	g++ -g main.cpp -o main
-
 asan:
 	g++ -fsanitize=address -g main.cpp -o main
+	./main
 
 check:
-	env MALLOC_CHECK_=0 ./main
+	g++ main.cpp -o main
+	env MALLOC_CHECK_=1 ./main
 
 clean:
 	rm -rf *.log *.s *.o
