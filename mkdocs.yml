@@ -159,6 +159,7 @@ nav:
       - booknotes/ml/svm/README.md
     - 高效C/C++调试:
       - booknotes/cpp_debug/01/README.md
+      - booknotes/cpp_debug/02/README.md
   - 专题:
     - topics/webassembly/README.md
     - topics/cmake/README.md
