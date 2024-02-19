@@ -1,0 +1,19 @@
+<html>
+
+<head>
+   <link rel="stylesheet" href="../../css/header.css">
+   <script src="https://unpkg.com/vue@next"></script>
+</head>
+
+<body>
+   <div id="app">
+      <vheader title="Header Title" />
+   </div>
+
+   <script type="module">
+      import vHeader from './index.js'
+      Vue.createApp({}).component('vheader', vHeader).mount('#app')
+   </script>
+</body>
+
+</html>
