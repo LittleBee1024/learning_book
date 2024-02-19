@@ -42,3 +42,70 @@ sh> env MALLOC_CHECK_=1 ./main
 sh> env MALLOC_CHECK_=2 ./main
 Abort
 ```
+
+## Google Address Sanitizer
+
+Google Address Sanitizer(通常简称为`ASan`)是一个快速的内存错误检测器，它能发现如下问题：
+
+* 内存泄漏
+* 缓冲区溢出
+* 释放后使用
+* 使用未初始化的内存
+* 空指针引用
+* 栈缓冲溢出
+
+为了使用`ASan`，需要在编译时加上`-fsanitize=address`标志，同时加上`-g`生成调试信息以方便`ASan`打印错误报告。
+
+上面的[例子“mem_check”](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cpp_debug/10/code/mem_check)同样可以用`ASan`找到数组越界的问题：
+
+```bash
+g++ -fsanitize=address -g main.cpp -o main
+./main
+=================================================================
+==101388==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x6140000001d0 at pc 0x0000004011ca bp 0x7ffd8bc52d20 sp 0x7ffd8bc52d18
+WRITE of size 4 at 0x6140000001d0 thread T0
+    #0 0x4011c9 in main /lan/cva/hsv-apfw/yuxiangw/GitHub/starter-demo/effective_debugging/malloc_check/main.cpp:6
+    #1 0x2b98af7ad3d4 in __libc_start_main (/lib64/libc.so.6+0x223d4)
+    #2 0x4010c8  (/lan/cva/hsv-apfw/yuxiangw/GitHub/starter-demo/effective_debugging/malloc_check/main+0x4010c8)
+
+0x6140000001d0 is located 0 bytes to the right of 400-byte region [0x614000000040,0x6140000001d0)
+allocated by thread T0 here:
+    #0 0x2b98aeb1b37f in operator new[](unsigned long) /tmp/gcc-v9.3.0p7/gcc.source/libsanitizer/asan/asan_new_delete.cc:107
+    #1 0x401183 in main /lan/cva/hsv-apfw/yuxiangw/GitHub/starter-demo/effective_debugging/malloc_check/main.cpp:5
+    #2 0x2b98af7ad3d4 in __libc_start_main (/lib64/libc.so.6+0x223d4)
+
+SUMMARY: AddressSanitizer: heap-buffer-overflow /lan/cva/hsv-apfw/yuxiangw/GitHub/starter-demo/effective_debugging/malloc_check/main.cpp:6 in main
+Shadow bytes around the buggy address:
+  0x0c287fff7fe0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0c287fff7ff0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0c287fff8000: fa fa fa fa fa fa fa fa 00 00 00 00 00 00 00 00
+  0x0c287fff8010: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0c287fff8020: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+=>0x0c287fff8030: 00 00 00 00 00 00 00 00 00 00[fa]fa fa fa fa fa
+  0x0c287fff8040: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0c287fff8050: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0c287fff8060: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0c287fff8070: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0c287fff8080: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+  Shadow gap:              cc
+==101388==ABORTING
+```
