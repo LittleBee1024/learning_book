@@ -22,7 +22,9 @@
 
 [例子“mem_check”](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cpp_debug/10/code/mem_check)展示了`MALLOC_CHECK_`环境变量的作用。
 
-```cpp
+```cpp linenums="1"
+#include <stdio.h>
+
 int main()
 {
    int *array = new int[100];
@@ -56,7 +58,7 @@ Google Address Sanitizer(通常简称为`ASan`)是一个快速的内存错误检
 
 为了使用`ASan`，需要在编译时加上`-fsanitize=address`标志，同时加上`-g`生成调试信息以方便`ASan`打印错误报告。
 
-上面的[例子“mem_check”](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cpp_debug/10/code/mem_check)同样可以用`ASan`找到数组越界的问题：
+上面的[例子“mem_check”](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cpp_debug/10/code/mem_check)同样可以用`ASan`找到数组越界的问题(发生在`main.cpp`的第六行)：
 
 ```bash
 g++ -fsanitize=address -g main.cpp -o main
