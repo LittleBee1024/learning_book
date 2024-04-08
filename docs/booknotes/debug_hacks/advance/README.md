@@ -10,7 +10,7 @@
 * PLT(Procedure Linkage Table)
     * PLT时调用库函数时的小型代码集合，程序可以像调用自己的用户函数一样调用这些小型代码。这些代码只是跳转到GOT中设置的值而已。如果GOT中尚未设置调用函数的地址，就将地址设置到GOT中再跳转。
 
-动态库函数每次运行的地址都不同，利用GOT和PLT机制，进程可将库函数看作一个固定不变的地址，详情可参考文章["动态链接"](../../cxydzwxy/link/dynamic)。
+动态库函数每次运行的地址都不同，利用GOT和PLT机制，进程可将库函数看作一个固定不变的地址，详情可参考文章["动态链接"](https://littlebee1024.github.io/learning_book/booknotes/cxydzwxy/link/dynamic/)。
 
 ### 实例
 在[示例代码](./code/GOT_PLT/main.c)的汇编代码中，

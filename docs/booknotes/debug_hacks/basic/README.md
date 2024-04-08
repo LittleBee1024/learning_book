@@ -62,7 +62,7 @@ Register | Purpose                                        | Saved across calls
 
 ![frame](./images/frame.svg)
 
-每次函数调用都会创建自己的栈帧(stack frame)，栈帧的起始地址由`%rbp`帧指针保存，栈顶由`%rsp`栈指针保存。以["sum.c"](./code/stack/sum.c)代码为例子，`main`函数(caller)调用了`sum_till_MAX`函数(callee)，其相关汇编代码如下：
+每次函数调用都会创建自己的栈帧(stack frame)，栈帧的起始地址由`%rbp`帧指针保存，栈顶由`%rsp`栈指针保存。以["sum.c"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/debug_hacks/basic/code/stack/sum.c)代码为例子，`main`函数(caller)调用了`sum_till_MAX`函数(callee)，其相关汇编代码如下：
 
 * `main`函数调用处的汇编代码
     ```asm
@@ -95,7 +95,7 @@ Register | Purpose                                        | Saved across calls
 
 ### GDB的backtrace
 
-GDB调试器的backtrace功能是通过搜索栈中保存的信息来实现的。以["sum.c"](./code/stack/sum.c)代码为例子，当backtrace显示如下时，
+GDB调试器的backtrace功能是通过搜索栈中保存的信息来实现的。以["sum.c"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/debug_hacks/basic/code/stack/sum.c)代码为例子，当backtrace显示如下时，
 ```cpp
 #0  sum_till_MAX (n=2) at sum.c:18
 #1  0x00005555555551d8 in sum_till_MAX (n=1) at sum.c:19
@@ -139,7 +139,7 @@ GDB调试器的backtrace功能是通过搜索栈中保存的信息来实现的�
     ```
 
 ### 栈大小的限制
-如果进程发生栈溢出(stack overflow)，会引发segmentation fault。上面的[例子](./code/stack)如果不带任何参数，就会发生栈溢出。通过GDB调试，可得到如下调试信息：
+如果进程发生栈溢出(stack overflow)，会引发segmentation fault。上面的[例子](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/debug_hacks/basic/code/stack)如果不带任何参数，就会发生栈溢出。通过GDB调试，可得到如下调试信息：
 ```asm
 (gdb) i proc mapping
       0x7ffff7ffe000     0x7ffff7fff000     0x1000        0x0 
@@ -162,7 +162,7 @@ GDB调试器的backtrace功能是通过搜索栈中保存的信息来实现的�
 
 在x86_64中，整型和指针型的参数会从左至右依次保存到rdi, rsi, rdx, rcx, r8, r9中，浮点型参数会保存到xmm0, xmm1...中，如果寄存器被用完，其他参数会被保存到栈上。
 
-以如下[代码](./code/call/main.c)为例，通过`func`函数的调用调试信息，我们可以了解x86_64的参数传递模型。
+以如下[代码](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/debug_hacks/basic/code/call/main.c)为例，通过`func`函数的调用调试信息，我们可以了解x86_64的参数传递模型。
 ```cpp
 void func(int a, long b, short c, char d, long long e, float f, double g, int *h, float *i, char *j);
 
@@ -170,7 +170,7 @@ void func(int a, long b, short c, char d, long long e, float f, double g, int *h
 func(100, 35000L, 5, 'A', 123456789LL, 3.14, 2.99792458e8, &v1, &v2, "string");
 ```
 
-通过GDB命令`b *func`(加星号可确保函数被断在栈操作之前)，将断点打到[示例代码](./code/call/main.c)中`func`函数调用之前，观察到寄存器的值如下：
+通过GDB命令`b *func`(加星号可确保函数被断在栈操作之前)，将断点打到[示例代码](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/debug_hacks/basic/code/call/main.c)中`func`函数调用之前，观察到寄存器的值如下：
 ```asm
 (gdb) b *func
 Breakpoint 2 at 0x555555555149: file main.c, line 8.
@@ -238,7 +238,7 @@ func (a=100, b=35000, c=5, d=65 'A', e=123456789, f=3.1400001, g=299792458,
 
 ### i386
 
-在i386中，参数全部放在栈中。将上节中的代码通过`-m32`编译成[32位版本](./code/call_i386/Makefile)后，通过GDB调试，断点在`func`调用之前。此时，`func`函数的所有参数，从右到左依次被压入栈中，打印栈上内容如下：
+在i386中，参数全部放在栈中。将上节中的代码通过`-m32`编译成[32位版本](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/debug_hacks/basic/code/call_i386/Makefile)后，通过GDB调试，断点在`func`调用之前。此时，`func`函数的所有参数，从右到左依次被压入栈中，打印栈上内容如下：
 
 ```asm
 (gdb) p *(int*)($esp+4)
@@ -281,7 +281,7 @@ void func(int a, long b, short c, char d, long long e, float f, double g, int *h
 
 ### C++
 
-C++函数在编译时会经过函数名变换(mangle)，并且对于类方法的调用，第一个参数是当前类对象的指针。例如，[例子](./code/call_cpp/main.cpp)中的`foo::func`函数，最终调用签名如下：
+C++函数在编译时会经过函数名变换(mangle)，并且对于类方法的调用，第一个参数是当前类对象的指针。例如，[例子](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/debug_hacks/basic/code/call_cpp/main.cpp)中的`foo::func`函数，最终调用签名如下：
 ```cpp
 void func(class foo *this, int x, int y)
 {

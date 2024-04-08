@@ -3,10 +3,10 @@
 > 介绍`Vue3.0`的基本用法和响应性模型，所有样例可在[GitHub仓库](https://github.com/LittleBee1024/learning_book/tree/main/docs/topics/vue/intro/code)中找到
 
 ## 声明式渲染
-### [代码实例](./code/decl_render)
+### [代码实例](https://github.com/LittleBee1024/learning_book/tree/main/docs/topics/vue/intro/code/decl_render)
 ![decl_render](./images/decl_render.gif)
 
-* [HTML代码](./code/decl_render/index.html)
+* [HTML代码](https://github.com/LittleBee1024/learning_book/tree/main/docs/topics/vue/intro/code/decl_render/index.html)
     * Vue.js使用了基于HTML的模板语法，允许开发者声明式地将DOM绑定至底层组件实例的数据，具体语法可参考[“模板语法”官方文档](https://v3.cn.vuejs.org/guide/template-syntax.html)
     * 最常见的绑定DOM和数据的方法是：双大括号`{{ }}`
         * 例如，实例中的`{{ counter }}`就将`<div>`中的文本和根组件实例`vm`的`counter`数据绑定。当`vm.counter`发生变化时，`<div>`中的文本也会相应变化
@@ -16,7 +16,7 @@
         </div>
         ```
 
-* [JS代码](./code/decl_render/index.js)
+* [JS代码](https://github.com/LittleBee1024/learning_book/tree/main/docs/topics/vue/intro/code/decl_render/index.js)
     * 每个Vue应用都是通过全局API`createApp`函数创建的一个新**应用实例**开始的，传递给`createApp`的选项用于配置**根组件**，当我们**挂载**应用时，该组件被用作渲染的起点
         * 例如，实例中 `RootComponent`被作为根组件选项传给`createApp`创建出应用实例`app`。通过应用API`mount`，根组件实例`vm`被创建，并挂载到id是`app`的`<div>`标签，开始渲染
         ```js
@@ -111,10 +111,10 @@ console.log(proxy.meal)
 ## 生命周期
 ![vue_lifecycle](images/vue_lifecycle.svg)
 
-### [生命周期实例](./intro/code/life_cycle)
+### [生命周期实例](https://github.com/LittleBee1024/learning_book/tree/main/docs/topics/vue/intro/code/life_cycle)
 ![life_cycle](./images/life_cycle.gif)
 
-* [JS代码](./code/life_cycle/index.js)
+* [JS代码](https://github.com/LittleBee1024/learning_book/tree/main/docs/topics/vue/intro/code/life_cycle/index.js)
     * 所有生命周期钩子的`this`上下文将自动绑定至实例中，因此可以访问组件的data、computed和methods
     * 生命周期钩子函数会按照生命周期的执行顺序，被执行，详情可以参考[官方文档](https://v3.cn.vuejs.org/api/options-lifecycle-hooks.html#%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E9%92%A9%E5%AD%90)
     ```js

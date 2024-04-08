@@ -3,10 +3,10 @@
 > 简单的“WebAssembly + C/Cpp”样例，所有样例可在[GitHub仓库](https://github.com/LittleBee1024/learning_book/tree/main/docs/topics/webassembly/code)中找到
 
 ## WebAssembly with C
-### [代码实例](./code/hello_c)
+### [代码实例](https://github.com/LittleBee1024/learning_book/tree/main/docs/topics/webassembly/code/hello_c)
 ![web_c](./images/web_c.png)
 
-* [C代码](./code/hello_c/api.c)
+* [C代码](https://github.com/LittleBee1024/learning_book/tree/main/docs/topics/webassembly/code/hello_c/api.c)
     * 通过`EMSCRIPTEN_KEEPALIVE`宏将C函数输出给JS代码
     * 支持字符串、整型和浮点数在C代码和JS代码之间传递
     ```c
@@ -45,7 +45,7 @@
     }
     ```
 
-* [HTML代码](./code/hello_c/index.html)
+* [HTML代码](https://github.com/LittleBee1024/learning_book/tree/main/docs/topics/webassembly/code/hello_c/index.html)
     * JS中字符串可以创建在堆或者栈上，在堆上创建的字符串需要手动释放
     * 由于emcc默认不输出`malloc`和`free`，如果需要在堆上创建字符串，需要在编译时加入`-s "EXPORTED_FUNCTIONS=['_malloc', '_free']"`编译选项
     ```html
@@ -82,10 +82,10 @@
     ```
 
 ## WebAssembly with Cpp
-### [代码实例](./code/hello_cpp)
+### [代码实例](https://github.com/LittleBee1024/learning_book/tree/main/docs/topics/webassembly/code/hello_cpp)
 ![web_c](./images/web_cpp.png)
 
-* [Cpp代码](./code/hello_cpp/api.cpp)
+* [Cpp代码](https://github.com/LittleBee1024/learning_book/tree/main/docs/topics/webassembly/code/hello_cpp/api.cpp)
     * 为了防止C++的`name mangling`，所有的API都通过`extern "C"`修饰后，以C API的形式传给JS
     * 支持C++多态，STL库
     ```cpp
@@ -116,7 +116,7 @@
         return s_str.c_str();
     }
     ```
-* [HTML代码](./code/hello_cpp/index.html)
+* [HTML代码](https://github.com/LittleBee1024/learning_book/tree/main/docs/topics/webassembly/code/hello_cpp/index.html)
     * 用法和上面的C代码例子类似，此处不再细述
 
 ## WebAssembly的内存模型
@@ -144,7 +144,7 @@ Module.HEAPF64 | Float64Array | double
 
 [例子"mem"](https://github.com/LittleBee1024/learning_book/tree/main/docs/topics/webassembly/code/mem)实现了C代码和JS代码对基本数据类型的读写：
 
-* [Cpp代码](./code/mem/api.c)
+* [Cpp代码](https://github.com/LittleBee1024/learning_book/tree/main/docs/topics/webassembly/code/mem/api.c)
     * C代码中的全局变量存在于`ArrayBuffer`对象，在JS中可通过对应的View加地址访问
     * 函数返回的指针，在JS代码中对应View上的地址
     ```c
@@ -169,7 +169,7 @@ Module.HEAPF64 | Float64Array | double
     }
     ```
 
-* [HTML代码](./code/mem/index.html)
+* [HTML代码](https://github.com/LittleBee1024/learning_book/tree/main/docs/topics/webassembly/code/mem/index.html)
     * 通过`Module.HEAP32[addr]`可以访问内存中的`int32`变量，其他类型方法雷同
     ```html
     <script>
@@ -242,7 +242,7 @@ void PrintData() {
 
 [例子"web_mem_arr"](https://github.com/LittleBee1024/learning_book/tree/main/docs/topics/webassembly/code/web_mem_arr)实现了C代码和JS代码对基本数组类型的读写：
 
-* [Cpp代码](./code/mem_arr/api.c)
+* [Cpp代码](https://github.com/LittleBee1024/learning_book/tree/main/docs/topics/webassembly/code/mem_arr/api.c)
     * C代码接收JS传过来的数组起始地址和数组大小，并创建了一个新的数组返回给JS
     * 这里虽然C代码在堆上建立了一个新的数组，但是将释放的权限转交给了JS
     ```c
@@ -259,7 +259,7 @@ void PrintData() {
     }
     ```
 
-* [HTML代码](./code/mem_arr/index.html)
+* [HTML代码](https://github.com/LittleBee1024/learning_book/tree/main/docs/topics/webassembly/code/mem_arr/index.html)
     * 从打印的结果可以看出，虽然我们释放了内存，但是每次按下按钮，构建的内存地址都是不变的，说明编译器对其做了优化。
     ```html
     <script>
