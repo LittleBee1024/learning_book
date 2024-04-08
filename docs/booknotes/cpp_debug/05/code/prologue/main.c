@@ -1,11 +1,11 @@
-int f()
+#include <stdio.h>
+
+int f(int num)
 {
-   int i = 1233;
-   int j = 9879;
-   return i + j;
+   return num;
 }
 
 int main(int argc, char **argv)
 {
-   f();
+   f(5);
 }
