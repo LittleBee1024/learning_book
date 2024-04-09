@@ -1,0 +1,47 @@
+<!doctype html>
+
+<html>
+
+<head>
+   <meta charset="utf-8">
+   <title>Demo</title>
+</head>
+
+<body>
+   <p>WebAssembly Memory Demo</p>
+   <button onclick="button()">Click Me</button>
+   <script>
+      // Set up wasm module callback function to print info
+      Module = {};
+      Module.onRuntimeInitialized = function () {
+         console.log(Module)
+         // Print C function
+         console.log(Module['asm'])
+      }
+      // Set up button function
+      function button() {
+         // HEAP32 heap
+         var int_ptr = Module._GetIntPtr();
+         // right shift 2 because sizeof(int) == 4(2^2)
+         var int_value = Module.HEAP32[int_ptr >> 2];
+         // Console output: Module.HEAP32[256] = 42
+         console.log("Module.HEAP32[" +(int_ptr >> 2) + "] = " + int_value);
+
+         // HEAPF64 heap
+         var double_ptr = Module._GetDoublePtr();
+         // right shift 2 because sizeof(double) == 8(2^3)
+         var double_value = Module.HEAPF64[double_ptr >> 3];
+         // Console output: Module.HEAPF64[201] = 3.1415926
+         console.log("Module.HEAPF64[" +(double_ptr >> 3) + "] = " + double_value);
+
+         // Modify the memory
+         Module.HEAP32[int_ptr >> 2] = 13;
+         Module.HEAPF64[double_ptr >> 3] = 123456.789
+         // Console output: C{g_int:13} C{g_double:123456.789000}
+         Module._PrintData()
+      }
+   </script>
+   <script src="api.js"></script>
+</body>
+
+</html>

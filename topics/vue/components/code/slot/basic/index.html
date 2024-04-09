@@ -1,0 +1,19 @@
+<html>
+
+<head>
+   <meta charset="UTF-8">
+   <script src="https://unpkg.com/vue@next"></script>
+</head>
+
+<div id="app">
+   <!-- item is defined in root component, show: Delete First Item -->
+   <todo-button>Delete {{ item }}</todo-button>
+   <!-- use default slot, show: Add an item  -->
+   <todo-button></todo-button>
+   <!-- action will be undefined here, show: an item -->
+   <todo-button action="Delete">{{ action }} an item</todo-button>
+</div>
+
+<script src="index.js"></script>
+
+</html>

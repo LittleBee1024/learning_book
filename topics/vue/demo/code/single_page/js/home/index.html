@@ -1,0 +1,21 @@
+<html>
+
+<head>
+   <link rel="stylesheet" href="../../css/home.css">
+   <link rel="stylesheet" href="https://unpkg.com/element-plus/dist/index.css" />
+   <script src="https://unpkg.com/vue@next"></script>
+   <script src="https://unpkg.com/element-plus"></script>
+</head>
+
+<body>
+   <div id="app">
+      <vhome />
+   </div>
+
+   <script type="module">
+      import vHome from './index.js'
+      Vue.createApp({}).use(ElementPlus).component('vhome', vHome).mount('#app')
+   </script>
+</body>
+
+</html>

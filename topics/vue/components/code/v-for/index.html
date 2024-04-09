@@ -1,0 +1,30 @@
+<html>
+
+<head>
+   <meta charset="UTF-8">
+   <script src="https://unpkg.com/vue@next"></script>
+</head>
+
+<div id="app">
+   <ol>
+      <li v-for="todo in todos">
+         {{ todo.text }}
+      </li>
+   </ol>
+</div>
+
+<script>
+   const vm = Vue.createApp({
+      data() {
+         return {
+            todos: [
+               { text: 'Learn JavaScript' },
+               { text: 'Learn Vue' },
+               { text: 'Build something awesome' }
+            ]
+         }
+      }
+   }).mount('#app')
+</script>
+
+</html>
