@@ -137,3 +137,71 @@ mov    -0x4(%rbp),%eax      # 将返回值写入eax寄存器
 pop    %rbp                 # 恢复rbp寄存器为main函数的栈帧指针，此栈帧是在函数序言中入栈的
 ret                         # 从f函数返回到main函数
 ```
+
+### 函数参数传递
+
+下面用一个[例子](http://www.tup.tsinghua.edu.cn/Wap/tsxqy.aspx?id=10204101)，第五章的读书笔记，本文中的所有代码可在[GitHub仓库](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cpp_debug/05/code/para_pass)，介绍一下不同类型的函数参数的传递过程。
+
+```cpp
+class POD_STRUCT
+{
+public:
+   short s;
+   int a;
+   double d;
+};
+
+class NONE_POD_STRUCT
+{
+   virtual bool Verify() { return true; }
+
+public:
+   short s;
+   int a;
+   double d;
+};
+
+double Sum(int i_int0,
+           int i_int1,
+           POD_STRUCT i_pod,
+           NONE_POD_STRUCT i_nonpod,
+           long *ip_long,
+           float i_float,
+           long i_long0,
+           long i_long1)
+{
+   double result = i_int0 + i_int1 + i_pod.a + i_pod.d + i_pod.s + i_nonpod.a + i_nonpod.d + i_nonpod.s + *ip_long + i_float + i_long0 + i_long1;
+
+   return result;
+}
+
+int main()
+{
+   int a_int_0 = 0;
+   int a_int_1 = 1;
+   POD_STRUCT a_pod = {0, 1, 2.2};
+   NONE_POD_STRUCT a_nonpod;
+   long a_long = 3;
+   float a_float = 4.4;
+
+   double sum = Sum(a_int_0, a_int_1, a_pod, a_nonpod, &a_long, a_float, a_long, a_long);
+
+   return 0;
+}
+```
+
+例子中`sum`函数通过下面的寄存器或栈传递参数：
+
+| 通用寄存器 | 浮点寄存器 | 栈帧 |
+| --- | --- | --- |
+| %edi: i_int0 | %xmm0: i_pod.d | %rbp+16: i_long1 |
+| %esi: i_int1 | %xmm1: i_float | |
+| %rdx: i_pod.s, i_pod.a | | |
+| %rcx: &i_nonpod | | |
+| %r8: ip_long | | |
+| %r9: i_long0 | | |
+
+优化器会尽量使用寄存器（而非栈）传递参数，因此上表中只有`i_long1`参数通过栈传递。但是实际编译器会因为优化程度不同，而选择寄存器或者栈传递参数。
+
+## 分析优化后的代码
+
