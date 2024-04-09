@@ -31,4 +31,109 @@
 
 ## 汇编代码介绍
 
+下表总结了x86-64寄存器是如何用于参数传递和返回值的。
 
+| 寄存器 | 用法 | 由被调用者保存 |
+| ---- | --- | --- |
+| rax | 临时寄存器，第1个返回值，可变参数时SSE寄存器的个数 | No |
+| rbx | 基地址 | Yes |
+| rcx | 第4个整数参数 | No |
+| rdx | 第3个整数参数，第2个返回值 | No |
+| rsp | 栈指针（指向栈顶，最低地址） | Yes |
+| rbp | 栈帧指针（指向当前函数栈帧开始的地方） | Yes |
+| rsi | 第2个整数参数 | No |
+| rdi | 第1个整数参数 | No |
+| r8  | 第5个整数参数 | No |
+| r9  | 第6个整数参数 | No |
+| r10 | 传递函数静态链接参数 | No |
+| r11 | 临时寄存器 | No |
+| r12 ~ r15 | 临时寄存器 | Yes |
+| xmm0 ~ xmm7 | 传递浮点数参数 | No |
+| xmm8 ~ xmm15 | 临时寄存器 | No |
+| mmx0 ~ mxx7 | 临时寄存器 | No |
+| st0, st1 | 临时寄存器，返回`long double`类型 | No |
+| st2 ~ st7 | 临时寄存器 | No |
+| fs | 线程特有寄存器 | No |
+
+### 汇编程序的结构
+
+所有函数的开头和结尾都非常相似，它们分别被称为函数的序言（Prologue）和结语（Epilog）。函数序验给被调用函数设置一个栈帧，而结语做相反的事情，释放栈帧并返回到前一个调用函数的栈帧。典型的序言的片段如下：
+
+```asm
+pushq %rbp          # 将当前函数的栈帧指针入栈保存
+movq %rsp, %rbp     # 将栈帧指针跟新为栈顶位置，为被调用函数栈开始的地方
+subq $56, %rsp      # 将栈指针下移56字节，为被调用函数分配了56字节的栈空间
+```
+
+以下面的代码["prologue"](https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cpp_debug/05/code/prologue)为例：
+
+```cpp
+#include <stdio.h>
+
+int f(int num)
+{
+   return num;
+}
+
+int main(int argc, char **argv)
+{
+   f(5);
+}
+```
+
+其汇编代码如下：
+
+```cpp
+0000000000000000 <f>:
+#include <stdio.h>
+
+int f(int num)
+{
+   0:	f3 0f 1e fa          	endbr64 
+   4:	55                   	push   %rbp
+   5:	48 89 e5             	mov    %rsp,%rbp
+   8:	89 7d fc             	mov    %edi,-0x4(%rbp)
+   return num;
+   b:	8b 45 fc             	mov    -0x4(%rbp),%eax
+}
+   e:	5d                   	pop    %rbp
+   f:	c3                   	ret    
+
+0000000000000010 <main>:
+
+int main(int argc, char **argv)
+{
+  10:	f3 0f 1e fa          	endbr64 
+  14:	55                   	push   %rbp
+  15:	48 89 e5             	mov    %rsp,%rbp
+  18:	48 83 ec 10          	sub    $0x10,%rsp
+  1c:	89 7d fc             	mov    %edi,-0x4(%rbp)
+  1f:	48 89 75 f0          	mov    %rsi,-0x10(%rbp)
+   f(5);
+  23:	bf 05 00 00 00       	mov    $0x5,%edi
+  28:	e8 00 00 00 00       	call   2d <main+0x1d>
+  2d:	b8 00 00 00 00       	mov    $0x0,%eax
+}
+  32:	c9                   	leave  
+  33:	c3                   	ret    
+```
+
+`main`函数在调用`f(5)`之前，做了如下的事情：
+
+```asm
+push   %rbp                 # 入栈保存栈帧指针
+mov    %rsp,%rbp            # 为f()函数设置栈帧栈帧
+sub    $0x10,%rsp           # 为f()函数分配16字节栈空间
+mov    %edi,-0x4(%rbp)      # 入栈保存edi寄存器，为传递第1个参数
+mov    %rsi,-0x10(%rbp)     # 入栈保存rsi寄存器，为传递第2个参数
+mov    $0x5,%edi            # 第一个参数的值为5，通过edi寄存器传递
+call   2d <main+0x1d>       # 调用f()函数
+```
+
+`f`函数在返回之前，做了如下的事情：
+
+```asm
+mov    -0x4(%rbp),%eax      # 将返回值写入eax寄存器
+pop    %rbp                 # 恢复rbp寄存器为main函数的栈帧指针，此栈帧是在函数序言中入栈的
+ret                         # 从f函数返回到main函数
+```

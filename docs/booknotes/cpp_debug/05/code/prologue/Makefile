@@ -6,3 +6,12 @@ all:
 
 clean:
 	rm -rf *.o *.s
+
+debug:
+	gdb -q main \
+	-ex 'b *&main' \
+	-ex 'b *&f' \
+	-ex 'run' \
+	-ex 'layout asm' \
+	-ex 'si' \
+	-ex 'info register rsp'
