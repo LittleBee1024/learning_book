@@ -1,0 +1,3314 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="A blog about technical things, such as book notes and simple topics.">
+      
+      
+        <meta name="author" content="Little Bee">
+      
+      
+        <link rel="canonical" href="https://littlebee1024.github.io/learning_book/booknotes/cxydzwxy/link/dynamic/">
+      
+      
+        <link rel="prev" href="../static/">
+      
+      
+        <link rel="next" href="../../load/">
+      
+      
+      <link rel="icon" href="../../../../home/logo.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.50">
+    
+    
+      
+        <title>动态链接 - Little Bee Blog</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.a40c8224.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noto+Sans+Simplified+Chinese:300,300i,400,400i,700,700i%7CConsolas:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Noto Sans Simplified Chinese";--md-code-font:"Consolas"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+  
+
+
+  
+  
+
+<script id="__analytics">function __md_analytics(){function e(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],e("js",new Date),e("config","G-G2RFHH3DL4"),document.addEventListener("DOMContentLoaded",(function(){document.forms.search&&document.forms.search.query.addEventListener("blur",(function(){this.value&&e("event","search",{search_term:this.value})}));document$.subscribe((function(){var t=document.forms.feedback;if(void 0!==t)for(var a of t.querySelectorAll("[type=submit]"))a.addEventListener("click",(function(a){a.preventDefault();var n=document.location.pathname,d=this.getAttribute("data-md-value");e("event","feedback",{page:n,data:d}),t.firstElementChild.disabled=!0;var r=t.querySelector(".md-feedback__note [data-md-value='"+d+"']");r&&(r.hidden=!1)})),t.hidden=!1})),location$.subscribe((function(t){e("config","G-G2RFHH3DL4",{page_path:t.pathname})}))}));var t=document.createElement("script");t.async=!0,t.src="https://www.googletagmanager.com/gtag/js?id=G-G2RFHH3DL4",document.getElementById("__analytics").insertAdjacentElement("afterEnd",t)}</script>
+  
+    <script>"undefined"!=typeof __md_analytics&&__md_analytics()</script>
+  
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="orange" data-md-color-accent="orange">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#_1" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../../.." title="Little Bee Blog" class="md-header__button md-logo" aria-label="Little Bee Blog" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17.4 9C17 7.8 16.2 7 15 6.5V5h-1v1.4h-.4c-1.1 0-2 .4-2.8 1.2l-.4.4L9 7.5c-.3-.1-.6-.2-1-.2-.6 0-1.2.2-1.7.6-.6.4-.9.9-1.1 1.4-.2.7-.2 1.3 0 2 .3.7.6 1.2 1.1 1.5-.4 1.5-.1 2.8 1 3.9.8.8 1.7 1.2 2.8 1.2.5 0 .8 0 1.1-.1.6.8 1.4 1.3 2.4 1.3.3 0 .7 0 1-.1.6-.2 1-.6 1.4-1.1.4-.6.6-1.1.6-1.7 0-.4 0-.7-.1-1l-.5-1.6.6-.4c.8-.8 1.2-1.9 1.1-3.1H19V9zm-9.7 2.3c-.6-.3-.8-.7-.6-1.3q.3-.9 1.2-.6l3.2 1.2c-1.6.8-2.8 1-3.8.7m6.3 5.6c-.6.2-1 0-1.3-.6-.3-1-.1-2.2.7-3.8l1.2 3.1c.2.7 0 1.1-.6 1.3m1.2-5.3-.6-1.6v-.1l-.3-.3h-.1L12.6 9c.4-.3.8-.5 1.3-.5s1 .2 1.4.6.6.8.6 1.3c-.2.3-.4.8-.7 1.2"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Little Bee Blog
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              动态链接
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="orange" data-md-color-accent="orange"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="orange" data-md-color-accent="orange"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/littlebee1024/learning_book" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    littlebee1024/learning_book
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../.." class="md-tabs__link">
+        
+  
+    
+  
+  首页
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+    
+  
+  
+    
+    
+      
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../concurrency/" class="md-tabs__link">
+          
+  
+  笔记
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../topics/webassembly/" class="md-tabs__link">
+          
+  
+  专题
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../essays/20250127/" class="md-tabs__link">
+          
+  
+  随笔
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="Little Bee Blog" class="md-nav__button md-logo" aria-label="Little Bee Blog" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17.4 9C17 7.8 16.2 7 15 6.5V5h-1v1.4h-.4c-1.1 0-2 .4-2.8 1.2l-.4.4L9 7.5c-.3-.1-.6-.2-1-.2-.6 0-1.2.2-1.7.6-.6.4-.9.9-1.1 1.4-.2.7-.2 1.3 0 2 .3.7.6 1.2 1.1 1.5-.4 1.5-.1 2.8 1 3.9.8.8 1.7 1.2 2.8 1.2.5 0 .8 0 1.1-.1.6.8 1.4 1.3 2.4 1.3.3 0 .7 0 1-.1.6-.2 1-.6 1.4-1.1.4-.6.6-1.1.6-1.7 0-.4 0-.7-.1-1l-.5-1.6.6-.4c.8-.8 1.2-1.9 1.1-3.1H19V9zm-9.7 2.3c-.6-.3-.8-.7-.6-1.3q.3-.9 1.2-.6l3.2 1.2c-1.6.8-2.8 1-3.8.7m6.3 5.6c-.6.2-1 0-1.3-.6-.3-1-.1-2.2.7-3.8l1.2 3.1c.2.7 0 1.1-.6 1.3m1.2-5.3-.6-1.6v-.1l-.3-.3h-.1L12.6 9c.4-.3.8-.5 1.3-.5s1 .2 1.4.6.6.8.6 1.3c-.2.3-.4.8-.7 1.2"/></svg>
+
+    </a>
+    Little Bee Blog
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/littlebee1024/learning_book" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    littlebee1024/learning_book
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    首页
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    笔记
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            笔记
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2_1" id="__nav_2_1_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    程序员的自我修养
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            程序员的自我修养
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concurrency/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    并发
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../compile/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    编译
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_1_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2_1_3" id="__nav_2_1_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    链接
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_1_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2_1_3">
+            <span class="md-nav__icon md-icon"></span>
+            链接
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../static/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    静态链接
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    动态链接
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    动态链接
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      基本实现
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="基本实现">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      简单的例子
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      重定位
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="重定位">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      装载时重定位
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      地址无关代码
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#plt" class="md-nav__link">
+    <span class="md-ellipsis">
+      延迟绑定(PLT)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="延迟绑定(PLT)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#plt_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      PLT相关的段
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      动态链接相关的段
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="动态链接相关的段">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#interp" class="md-nav__link">
+    <span class="md-ellipsis">
+      ".interp"段
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dynamic" class="md-nav__link">
+    <span class="md-ellipsis">
+      ".dynamic"段
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      动态符号表
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      动态链接重定位表
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_10" class="md-nav__link">
+    <span class="md-ellipsis">
+      动态链接的步骤和实现
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="动态链接的步骤和实现">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_11" class="md-nav__link">
+    <span class="md-ellipsis">
+      动态链接器自举
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_12" class="md-nav__link">
+    <span class="md-ellipsis">
+      装载共享对象
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_13" class="md-nav__link">
+    <span class="md-ellipsis">
+      重定位和初始化
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_14" class="md-nav__link">
+    <span class="md-ellipsis">
+      显式运行时链接
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-rdynamic" class="md-nav__link">
+    <span class="md-ellipsis">
+      "-rdynamic"选项
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#linux" class="md-nav__link">
+    <span class="md-ellipsis">
+      Linux共享库的组织
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Linux共享库的组织">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_15" class="md-nav__link">
+    <span class="md-ellipsis">
+      共享库版本
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#soname" class="md-nav__link">
+    <span class="md-ellipsis">
+      SONAME
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_16" class="md-nav__link">
+    <span class="md-ellipsis">
+      链接名
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_17" class="md-nav__link">
+    <span class="md-ellipsis">
+      共享库的查找过程
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="共享库的查找过程">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_18" class="md-nav__link">
+    <span class="md-ellipsis">
+      调试动态链接器
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../load/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    装载
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Debug Hacks
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            Debug Hacks
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../debug_hacks/basic/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    调试前的必知必会
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../debug_hacks/advance/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    高级调试技术
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../debug_hacks/gdb/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    GDB
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../debug_hacks/dwarf/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    DWARF
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_3" id="__nav_2_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Linux高性能服务器编程
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            Linux高性能服务器编程
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../hplsp/tcp_ip/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    TCP/IP协议
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../hplsp/socket/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    套接字基础
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../hplsp/multi_io/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    IO复用
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../hplsp/adv_io/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    高级IO函数
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_4" id="__nav_2_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Linux设备驱动程序
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_4">
+            <span class="md-nav__icon md-icon"></span>
+            Linux设备驱动程序
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../ldd/module/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    内核模块
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../ldd/cdev/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    字符设备驱动
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../ldd/io/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    高级I/O操作
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../ldd/mem_port/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    与硬件通信
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_5" id="__nav_2_5_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    深入理解计算机系统
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_5">
+            <span class="md-nav__icon md-icon"></span>
+            深入理解计算机系统
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../csapp/01/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    计算机漫游
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../csapp/02/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    信息的表示和处理
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../csapp/03/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    程序的机器表示
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../csapp/04/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    处理器体系结构
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../csapp/05/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    优化程序性能
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../csapp/08/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    异常流控制
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../csapp/09/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    虚拟内存
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../csapp/10/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    系统级I/O
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_6" id="__nav_2_6_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    机器学习
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_6">
+            <span class="md-nav__icon md-icon"></span>
+            机器学习
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../ml/linear_reg/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    线性回归
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../ml/naive_bayes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    朴素贝叶斯法
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../ml/decision_tree/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    决策树
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../ml/perceptron/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    感知机
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../ml/svm/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    支持向量机
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_7" id="__nav_2_7_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    高效C/C++调试
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_7">
+            <span class="md-nav__icon md-icon"></span>
+            高效C/C++调试
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cpp_debug/01/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    调试符号和调试器
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cpp_debug/02/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    堆数据结构
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cpp_debug/05/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    优化后的二进制
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cpp_debug/10/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    内存调试工具
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    专题
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            专题
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../topics/webassembly/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    WebAssembly
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../topics/cmake/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    CMake
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Vue3
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            Vue3
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../topics/vue/intro/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Vue3简介
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../topics/vue/components/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    组件复用
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../topics/vue/demo/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    样例模板
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../topics/flex_bison/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Flex和Bison
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../topics/tcl_tk_in_c/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Tcl/Tk in C
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    随笔
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            随笔
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../essays/20250127/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    来自AI的开篇
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      基本实现
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="基本实现">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      简单的例子
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      重定位
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="重定位">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      装载时重定位
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      地址无关代码
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#plt" class="md-nav__link">
+    <span class="md-ellipsis">
+      延迟绑定(PLT)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="延迟绑定(PLT)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#plt_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      PLT相关的段
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      动态链接相关的段
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="动态链接相关的段">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#interp" class="md-nav__link">
+    <span class="md-ellipsis">
+      ".interp"段
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dynamic" class="md-nav__link">
+    <span class="md-ellipsis">
+      ".dynamic"段
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      动态符号表
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      动态链接重定位表
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_10" class="md-nav__link">
+    <span class="md-ellipsis">
+      动态链接的步骤和实现
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="动态链接的步骤和实现">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_11" class="md-nav__link">
+    <span class="md-ellipsis">
+      动态链接器自举
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_12" class="md-nav__link">
+    <span class="md-ellipsis">
+      装载共享对象
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_13" class="md-nav__link">
+    <span class="md-ellipsis">
+      重定位和初始化
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_14" class="md-nav__link">
+    <span class="md-ellipsis">
+      显式运行时链接
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-rdynamic" class="md-nav__link">
+    <span class="md-ellipsis">
+      "-rdynamic"选项
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#linux" class="md-nav__link">
+    <span class="md-ellipsis">
+      Linux共享库的组织
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Linux共享库的组织">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_15" class="md-nav__link">
+    <span class="md-ellipsis">
+      共享库版本
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#soname" class="md-nav__link">
+    <span class="md-ellipsis">
+      SONAME
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_16" class="md-nav__link">
+    <span class="md-ellipsis">
+      链接名
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_17" class="md-nav__link">
+    <span class="md-ellipsis">
+      共享库的查找过程
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="共享库的查找过程">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_18" class="md-nav__link">
+    <span class="md-ellipsis">
+      调试动态链接器
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+  
+                  
+
+
+<h1 id="_1">动态链接<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p><a href="https://1drv.ms/b/s!AkcJSyT7tq80cUuHb2eRcJkkBjM?e=YUwBqB">《程序员的自我修养--链接、装载与库》 - 俞甲子，石凡，潘爱民</a>，第七、八章的读书笔记，本文中的所有代码可在<a href="https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/link/dynamic/code">GitHub仓库</a>中找到</p>
+</blockquote>
+<h2 id="_2">基本实现<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<p>在Linux系统中，ELF动态链接文件被称为动态共享对象(DSO, Dynamic Shared Objects)，简称<strong>共享对象</strong>，它们一般都是以".so"为扩展名的一些文件。</p>
+<p>程序和动态链接库之间的链接工作是由动态链接器完成的。不同于静态链接器，动态链接器把链接过程从程序装载前推迟到了装载的时候。这种方法称为延迟绑定(Lazy Binding)，虽然损失了一些运行时的性能，但是提高了灵活性。</p>
+<h3 id="_3">简单的例子<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h3>
+<p><a href="https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/link/dynamic/code/simple">例子"simple"</a>中的两个可执行文件<code>program1</code>和<code>program2</code>都动态链接到了动态共享对象<code>libfoo.so</code>。当程序模块<code>program1.c</code>被编译成<code>program1.o</code>时，编译器不知道<code>foobar()</code>函数的地址。当链接器将<code>program1.o</code>链接成可执行文件时，通过函数符号信息，链接器可判断<code>foobar()</code>的性质，</p>
+<ul>
+<li>如果<code>foobar()</code>是一个定义在其他静态目标模块中的函数，那么链接器将会按照静态链接的规则，将<code>program1.o</code>中的foobar地址引用重定位</li>
+<li>如果<code>foobar()</code>是一个定义在某个动态共享对象中的函数，那么链接器就会将这个符号的引用标记位一个动态链接的符号，不对它进行地址重定位，把这个过程留到装载时再进行</li>
+</ul>
+<p>通过GDB命令<code>i proc mapping</code>，可得到进程<code>program1</code>的虚拟地址映射，其分别链接了<code>libc-2.31.so</code>，<code>libfoo.so</code>和<code>ld-2.31.so</code>三个动态链接库。
+<div class="highlight"><pre><span></span><code><span class="w">        </span><span class="nf">Start</span><span class="w"> </span><span class="no">Addr</span><span class="w">           </span><span class="no">End</span><span class="w"> </span><span class="no">Addr</span><span class="w">       </span><span class="no">Size</span><span class="w">     </span><span class="no">Offset</span><span class="w"> </span><span class="no">objfile</span>
+<span class="w">    </span><span class="err">0</span><span class="nf">x555555554000</span><span class="w">     </span><span class="mi">0x555555555000</span><span class="w">     </span><span class="mi">0x1000</span><span class="w">        </span><span class="mi">0x0</span><span class="w"> </span><span class="err">/</span><span class="no">home</span><span class="err">/</span><span class="no">yuxiangw</span><span class="err">/</span><span class="no">GitHub</span><span class="err">/</span><span class="no">learning_book</span><span class="err">/</span><span class="no">docs</span><span class="err">/</span><span class="no">booknotes</span><span class="err">/</span><span class="no">cxydzwxy</span><span class="err">/</span><span class="no">compile_link</span><span class="err">/</span><span class="no">dynamic_link</span><span class="err">/</span><span class="no">code</span><span class="err">/</span><span class="no">simple</span><span class="err">/</span><span class="no">program1</span>
+<span class="w">    </span><span class="err">0</span><span class="nf">x555555555000</span><span class="w">     </span><span class="mi">0x555555556000</span><span class="w">     </span><span class="mi">0x1000</span><span class="w">     </span><span class="mi">0x1000</span><span class="w"> </span><span class="err">/</span><span class="no">home</span><span class="err">/</span><span class="no">yuxiangw</span><span class="err">/</span><span class="no">GitHub</span><span class="err">/</span><span class="no">learning_book</span><span class="err">/</span><span class="no">docs</span><span class="err">/</span><span class="no">booknotes</span><span class="err">/</span><span class="no">cxydzwxy</span><span class="err">/</span><span class="no">compile_link</span><span class="err">/</span><span class="no">dynamic_link</span><span class="err">/</span><span class="no">code</span><span class="err">/</span><span class="no">simple</span><span class="err">/</span><span class="no">program1</span>
+<span class="w">    </span><span class="err">0</span><span class="nf">x555555556000</span><span class="w">     </span><span class="mi">0x555555557000</span><span class="w">     </span><span class="mi">0x1000</span><span class="w">     </span><span class="mi">0x2000</span><span class="w"> </span><span class="err">/</span><span class="no">home</span><span class="err">/</span><span class="no">yuxiangw</span><span class="err">/</span><span class="no">GitHub</span><span class="err">/</span><span class="no">learning_book</span><span class="err">/</span><span class="no">docs</span><span class="err">/</span><span class="no">booknotes</span><span class="err">/</span><span class="no">cxydzwxy</span><span class="err">/</span><span class="no">compile_link</span><span class="err">/</span><span class="no">dynamic_link</span><span class="err">/</span><span class="no">code</span><span class="err">/</span><span class="no">simple</span><span class="err">/</span><span class="no">program1</span>
+<span class="w">    </span><span class="err">0</span><span class="nf">x555555557000</span><span class="w">     </span><span class="mi">0x555555558000</span><span class="w">     </span><span class="mi">0x1000</span><span class="w">     </span><span class="mi">0x2000</span><span class="w"> </span><span class="err">/</span><span class="no">home</span><span class="err">/</span><span class="no">yuxiangw</span><span class="err">/</span><span class="no">GitHub</span><span class="err">/</span><span class="no">learning_book</span><span class="err">/</span><span class="no">docs</span><span class="err">/</span><span class="no">booknotes</span><span class="err">/</span><span class="no">cxydzwxy</span><span class="err">/</span><span class="no">compile_link</span><span class="err">/</span><span class="no">dynamic_link</span><span class="err">/</span><span class="no">code</span><span class="err">/</span><span class="no">simple</span><span class="err">/</span><span class="no">program1</span>
+<span class="w">    </span><span class="err">0</span><span class="nf">x555555558000</span><span class="w">     </span><span class="mi">0x555555559000</span><span class="w">     </span><span class="mi">0x1000</span><span class="w">     </span><span class="mi">0x3000</span><span class="w"> </span><span class="err">/</span><span class="no">home</span><span class="err">/</span><span class="no">yuxiangw</span><span class="err">/</span><span class="no">GitHub</span><span class="err">/</span><span class="no">learning_book</span><span class="err">/</span><span class="no">docs</span><span class="err">/</span><span class="no">booknotes</span><span class="err">/</span><span class="no">cxydzwxy</span><span class="err">/</span><span class="no">compile_link</span><span class="err">/</span><span class="no">dynamic_link</span><span class="err">/</span><span class="no">code</span><span class="err">/</span><span class="no">simple</span><span class="err">/</span><span class="no">program1</span>
+<span class="w">    </span><span class="err">0</span><span class="nf">x7ffff7db7000</span><span class="w">     </span><span class="mi">0x7ffff7dba000</span><span class="w">     </span><span class="mi">0x3000</span><span class="w">        </span><span class="mi">0x0</span><span class="w"> </span>
+<span class="w">    </span><span class="mi">0x7ffff7dba000</span><span class="w">     </span><span class="mi">0x7ffff7ddf000</span><span class="w">    </span><span class="mi">0x25000</span><span class="w">        </span><span class="mi">0x0</span><span class="w"> </span><span class="err">/</span><span class="no">usr</span><span class="err">/</span><span class="no">lib</span><span class="err">/</span><span class="no">x86_64-linux-gnu</span><span class="err">/</span><span class="no">libc-2.31.so</span>
+<span class="w">    </span><span class="err">0</span><span class="nf">x7ffff7ddf000</span><span class="w">     </span><span class="mi">0x7ffff7f57000</span><span class="w">   </span><span class="mi">0x178000</span><span class="w">    </span><span class="mi">0x25000</span><span class="w"> </span><span class="err">/</span><span class="no">usr</span><span class="err">/</span><span class="no">lib</span><span class="err">/</span><span class="no">x86_64-linux-gnu</span><span class="err">/</span><span class="no">libc-2.31.so</span>
+<span class="w">    </span><span class="err">0</span><span class="nf">x7ffff7f57000</span><span class="w">     </span><span class="mi">0x7ffff7fa1000</span><span class="w">    </span><span class="mi">0x4a000</span><span class="w">   </span><span class="mi">0x19d000</span><span class="w"> </span><span class="err">/</span><span class="no">usr</span><span class="err">/</span><span class="no">lib</span><span class="err">/</span><span class="no">x86_64-linux-gnu</span><span class="err">/</span><span class="no">libc-2.31.so</span>
+<span class="w">    </span><span class="err">0</span><span class="nf">x7ffff7fa1000</span><span class="w">     </span><span class="mi">0x7ffff7fa2000</span><span class="w">     </span><span class="mi">0x1000</span><span class="w">   </span><span class="mi">0x1e7000</span><span class="w"> </span><span class="err">/</span><span class="no">usr</span><span class="err">/</span><span class="no">lib</span><span class="err">/</span><span class="no">x86_64-linux-gnu</span><span class="err">/</span><span class="no">libc-2.31.so</span>
+<span class="w">    </span><span class="err">0</span><span class="nf">x7ffff7fa2000</span><span class="w">     </span><span class="mi">0x7ffff7fa5000</span><span class="w">     </span><span class="mi">0x3000</span><span class="w">   </span><span class="mi">0x1e7000</span><span class="w"> </span><span class="err">/</span><span class="no">usr</span><span class="err">/</span><span class="no">lib</span><span class="err">/</span><span class="no">x86_64-linux-gnu</span><span class="err">/</span><span class="no">libc-2.31.so</span>
+<span class="w">    </span><span class="err">0</span><span class="nf">x7ffff7fa5000</span><span class="w">     </span><span class="mi">0x7ffff7fa8000</span><span class="w">     </span><span class="mi">0x3000</span><span class="w">   </span><span class="mi">0x1ea000</span><span class="w"> </span><span class="err">/</span><span class="no">usr</span><span class="err">/</span><span class="no">lib</span><span class="err">/</span><span class="no">x86_64-linux-gnu</span><span class="err">/</span><span class="no">libc-2.31.so</span>
+<span class="w">    </span><span class="err">0</span><span class="nf">x7ffff7fa8000</span><span class="w">     </span><span class="mi">0x7ffff7fac000</span><span class="w">     </span><span class="mi">0x4000</span><span class="w">        </span><span class="mi">0x0</span><span class="w"> </span>
+<span class="w">    </span><span class="mi">0x7ffff7fc2000</span><span class="w">     </span><span class="mi">0x7ffff7fc3000</span><span class="w">     </span><span class="mi">0x1000</span><span class="w">        </span><span class="mi">0x0</span><span class="w"> </span><span class="err">/</span><span class="no">home</span><span class="err">/</span><span class="no">yuxiangw</span><span class="err">/</span><span class="no">GitHub</span><span class="err">/</span><span class="no">learning_book</span><span class="err">/</span><span class="no">docs</span><span class="err">/</span><span class="no">booknotes</span><span class="err">/</span><span class="no">cxydzwxy</span><span class="err">/</span><span class="no">compile_link</span><span class="err">/</span><span class="no">dynamic_link</span><span class="err">/</span><span class="no">code</span><span class="err">/</span><span class="no">simple</span><span class="err">/</span><span class="no">libfoo.so</span>
+<span class="w">    </span><span class="err">0</span><span class="nf">x7ffff7fc3000</span><span class="w">     </span><span class="mi">0x7ffff7fc4000</span><span class="w">     </span><span class="mi">0x1000</span><span class="w">     </span><span class="mi">0x1000</span><span class="w"> </span><span class="err">/</span><span class="no">home</span><span class="err">/</span><span class="no">yuxiangw</span><span class="err">/</span><span class="no">GitHub</span><span class="err">/</span><span class="no">learning_book</span><span class="err">/</span><span class="no">docs</span><span class="err">/</span><span class="no">booknotes</span><span class="err">/</span><span class="no">cxydzwxy</span><span class="err">/</span><span class="no">compile_link</span><span class="err">/</span><span class="no">dynamic_link</span><span class="err">/</span><span class="no">code</span><span class="err">/</span><span class="no">simple</span><span class="err">/</span><span class="no">libfoo.so</span>
+<span class="w">    </span><span class="err">0</span><span class="nf">x7ffff7fc4000</span><span class="w">     </span><span class="mi">0x7ffff7fc5000</span><span class="w">     </span><span class="mi">0x1000</span><span class="w">     </span><span class="mi">0x2000</span><span class="w"> </span><span class="err">/</span><span class="no">home</span><span class="err">/</span><span class="no">yuxiangw</span><span class="err">/</span><span class="no">GitHub</span><span class="err">/</span><span class="no">learning_book</span><span class="err">/</span><span class="no">docs</span><span class="err">/</span><span class="no">booknotes</span><span class="err">/</span><span class="no">cxydzwxy</span><span class="err">/</span><span class="no">compile_link</span><span class="err">/</span><span class="no">dynamic_link</span><span class="err">/</span><span class="no">code</span><span class="err">/</span><span class="no">simple</span><span class="err">/</span><span class="no">libfoo.so</span>
+<span class="w">    </span><span class="err">0</span><span class="nf">x7ffff7fc5000</span><span class="w">     </span><span class="mi">0x7ffff7fc6000</span><span class="w">     </span><span class="mi">0x1000</span><span class="w">     </span><span class="mi">0x2000</span><span class="w"> </span><span class="err">/</span><span class="no">home</span><span class="err">/</span><span class="no">yuxiangw</span><span class="err">/</span><span class="no">GitHub</span><span class="err">/</span><span class="no">learning_book</span><span class="err">/</span><span class="no">docs</span><span class="err">/</span><span class="no">booknotes</span><span class="err">/</span><span class="no">cxydzwxy</span><span class="err">/</span><span class="no">compile_link</span><span class="err">/</span><span class="no">dynamic_link</span><span class="err">/</span><span class="no">code</span><span class="err">/</span><span class="no">simple</span><span class="err">/</span><span class="no">libfoo.so</span>
+<span class="w">    </span><span class="err">0</span><span class="nf">x7ffff7fc6000</span><span class="w">     </span><span class="mi">0x7ffff7fc7000</span><span class="w">     </span><span class="mi">0x1000</span><span class="w">     </span><span class="mi">0x3000</span><span class="w"> </span><span class="err">/</span><span class="no">home</span><span class="err">/</span><span class="no">yuxiangw</span><span class="err">/</span><span class="no">GitHub</span><span class="err">/</span><span class="no">learning_book</span><span class="err">/</span><span class="no">docs</span><span class="err">/</span><span class="no">booknotes</span><span class="err">/</span><span class="no">cxydzwxy</span><span class="err">/</span><span class="no">compile_link</span><span class="err">/</span><span class="no">dynamic_link</span><span class="err">/</span><span class="no">code</span><span class="err">/</span><span class="no">simple</span><span class="err">/</span><span class="no">libfoo.so</span>
+<span class="w">    </span><span class="err">0</span><span class="nf">x7ffff7fc7000</span><span class="w">     </span><span class="mi">0x7ffff7fc9000</span><span class="w">     </span><span class="mi">0x2000</span><span class="w">        </span><span class="mi">0x0</span><span class="w"> </span>
+<span class="w">    </span><span class="mi">0x7ffff7fc9000</span><span class="w">     </span><span class="mi">0x7ffff7fcd000</span><span class="w">     </span><span class="mi">0x4000</span><span class="w">        </span><span class="mi">0x0</span><span class="w"> </span><span class="p">[</span><span class="no">vvar</span><span class="p">]</span>
+<span class="w">    </span><span class="err">0</span><span class="nf">x7ffff7fcd000</span><span class="w">     </span><span class="mi">0x7ffff7fcf000</span><span class="w">     </span><span class="mi">0x2000</span><span class="w">        </span><span class="mi">0x0</span><span class="w"> </span><span class="p">[</span><span class="no">vdso</span><span class="p">]</span>
+<span class="w">    </span><span class="err">0</span><span class="nf">x7ffff7fcf000</span><span class="w">     </span><span class="mi">0x7ffff7fd0000</span><span class="w">     </span><span class="mi">0x1000</span><span class="w">        </span><span class="mi">0x0</span><span class="w"> </span><span class="err">/</span><span class="no">usr</span><span class="err">/</span><span class="no">lib</span><span class="err">/</span><span class="no">x86_64-linux-gnu</span><span class="err">/</span><span class="no">ld-2.31.so</span>
+<span class="w">    </span><span class="err">0</span><span class="nf">x7ffff7fd0000</span><span class="w">     </span><span class="mi">0x7ffff7ff3000</span><span class="w">    </span><span class="mi">0x23000</span><span class="w">     </span><span class="mi">0x1000</span><span class="w"> </span><span class="err">/</span><span class="no">usr</span><span class="err">/</span><span class="no">lib</span><span class="err">/</span><span class="no">x86_64-linux-gnu</span><span class="err">/</span><span class="no">ld-2.31.so</span>
+<span class="w">    </span><span class="err">0</span><span class="nf">x7ffff7ff3000</span><span class="w">     </span><span class="mi">0x7ffff7ffb000</span><span class="w">     </span><span class="mi">0x8000</span><span class="w">    </span><span class="mi">0x24000</span><span class="w"> </span><span class="err">/</span><span class="no">usr</span><span class="err">/</span><span class="no">lib</span><span class="err">/</span><span class="no">x86_64-linux-gnu</span><span class="err">/</span><span class="no">ld-2.31.so</span>
+<span class="w">    </span><span class="err">0</span><span class="nf">x7ffff7ffc000</span><span class="w">     </span><span class="mi">0x7ffff7ffd000</span><span class="w">     </span><span class="mi">0x1000</span><span class="w">    </span><span class="mi">0x2c000</span><span class="w"> </span><span class="err">/</span><span class="no">usr</span><span class="err">/</span><span class="no">lib</span><span class="err">/</span><span class="no">x86_64-linux-gnu</span><span class="err">/</span><span class="no">ld-2.31.so</span>
+<span class="w">    </span><span class="err">0</span><span class="nf">x7ffff7ffd000</span><span class="w">     </span><span class="mi">0x7ffff7ffe000</span><span class="w">     </span><span class="mi">0x1000</span><span class="w">    </span><span class="mi">0x2d000</span><span class="w"> </span><span class="err">/</span><span class="no">usr</span><span class="err">/</span><span class="no">lib</span><span class="err">/</span><span class="no">x86_64-linux-gnu</span><span class="err">/</span><span class="no">ld-2.31.so</span>
+<span class="w">    </span><span class="err">0</span><span class="nf">x7ffff7ffe000</span><span class="w">     </span><span class="mi">0x7ffff7fff000</span><span class="w">     </span><span class="mi">0x1000</span><span class="w">        </span><span class="mi">0x0</span><span class="w"> </span>
+<span class="w">    </span><span class="mi">0x7ffffffde000</span><span class="w">     </span><span class="mi">0x7ffffffff000</span><span class="w">    </span><span class="mi">0x21000</span><span class="w">        </span><span class="mi">0x0</span><span class="w"> </span><span class="p">[</span><span class="no">stack</span><span class="p">]</span>
+<span class="err">0</span><span class="nf">xffffffffff600000</span><span class="w"> </span><span class="mi">0xffffffffff601000</span><span class="w">     </span><span class="mi">0x1000</span><span class="w">        </span><span class="mi">0x0</span><span class="w"> </span><span class="p">[</span><span class="no">vsyscall</span><span class="p">]</span>
+</code></pre></div></p>
+<h2 id="_4">重定位<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<h3 id="_5">装载时重定位<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h3>
+<p>如果动态模块中有绝对地址引用，由于我们无法在链接时知道动态库的装载地址，因此需采用<strong>装载时重定位(Load Time Relocation)</strong>技术，在动态库装载的时候，修改其绝对地址引用，以保证地址的正确性。</p>
+<p>例如，一个动态库在编译时假设装载目标地址是0x1000，但实际装载地址是0x4000，那么动态库中所有绝对地址引用都需要加上0x3000的偏移量。</p>
+<h3 id="_6">地址无关代码<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h3>
+<p>装载时重定位技术的最大缺点是，需要根据装载地址的不同，在装载时修改指令。</p>
+<p><strong>地址无关代码(PIC, Position-independent Code)</strong>解决了此问题。其基本思想是把指令中那些需要被修改的部分分离出来，跟数据部分放在一起。多个进程之间共享不变的指令部分，而各自拥有可变数据部分。GCC编译时，<code>-fPIC</code>编译选项指定了编译出的代码为地址无关代码，在编译动态共享库时，需要加上此选项。</p>
+<p>我们把共享对象模块中的地址引用按照是否跨模块分成：模块内部引用和模块外部引用，按照不同的引用方式又可分为指令引用和数据访问，存在如下所示的四种情况：
+<div class="highlight"><pre><span></span><code><span class="k">static</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">a</span><span class="p">;</span>
+<span class="k">extern</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">b</span><span class="p">;</span>
+<span class="k">extern</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">ext</span><span class="p">();</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">bar</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="c1">// 模块内部数据访问</span>
+<span class="w">    </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span><span class="w"> </span><span class="c1">// 模块间数据访问</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">foo</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">bar</span><span class="p">();</span><span class="w"> </span><span class="c1">// 模块内部调用或跳转</span>
+<span class="w">    </span><span class="n">ext</span><span class="p">();</span><span class="w"> </span><span class="c1">// 模块间调用或跳转</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<p>由于编译器的优化作用，我们需要通过间接依赖的<a href="https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/link/dynamic/code/secondary_dep">例子"secondary_dep"</a>才能达到模块间数据访问的效果。如果是直接依赖的<a href="https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/link/dynamic/code/direct_dep">例子"direct_dep"</a>，都被优化成了模块内的数据访问。</p>
+<ul>
+<li><a href="https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/link/dynamic/code/secondary_dep">实例"secondary_dep"</a> - 模块内数据访问<code>a</code>和模块间数据访问<code>b</code><ul>
+<li>对于模块内数据访问，直接用相对地址即可得到存储位置。例如，变量<code>a</code>的地址<code>0x7ffff7fc603c</code>在<code>bar</code>函数中直接被引用</li>
+<li>对于模块间数据访问，需要全局偏移表(Global Offset Table, GOT)的帮助。例如，<code>b</code>真正的地址是<code>0x7ffff7db902c</code>，该地址存于GOT地址<code>0x7ffff7fc5fe0</code>中，<code>bar</code>函数引用的时GOT地址<code>0x7ffff7fc5fe0</code>
+<div class="highlight"><pre><span></span><code><span class="err">(</span><span class="nf">gdb</span><span class="p">)</span><span class="w"> </span><span class="no">disas</span><span class="w"> </span><span class="no">bar</span>
+<span class="nf">Dump</span><span class="w"> </span><span class="no">of</span><span class="w"> </span><span class="no">assembler</span><span class="w"> </span><span class="no">code</span><span class="w"> </span><span class="no">for</span><span class="w"> </span><span class="no">function</span><span class="w"> </span><span class="no">bar</span><span class="p">:</span>
+<span class="w">    </span><span class="err">0</span><span class="nf">x00007ffff7fc3159</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">0</span><span class="err">&gt;</span><span class="p">:</span><span class="w">     </span><span class="no">endbr64</span><span class="w"> </span>
+<span class="w">    </span><span class="mi">0x00007ffff7fc315d</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">4</span><span class="err">&gt;</span><span class="p">:</span><span class="w">     </span><span class="no">push</span><span class="w">   </span><span class="nv">%rbp</span>
+<span class="w">    </span><span class="err">0</span><span class="nf">x00007ffff7fc315e</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">5</span><span class="err">&gt;</span><span class="p">:</span><span class="w">     </span><span class="no">mov</span><span class="w">    </span><span class="nv">%rsp</span><span class="p">,</span><span class="nv">%rbp</span>
+<span class="w">    </span><span class="err">0</span><span class="nf">x00007ffff7fc3161</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">8</span><span class="err">&gt;</span><span class="p">:</span><span class="w">     </span><span class="no">movl</span><span class="w">   </span><span class="no">$0x1</span><span class="p">,</span><span class="mi">0x2ed1</span><span class="p">(</span><span class="nv">%rip</span><span class="p">)</span><span class="w">        </span><span class="c1"># 0x7ffff7fc603c &lt;a&gt;</span>
+<span class="w">    </span><span class="err">0</span><span class="nf">x00007ffff7fc316b</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">18</span><span class="err">&gt;</span><span class="p">:</span><span class="w">    </span><span class="no">mov</span><span class="w">    </span><span class="mi">0x2e6e</span><span class="p">(</span><span class="nv">%rip</span><span class="p">),</span><span class="nv">%rax</span><span class="w">        </span><span class="c1"># 0x7ffff7fc5fe0</span>
+<span class="w">    </span><span class="err">0</span><span class="nf">x00007ffff7fc3172</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">25</span><span class="err">&gt;</span><span class="p">:</span><span class="w">    </span><span class="no">movl</span><span class="w">   </span><span class="no">$0x2</span><span class="p">,(</span><span class="nv">%rax</span><span class="p">)</span>
+
+<span class="c1"># 打印变量a的地址0x7ffff7fc603c内容</span>
+<span class="err">(</span><span class="nf">gdb</span><span class="p">)</span><span class="w"> </span><span class="no">p</span><span class="err">/</span><span class="no">x</span><span class="w"> </span><span class="p">*</span><span class="mi">0x7ffff7fc603c</span>
+<span class="nf">$1</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="mi">0x1</span>
+<span class="err">(</span><span class="nf">gdb</span><span class="p">)</span><span class="w"> </span><span class="no">info</span><span class="w"> </span><span class="no">sym</span><span class="w"> </span><span class="err">&amp;</span><span class="no">a</span>
+<span class="nf">a</span><span class="w"> </span><span class="no">in</span><span class="w"> </span><span class="no">section</span><span class="w"> </span><span class="no">.bss</span><span class="w"> </span><span class="no">of</span><span class="w"> </span><span class="p">.</span><span class="err">/</span><span class="no">libouter.so</span>
+<span class="c1"># 变量a无须经过GOT映射</span>
+<span class="err">(</span><span class="nf">gdb</span><span class="p">)</span><span class="w"> </span><span class="no">p</span><span class="err">/</span><span class="no">x</span><span class="w"> </span><span class="err">&amp;</span><span class="no">a</span>
+<span class="nf">$2</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="mi">0x7ffff7fc603c</span>
+
+<span class="c1"># 打印变量b的GOT地址0x7ffff7fc5fe0内容</span>
+<span class="err">(</span><span class="nf">gdb</span><span class="p">)</span><span class="w"> </span><span class="no">p</span><span class="err">/</span><span class="no">x</span><span class="w"> </span><span class="p">*(</span><span class="no">uint64_t</span><span class="w"> </span><span class="p">*)</span><span class="mi">0x7ffff7fc5fe0</span>
+<span class="nf">$3</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="mi">0x7ffff7db902c</span>
+<span class="err">(</span><span class="nf">gdb</span><span class="p">)</span><span class="w"> </span><span class="no">info</span><span class="w"> </span><span class="no">sym</span><span class="w"> </span><span class="err">&amp;</span><span class="no">b</span>
+<span class="nf">b</span><span class="w"> </span><span class="no">in</span><span class="w"> </span><span class="no">section</span><span class="w"> </span><span class="no">.bss</span><span class="w"> </span><span class="no">of</span><span class="w"> </span><span class="p">.</span><span class="err">/</span><span class="no">libinner.so</span>
+<span class="c1"># 变量b的地址和GOT地址0x7ffff7fc5fe0的内容相同</span>
+<span class="err">(</span><span class="nf">gdb</span><span class="p">)</span><span class="w"> </span><span class="no">p</span><span class="err">/</span><span class="no">x</span><span class="w"> </span><span class="err">&amp;</span><span class="no">b</span>
+<span class="nf">$4</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="mi">0x7ffff7db902c</span>
+</code></pre></div></li>
+</ul>
+</li>
+<li><a href="https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/link/dynamic/code/direct_dep">实例"direct_dep"</a> - 模块内调用<code>bar</code>和模块间调用<code>ext</code><ul>
+<li>模块内函数<code>bar</code>直接使用真实的地址</li>
+<li>模块间函数<code>ext</code>的调用利用了<a href="#plt">延迟绑定PLT</a>技术，函数调用需经过：<code>ext@plt</code> -&gt; <code>ext@got.plt</code> -&gt; 真正的地址<code>0x7ffff7fc3119</code>
+<div class="highlight"><pre><span></span><code><span class="err">(</span><span class="nf">gdb</span><span class="p">)</span><span class="w"> </span><span class="no">disas</span><span class="w"> </span><span class="no">foo</span>
+<span class="nf">Dump</span><span class="w"> </span><span class="no">of</span><span class="w"> </span><span class="no">assembler</span><span class="w"> </span><span class="no">code</span><span class="w"> </span><span class="no">for</span><span class="w"> </span><span class="no">function</span><span class="w"> </span><span class="no">foo</span><span class="p">:</span>
+<span class="w">    </span><span class="err">0</span><span class="nf">x00005555555551a0</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">0</span><span class="err">&gt;</span><span class="p">:</span><span class="w">     </span><span class="no">endbr64</span><span class="w"> </span>
+<span class="w">    </span><span class="mi">0x00005555555551a4</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">4</span><span class="err">&gt;</span><span class="p">:</span><span class="w">     </span><span class="no">push</span><span class="w">   </span><span class="nv">%rbp</span>
+<span class="w">    </span><span class="err">0</span><span class="nf">x00005555555551a5</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">5</span><span class="err">&gt;</span><span class="p">:</span><span class="w">     </span><span class="no">mov</span><span class="w">    </span><span class="nv">%rsp</span><span class="p">,</span><span class="nv">%rbp</span>
+<span class="w">    </span><span class="err">0</span><span class="nf">x00005555555551a8</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">8</span><span class="err">&gt;</span><span class="p">:</span><span class="w">     </span><span class="no">mov</span><span class="w">    </span><span class="no">$0x0</span><span class="p">,</span><span class="nv">%eax</span>
+<span class="w">    </span><span class="err">0</span><span class="nf">x00005555555551ad</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">13</span><span class="err">&gt;</span><span class="p">:</span><span class="w">    </span><span class="no">callq</span><span class="w">  </span><span class="mh">0x555555555070</span> <span class="p">&lt;</span><span class="no">ext@plt</span><span class="p">&gt;</span>
+<span class="w">    </span><span class="err">0</span><span class="nf">x00005555555551b2</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">18</span><span class="err">&gt;</span><span class="p">:</span><span class="w">    </span><span class="no">mov</span><span class="w">    </span><span class="no">$0x0</span><span class="p">,</span><span class="nv">%eax</span>
+<span class="w">    </span><span class="err">0</span><span class="nf">x00005555555551b7</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">23</span><span class="err">&gt;</span><span class="p">:</span><span class="w">    </span><span class="no">callq</span><span class="w">  </span><span class="mh">0x555555555169</span> <span class="p">&lt;</span><span class="no">bar</span><span class="p">&gt;</span>
+<span class="w">    </span><span class="err">0</span><span class="nf">x00005555555551bc</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">28</span><span class="err">&gt;</span><span class="p">:</span><span class="w">    </span><span class="no">nop</span>
+<span class="w">    </span><span class="err">0</span><span class="nf">x00005555555551bd</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">29</span><span class="err">&gt;</span><span class="p">:</span><span class="w">    </span><span class="no">pop</span><span class="w">    </span><span class="nv">%rbp</span>
+<span class="w">    </span><span class="err">0</span><span class="nf">x00005555555551be</span><span class="w"> </span><span class="err">&lt;+</span><span class="mi">30</span><span class="err">&gt;</span><span class="p">:</span><span class="w">    </span><span class="no">retq</span>
+
+<span class="err">(</span><span class="nf">gdb</span><span class="p">)</span><span class="w"> </span><span class="no">info</span><span class="w"> </span><span class="no">sym</span><span class="w"> </span><span class="err">&amp;</span><span class="no">bar</span>
+<span class="nf">bar</span><span class="w"> </span><span class="no">in</span><span class="w"> </span><span class="no">section</span><span class="w"> </span><span class="no">.text</span><span class="w"> </span><span class="no">of</span><span class="w"> </span><span class="err">/</span><span class="no">home</span><span class="err">/</span><span class="no">yuxiangw</span><span class="err">/</span><span class="no">GitHub</span><span class="err">/</span><span class="no">learning_book</span><span class="err">/</span><span class="no">docs</span><span class="err">/</span><span class="no">booknotes</span><span class="err">/</span><span class="no">cxydzwxy</span><span class="err">/</span><span class="no">link</span><span class="err">/</span><span class="no">dynamic</span><span class="err">/</span><span class="no">code</span><span class="err">/</span><span class="no">got</span><span class="err">/</span><span class="no">main</span>
+<span class="err">(</span><span class="nf">gdb</span><span class="p">)</span><span class="w"> </span><span class="no">p</span><span class="err">/</span><span class="no">x</span><span class="w"> </span><span class="err">&amp;</span><span class="no">bar</span>
+<span class="nf">$1</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="mi">0x555555555169</span>
+
+<span class="c1"># 打印ext@plt</span>
+<span class="err">(</span><span class="nf">gdb</span><span class="p">)</span><span class="w"> </span><span class="no">x</span><span class="err">/</span><span class="mi">3</span><span class="no">i</span><span class="w"> </span><span class="mi">0x555555555070</span>
+<span class="w">    </span><span class="err">0</span><span class="nf">x555555555070</span><span class="w"> </span><span class="err">&lt;</span><span class="no">ext@plt</span><span class="err">&gt;</span><span class="p">:</span><span class="w">    </span><span class="no">endbr64</span><span class="w"> </span>
+<span class="w">    </span><span class="mh">0x555555555074</span> <span class="p">&lt;</span><span class="no">ext@plt</span><span class="p">+</span><span class="mi">4</span><span class="p">&gt;:</span><span class="w">  </span><span class="no">bnd</span><span class="w"> </span><span class="no">jmpq</span><span class="w"> </span><span class="p">*</span><span class="mi">0x2f55</span><span class="p">(</span><span class="nv">%rip</span><span class="p">)</span><span class="w">        </span><span class="c1"># 0x555555557fd0 &lt;ext@got.plt&gt;</span>
+<span class="w">    </span><span class="err">0</span><span class="nf">x55555555507b</span><span class="w"> </span><span class="err">&lt;</span><span class="no">ext@plt</span><span class="err">+</span><span class="mi">11</span><span class="err">&gt;</span><span class="p">:</span><span class="w"> </span><span class="no">nopl</span><span class="w">   </span><span class="mi">0x0</span><span class="p">(</span><span class="nv">%rax</span><span class="p">,</span><span class="nv">%rax</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="c1"># 打印ext@got.plt</span>
+<span class="err">(</span><span class="nf">gdb</span><span class="p">)</span><span class="w"> </span><span class="no">p</span><span class="err">/</span><span class="no">x</span><span class="w"> </span><span class="p">*(</span><span class="no">uint64_t</span><span class="w"> </span><span class="p">*)</span><span class="mi">0x555555557fd0</span>
+<span class="nf">$2</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="mi">0x7ffff7fc3119</span>
+<span class="err">(</span><span class="nf">gdb</span><span class="p">)</span><span class="w"> </span><span class="no">info</span><span class="w"> </span><span class="no">sym</span><span class="w"> </span><span class="err">&amp;</span><span class="no">ext</span>
+<span class="nf">ext</span><span class="w"> </span><span class="no">in</span><span class="w"> </span><span class="no">section</span><span class="w"> </span><span class="no">.text</span><span class="w"> </span><span class="no">of</span><span class="w"> </span><span class="p">.</span><span class="err">/</span><span class="no">libfoo.so</span>
+<span class="err">(</span><span class="nf">gdb</span><span class="p">)</span><span class="w"> </span><span class="no">p</span><span class="err">/</span><span class="no">x</span><span class="w"> </span><span class="err">&amp;</span><span class="no">ext</span>
+<span class="nf">$3</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="mi">0x7ffff7fc3119</span>
+</code></pre></div></li>
+</ul>
+</li>
+</ul>
+<h2 id="plt">延迟绑定(PLT)<a class="headerlink" href="#plt" title="Permanent link">&para;</a></h2>
+<p>由于动态链接存在GOT定位，一般比静态链接要慢一些。延迟绑定(Lazy Binding)技术就是为了提高动态链接运行时的效率而提出的。其基本思想就是当函数第一次被用到时才进行绑定(符号查找、重定位等)，如果没有用到则不进行绑定。</p>
+<p>ELF使用PLT(Procedure Linkage Table)来实现延迟绑定。例如，我们想通过PLT跳转到<code>bar</code>函数，首先跳转到PLT中对应的结构<code>bar@plt</code>，其实现大致如下(根据GCC的版本不同，实现可能会不同)：
+<div class="highlight"><pre><span></span><code><span class="nl">bar@plt:</span>
+<span class="nf">jmp</span><span class="w"> </span><span class="p">*(</span><span class="no">bar@GOT</span><span class="p">)</span><span class="w">  </span><span class="c1"># 通过GOT间接跳转，如果GOT未被配置，将继续下面的语句；如果GOT已配置，跳转至bar函数</span>
+<span class="nf">push</span><span class="w"> </span><span class="no">n</span><span class="w">          </span><span class="c1"># 以下代码是将bar的地址填入bar@GOT中，n是bar这个符号在重定位表&quot;.rela.plt&quot;中的下标</span>
+<span class="nf">push</span><span class="w"> </span><span class="no">moduleID</span><span class="w">   </span><span class="c1"># 模块ID</span>
+<span class="nf">jump</span><span class="w"> </span><span class="no">_dl_runtime_resolve</span><span class="w"> </span><span class="c1"># 通过链接器函数完成符号解析和重定位</span>
+</code></pre></div></p>
+<h3 id="plt_1">PLT相关的段<a class="headerlink" href="#plt_1" title="Permanent link">&para;</a></h3>
+<p>ELF将GOT拆分成两个表：</p>
+<ul>
+<li>".got"段 - 用来保存全局变量引用的地址</li>
+<li>".got.plt"段 - 用来保存外部函数引用的地址</li>
+</ul>
+<p>在<a href="https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/link/dynamic/code/secondary_dep">例子"secondary_dep"</a>中，用<code>objdump -D libouter.so</code>命令打印".got"和".got.plt"段的内容如下：
+<div class="highlight"><pre><span></span><code><span class="nf">Disassembly</span><span class="w"> </span><span class="no">of</span><span class="w"> </span><span class="no">section</span><span class="w"> </span><span class="no">.got</span><span class="p">:</span>
+
+<span class="err">0000000000003</span><span class="nf">fd8</span><span class="w"> </span><span class="err">&lt;</span><span class="no">.got</span><span class="err">&gt;</span><span class="p">:</span>
+<span class="w">        </span><span class="na">...</span>
+
+<span class="nf">Disassembly</span><span class="w"> </span><span class="no">of</span><span class="w"> </span><span class="no">section</span><span class="w"> </span><span class="no">.got.plt</span><span class="p">:</span>
+
+<span class="err">0000000000004000</span><span class="w"> </span><span class="err">&lt;</span><span class="nf">_GLOBAL_OFFSET_TABLE_</span><span class="err">&gt;</span><span class="p">:</span>
+<span class="w">    </span><span class="err">4000:</span><span class="w">       </span><span class="err">18</span><span class="w"> </span><span class="err">3</span><span class="nf">e</span><span class="w">                   </span><span class="no">sbb</span><span class="w">    </span><span class="nv">%bh</span><span class="p">,(</span><span class="nv">%rsi</span><span class="p">)</span>
+<span class="w">        </span><span class="na">...</span>
+<span class="w">    </span><span class="err">4016:</span><span class="w">       </span><span class="err">00</span><span class="w"> </span><span class="err">00</span><span class="w">                   </span><span class="nf">add</span><span class="w">    </span><span class="nv">%al</span><span class="p">,(</span><span class="nv">%rax</span><span class="p">)</span>
+<span class="w">    </span><span class="err">4018:</span><span class="w">       </span><span class="err">30</span><span class="w"> </span><span class="err">10</span><span class="w">                   </span><span class="nf">xor</span><span class="w">    </span><span class="nv">%dl</span><span class="p">,(</span><span class="nv">%rax</span><span class="p">)</span>
+<span class="w">    </span><span class="err">401</span><span class="nl">a:</span><span class="w">       </span><span class="err">00</span><span class="w"> </span><span class="err">00</span><span class="w">                   </span><span class="nf">add</span><span class="w">    </span><span class="nv">%al</span><span class="p">,(</span><span class="nv">%rax</span><span class="p">)</span>
+<span class="w">    </span><span class="err">401</span><span class="nl">c:</span><span class="w">       </span><span class="err">00</span><span class="w"> </span><span class="err">00</span><span class="w">                   </span><span class="nf">add</span><span class="w">    </span><span class="nv">%al</span><span class="p">,(</span><span class="nv">%rax</span><span class="p">)</span>
+<span class="w">    </span><span class="err">401</span><span class="nl">e:</span><span class="w">       </span><span class="err">00</span><span class="w"> </span><span class="err">00</span><span class="w">                   </span><span class="nf">add</span><span class="w">    </span><span class="nv">%al</span><span class="p">,(</span><span class="nv">%rax</span><span class="p">)</span>
+<span class="w">    </span><span class="err">4020:</span><span class="w">       </span><span class="err">40</span><span class="w"> </span><span class="err">10</span><span class="w"> </span><span class="err">00</span><span class="w">                </span><span class="nf">adc</span><span class="w">    </span><span class="nv">%al</span><span class="p">,(</span><span class="nv">%rax</span><span class="p">)</span>
+<span class="w">    </span><span class="err">4023:</span><span class="w">       </span><span class="err">00</span><span class="w"> </span><span class="err">00</span><span class="w">                   </span><span class="nf">add</span><span class="w">    </span><span class="nv">%al</span><span class="p">,(</span><span class="nv">%rax</span><span class="p">)</span>
+<span class="w">    </span><span class="err">4025:</span><span class="w">       </span><span class="err">00</span><span class="w"> </span><span class="err">00</span><span class="w">                   </span><span class="nf">add</span><span class="w">    </span><span class="nv">%al</span><span class="p">,(</span><span class="nv">%rax</span><span class="p">)</span>
+<span class="w">    </span><span class="err">4027:</span><span class="w">       </span><span class="err">00</span><span class="w"> </span><span class="err">50</span><span class="w"> </span><span class="err">10</span><span class="w">                </span><span class="nf">add</span><span class="w">    </span><span class="nv">%dl</span><span class="p">,</span><span class="mi">0x10</span><span class="p">(</span><span class="nv">%rax</span><span class="p">)</span>
+<span class="w">    </span><span class="err">402</span><span class="nl">a:</span><span class="w">       </span><span class="err">00</span><span class="w"> </span><span class="err">00</span><span class="w">                   </span><span class="nf">add</span><span class="w">    </span><span class="nv">%al</span><span class="p">,(</span><span class="nv">%rax</span><span class="p">)</span>
+<span class="w">    </span><span class="err">402</span><span class="nl">c:</span><span class="w">       </span><span class="err">00</span><span class="w"> </span><span class="err">00</span><span class="w">                   </span><span class="nf">add</span><span class="w">    </span><span class="nv">%al</span><span class="p">,(</span><span class="nv">%rax</span><span class="p">)</span>
+<span class="w">        </span><span class="na">...</span>
+</code></pre></div>
+其中，".got"段的范围是：0x3fd8-0x4000，".got.plt"段的范围是：0x4000-0x4038</p>
+<ul>
+<li><code>0x3fe0</code>是全局变量<code>b</code>在".got"段的位置，<code>bar</code>函数中变量<code>b</code>的地址就是此位置
+    <div class="highlight"><pre><span></span><code><span class="err">0000000000001159</span><span class="w"> </span><span class="err">&lt;</span><span class="nf">bar</span><span class="err">&gt;</span><span class="p">:</span>
+<span class="w">    </span><span class="err">1159:</span><span class="w">       </span><span class="nf">f3</span><span class="w"> </span><span class="mi">0</span><span class="no">f</span><span class="w"> </span><span class="mi">1</span><span class="no">e</span><span class="w"> </span><span class="no">fa</span><span class="w">             </span><span class="no">endbr64</span><span class="w"> </span>
+<span class="w">    </span><span class="mi">115</span><span class="no">d</span><span class="p">:</span><span class="w">       </span><span class="mi">55</span><span class="w">                      </span><span class="no">push</span><span class="w">   </span><span class="nv">%rbp</span>
+<span class="w">    </span><span class="err">115</span><span class="nl">e:</span><span class="w">       </span><span class="err">48</span><span class="w"> </span><span class="err">89</span><span class="w"> </span><span class="nf">e5</span><span class="w">                </span><span class="no">mov</span><span class="w">    </span><span class="nv">%rsp</span><span class="p">,</span><span class="nv">%rbp</span>
+<span class="w">    </span><span class="err">1161:</span><span class="w">       </span><span class="nf">c7</span><span class="w"> </span><span class="mi">05</span><span class="w"> </span><span class="no">d1</span><span class="w"> </span><span class="mi">2</span><span class="no">e</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">01</span><span class="w">    </span><span class="no">movl</span><span class="w">   </span><span class="no">$0x1</span><span class="p">,</span><span class="mi">0x2ed1</span><span class="p">(</span><span class="nv">%rip</span><span class="p">)</span><span class="w">        </span><span class="c1"># 403c &lt;a&gt;</span>
+<span class="w">    </span><span class="err">1168:</span><span class="w">       </span><span class="err">00</span><span class="w"> </span><span class="err">00</span><span class="w"> </span><span class="err">00</span><span class="w"> </span>
+<span class="w">    </span><span class="err">116</span><span class="nl">b:</span><span class="w">       </span><span class="err">48</span><span class="w"> </span><span class="err">8</span><span class="nf">b</span><span class="w"> </span><span class="mi">05</span><span class="w"> </span><span class="mi">6</span><span class="no">e</span><span class="w"> </span><span class="mi">2</span><span class="no">e</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w">    </span><span class="no">mov</span><span class="w">    </span><span class="mi">0x2e6e</span><span class="p">(</span><span class="nv">%rip</span><span class="p">),</span><span class="nv">%rax</span><span class="w">        </span><span class="c1"># 3fe0 &lt;b&gt;</span>
+<span class="w">    </span><span class="err">1172:</span><span class="w">       </span><span class="nf">c7</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">02</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w">       </span><span class="no">movl</span><span class="w">   </span><span class="no">$0x2</span><span class="p">,(</span><span class="nv">%rax</span><span class="p">)</span>
+<span class="w">    </span><span class="err">1178:</span><span class="w">       </span><span class="err">48</span><span class="w"> </span><span class="err">8</span><span class="nf">b</span><span class="w"> </span><span class="mi">05</span><span class="w"> </span><span class="mi">61</span><span class="w"> </span><span class="mi">2</span><span class="no">e</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w">    </span><span class="no">mov</span><span class="w">    </span><span class="mi">0x2e61</span><span class="p">(</span><span class="nv">%rip</span><span class="p">),</span><span class="nv">%rax</span><span class="w">        </span><span class="c1"># 3fe0 &lt;b&gt;</span>
+<span class="w">    </span><span class="err">117</span><span class="nl">f:</span><span class="w">       </span><span class="err">8</span><span class="nf">b</span><span class="w"> </span><span class="mi">10</span><span class="w">                   </span><span class="no">mov</span><span class="w">    </span><span class="p">(</span><span class="nv">%rax</span><span class="p">),</span><span class="nv">%edx</span>
+<span class="w">    </span><span class="na">...</span>
+</code></pre></div></li>
+<li><code>0x4028</code>是外部函数<code>ext</code>在".got.plt"段的位置，<code>ext@plt</code>就是跳转到此位置
+    <div class="highlight"><pre><span></span><code><span class="err">0000000000001090</span><span class="w"> </span><span class="err">&lt;</span><span class="nf">ext@plt</span><span class="err">&gt;</span><span class="p">:</span>
+<span class="w">    </span><span class="err">1090:</span><span class="w">       </span><span class="nf">f3</span><span class="w"> </span><span class="mi">0</span><span class="no">f</span><span class="w"> </span><span class="mi">1</span><span class="no">e</span><span class="w"> </span><span class="no">fa</span><span class="w">             </span><span class="no">endbr64</span><span class="w"> </span>
+<span class="w">    </span><span class="mi">1094</span><span class="p">:</span><span class="w">       </span><span class="no">f2</span><span class="w"> </span><span class="no">ff</span><span class="w"> </span><span class="mi">25</span><span class="w"> </span><span class="mi">8</span><span class="no">d</span><span class="w"> </span><span class="mi">2</span><span class="no">f</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w">    </span><span class="no">bnd</span><span class="w"> </span><span class="no">jmpq</span><span class="w"> </span><span class="p">*</span><span class="mi">0x2f8d</span><span class="p">(</span><span class="nv">%rip</span><span class="p">)</span><span class="w">        </span><span class="c1"># 4028 &lt;ext&gt;</span>
+<span class="w">    </span><span class="err">109</span><span class="nl">b:</span><span class="w">       </span><span class="err">0</span><span class="nf">f</span><span class="w"> </span><span class="mi">1</span><span class="no">f</span><span class="w"> </span><span class="mi">44</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w">          </span><span class="no">nopl</span><span class="w">   </span><span class="mi">0x0</span><span class="p">(</span><span class="nv">%rax</span><span class="p">,</span><span class="nv">%rax</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+</code></pre></div></li>
+</ul>
+<h2 id="_7">动态链接相关的段<a class="headerlink" href="#_7" title="Permanent link">&para;</a></h2>
+<p>在动态链接中，操作系统会先加载动态链接器(Dynamic Linker)，将控制权交给动态链接器的入口地址。当动态链接器得到控制权之后，它开始执行一系列自身的初始化操作，然后根据当前的环境参数，开始对可执行文件进行动态链接工作。当所有动态链接工作完成后，动态链接器会将控制权转交到可执行文件的入口地址，程序开始正式执行。</p>
+<p>下面结合<a href="https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/link/dynamic/code/secondary_dep">例子"secondary_dep"</a>，介绍动态链接相关的段。</p>
+<h3 id="interp">".interp"段<a class="headerlink" href="#interp" title="Permanent link">&para;</a></h3>
+<p>在动态链接的ELF可执行文件中，有一个专门的段叫做".interp"段，指定了动态链接器的位置。通过<code>objdump -s main</code>命令，打印".interp"段如下，
+<div class="highlight"><pre><span></span><code>Contents<span class="w"> </span>of<span class="w"> </span>section<span class="w"> </span>.interp:
+<span class="w"> </span><span class="m">0318</span><span class="w"> </span>2f6c6962<span class="w"> </span>36342f6c<span class="w"> </span>642d6c69<span class="w"> </span>6e75782d<span class="w">  </span>/lib64/ld-linux-
+<span class="w"> </span><span class="m">0328</span><span class="w"> </span>7838362d<span class="w"> </span>36342e73<span class="w"> </span>6f2e3200<span class="w">           </span>x86-64.so.2.
+</code></pre></div>
+其中，<code>/lib64/ld-linux-x86-64.so.2</code>是一个软链接，指向动态链接器共享对象的位置。</p>
+<h3 id="dynamic">".dynamic"段<a class="headerlink" href="#dynamic" title="Permanent link">&para;</a></h3>
+<p>".dynamic"段保存了动态链接器所需要的基本信息，比如依赖于哪些共享对象、动态链接器符号表的位置、动态链接重定位表的位置、共享对象初始化代码的地址等。</p>
+<p><code>readelf -d libouter.so</code>命令可查看libouter.so的"dynamic"段，其内容如下：
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>readelf<span class="w"> </span>-d<span class="w"> </span>libouter.so
+Dynamic<span class="w"> </span>section<span class="w"> </span>at<span class="w"> </span>offset<span class="w"> </span>0x2e08<span class="w"> </span>contains<span class="w"> </span><span class="m">25</span><span class="w"> </span>entries:
+<span class="w">  </span>Tag<span class="w">        </span>Type<span class="w">                         </span>Name/Value
+<span class="w"> </span>0x0000000000000001<span class="w"> </span><span class="o">(</span>NEEDED<span class="o">)</span><span class="w">             </span>Shared<span class="w"> </span>library:<span class="w"> </span><span class="o">[</span>libinner.so<span class="o">]</span>
+<span class="w"> </span>0x0000000000000001<span class="w"> </span><span class="o">(</span>NEEDED<span class="o">)</span><span class="w">             </span>Shared<span class="w"> </span>library:<span class="w"> </span><span class="o">[</span>libc.so.6<span class="o">]</span>
+<span class="w"> </span>0x000000000000000c<span class="w"> </span><span class="o">(</span>INIT<span class="o">)</span><span class="w">               </span>0x1000
+<span class="w"> </span>0x000000000000000d<span class="w"> </span><span class="o">(</span>FINI<span class="o">)</span><span class="w">               </span>0x11c0
+<span class="w"> </span>0x0000000000000019<span class="w"> </span><span class="o">(</span>INIT_ARRAY<span class="o">)</span><span class="w">         </span>0x3df8
+<span class="w"> </span>0x000000000000001b<span class="w"> </span><span class="o">(</span>INIT_ARRAYSZ<span class="o">)</span><span class="w">       </span><span class="m">8</span><span class="w"> </span><span class="o">(</span>bytes<span class="o">)</span>
+<span class="w"> </span>...
+</code></pre></div></p>
+<p><code>ldd libouter.so</code>命令可查看libouter.so所依赖的动态库，其内容如下：
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>ldd<span class="w"> </span>libouter.so<span class="w"> </span>
+<span class="w">    </span>linux-vdso.so.1<span class="w"> </span><span class="o">(</span>0x00007fffd7fd9000<span class="o">)</span>
+<span class="w">    </span>libinner.so<span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span>not<span class="w"> </span>found
+<span class="w">    </span>libc.so.6<span class="w"> </span><span class="o">=</span>&gt;<span class="w"> </span>/lib/x86_64-linux-gnu/libc.so.6<span class="w"> </span><span class="o">(</span>0x00007f4f1ce6b000<span class="o">)</span>
+<span class="w">    </span>/lib64/ld-linux-x86-64.so.2<span class="w"> </span><span class="o">(</span>0x00007f4f1d07a000<span class="o">)</span>
+</code></pre></div></p>
+<h3 id="_8">动态符号表<a class="headerlink" href="#_8" title="Permanent link">&para;</a></h3>
+<p>".dynsym"段是动态链接的动态符号表，类似于静态链接的符号表".symtab"，用于保存动态链接模块之间的符号<strong>导入导出</strong>关系，模块私有变量则不保存。但".symtab"段往往保存所有符号。</p>
+<p>".dynstr"段是动态链接的动态符号字符串表，类似于静态链接的符号字符串表".strtab"段，用于保存动态链接相关符号名的字符串。同时为了加快运行时符号的查找过程，还有辅助的符号哈希表".hash"段。</p>
+<p>命令<code>readelf --dyn-syms libouter.so</code>可查看动态符号表".dynsym"段：
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>readelf<span class="w"> </span>--dyn-syms<span class="w"> </span>libouter.so<span class="w"> </span>
+
+Symbol<span class="w"> </span>table<span class="w"> </span><span class="s1">&#39;.dynsym&#39;</span><span class="w"> </span>contains<span class="w"> </span><span class="m">10</span><span class="w"> </span>entries:
+<span class="w">   </span>Num:<span class="w">    </span>Value<span class="w">          </span>Size<span class="w"> </span>Type<span class="w">    </span>Bind<span class="w">   </span>Vis<span class="w">      </span>Ndx<span class="w"> </span>Name
+<span class="w">     </span><span class="m">0</span>:<span class="w"> </span><span class="m">0000000000000000</span><span class="w">     </span><span class="m">0</span><span class="w"> </span>NOTYPE<span class="w">  </span>LOCAL<span class="w">  </span>DEFAULT<span class="w">  </span>UND<span class="w"> </span>
+<span class="w">     </span><span class="m">1</span>:<span class="w"> </span><span class="m">0000000000000000</span><span class="w">     </span><span class="m">0</span><span class="w"> </span>NOTYPE<span class="w">  </span>WEAK<span class="w">   </span>DEFAULT<span class="w">  </span>UND<span class="w"> </span>_ITM_deregisterTMCloneTab
+<span class="w">     </span><span class="m">2</span>:<span class="w"> </span><span class="m">0000000000000000</span><span class="w">     </span><span class="m">0</span><span class="w"> </span>OBJECT<span class="w">  </span>GLOBAL<span class="w"> </span>DEFAULT<span class="w">  </span>UND<span class="w"> </span>b
+<span class="w">     </span><span class="m">3</span>:<span class="w"> </span><span class="m">0000000000000000</span><span class="w">     </span><span class="m">0</span><span class="w"> </span>FUNC<span class="w">    </span>GLOBAL<span class="w"> </span>DEFAULT<span class="w">  </span>UND<span class="w"> </span>printf@GLIBC_2.2.5<span class="w"> </span><span class="o">(</span><span class="m">2</span><span class="o">)</span>
+<span class="w">     </span><span class="m">4</span>:<span class="w"> </span><span class="m">0000000000000000</span><span class="w">     </span><span class="m">0</span><span class="w"> </span>NOTYPE<span class="w">  </span>WEAK<span class="w">   </span>DEFAULT<span class="w">  </span>UND<span class="w"> </span>__gmon_start__
+<span class="w">     </span><span class="m">5</span>:<span class="w"> </span><span class="m">0000000000000000</span><span class="w">     </span><span class="m">0</span><span class="w"> </span>FUNC<span class="w">    </span>GLOBAL<span class="w"> </span>DEFAULT<span class="w">  </span>UND<span class="w"> </span>ext
+<span class="w">     </span><span class="m">6</span>:<span class="w"> </span><span class="m">0000000000000000</span><span class="w">     </span><span class="m">0</span><span class="w"> </span>NOTYPE<span class="w">  </span>WEAK<span class="w">   </span>DEFAULT<span class="w">  </span>UND<span class="w"> </span>_ITM_registerTMCloneTable
+<span class="w">     </span><span class="m">7</span>:<span class="w"> </span><span class="m">0000000000000000</span><span class="w">     </span><span class="m">0</span><span class="w"> </span>FUNC<span class="w">    </span>WEAK<span class="w">   </span>DEFAULT<span class="w">  </span>UND<span class="w"> </span>__cxa_finalize@GLIBC_2.2.5<span class="w"> </span><span class="o">(</span><span class="m">2</span><span class="o">)</span>
+<span class="w">     </span><span class="m">8</span>:<span class="w"> </span><span class="m">0000000000001159</span><span class="w">    </span><span class="m">71</span><span class="w"> </span>FUNC<span class="w">    </span>GLOBAL<span class="w"> </span>DEFAULT<span class="w">   </span><span class="m">14</span><span class="w"> </span>bar
+<span class="w">     </span><span class="m">9</span>:<span class="w"> </span>00000000000011a0<span class="w">    </span><span class="m">31</span><span class="w"> </span>FUNC<span class="w">    </span>GLOBAL<span class="w"> </span>DEFAULT<span class="w">   </span><span class="m">14</span><span class="w"> </span>foo
+</code></pre></div></p>
+<p>命令<code>readelf -sD libouter.so</code>可以查看动态符号的哈希表：
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>readelf<span class="w"> </span>-sD<span class="w"> </span>libouter.so<span class="w"> </span>
+
+Symbol<span class="w"> </span>table<span class="w"> </span>of<span class="w"> </span><span class="sb">`</span>.gnu.hash<span class="sb">`</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>image:
+<span class="w">  </span>Num<span class="w"> </span>Buc:<span class="w">    </span>Value<span class="w">          </span>Size<span class="w">   </span>Type<span class="w">   </span>Bind<span class="w"> </span>Vis<span class="w">      </span>Ndx<span class="w"> </span>Name
+<span class="w">    </span><span class="m">8</span><span class="w">   </span><span class="m">0</span>:<span class="w"> </span><span class="m">0000000000001159</span><span class="w">    </span><span class="m">71</span><span class="w"> </span>FUNC<span class="w">    </span>GLOBAL<span class="w"> </span>DEFAULT<span class="w">  </span><span class="m">14</span><span class="w"> </span>bar
+<span class="w">    </span><span class="m">9</span><span class="w">   </span><span class="m">1</span>:<span class="w"> </span>00000000000011a0<span class="w">    </span><span class="m">31</span><span class="w"> </span>FUNC<span class="w">    </span>GLOBAL<span class="w"> </span>DEFAULT<span class="w">  </span><span class="m">14</span><span class="w"> </span>foo
+</code></pre></div></p>
+<h3 id="_9">动态链接重定位表<a class="headerlink" href="#_9" title="Permanent link">&para;</a></h3>
+<p>共享对象需要重定位的主要原因是导入符号的存在。无论是可执行文件还是共享对象，一旦依赖于其他共享对象，那么它的代码或数据中就会有对于导入符号的引用。在编译时这些导入符号的地址未知。在静态链接中，这些未知的地址引用在链接时被修正。但是在动态链接中，导入符号的地址在运行时才确定，所以需要在运行时将这些导入符号的引用修正，即需要重定位。</p>
+<p>对于使用PIC技术的可执行文件或共享对象，虽然它们的代码段不需要重定位(因为地址无关)，但是数据段还包含了绝对地址的引用。因为代码段中绝对地址相关的部分被分离了出来，变成了GOT，而GOT实际上是数据段的一部分。除了GOT以外，数据段还可能包含绝对地址引用。</p>
+<p>类似于静态链接中的代码段重定位表".rela.text"段和数据段的重定位表".rela.data"段，动态链接也有动态代码段重定位表".rela.plt"段和动态数据段重定位表".rela.dyn"。</p>
+<ul>
+<li>".rela.dyn"段是对数据引用的修正，它所修正的位置位于".got"以及数据段</li>
+<li>".rela.plt"段是对函数引用的修正，它所修正的位置位于".got.plt"</li>
+</ul>
+<p>命令<code>readelf -r libouter.so</code>可查看重定位表：
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>readelf<span class="w"> </span>-r<span class="w"> </span>libouter.so<span class="w"> </span>
+
+Relocation<span class="w"> </span>section<span class="w"> </span><span class="s1">&#39;.rela.dyn&#39;</span><span class="w"> </span>at<span class="w"> </span>offset<span class="w"> </span>0x4c8<span class="w"> </span>contains<span class="w"> </span><span class="m">8</span><span class="w"> </span>entries:
+<span class="w">  </span>Offset<span class="w">          </span>Info<span class="w">           </span>Type<span class="w">           </span>Sym.<span class="w"> </span>Value<span class="w">    </span>Sym.<span class="w"> </span>Name<span class="w"> </span>+<span class="w"> </span>Addend
+000000003df8<span class="w">  </span><span class="m">000000000008</span><span class="w"> </span>R_X86_64_RELATIVE<span class="w">                    </span><span class="m">1150</span>
+000000003e00<span class="w">  </span><span class="m">000000000008</span><span class="w"> </span>R_X86_64_RELATIVE<span class="w">                    </span><span class="m">1110</span>
+<span class="m">000000004030</span><span class="w">  </span><span class="m">000000000008</span><span class="w"> </span>R_X86_64_RELATIVE<span class="w">                    </span><span class="m">4030</span>
+000000003fd8<span class="w">  </span><span class="m">000100000006</span><span class="w"> </span>R_X86_64_GLOB_DAT<span class="w"> </span><span class="m">0000000000000000</span><span class="w"> </span>_ITM_deregisterTMClone<span class="w"> </span>+<span class="w"> </span><span class="m">0</span>
+000000003fe0<span class="w">  </span><span class="m">000200000006</span><span class="w"> </span>R_X86_64_GLOB_DAT<span class="w"> </span><span class="m">0000000000000000</span><span class="w"> </span>b<span class="w"> </span>+<span class="w"> </span><span class="m">0</span>
+000000003fe8<span class="w">  </span><span class="m">000400000006</span><span class="w"> </span>R_X86_64_GLOB_DAT<span class="w"> </span><span class="m">0000000000000000</span><span class="w"> </span>__gmon_start__<span class="w"> </span>+<span class="w"> </span><span class="m">0</span>
+000000003ff0<span class="w">  </span><span class="m">000600000006</span><span class="w"> </span>R_X86_64_GLOB_DAT<span class="w"> </span><span class="m">0000000000000000</span><span class="w"> </span>_ITM_registerTMCloneTa<span class="w"> </span>+<span class="w"> </span><span class="m">0</span>
+000000003ff8<span class="w">  </span><span class="m">000700000006</span><span class="w"> </span>R_X86_64_GLOB_DAT<span class="w"> </span><span class="m">0000000000000000</span><span class="w"> </span>__cxa_finalize@GLIBC_2.2.5<span class="w"> </span>+<span class="w"> </span><span class="m">0</span>
+
+Relocation<span class="w"> </span>section<span class="w"> </span><span class="s1">&#39;.rela.plt&#39;</span><span class="w"> </span>at<span class="w"> </span>offset<span class="w"> </span>0x588<span class="w"> </span>contains<span class="w"> </span><span class="m">3</span><span class="w"> </span>entries:
+<span class="w">  </span>Offset<span class="w">          </span>Info<span class="w">           </span>Type<span class="w">           </span>Sym.<span class="w"> </span>Value<span class="w">    </span>Sym.<span class="w"> </span>Name<span class="w"> </span>+<span class="w"> </span>Addend
+<span class="m">000000004018</span><span class="w">  </span><span class="m">000800000007</span><span class="w"> </span>R_X86_64_JUMP_SLO<span class="w"> </span><span class="m">0000000000001159</span><span class="w"> </span>bar<span class="w"> </span>+<span class="w"> </span><span class="m">0</span>
+<span class="m">000000004020</span><span class="w">  </span><span class="m">000300000007</span><span class="w"> </span>R_X86_64_JUMP_SLO<span class="w"> </span><span class="m">0000000000000000</span><span class="w"> </span>printf@GLIBC_2.2.5<span class="w"> </span>+<span class="w"> </span><span class="m">0</span>
+<span class="m">000000004028</span><span class="w">  </span><span class="m">000500000007</span><span class="w"> </span>R_X86_64_JUMP_SLO<span class="w"> </span><span class="m">0000000000000000</span><span class="w"> </span>ext<span class="w"> </span>+<span class="w"> </span><span class="m">0</span>
+
+$<span class="w"> </span>readelf<span class="w"> </span>-S<span class="w"> </span>libouter.so<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>got
+<span class="w">  </span><span class="o">[</span><span class="m">12</span><span class="o">]</span><span class="w"> </span>.plt.got<span class="w">          </span>PROGBITS<span class="w">         </span><span class="m">0000000000001060</span><span class="w">  </span><span class="m">00001060</span>
+<span class="w">  </span><span class="o">[</span><span class="m">22</span><span class="o">]</span><span class="w"> </span>.got<span class="w">              </span>PROGBITS<span class="w">         </span>0000000000003fd8<span class="w">  </span>00002fd8
+<span class="w">  </span><span class="o">[</span><span class="m">23</span><span class="o">]</span><span class="w"> </span>.got.plt<span class="w">          </span>PROGBITS<span class="w">         </span><span class="m">0000000000004000</span><span class="w">  </span><span class="m">00003000</span>
+</code></pre></div></p>
+<ul>
+<li>R_X86_64_JUMP_SLO类型<ul>
+<li>对".got.plt"段的重定位，被修正的位置只需要直接填入符号的地址</li>
+<li>以<code>printf</code>重定位为例，当动态链接器需要进行重定位时，它先查找<code>printf</code>位于<code>libc.so</code>的地址(假设为0x08801234)。那么链接器就会将这个地址填入到".got.plt"中的偏移<code>0x4020</code>的位置中。</li>
+</ul>
+</li>
+<li>R_X86_64_GLOB_DAT类型<ul>
+<li>对".got"端的重定位，过程和R_X86_64_JUMP_SLO类型类似</li>
+</ul>
+</li>
+<li>R_X86_64_RELATIVE类型<ul>
+<li>不同于前面的类型，是对绝对地址引用的重定位，又称基址重置(Rebasing)</li>
+</ul>
+</li>
+</ul>
+<h2 id="_10">动态链接的步骤和实现<a class="headerlink" href="#_10" title="Permanent link">&para;</a></h2>
+<p>动态链接的步骤基本上分三步：</p>
+<ul>
+<li>启动动态链接器本身</li>
+<li>装载所有需要的共享对象</li>
+<li>重定位和初始化</li>
+</ul>
+<h3 id="_11">动态链接器自举<a class="headerlink" href="#_11" title="Permanent link">&para;</a></h3>
+<p>动态链接器有两个要求：</p>
+<ul>
+<li>动态链接器本身不可以依赖于其他任何共享对象<ul>
+<li>不使用任何系统库、运行库</li>
+</ul>
+</li>
+<li>动态链接器本身所需要的全局和静态变量的重定位工作由它本身完成<ul>
+<li>由一段非常精巧的代码完成，称为自举(Bootstrap)</li>
+</ul>
+</li>
+</ul>
+<p>当程序启动时，通过栈给动态链接器传递参数，下面的<a href="code/stack/main.c">代码</a>可以打印进程开始执行时栈上的信息，包括：</p>
+<ul>
+<li>进程参数<code>argv</code></li>
+<li>环境变量<code>environ</code></li>
+<li>动态链接器所需要的一些辅助信息组(Auxiliary Vector)<ul>
+<li>AT_ENTRY是程序入口地址，即".text"段的起始地址，也是<code>_start</code>函数的地址</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="o">**</span><span class="w"> </span><span class="n">argv</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="o">**</span><span class="w"> </span><span class="n">environ</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">   </span><span class="kt">uint64_t</span><span class="o">*</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">uint64_t</span><span class="o">*</span><span class="p">)</span><span class="n">argv</span><span class="p">;</span>
+<span class="w">   </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;Argument count: %ld</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="p">(</span><span class="n">p</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">));</span>
+<span class="w">   </span><span class="n">assert</span><span class="p">(</span><span class="n">argc</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="o">*</span><span class="p">(</span><span class="n">p</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">));</span>
+
+<span class="w">   </span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">   </span><span class="k">for</span><span class="w"> </span><span class="p">(;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="o">*</span><span class="p">(</span><span class="n">p</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span>
+<span class="w">   </span><span class="p">{</span>
+<span class="w">      </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;Argument %d : %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="p">)(</span><span class="o">*</span><span class="p">(</span><span class="n">p</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">i</span><span class="p">)));</span>
+<span class="w">   </span><span class="p">}</span>
+
+<span class="w">   </span><span class="n">p</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">i</span><span class="p">;</span>
+<span class="w">   </span><span class="n">p</span><span class="o">++</span><span class="p">;</span><span class="w"> </span><span class="c1">// skip 0;</span>
+<span class="w">   </span><span class="n">assert</span><span class="p">((</span><span class="kt">void</span><span class="o">*</span><span class="p">)</span><span class="n">environ</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="p">)</span><span class="n">p</span><span class="p">);</span>
+
+<span class="w">   </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;Environment: </span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+<span class="w">   </span><span class="k">while</span><span class="p">(</span><span class="o">*</span><span class="n">p</span><span class="p">)</span>
+<span class="w">   </span><span class="p">{</span>
+<span class="w">      </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\t</span><span class="s">%s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="p">)(</span><span class="o">*</span><span class="n">p</span><span class="p">));</span>
+<span class="w">      </span><span class="n">p</span><span class="o">++</span><span class="p">;</span>
+<span class="w">   </span><span class="p">}</span>
+<span class="w">   </span><span class="n">p</span><span class="o">++</span><span class="p">;</span><span class="w"> </span><span class="c1">// skip 0;</span>
+
+<span class="w">   </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;Auxiliary Vectors:</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+<span class="w">   </span><span class="n">Elf64_auxv_t</span><span class="o">*</span><span class="w"> </span><span class="n">aux</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">Elf64_auxv_t</span><span class="o">*</span><span class="p">)</span><span class="n">p</span><span class="p">;</span>
+<span class="w">   </span><span class="k">while</span><span class="p">(</span><span class="n">aux</span><span class="o">-&gt;</span><span class="n">a_type</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">AT_NULL</span><span class="p">)</span>
+<span class="w">   </span><span class="p">{</span>
+<span class="w">      </span><span class="c1">// Type is defined in /usr/include/x86_64-linux-gnu/bits/auxv.h</span>
+<span class="w">      </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\t</span><span class="s">Type: %02ld, Value: %lx</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">aux</span><span class="o">-&gt;</span><span class="n">a_type</span><span class="p">,</span><span class="w"> </span><span class="n">aux</span><span class="o">-&gt;</span><span class="n">a_un</span><span class="p">.</span><span class="n">a_val</span><span class="p">);</span>
+<span class="w">      </span><span class="n">aux</span><span class="o">++</span><span class="p">;</span>
+<span class="w">   </span><span class="p">}</span>
+
+<span class="w">   </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="_12">装载共享对象<a class="headerlink" href="#_12" title="Permanent link">&para;</a></h3>
+<p>完成基本自举以后，动态链接器将可执行文件和链接器本身的符号表合并到一个符号表中，我们称之为<strong>全局符号表(Global Symbol Table)</strong>。然后根据".dynamic"段中的<code>DT_NEEDED</code>加载所需共享对象。当一个新的共享对象被装载进来后，它的符号表会被合并到全局符号表中。</p>
+<p>如果两个不同的模块定义了同一个符号，那么后加入全局符号表的符号会被忽略，称为共享对象的<strong>全局符号介入(Global Symbol Interpose)</strong>。</p>
+<p>在<a href="https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/link/dynamic/code/sym_interpose">例子"sym_interpose"</a>中，b1.so依赖a1.so，b2.so依赖a2.so，a1.so和a2.so定义了相同的函数<code>a()</code>。动态链接器按照广度优先的顺序进行装载时，首先是main，然后是b1.so、b2.so、a1.so，最后是a2.so。因此，a2.so的<code>a()</code>函数被忽略。</p>
+<h3 id="_13">重定位和初始化<a class="headerlink" href="#_13" title="Permanent link">&para;</a></h3>
+<p>装载完所有共享对象后，动态链接器已经拥有了进程的全局符号表，因此开始遍历可执行文件和每个共享对象的重定位表，将它们的GOT/PLT中的每个需要重定位的位置进行修正。</p>
+<p>重定位完成后，如果某个共享对象有".init"段，那么动态链接器会执行".init"段中的代码，用以实现共享对象特有的初始化过程。比如最常见的，共享对象中的C++的全局/静态对象的构造就需要通过".init"来初始化。相应地，".finit"段会在进程退出时执行，实现全局对象析构之类的操作。</p>
+<p>如果进程的可执行文件也有".init"段，动态链接器不会执行它，因为可执行文件的".init"段和".finit"段是由程序初始化部分代码负责执行的。</p>
+<h3 id="_14">显式运行时链接<a class="headerlink" href="#_14" title="Permanent link">&para;</a></h3>
+<p>共享对象不仅可以通过动态链接库自动导入，也可以运行时手动导入。下面的<a href="code/dlopen/main.c">代码</a>展示了如何动态装载库(Dynamic Loading Library)：</p>
+<ul>
+<li>动态加载<code>libm.so.6</code>共享对象</li>
+<li>运行库中的<code>sin</code>函数
+<div class="highlight"><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">   </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">handle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dlopen</span><span class="p">(</span><span class="s">&quot;libm.so.6&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">RTLD_NOW</span><span class="p">);</span>
+
+<span class="w">   </span><span class="kt">double</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">func</span><span class="p">)(</span><span class="kt">double</span><span class="p">);</span>
+<span class="w">   </span><span class="n">func</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dlsym</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;sin&quot;</span><span class="p">);</span>
+<span class="w">   </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;%f</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">func</span><span class="p">(</span><span class="mf">3.1415926</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">2</span><span class="p">));</span>
+
+<span class="w">   </span><span class="n">dlclose</span><span class="p">(</span><span class="n">handle</span><span class="p">);</span>
+<span class="w">   </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></li>
+</ul>
+<p>当多个同名符号冲突时，<code>dlsym()</code>对符号的查找优先级分两种类型：</p>
+<ul>
+<li>“装载序列”查找<ul>
+<li>当<code>dlopen()</code>第一个参数为<code>NULL</code>时，在在全局符号表中，依据“先载入符号优先”的原则进行查找</li>
+</ul>
+</li>
+<li>“依赖序列”查找<ul>
+<li>当<code>dlopen()</code>打开某个特定共享对象时，以当前共享对象为根节点，对它所有依赖的共享对象进行广度优先遍历查找</li>
+</ul>
+</li>
+</ul>
+<h3 id="-rdynamic">"-rdynamic"选项<a class="headerlink" href="#-rdynamic" title="Permanent link">&para;</a></h3>
+<p>默认情况下，只有动态链接库才会导出符号到动态符号表".dynsym"。但是，当在链接的时候加上"-rdynamic"选项时，链接器会对可执行文件也会导出符号到动态符号表".dynsym"。一般情况下，可执行文件不需要导出符号，但是当通过<code>dlopen</code>动态加载库时，可能需要可执行文件导出符号给动态库。例如，<a href="https://stackoverflow.com/questions/36692315/what-exactly-does-rdynamic-do-and-when-exactly-is-it-needed">StackOverflow</a>中的例子，通过"-rdynamic"选项解决了运行时的错误。</p>
+<p><a href="https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/link/dynamic/code/dlopen_rdynamic">例子"dlopen_rdynamic"</a>利用"-rdynamic"选项，解决了函数调用不一致的问题。当有"-rdynamic"选项时，<code>print_static_var_addr</code>函数和<code>s_a</code>静态变量的地址才是一致的。</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">有"-rdynamic"选项</label><label for="__tabbed_1_2">没有"-rdynamic"选项</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>&gt;<span class="w"> </span>./main<span class="w"> </span>
+Call<span class="w"> </span>static<span class="w"> </span><span class="k">function</span><span class="w"> </span>directly:
+print_static_var_addr<span class="w"> </span>addr:<span class="w"> </span>0x56042d12f303
+s_a<span class="w"> </span><span class="nv">addr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>0x56042d132014
+Call<span class="w"> </span>static<span class="w"> </span><span class="k">function</span><span class="w"> </span>from<span class="w"> </span>dlopen:
+print_static_var_addr<span class="w"> </span>addr:<span class="w"> </span>0x56042d12f303
+s_a<span class="w"> </span><span class="nv">addr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>0x56042d132014
+
+<span class="c1"># &quot;.dynsym&quot;段中有print_static_var_addr</span>
+&gt;<span class="w"> </span>readelf<span class="w"> </span>--dyn-syms<span class="w"> </span>./main
+Symbol<span class="w"> </span>table<span class="w"> </span><span class="s1">&#39;.dynsym&#39;</span><span class="w"> </span>contains<span class="w"> </span><span class="m">23</span><span class="w"> </span>entries:
+Num:<span class="w">    </span>Value<span class="w">          </span>Size<span class="w"> </span>Type<span class="w">    </span>Bind<span class="w">   </span>Vis<span class="w">      </span>Ndx<span class="w"> </span>Name
+...
+<span class="w">    </span><span class="m">14</span>:<span class="w"> </span><span class="m">0000000000001303</span><span class="w">    </span><span class="m">41</span><span class="w"> </span>FUNC<span class="w">    </span>GLOBAL<span class="w"> </span>DEFAULT<span class="w">   </span><span class="m">16</span><span class="w"> </span>print_static_var_addr
+...
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>&gt;<span class="w"> </span>./main<span class="w"> </span>
+Call<span class="w"> </span>static<span class="w"> </span><span class="k">function</span><span class="w"> </span>directly:
+print_static_var_addr<span class="w"> </span>addr:<span class="w"> </span>0x558854f1c303
+s_a<span class="w"> </span><span class="nv">addr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>0x558854f1f014
+Call<span class="w"> </span>static<span class="w"> </span><span class="k">function</span><span class="w"> </span>from<span class="w"> </span>dlopen:
+print_static_var_addr<span class="w"> </span>addr:<span class="w"> </span>0x7f3f99f6b15c
+s_a<span class="w"> </span><span class="nv">addr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>0x7f3f99f6e02c
+
+<span class="c1"># &quot;.dynsym&quot;段中没有print_static_var_addr</span>
+&gt;<span class="w"> </span>readelf<span class="w"> </span>--dyn-syms<span class="w"> </span>./main
+</code></pre></div>
+</div>
+</div>
+</div>
+<h2 id="linux">Linux共享库的组织<a class="headerlink" href="#linux" title="Permanent link">&para;</a></h2>
+<h3 id="_15">共享库版本<a class="headerlink" href="#_15" title="Permanent link">&para;</a></h3>
+<p>Linux规定共享库的文件名规则如下：<code>libname.so.x.y.z</code></p>
+<ul>
+<li>name - 库的名字</li>
+<li>x - 主版本号<ul>
+<li>不同主版本号的库之间时不兼容的</li>
+</ul>
+</li>
+<li>y - 次版本号<ul>
+<li>增加一些新的接口符号，且保持原来的符号不变</li>
+</ul>
+</li>
+<li>z - 发布版本号<ul>
+<li>一些错误的修正、性能的改进等，并不添加任何新的接口，也不对接口进行更改</li>
+</ul>
+</li>
+</ul>
+<h3 id="soname">SONAME<a class="headerlink" href="#soname" title="Permanent link">&para;</a></h3>
+<p>SONAME是共享对象的真实名字，通过<code>-Wl,-soname,&lt;soname&gt;</code>在编译时填入共享库，可通过命令<code>objdump -p &lt;lib&gt; | grep SONAME</code>或<code>readelf -d libfoo.so | grep SONAME</code>查看。</p>
+<p>如果一个共享库存在SONAME，那么无论共享库自身的文件名如何改变，在链接时都会使用SONAME。如果一个共享库没有设置SONAME，链接时会使用文件名。如<a href="https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/link/dynamic/code/soname">例子"soname"</a>中的<code>libfoo.so</code>设置了SONAME。因此即使重命名共享库为<code>libbar.so</code>，再用<code>-lbar</code>链接，最终生成的可执行文件还是要求链接到<code>libfoo.so</code>。</p>
+<p>在Linux系统中，SONAME用于统一标识兼容的共享库：</p>
+<ul>
+<li>SONAME只保留主版本号，规定了共享库的接口(共享库名字和主版本号可以保证兼容性)<ul>
+<li>比如，一个共享库叫做<code>libfoo.so.2.6.1</code>，那么它的SO-NAME是<code>libfoo.so.2</code></li>
+</ul>
+</li>
+<li>系统会为每各共享库在它所在的目录创建一个跟SO-NAME相同的并且指向它的软链接<ul>
+<li>比如，一个共享库<code>/ib/libfoo.so.2.6.1</code>，那么存在一个软链接<code>/lib/libfoo.so.2</code></li>
+</ul>
+</li>
+</ul>
+<h3 id="_16">链接名<a class="headerlink" href="#_16" title="Permanent link">&para;</a></h3>
+<p>GCC的提供了不同的方法指定链接的共享库：</p>
+<ul>
+<li><code>-l&lt;link_name&gt;</code>参数<ul>
+<li>指定需要链接的共享库<code>lib&lt;link_name&gt;.so</code></li>
+</ul>
+</li>
+<li><code>-l:&lt;filename&gt;</code>参数<ul>
+<li>通过文件名指定共享库，参考<a href="https://sourceware.org/binutils/docs-2.18/ld/Options.html">LD手册</a></li>
+</ul>
+</li>
+<li>全路径指定</li>
+<li><code>-Wl,-static</code>参数<ul>
+<li>指定查找静态库，通过<code>-Wl,-Bdynamic</code>恢复成动态库查找</li>
+</ul>
+</li>
+</ul>
+<p><a href="https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/link/dynamic/code/linkname">例子"linkname"</a>提供了指定共享库的不同方法：</p>
+<div class="highlight"><pre><span></span><code><span class="c"># 链接当前目录下的动态库libfoo.so</span>
+<span class="nf">main</span><span class="o">:</span><span class="w"> </span><span class="n">clean</span> <span class="n">foo</span> <span class="k">$(</span><span class="nv">OBJS</span><span class="k">)</span>
+<span class="w">    </span><span class="k">$(</span>CC<span class="k">)</span><span class="w"> </span><span class="k">$(</span>OBJS<span class="k">)</span><span class="w"> </span>-L.<span class="w"> </span>-lfoo<span class="w"> </span>-o<span class="w"> </span>main
+
+<span class="c"># 链接当前目录下的动态库libfoo.so</span>
+<span class="nf">main2</span><span class="o">:</span><span class="w"> </span><span class="n">clean</span> <span class="n">foo</span> <span class="k">$(</span><span class="nv">OBJS</span><span class="k">)</span>
+<span class="w">    </span><span class="k">$(</span>CC<span class="k">)</span><span class="w"> </span><span class="k">$(</span>OBJS<span class="k">)</span><span class="w"> </span>-L.<span class="w"> </span>-l:libfoo.so<span class="w"> </span>-o<span class="w"> </span>main
+
+<span class="c"># 链接当前目录下的动态库libfoo.so</span>
+<span class="nf">main3</span><span class="o">:</span><span class="w"> </span><span class="n">clean</span> <span class="n">foo</span> <span class="k">$(</span><span class="nv">OBJS</span><span class="k">)</span>
+<span class="w">    </span><span class="k">$(</span>CC<span class="k">)</span><span class="w"> </span><span class="k">$(</span>OBJS<span class="k">)</span><span class="w"> </span><span class="k">$(</span>PWD<span class="k">)</span>/libfoo.so<span class="w"> </span>-o<span class="w"> </span>main
+
+<span class="c"># 链接当前目录下的静态库libfoo.a</span>
+<span class="nf">main_static</span><span class="o">:</span><span class="w"> </span><span class="n">clean</span> <span class="n">foo_static</span> <span class="k">$(</span><span class="nv">OBJS</span><span class="k">)</span>
+<span class="w">    </span><span class="k">$(</span>CC<span class="k">)</span><span class="w"> </span><span class="k">$(</span>OBJS<span class="k">)</span><span class="w"> </span>-L.<span class="w"> </span>-Wl,-static<span class="w"> </span>-lfoo<span class="w"> </span>-Wl,-Bdynamic<span class="w"> </span>-o<span class="w"> </span>main
+</code></pre></div>
+<h2 id="_17">共享库的查找过程<a class="headerlink" href="#_17" title="Permanent link">&para;</a></h2>
+<p>默认情况下，动态链接器会依次在<code>/etc/ld.so.cache</code>，<code>/lib</code>和<code>/user/lib</code>目录下寻找共享库。其中，<code>/etc/ld.so.cache</code>是由<code>ldconfig</code>工具为了加速共享库寻找过程，根据<code>/etc/ld.so.conf</code>规定的目录建立的临时缓存。</p>
+<p>除了默认情况，Linux系统还提供了许多其他的方法，用来改变动态链接器装载共享库的路径。<a href="https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cxydzwxy/link/dynamic/code/lib_dep/Makefile">例子"lib_dep"</a>展示了多种不同的方法，用来指定共享库的搜索路径：
+<div class="highlight"><pre><span></span><code><span class="nf">inner</span><span class="o">:</span>
+<span class="w">    </span>gcc<span class="w"> </span>-shared<span class="w"> </span>-fPIC<span class="w"> </span>lib_inner.c<span class="w"> </span>-o<span class="w"> </span>libinner.so
+
+<span class="nf">outer_alone_so</span><span class="o">:</span>
+<span class="w">    </span>gcc<span class="w"> </span>-shared<span class="w"> </span>-fPIC<span class="w"> </span>lib_outer.c<span class="w"> </span>-o<span class="w"> </span>libouter.so
+
+<span class="nf">outer_inner_so</span><span class="o">:</span>
+<span class="w">    </span>gcc<span class="w"> </span>-shared<span class="w"> </span>-fPIC<span class="w"> </span>lib_outer.c<span class="w"> </span>-L.<span class="w"> </span>-linner<span class="w"> </span>-o<span class="w"> </span>libouter.so
+
+<span class="c"># static link libouter.a and dynamic link libinner.so</span>
+<span class="c"># it needs LD_LIBRARY_PATH for libinner.so search path</span>
+<span class="c"># ldd main</span>
+<span class="c">#   linux-vdso.so.1 (0x00007ffff2dc8000)</span>
+<span class="c">#   libinner.so =&gt; not found</span>
+<span class="c">#   libc.so.6 =&gt; /lib/x86_64-linux-gnu/libc.so.6 (0x00007f02a7970000)</span>
+<span class="c">#   /lib64/ld-linux-x86-64.so.2 (0x00007f02a7bbb000)</span>
+<span class="nf">main_a</span><span class="o">:</span><span class="w"> </span><span class="n">clean</span> <span class="n">inner</span> <span class="n">outer_a</span>
+<span class="w">    </span>gcc<span class="w"> </span>-o<span class="w"> </span>main<span class="w"> </span>main.c<span class="w"> </span>libouter.a<span class="w"> </span>-L.<span class="w"> </span>-linner
+<span class="w">    </span>env<span class="w"> </span><span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span>.<span class="w"> </span>./main
+
+<span class="c"># same as main_a</span>
+<span class="c"># ldd main</span>
+<span class="c">#   linux-vdso.so.1 (0x00007fffed222000)</span>
+<span class="c">#   libinner.so =&gt; not found</span>
+<span class="c">#   libc.so.6 =&gt; /lib/x86_64-linux-gnu/libc.so.6 (0x00007f2b50a10000)</span>
+<span class="c">#   /lib64/ld-linux-x86-64.so.2 (0x00007f2b50c5c000)</span>
+<span class="nf">main_a2</span><span class="o">:</span><span class="w"> </span><span class="n">clean</span> <span class="n">inner</span> <span class="n">outer_a</span>
+<span class="w">    </span>gcc<span class="w"> </span>-o<span class="w"> </span>main<span class="w"> </span>main.c<span class="w"> </span>-L.<span class="w"> </span>-Wl,-static<span class="w"> </span>-louter<span class="w"> </span>-Wl,-Bdynamic<span class="w"> </span>-linner
+<span class="w">    </span>env<span class="w"> </span><span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span>.<span class="w"> </span>./main
+
+<span class="c"># no link option during link, so it needs LD_LIBRARY_PATH</span>
+<span class="c"># ldd main</span>
+<span class="c">#   linux-vdso.so.1 (0x00007fffd73c6000)</span>
+<span class="c">#   libouter.so =&gt; not found</span>
+<span class="c">#   libinner.so =&gt; not found</span>
+<span class="c">#   libc.so.6 =&gt; /lib/x86_64-linux-gnu/libc.so.6 (0x00007f74af570000)</span>
+<span class="c">#   /lib64/ld-linux-x86-64.so.2 (0x00007f74af7b3000)</span>
+<span class="nf">main</span><span class="o">:</span><span class="w"> </span><span class="n">clean</span> <span class="n">inner</span> <span class="n">outer_alone_so</span>
+<span class="w">    </span>gcc<span class="w"> </span>-o<span class="w"> </span>main<span class="w"> </span>main.c<span class="w"> </span>-L.<span class="w"> </span>-louter<span class="w"> </span>-linner
+<span class="w">    </span>env<span class="w"> </span><span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span>.<span class="w"> </span>./main
+
+<span class="c"># &quot;-rpath-link&quot; only affects compile process, not runtime,</span>
+<span class="c"># so it needs LD_LIBRARY_PATH</span>
+<span class="c"># ldd main</span>
+<span class="c">#   linux-vdso.so.1 (0x00007fffe0774000)</span>
+<span class="c">#   libouter.so =&gt; not found</span>
+<span class="c">#   libinner.so =&gt; not found</span>
+<span class="c">#   libc.so.6 =&gt; /lib/x86_64-linux-gnu/libc.so.6 (0x00007f4637460000)</span>
+<span class="c">#   /lib64/ld-linux-x86-64.so.2 (0x00007f46376a2000)</span>
+<span class="nf">main_so</span><span class="o">:</span><span class="w"> </span><span class="n">clean</span> <span class="n">inner</span> <span class="n">outer_alone_so</span>
+<span class="w">    </span>gcc<span class="w"> </span>-o<span class="w"> </span>main<span class="w"> </span>main.c<span class="w"> </span>-L.<span class="w"> </span>-louter<span class="w"> </span>-linner<span class="w"> </span>-Wl,-rpath-link<span class="o">=</span>.
+<span class="w">    </span>env<span class="w"> </span><span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span>.<span class="w"> </span>./main
+
+<span class="c"># &quot;-rpath&quot; specifies the library path, no need LD_LIBRARY_PATH</span>
+<span class="c"># ldd main</span>
+<span class="c">#   linux-vdso.so.1 (0x00007fffef8c8000)</span>
+<span class="c">#   libouter.so =&gt; ./libouter.so (0x00007f3252b10000)</span>
+<span class="c">#   libinner.so =&gt; ./libinner.so (0x00007f3252b00000)</span>
+<span class="c">#   libc.so.6 =&gt; /lib/x86_64-linux-gnu/libc.so.6 (0x00007f32528d0000)</span>
+<span class="c">#   /lib64/ld-linux-x86-64.so.2 (0x00007f3252b36000)</span>
+<span class="nf">main_so1</span><span class="o">:</span><span class="w"> </span><span class="n">clean</span> <span class="n">inner</span> <span class="n">outer_alone_so</span>
+<span class="w">    </span>gcc<span class="w"> </span>-o<span class="w"> </span>main<span class="w"> </span>main.c<span class="w"> </span>-L.<span class="w"> </span>-louter<span class="w"> </span>-linner<span class="w"> </span>-Wl,-rpath<span class="o">=</span>.
+<span class="w">    </span>./main
+
+<span class="c"># &quot;--allow-shlib-undefined&quot; suppress the link error for libinner.so symbols,</span>
+<span class="c"># so, it needs LD_PRELOAD to load libinner.so in advance</span>
+<span class="c"># ldd main</span>
+<span class="c">#   linux-vdso.so.1 (0x00007fffc3dda000)</span>
+<span class="c">#   libouter.so =&gt; not found</span>
+<span class="c">#   libc.so.6 =&gt; /lib/x86_64-linux-gnu/libc.so.6 (0x00007fcccec50000)</span>
+<span class="c">#   /lib64/ld-linux-x86-64.so.2 (0x00007fcccee96000)</span>
+<span class="nf">main_so2</span><span class="o">:</span><span class="w"> </span><span class="n">clean</span> <span class="n">inner</span> <span class="n">outer_alone_so</span>
+<span class="w">    </span>gcc<span class="w"> </span>-o<span class="w"> </span>main<span class="w"> </span>main.c<span class="w"> </span>-L.<span class="w"> </span>-louter<span class="w"> </span>-Wl,--allow-shlib-undefined
+<span class="w">    </span>env<span class="w"> </span><span class="nv">LD_PRELOAD</span><span class="o">=</span>./libinner.so<span class="w"> </span><span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span>.<span class="w"> </span>./main
+
+<span class="c"># Different from &quot;main_so&quot;, libouter.so knows libinner.so, so it doesn&#39;t</span>
+<span class="c"># need specify libinner.so during compile</span>
+<span class="c"># ldd main</span>
+<span class="c">#   linux-vdso.so.1 (0x00007fffe35b8000)</span>
+<span class="c">#   libouter.so =&gt; not found</span>
+<span class="c">#   libc.so.6 =&gt; /lib/x86_64-linux-gnu/libc.so.6 (0x00007f1249120000)</span>
+<span class="c">#   /lib64/ld-linux-x86-64.so.2 (0x00007f1249365000)</span>
+<span class="nf">main_so3</span><span class="o">:</span><span class="w"> </span><span class="n">clean</span> <span class="n">inner</span> <span class="n">outer_inner_so</span>
+<span class="w">    </span>gcc<span class="w"> </span>-o<span class="w"> </span>main<span class="w"> </span>main.c<span class="w"> </span>-L.<span class="w"> </span>-louter<span class="w"> </span>-Wl,-rpath-link<span class="o">=</span>.
+<span class="w">    </span>env<span class="w"> </span><span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span>.<span class="w"> </span>./main
+
+<span class="c"># Different from &quot;main_so1&quot;, libinner.so cannot be found by main because libouter.so</span>
+<span class="c"># hides it</span>
+<span class="c"># it needs LD_LIBRARY_PATH</span>
+<span class="c"># ldd main</span>
+<span class="c">#   linux-vdso.so.1 (0x00007fffd6902000)</span>
+<span class="c">#   libouter.so =&gt; ./libouter.so (0x00007f0e15200000)</span>
+<span class="c">#   libc.so.6 =&gt; /lib/x86_64-linux-gnu/libc.so.6 (0x00007f0e14fd0000)</span>
+<span class="c">#   /lib64/ld-linux-x86-64.so.2 (0x00007f0e15224000)</span>
+<span class="c">#   libinner.so =&gt; not found</span>
+<span class="nf">main_so4</span><span class="o">:</span><span class="w"> </span><span class="n">clean</span> <span class="n">inner</span> <span class="n">outer_inner_so</span>
+<span class="w">    </span>gcc<span class="w"> </span>-o<span class="w"> </span>main<span class="w"> </span>main.c<span class="w"> </span>-L.<span class="w"> </span>-linner<span class="w"> </span>-louter<span class="w"> </span>-Wl,-rpath<span class="o">=</span>.
+<span class="w">    </span>env<span class="w"> </span><span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span>.<span class="w"> </span>./main
+
+<span class="c"># same as main_so4</span>
+<span class="c"># ldd main</span>
+<span class="c">#   linux-vdso.so.1 (0x00007ffff82f6000)</span>
+<span class="c">#   libouter.so =&gt; ./libouter.so (0x00007f9479930000)</span>
+<span class="c">#   libc.so.6 =&gt; /lib/x86_64-linux-gnu/libc.so.6 (0x00007f9479700000)</span>
+<span class="c">#   /lib64/ld-linux-x86-64.so.2 (0x00007f9479955000)</span>
+<span class="c">#   libinner.so =&gt; not found</span>
+<span class="nf">main_so5</span><span class="o">:</span><span class="w"> </span><span class="n">clean</span> <span class="n">inner</span> <span class="n">outer_inner_so</span>
+<span class="w">    </span>gcc<span class="w"> </span>-o<span class="w"> </span>main<span class="w"> </span>main.c<span class="w"> </span>-L.<span class="w"> </span>-louter<span class="w"> </span>-Xlinker<span class="w"> </span>-rpath<span class="w"> </span>.
+<span class="w">    </span>env<span class="w"> </span><span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span>.<span class="w"> </span>./main
+
+<span class="c"># same as &quot;-rpath-link&quot; option</span>
+<span class="c"># ldd main</span>
+<span class="c">#   linux-vdso.so.1 (0x00007fffcda2e000)</span>
+<span class="c">#   libouter.so =&gt; not found</span>
+<span class="c">#   libc.so.6 =&gt; /lib/x86_64-linux-gnu/libc.so.6 (0x00007fb0322e0000)</span>
+<span class="c">#   /lib64/ld-linux-x86-64.so.2 (0x00007fb03252a000)</span>
+<span class="nf">main_so6</span><span class="o">:</span><span class="w"> </span><span class="n">clean</span> <span class="n">inner</span> <span class="n">outer_inner_so</span>
+<span class="w">    </span><span class="nb">export</span><span class="w"> </span><span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span>.<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>gcc<span class="w"> </span>-o<span class="w"> </span>main<span class="w"> </span>main.c<span class="w"> </span>-L.<span class="w"> </span>-louter
+<span class="w">    </span>env<span class="w"> </span><span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span>.<span class="w"> </span>./main
+</code></pre></div></p>
+<ul>
+<li>编译期间 - 指定链接时的搜索路径<ul>
+<li><code>-Wl,-rpath=&lt;path&gt;</code>和<code>-Xlinker -rpath &lt;path&gt;</code><ul>
+<li><code>-rpath</code>选项会影响运行期间的搜索路径，<code>ldd</code>会从此选项指定的目录中寻找</li>
+<li><code>readelf -d &lt;ELF&gt;</code>可查看目标文件中指定的<code>rpath</code>路径：<code>(RUNPATH)</code>关键字</li>
+</ul>
+</li>
+<li><code>-Wl,-rpath-link=&lt;path&gt;</code><ul>
+<li>不影响运行期间的搜索路径</li>
+</ul>
+</li>
+<li><code>export LD_LIBRARY_PATH=&lt;path&gt;</code><ul>
+<li>不影响运行期间的搜索路径</li>
+<li>和<code>-rpath-link</code>类似</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>运行期间<ul>
+<li><code>export LD_LIBRARY_PATH=&lt;path&gt;</code> - 指定运行时的搜索路径</li>
+<li><code>LD_PRELOAD=&lt;lib_path&gt;</code> - 预先装载共享库</li>
+</ul>
+</li>
+</ul>
+<h3 id="_18">调试动态链接器<a class="headerlink" href="#_18" title="Permanent link">&para;</a></h3>
+<p>环境变量<code>LD_DEBUG</code>可以打开动态链接器的调试功能，<code>LD_DEBUG</code>可以设置成如下值：</p>
+<table>
+<thead>
+<tr>
+<th>LD_DEBUG的值</th>
+<th>功能描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>libs</td>
+<td>显示共享库的搜索路径</td>
+</tr>
+<tr>
+<td>reloc</td>
+<td>显示从定位过程</td>
+</tr>
+<tr>
+<td>files</td>
+<td>显示处理输入文件的过程</td>
+</tr>
+<tr>
+<td>symbols</td>
+<td>显示符号表查找过程</td>
+</tr>
+<tr>
+<td>bindings</td>
+<td>显示动态链接的符号绑定过程</td>
+</tr>
+<tr>
+<td>versions</td>
+<td>显示符号的版本依赖关系</td>
+</tr>
+<tr>
+<td>scopes</td>
+<td>显示范围信息</td>
+</tr>
+<tr>
+<td>all</td>
+<td>显示以上所有信息</td>
+</tr>
+<tr>
+<td>statistics</td>
+<td>显示动态链接过程中的各种统计信息</td>
+</tr>
+<tr>
+<td>unused</td>
+<td>显示没有使用到的共享库</td>
+</tr>
+<tr>
+<td>help</td>
+<td>显示帮助信息</td>
+</tr>
+</tbody>
+</table>
+<p>例如，下面的例子通过<code>LD_DEBUG=libs</code>，找到了可执行文件<code>main</code>依赖的两个共享库的位置：</p>
+<ul>
+<li>./libfoo.so</li>
+<li>/lib/x86_64-linux-gnu/libc.so.6</li>
+</ul>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>env<span class="w"> </span><span class="nv">LD_DEBUG</span><span class="o">=</span>libs<span class="w"> </span><span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span>.<span class="w"> </span>./main
+<span class="w">    </span><span class="m">438736</span>:<span class="w">     </span>find<span class="w"> </span><span class="nv">library</span><span class="o">=</span>libfoo.so<span class="w"> </span><span class="o">[</span><span class="m">0</span><span class="o">]</span><span class="p">;</span><span class="w"> </span>searching
+<span class="w">    </span><span class="m">438736</span>:<span class="w">      </span>search<span class="w"> </span><span class="nv">path</span><span class="o">=</span>./tls/haswell/x86_64:./tls/haswell:./tls/x86_64:./tls:./haswell/x86_64:./haswell:./x86_64:.<span class="w">           </span><span class="o">(</span>LD_LIBRARY_PATH<span class="o">)</span>
+<span class="w">    </span><span class="m">438736</span>:<span class="w">       </span>trying<span class="w"> </span><span class="nv">file</span><span class="o">=</span>./tls/haswell/x86_64/libfoo.so
+<span class="w">    </span><span class="m">438736</span>:<span class="w">       </span>trying<span class="w"> </span><span class="nv">file</span><span class="o">=</span>./tls/haswell/libfoo.so
+<span class="w">    </span><span class="m">438736</span>:<span class="w">       </span>trying<span class="w"> </span><span class="nv">file</span><span class="o">=</span>./tls/x86_64/libfoo.so
+<span class="w">    </span><span class="m">438736</span>:<span class="w">       </span>trying<span class="w"> </span><span class="nv">file</span><span class="o">=</span>./tls/libfoo.so
+<span class="w">    </span><span class="m">438736</span>:<span class="w">       </span>trying<span class="w"> </span><span class="nv">file</span><span class="o">=</span>./haswell/x86_64/libfoo.so
+<span class="w">    </span><span class="m">438736</span>:<span class="w">       </span>trying<span class="w"> </span><span class="nv">file</span><span class="o">=</span>./haswell/libfoo.so
+<span class="w">    </span><span class="m">438736</span>:<span class="w">       </span>trying<span class="w"> </span><span class="nv">file</span><span class="o">=</span>./x86_64/libfoo.so
+<span class="w">    </span><span class="m">438736</span>:<span class="w">       </span>trying<span class="w"> </span><span class="nv">file</span><span class="o">=</span>./libfoo.so
+<span class="w">    </span><span class="m">438736</span>:
+<span class="w">    </span><span class="m">438736</span>:<span class="w">     </span>find<span class="w"> </span><span class="nv">library</span><span class="o">=</span>libc.so.6<span class="w"> </span><span class="o">[</span><span class="m">0</span><span class="o">]</span><span class="p">;</span><span class="w"> </span>searching
+<span class="w">    </span><span class="m">438736</span>:<span class="w">      </span>search<span class="w"> </span><span class="nv">path</span><span class="o">=</span>./tls/haswell/x86_64:./tls/haswell:./tls/x86_64:./tls:./haswell/x86_64:./haswell:./x86_64:.<span class="w">           </span><span class="o">(</span>LD_LIBRARY_PATH<span class="o">)</span>
+<span class="w">    </span><span class="m">438736</span>:<span class="w">       </span>trying<span class="w"> </span><span class="nv">file</span><span class="o">=</span>./tls/haswell/x86_64/libc.so.6
+<span class="w">    </span><span class="m">438736</span>:<span class="w">       </span>trying<span class="w"> </span><span class="nv">file</span><span class="o">=</span>./tls/haswell/libc.so.6
+<span class="w">    </span><span class="m">438736</span>:<span class="w">       </span>trying<span class="w"> </span><span class="nv">file</span><span class="o">=</span>./tls/x86_64/libc.so.6
+<span class="w">    </span><span class="m">438736</span>:<span class="w">       </span>trying<span class="w"> </span><span class="nv">file</span><span class="o">=</span>./tls/libc.so.6
+<span class="w">    </span><span class="m">438736</span>:<span class="w">       </span>trying<span class="w"> </span><span class="nv">file</span><span class="o">=</span>./haswell/x86_64/libc.so.6
+<span class="w">    </span><span class="m">438736</span>:<span class="w">       </span>trying<span class="w"> </span><span class="nv">file</span><span class="o">=</span>./haswell/libc.so.6
+<span class="w">    </span><span class="m">438736</span>:<span class="w">       </span>trying<span class="w"> </span><span class="nv">file</span><span class="o">=</span>./x86_64/libc.so.6
+<span class="w">    </span><span class="m">438736</span>:<span class="w">       </span>trying<span class="w"> </span><span class="nv">file</span><span class="o">=</span>./libc.so.6
+<span class="w">    </span><span class="m">438736</span>:<span class="w">      </span>search<span class="w"> </span><span class="nv">cache</span><span class="o">=</span>/etc/ld.so.cache
+<span class="w">    </span><span class="m">438736</span>:<span class="w">       </span>trying<span class="w"> </span><span class="nv">file</span><span class="o">=</span>/lib/x86_64-linux-gnu/libc.so.6
+<span class="w">    </span>...
+</code></pre></div>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+                
+
+  <!-- Giscus https://giscus.app/ -->
+  <script src="https://giscus.app/client.js"
+    data-repo="LittleBee1024/learning_book"
+    data-repo-id="R_kgDOGR3spQ"
+    data-category="Q&A"
+    data-category-id="DIC_kwDOGR3spc4B_q-C"
+    data-mapping="title"
+    data-strict="1"
+    data-reactions-enabled="1"
+    data-emit-metadata="0"
+    data-input-position="bottom"
+    data-theme="light"
+    data-lang="zh-CN"
+    crossorigin="anonymous"
+    async>
+  </script>
+
+  <!-- Reload on palette change -->
+  <script>
+    var palette = __md_get("__palette")
+    if (palette && typeof palette.color === "object")
+      if (palette.color.scheme === "slate") {
+        var giscus = document.querySelector("script[src*=giscus]")
+        giscus.setAttribute("data-theme", "dark") 
+      }
+
+    /* Register event handlers after documented loaded */
+    document.addEventListener("DOMContentLoaded", function() {
+      var ref = document.querySelector("[data-md-component=palette]")
+      ref.addEventListener("change", function() {
+        var palette = __md_get("__palette")
+        if (palette && typeof palette.color === "object") {
+          var theme = palette.color.scheme === "slate" ? "dark" : "light"
+
+          /* Instruct Giscus to change theme */
+          var frame = document.querySelector(".giscus-frame")
+          frame.contentWindow.postMessage(
+            { giscus: { setConfig: { theme } } },
+            "https://giscus.app"
+          )
+        }
+      })
+    })
+  </script>
+
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2021 - 2022 Little Bee
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/littlebee1024" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://hub.docker.com/r/littlebee1024" target="_blank" rel="noopener" title="hub.docker.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M349.9 236.3h-66.1v-59.4h66.1zm0-204.3h-66.1v60.7h66.1zm78.2 144.8H362v59.4h66.1zm-156.3-72.1h-66.1v60.1h66.1zm78.1 0h-66.1v60.1h66.1zm276.8 100c-14.4-9.7-47.6-13.2-73.1-8.4-3.3-24-16.7-44.9-41.1-63.7l-14-9.3-9.3 14c-18.4 27.8-23.4 73.6-3.7 103.8-8.7 4.7-25.8 11.1-48.4 10.7H2.4c-8.7 50.8 5.8 116.8 44 162.1 37.1 43.9 92.7 66.2 165.4 66.2 157.4 0 273.9-72.5 328.4-204.2 21.4.4 67.6.1 91.3-45.2 1.5-2.5 6.6-13.2 8.5-17.1zm-511.1-27.9h-66v59.4h66.1v-59.4zm78.1 0h-66.1v59.4h66.1zm78.1 0h-66.1v59.4h66.1zm-78.1-72.1h-66.1v60.1h66.1z"/></svg>
+    </a>
+  
+    
+    
+    
+    
+    <a href="mailto:littlebee1024@outlook.com" target="_blank" rel="noopener" title="" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m20 8-8 5-8-5V6l8 5 8-5m0-2H4c-1.11 0-2 .89-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../../../..", "features": ["navigation.tabs", "navigation.top", "navigation.tracking", "search.highlight", "search.share", "search.suggest"], "search": "../../../../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.60a45f97.min.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

@@ -1,0 +1,2713 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="A blog about technical things, such as book notes and simple topics.">
+      
+      
+        <meta name="author" content="Little Bee">
+      
+      
+        <link rel="canonical" href="https://littlebee1024.github.io/learning_book/topics/flex_bison/">
+      
+      
+        <link rel="prev" href="../vue/demo/">
+      
+      
+        <link rel="next" href="../tcl_tk_in_c/">
+      
+      
+      <link rel="icon" href="../../home/logo.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.50">
+    
+    
+      
+        <title>Flex和Bison - Little Bee Blog</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.a40c8224.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noto+Sans+Simplified+Chinese:300,300i,400,400i,700,700i%7CConsolas:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Noto Sans Simplified Chinese";--md-code-font:"Consolas"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+  
+
+
+  
+  
+
+<script id="__analytics">function __md_analytics(){function e(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],e("js",new Date),e("config","G-G2RFHH3DL4"),document.addEventListener("DOMContentLoaded",(function(){document.forms.search&&document.forms.search.query.addEventListener("blur",(function(){this.value&&e("event","search",{search_term:this.value})}));document$.subscribe((function(){var t=document.forms.feedback;if(void 0!==t)for(var a of t.querySelectorAll("[type=submit]"))a.addEventListener("click",(function(a){a.preventDefault();var n=document.location.pathname,d=this.getAttribute("data-md-value");e("event","feedback",{page:n,data:d}),t.firstElementChild.disabled=!0;var r=t.querySelector(".md-feedback__note [data-md-value='"+d+"']");r&&(r.hidden=!1)})),t.hidden=!1})),location$.subscribe((function(t){e("config","G-G2RFHH3DL4",{page_path:t.pathname})}))}));var t=document.createElement("script");t.async=!0,t.src="https://www.googletagmanager.com/gtag/js?id=G-G2RFHH3DL4",document.getElementById("__analytics").insertAdjacentElement("afterEnd",t)}</script>
+  
+    <script>"undefined"!=typeof __md_analytics&&__md_analytics()</script>
+  
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="orange" data-md-color-accent="orange">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#flexbison" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Little Bee Blog" class="md-header__button md-logo" aria-label="Little Bee Blog" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17.4 9C17 7.8 16.2 7 15 6.5V5h-1v1.4h-.4c-1.1 0-2 .4-2.8 1.2l-.4.4L9 7.5c-.3-.1-.6-.2-1-.2-.6 0-1.2.2-1.7.6-.6.4-.9.9-1.1 1.4-.2.7-.2 1.3 0 2 .3.7.6 1.2 1.1 1.5-.4 1.5-.1 2.8 1 3.9.8.8 1.7 1.2 2.8 1.2.5 0 .8 0 1.1-.1.6.8 1.4 1.3 2.4 1.3.3 0 .7 0 1-.1.6-.2 1-.6 1.4-1.1.4-.6.6-1.1.6-1.7 0-.4 0-.7-.1-1l-.5-1.6.6-.4c.8-.8 1.2-1.9 1.1-3.1H19V9zm-9.7 2.3c-.6-.3-.8-.7-.6-1.3q.3-.9 1.2-.6l3.2 1.2c-1.6.8-2.8 1-3.8.7m6.3 5.6c-.6.2-1 0-1.3-.6-.3-1-.1-2.2.7-3.8l1.2 3.1c.2.7 0 1.1-.6 1.3m1.2-5.3-.6-1.6v-.1l-.3-.3h-.1L12.6 9c.4-.3.8-.5 1.3-.5s1 .2 1.4.6.6.8.6 1.3c-.2.3-.4.8-.7 1.2"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Little Bee Blog
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Flex和Bison
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="orange" data-md-color-accent="orange"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="orange" data-md-color-accent="orange"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/littlebee1024/learning_book" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    littlebee1024/learning_book
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+    
+  
+  首页
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+    
+      
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../booknotes/cxydzwxy/concurrency/" class="md-tabs__link">
+          
+  
+  笔记
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../webassembly/" class="md-tabs__link">
+          
+  
+  专题
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../essays/20250127/" class="md-tabs__link">
+          
+  
+  随笔
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Little Bee Blog" class="md-nav__button md-logo" aria-label="Little Bee Blog" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17.4 9C17 7.8 16.2 7 15 6.5V5h-1v1.4h-.4c-1.1 0-2 .4-2.8 1.2l-.4.4L9 7.5c-.3-.1-.6-.2-1-.2-.6 0-1.2.2-1.7.6-.6.4-.9.9-1.1 1.4-.2.7-.2 1.3 0 2 .3.7.6 1.2 1.1 1.5-.4 1.5-.1 2.8 1 3.9.8.8 1.7 1.2 2.8 1.2.5 0 .8 0 1.1-.1.6.8 1.4 1.3 2.4 1.3.3 0 .7 0 1-.1.6-.2 1-.6 1.4-1.1.4-.6.6-1.1.6-1.7 0-.4 0-.7-.1-1l-.5-1.6.6-.4c.8-.8 1.2-1.9 1.1-3.1H19V9zm-9.7 2.3c-.6-.3-.8-.7-.6-1.3q.3-.9 1.2-.6l3.2 1.2c-1.6.8-2.8 1-3.8.7m6.3 5.6c-.6.2-1 0-1.3-.6-.3-1-.1-2.2.7-3.8l1.2 3.1c.2.7 0 1.1-.6 1.3m1.2-5.3-.6-1.6v-.1l-.3-.3h-.1L12.6 9c.4-.3.8-.5 1.3-.5s1 .2 1.4.6.6.8.6 1.3c-.2.3-.4.8-.7 1.2"/></svg>
+
+    </a>
+    Little Bee Blog
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/littlebee1024/learning_book" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    littlebee1024/learning_book
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    首页
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    笔记
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            笔记
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_1" id="__nav_2_1_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    程序员的自我修养
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            程序员的自我修养
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../booknotes/cxydzwxy/concurrency/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    并发
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../booknotes/cxydzwxy/compile/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    编译
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_1_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_1_3" id="__nav_2_1_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    链接
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_1_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_1_3">
+            <span class="md-nav__icon md-icon"></span>
+            链接
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../booknotes/cxydzwxy/link/static/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    静态链接
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../booknotes/cxydzwxy/link/dynamic/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    动态链接
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../booknotes/cxydzwxy/load/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    装载
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Debug Hacks
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            Debug Hacks
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../booknotes/debug_hacks/basic/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    调试前的必知必会
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../booknotes/debug_hacks/advance/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    高级调试技术
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../booknotes/debug_hacks/gdb/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    GDB
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../booknotes/debug_hacks/dwarf/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    DWARF
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_3" id="__nav_2_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Linux高性能服务器编程
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            Linux高性能服务器编程
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../booknotes/hplsp/tcp_ip/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    TCP/IP协议
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../booknotes/hplsp/socket/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    套接字基础
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../booknotes/hplsp/multi_io/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    IO复用
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../booknotes/hplsp/adv_io/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    高级IO函数
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_4" id="__nav_2_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Linux设备驱动程序
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_4">
+            <span class="md-nav__icon md-icon"></span>
+            Linux设备驱动程序
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../booknotes/ldd/module/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    内核模块
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../booknotes/ldd/cdev/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    字符设备驱动
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../booknotes/ldd/io/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    高级I/O操作
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../booknotes/ldd/mem_port/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    与硬件通信
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_5" id="__nav_2_5_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    深入理解计算机系统
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_5">
+            <span class="md-nav__icon md-icon"></span>
+            深入理解计算机系统
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../booknotes/csapp/01/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    计算机漫游
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../booknotes/csapp/02/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    信息的表示和处理
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../booknotes/csapp/03/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    程序的机器表示
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../booknotes/csapp/04/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    处理器体系结构
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../booknotes/csapp/05/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    优化程序性能
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../booknotes/csapp/08/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    异常流控制
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../booknotes/csapp/09/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    虚拟内存
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../booknotes/csapp/10/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    系统级I/O
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_6" id="__nav_2_6_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    机器学习
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_6">
+            <span class="md-nav__icon md-icon"></span>
+            机器学习
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../booknotes/ml/linear_reg/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    线性回归
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../booknotes/ml/naive_bayes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    朴素贝叶斯法
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../booknotes/ml/decision_tree/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    决策树
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../booknotes/ml/perceptron/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    感知机
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../booknotes/ml/svm/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    支持向量机
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_7" id="__nav_2_7_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    高效C/C++调试
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_7">
+            <span class="md-nav__icon md-icon"></span>
+            高效C/C++调试
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../booknotes/cpp_debug/01/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    调试符号和调试器
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../booknotes/cpp_debug/02/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    堆数据结构
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../booknotes/cpp_debug/05/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    优化后的二进制
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../booknotes/cpp_debug/10/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    内存调试工具
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    专题
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            专题
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../webassembly/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    WebAssembly
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cmake/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    CMake
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Vue3
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            Vue3
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../vue/intro/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Vue3简介
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../vue/components/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    组件复用
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../vue/demo/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    样例模板
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Flex和Bison
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Flex和Bison
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      简介
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="简介">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#flex" class="md-nav__link">
+    <span class="md-ellipsis">
+      Flex工作流程
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bison" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bison工作流程
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#flex_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Flex例子
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Flex例子">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      词法规则
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      用户代码
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bison_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bison例子
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Bison例子">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      语法规则
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="语法规则">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      优先级和结合性
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      词法规则
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      用户代码
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      参考
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tcl_tk_in_c/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Tcl/Tk in C
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    随笔
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            随笔
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../essays/20250127/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    来自AI的开篇
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      简介
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="简介">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#flex" class="md-nav__link">
+    <span class="md-ellipsis">
+      Flex工作流程
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bison" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bison工作流程
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#flex_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Flex例子
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Flex例子">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      词法规则
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      用户代码
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bison_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bison例子
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Bison例子">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      语法规则
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="语法规则">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      优先级和结合性
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      词法规则
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      用户代码
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      参考
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+  
+                  
+
+
+<h1 id="flexbison">Flex和Bison<a class="headerlink" href="#flexbison" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>Flex和Bison工具的样例，所有样例可在<a href="https://github.com/LittleBee1024/learning_book/tree/main/docs/topics/flex_bison/code">GitHub仓库</a>中找到</p>
+</blockquote>
+<h2 id="_1">简介<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
+<p>在编译器领域，分析工作分为两个部分：</p>
+<ul>
+<li>词法分析(lexical analysis, 或scanning)<ul>
+<li>把输入分割成一个个有意义的词块</li>
+</ul>
+</li>
+<li>语法分析(syntax analysis, 或parsing)<ul>
+<li>确定这些记号是如何彼此关联的</li>
+</ul>
+</li>
+</ul>
+<p>Flex用于词法分析，而Bison用于语法分析。</p>
+<h3 id="flex">Flex工作流程<a class="headerlink" href="#flex" title="Permanent link">&para;</a></h3>
+<p>Flex的目的是将输入分割成一个个有意义的词块，用户通过调用Flex自动生成的<code>yylex</code>函数，即可启动词法分析工作。下图是其常见的工作流程：</p>
+<ul>
+<li>通过<code>yyin</code>读入用户的输入，默认情况下是标准输入<code>stdin</code>，用户可以自定义为其他输入源</li>
+<li>将输入和用户定义的词法规则(正则表达式)进行比较<code>match</code></li>
+<li>如果输入匹配某条规则，触发用户定义的动作<code>action</code>，用户可通过<code>yytext</code>获取匹配的字符串</li>
+<li>如果输入没有匹配的规则，或<code>action</code>完成(没有退出<code>yylex</code>函数的语句)，会重新处理新的输入</li>
+<li><code>yylex</code>函数会一直循环上面的步骤，直到没有更多的输入(遇到EOF)</li>
+</ul>
+<p><img alt="flex" src="image/flex.png" /></p>
+<p>当遇到多个规则同时匹配时，Flex遵循以下规则选择最合适的规则：</p>
+<ul>
+<li>匹配尽可能多给的字符串</li>
+<li>如果匹配字符串长度相同，选择在程序中更早出现的规则</li>
+</ul>
+<h3 id="bison">Bison工作流程<a class="headerlink" href="#bison" title="Permanent link">&para;</a></h3>
+<p>Bison的目的是将相关的词块进行规约<code>reduce</code>，得到新的语义。语法分析依赖于词法分析，用户通过调用Bison自动生成的<code>yyparse</code>函数，即可同时启动词法/语法分析工作。下图是其常见的工作流程：</p>
+<ul>
+<li><code>yyparse</code>调用<code>yylex</code>，在匹配到某个期望的词块后，通过<code>yylval</code>传递此词块内容<ul>
+<li>语法分析器会定义其期望的记号<code>token</code>，当发生匹配时，<code>yylex</code>会在其动作<code>action</code>中返回此记号<code>token</code>，从而将工作流程交给语法分析器</li>
+</ul>
+</li>
+<li>语法分析器将新的记号<code>token</code>和栈中先前的记号结合，去匹配用户定义的语法规则</li>
+<li>如果某条语法规则匹配，则开始归约<code>reduce</code>动作<ul>
+<li>此时会调用用户定义的语法动作，将多个记号规约为一个新的记号</li>
+<li>新的记号也会触发语法规则匹配</li>
+</ul>
+</li>
+<li>如果没有语法规则匹配，则开始移进<code>shift</code>动作，将新的符号入栈，结束此次语法分析</li>
+<li><code>yyparse</code>函数会一直循环上面的步骤，直到没有更多的输入(遇到EOF)，或发现语法错误</li>
+</ul>
+<p><img alt="bison" src="image/bison.png" /></p>
+<p>当同一个记号可以匹配两条不同规则的时候，就发生了归约错误。默认情况下，Bison采用LALR(1)算法来分析语法，即自左向右向前查看一个记号。因此，不能处理需要向前查看多个记号才能确定匹配规则的语法。
+<div class="highlight"><pre><span></span><code>phrase: cart_animal AND CART
+      | work_animal AND PLOW
+cart_animal: HORSE | GOAT
+work_animal: HORSE | OX
+</code></pre></div>
+例如，上面的语法虽然没有歧义，但是对于<code>HORSE AND CART</code>输入，在看到<code>CART</code>之前无法确定<code>HORSE</code>是一个<code>cart_animal</code>还是一个<code>work_animal</code>，从而发生语法错误。但是，如果将上述语法修改如下，就不会出现归约错误：
+<div class="highlight"><pre><span></span><code>phrase: cart_animal CART
+      | work_animal PLOW
+cart_animal: HORSE | GOAT
+work_animal: HORSE | OX
+</code></pre></div></p>
+<h2 id="flex_1">Flex例子<a class="headerlink" href="#flex_1" title="Permanent link">&para;</a></h2>
+<p><a href="https://github.com/LittleBee1024/learning_book/tree/main/docs/topics/flex_bison/code/flex_c_wc">例子"flex_c_wc"</a>利用Flex实现了一个C代码分析器，可以统计某段C代码的代码行数、注释行数、<code>if</code>语句数等。</p>
+<h3 id="_2">词法规则<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h3>
+<p><div class="highlight"><span class="filename">c_wc.lex</span><pre><span></span><code><span class="o">%</span><span class="p">{</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;lexer.h&quot;</span>
+<span class="cp">#define YY_DECL int c_wc_lex(Lexer *lex)   </span><span class="c1">// flex C API is wrapped Lexer class</span>
+<span class="o">%</span><span class="p">}</span>
+
+<span class="o">%</span><span class="n">option</span><span class="w"> </span><span class="n">noyywrap</span>
+<span class="o">%</span><span class="n">option</span><span class="w"> </span><span class="n">nounput</span>
+
+<span class="n">LineCommentStart</span><span class="w">     </span><span class="err">\</span><span class="o">/</span><span class="err">\</span><span class="o">/</span>
+<span class="n">BlockCommentStart</span><span class="w">    </span><span class="err">\</span><span class="o">/</span><span class="err">\</span><span class="o">*</span>
+<span class="n">BlockCommentEnd</span><span class="w">      </span><span class="err">\</span><span class="o">*</span><span class="err">\</span><span class="o">/</span>
+<span class="n">If</span><span class="w">                   </span><span class="k">if</span>
+<span class="n">Loop</span><span class="w">                 </span><span class="k">for</span><span class="o">|</span><span class="k">while</span>
+<span class="n">NewLine</span><span class="w">              </span><span class="err">\</span><span class="n">n</span>
+<span class="n">Blank</span><span class="w">                </span><span class="p">[</span><span class="w"> </span><span class="err">\</span><span class="n">t</span><span class="p">]</span>
+
+<span class="o">%</span><span class="n">x</span><span class="w"> </span><span class="n">LINE_CMT</span>
+<span class="o">%</span><span class="n">x</span><span class="w"> </span><span class="n">BLOCK_CMT</span>
+
+<span class="o">%%</span>
+
+<span class="o">&lt;</span><span class="n">INITIAL</span><span class="o">&gt;</span><span class="p">{</span><span class="n">LineCommentStart</span><span class="p">}</span><span class="w">            </span><span class="p">{</span><span class="w"> </span><span class="n">BEGIN</span><span class="w"> </span><span class="n">LINE_CMT</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="o">&lt;</span><span class="n">INITIAL</span><span class="o">&gt;</span><span class="p">{</span><span class="n">BlockCommentStart</span><span class="p">}</span><span class="w">           </span><span class="p">{</span><span class="w"> </span><span class="n">BEGIN</span><span class="w"> </span><span class="n">BLOCK_CMT</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+
+<span class="o">&lt;</span><span class="n">INITIAL</span><span class="o">&gt;</span><span class="p">{</span><span class="n">If</span><span class="p">}</span><span class="w">                          </span><span class="p">{</span><span class="w"> </span><span class="n">lex</span><span class="o">-&gt;</span><span class="n">upIfNum</span><span class="p">();</span><span class="w"> </span><span class="p">}</span>
+<span class="o">&lt;</span><span class="n">INITIAL</span><span class="o">&gt;</span><span class="p">{</span><span class="n">Loop</span><span class="p">}</span><span class="w">                        </span><span class="p">{</span><span class="w"> </span><span class="n">lex</span><span class="o">-&gt;</span><span class="n">upLoopNum</span><span class="p">();</span><span class="w"> </span><span class="p">}</span>
+
+<span class="o">&lt;</span><span class="n">INITIAL</span><span class="o">&gt;^</span><span class="p">{</span><span class="n">NewLine</span><span class="p">}</span><span class="w">                    </span><span class="o">|</span>
+<span class="o">&lt;</span><span class="n">INITIAL</span><span class="o">&gt;^</span><span class="p">{</span><span class="n">Blank</span><span class="p">}</span><span class="o">*</span><span class="p">{</span><span class="n">NewLine</span><span class="p">}</span><span class="w">            </span><span class="p">{</span><span class="w"> </span><span class="n">lex</span><span class="o">-&gt;</span><span class="n">upEmptyLineNum</span><span class="p">();</span><span class="w"> </span><span class="p">}</span>
+<span class="o">&lt;</span><span class="n">INITIAL</span><span class="o">&gt;</span><span class="p">{</span><span class="n">NewLine</span><span class="p">}</span><span class="w">                     </span><span class="p">{</span><span class="w"> </span><span class="n">lex</span><span class="o">-&gt;</span><span class="n">upCodeLineNum</span><span class="p">();</span><span class="w"> </span><span class="p">}</span>
+
+<span class="o">&lt;</span><span class="n">LINE_CMT</span><span class="o">&gt;</span><span class="p">{</span><span class="n">NewLine</span><span class="p">}</span><span class="w">                    </span><span class="p">{</span><span class="w"> </span><span class="n">lex</span><span class="o">-&gt;</span><span class="n">upCommentLineNum</span><span class="p">();</span><span class="w"> </span><span class="n">BEGIN</span><span class="w"> </span><span class="n">INITIAL</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+
+<span class="o">&lt;</span><span class="n">BLOCK_CMT</span><span class="o">&gt;</span><span class="p">{</span><span class="n">BlockCommentEnd</span><span class="p">}{</span><span class="n">NewLine</span><span class="p">}</span><span class="o">?</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">lex</span><span class="o">-&gt;</span><span class="n">upCommentLineNum</span><span class="p">();</span><span class="w"> </span><span class="n">BEGIN</span><span class="w"> </span><span class="n">INITIAL</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="o">&lt;</span><span class="n">BLOCK_CMT</span><span class="o">&gt;</span><span class="p">{</span><span class="n">NewLine</span><span class="p">}</span><span class="w">                   </span><span class="p">{</span><span class="w"> </span><span class="n">lex</span><span class="o">-&gt;</span><span class="n">upCommentLineNum</span><span class="p">();</span><span class="w"> </span><span class="p">}</span>
+
+<span class="o">&lt;</span><span class="n">INITIAL</span><span class="p">,</span><span class="n">LINE_CMT</span><span class="p">,</span><span class="n">BLOCK_CMT</span><span class="o">&gt;</span><span class="p">.</span><span class="w">          </span><span class="p">;</span><span class="w"> </span><span class="c1">// any character (byte) except newline</span>
+
+<span class="o">%%</span>
+</code></pre></div>
+上面的代码是例子中的词法规则(<a href="code/flex_c_wc/c_wc.lex">c_wc.lex</a>)，由<code>%%</code>符号分成三个部分：</p>
+<ul>
+<li>定义部分<ul>
+<li><code>%{</code>和<code>%}</code>的内容会被拷贝到<code>yylex</code>之前，用于包含相关头文件和声明相关变量<ul>
+<li>例子中，利用<code>YY_DECL</code>宏修给<code>yylex</code>函数添加了<code>Lexer</code>类指针参数。因此，我们可以将所有词法操作都封装在<code>Lexer</code>类中，以简化用户接口</li>
+</ul>
+</li>
+<li><code>%option</code>提供了不同的配置选项<ul>
+<li><code>%option noyywrap</code>表示不需要自定义的<code>yywarp</code>函数，进行依次文件扫描</li>
+<li><code>%option noinput</code>表示不添加<code>input</code>函数，以消除编译警告<code>warning: ‘input’ defined but not used</code></li>
+<li><code>%option nounput</code>表示不添加<code>yyunput</code>函数，以消除编译警告<code>warning: ‘yyunput’ defined but not used</code></li>
+</ul>
+</li>
+<li><code>&lt;NAME&gt; &lt;expression&gt;</code>可以对正则表达式进行命名</li>
+<li>定义状态，对规则进行状态分类，只匹配当前状态的规则<ul>
+<li>词法分析器从状态0开始，也称为<code>INITIAL</code>状态</li>
+<li>其他状态通过<code>%x</code>或者<code>%s</code>来命名，两者的区别参考<a href="https://www.cs.virginia.edu/~cr4bd/flex-manual/Start-Conditions.html#Start-Conditions">文档</a></li>
+<li>通过<code>BEGIN &lt;statename&gt;</code>可切换状态</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>规则部分<ul>
+<li>每条规则都有自己对于的状态，默认状态为<code>INITIAL</code>状态<ul>
+<li>例子中大部分规则都是互斥的，只有最后一条规则被三个状态共享</li>
+</ul>
+</li>
+<li>当规则满足时，对应的动作被触发<ul>
+<li>例子中将对应动作都封装在了<code>LEXER</code>类的成员函数中了</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>用户例程<ul>
+<li>此部分的内容会被原样拷贝到C文件中<ul>
+<li>例子中将代码单独放到了其他文件中，所以此部分为空</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="_3">用户代码<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h3>
+<div class="highlight"><span class="filename">lexer.cpp/h</span><pre><span></span><code><span class="c1">// c_wc_in是yyin的别名，由Flex工具自动生成</span>
+<span class="hll"><span class="k">extern</span><span class="w"> </span><span class="kt">FILE</span><span class="w"> </span><span class="o">*</span><span class="n">c_wc_in</span><span class="p">;</span>
+</span><span class="c1">// c_wc_lex是yylex的别名，由Flex工具自动生成</span>
+<span class="hll"><span class="k">extern</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">c_wc_lex</span><span class="p">(</span><span class="n">Lexer</span><span class="w"> </span><span class="o">*</span><span class="n">lex</span><span class="p">);</span>
+</span>
+<span class="n">Lexer</span><span class="o">::</span><span class="n">Lexer</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">fname</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="c1">// 指定输入来自文件`fname`</span>
+<span class="hll"><span class="w">    </span><span class="n">c_wc_in</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fopen</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;r&quot;</span><span class="p">);</span>
+</span><span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="n">Lexer</span><span class="o">::</span><span class="n">count</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="c1">// 启动词法分析</span>
+<span class="hll"><span class="w">    </span><span class="n">c_wc_lex</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+</span><span class="p">}</span>
+
+<span class="c1">// 下面的函数会在对应规则(查看词法规则文件)匹配时被调用</span>
+<span class="kt">void</span><span class="w"> </span><span class="n">Lexer</span><span class="o">::</span><span class="n">upCodeLineNum</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">m_codeLineNum</span><span class="o">++</span><span class="p">;</span><span class="w"> </span><span class="p">};</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">Lexer::upCommentLineNum</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">m_commentLineNum</span><span class="o">++</span><span class="p">;</span><span class="w"> </span><span class="p">};</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">Lexer::upEmptyLineNum</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">m_emptyLineNum</span><span class="o">++</span><span class="p">;</span><span class="w"> </span><span class="p">};</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">Lexer::upIfNum</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">m_ifNum</span><span class="o">++</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">Lexer::upLoopNum</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">m_loopNum</span><span class="o">++</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+</code></pre></div>
+<p>上面是例子中的用户代码<a href="code/flex_c_wc/lexer.cpp">"lexer.cpp"</a>，通过<code>Lexer</code>类，封装了所有的词法分析操作。从而，在使用词法分析器时，只需要如下操作即可：
+<div class="highlight"><span class="filename">main.cpp</span><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">argv</span><span class="p">[])</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="p">...</span>
+<span class="hll"><span class="w">    </span><span class="n">Lexer</span><span class="w"> </span><span class="n">lex</span><span class="p">(</span><span class="n">filename</span><span class="p">);</span>
+</span><span class="hll"><span class="w">    </span><span class="n">lex</span><span class="p">.</span><span class="n">count</span><span class="p">();</span>
+</span><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>&gt;<span class="w"> </span>./main<span class="w"> </span>test.c<span class="w"> </span>
+The<span class="w"> </span>statistics<span class="w"> </span>of<span class="w"> </span>the<span class="w"> </span><span class="nb">source</span><span class="w"> </span>code:
+<span class="w">        </span>Code<span class="w"> </span>line<span class="w"> </span>number:<span class="w"> </span><span class="m">10</span>,<span class="w"> </span>comment<span class="w"> </span>line<span class="w"> </span>number:<span class="w"> </span><span class="m">5</span>,<span class="w"> </span>empty<span class="w"> </span>line<span class="w"> </span>number:<span class="w"> </span><span class="m">5</span>
+<span class="w">        </span>If<span class="w"> </span>number:<span class="w"> </span><span class="m">2</span>,<span class="w"> </span>loop<span class="w"> </span>number:<span class="w"> </span><span class="m">1</span>
+</code></pre></div></p>
+<h2 id="bison_1">Bison例子<a class="headerlink" href="#bison_1" title="Permanent link">&para;</a></h2>
+<p><a href="https://github.com/LittleBee1024/learning_book/tree/main/docs/topics/flex_bison/code/bison_calc">例子"bison_calc"</a>利用Bison和Flex实现了一个计算器，支持加、减、乘、除、括号等符号的算术运算。</p>
+<h3 id="_4">语法规则<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h3>
+<div class="highlight"><span class="filename">calc.y</span><pre><span></span><code><span class="o">%</span><span class="p">{</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdio.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdlib.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;string.h&gt;</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;calc.h&quot;</span>
+
+<span class="c1">// 定义token的类型为NodePtr，即yylval的类型</span>
+<span class="cp">#define YYSTYPE NodePtr</span>
+<span class="c1">// 声明词法分析函数，calc_lex是yylex的别名</span>
+<span class="k">extern</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">calc_lex</span><span class="p">(</span><span class="n">Calc</span><span class="o">*</span><span class="p">);</span>
+<span class="c1">// calc_lineno是yylineno的别名，表示行号</span>
+<span class="c1">// 通过`%option yylineno`使能后，由词法分析器自动生成</span>
+<span class="k">extern</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">calc_lineno</span><span class="p">;</span>
+<span class="c1">// calc_error是yyerror的别名，语法分析器在遇到错误时被调用，需要用户自定义</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">calc_error</span><span class="p">(</span><span class="n">Calc</span><span class="w"> </span><span class="o">*</span><span class="n">calc</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">str</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">   </span><span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Error at line %d: %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">calc_lineno</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="o">%</span><span class="p">}</span>
+
+<span class="o">%</span><span class="n">lex</span><span class="o">-</span><span class="n">param</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Calc</span><span class="w"> </span><span class="o">*</span><span class="n">calc</span><span class="w"> </span><span class="p">}</span>
+<span class="o">%</span><span class="n">parse</span><span class="o">-</span><span class="n">param</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Calc</span><span class="w"> </span><span class="o">*</span><span class="n">calc</span><span class="w"> </span><span class="p">}</span>
+
+<span class="o">%</span><span class="n">token</span><span class="w"> </span><span class="n">ADD</span><span class="w"> </span><span class="n">SUB</span><span class="w"> </span><span class="n">MUL</span><span class="w"> </span><span class="n">DIV</span><span class="w"> </span><span class="n">LBRACE</span><span class="w"> </span><span class="n">RBRACE</span><span class="w"> </span><span class="n">NUM</span><span class="w"> </span><span class="n">EOL</span>
+
+<span class="cm">/* All operators are left associative. Listed from lowest to highest */</span>
+<span class="o">%</span><span class="n">left</span><span class="w"> </span><span class="n">ADD</span><span class="w"> </span><span class="n">SUB</span>
+<span class="o">%</span><span class="n">left</span><span class="w"> </span><span class="n">MUL</span><span class="w"> </span><span class="n">DIV</span>
+
+<span class="o">%%</span>
+
+<span class="nl">calclist</span><span class="p">:</span><span class="w"> </span><span class="cm">/* empty */</span>
+<span class="w">   </span><span class="o">|</span><span class="w"> </span><span class="n">calclist</span><span class="w"> </span><span class="n">exp</span><span class="w"> </span><span class="n">EOL</span><span class="w">   </span><span class="p">{</span><span class="w"> </span><span class="n">calc</span><span class="o">-&gt;</span><span class="n">evalExpr</span><span class="p">(</span><span class="n">$2</span><span class="p">);</span><span class="w"> </span><span class="p">}</span>
+<span class="w">   </span><span class="o">|</span><span class="w"> </span><span class="n">calclist</span><span class="w"> </span><span class="n">EOL</span><span class="w">       </span><span class="p">;</span>
+<span class="w">   </span><span class="p">;</span>
+
+<span class="nl">exp</span><span class="p">:</span><span class="w"> </span><span class="n">factor</span>
+<span class="w">   </span><span class="o">|</span><span class="w"> </span><span class="n">exp</span><span class="w"> </span><span class="n">ADD</span><span class="w"> </span><span class="n">factor</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">$$</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">calc</span><span class="o">-&gt;</span><span class="n">createNode</span><span class="p">(</span><span class="n">t_ADD</span><span class="p">,</span><span class="w"> </span><span class="n">$1</span><span class="p">,</span><span class="w"> </span><span class="n">$3</span><span class="p">);</span><span class="w"> </span><span class="p">}</span>
+<span class="w">   </span><span class="o">|</span><span class="w"> </span><span class="n">exp</span><span class="w"> </span><span class="n">SUB</span><span class="w"> </span><span class="n">factor</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">$$</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">calc</span><span class="o">-&gt;</span><span class="n">createNode</span><span class="p">(</span><span class="n">t_SUB</span><span class="p">,</span><span class="w"> </span><span class="n">$1</span><span class="p">,</span><span class="w"> </span><span class="n">$3</span><span class="p">);</span><span class="w"> </span><span class="p">}</span>
+<span class="w">   </span><span class="p">;</span>
+
+<span class="nl">factor</span><span class="p">:</span><span class="w"> </span><span class="n">term</span>
+<span class="w">   </span><span class="o">|</span><span class="w"> </span><span class="n">factor</span><span class="w"> </span><span class="n">MUL</span><span class="w"> </span><span class="n">term</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">$$</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">calc</span><span class="o">-&gt;</span><span class="n">createNode</span><span class="p">(</span><span class="n">t_MUL</span><span class="p">,</span><span class="w"> </span><span class="n">$1</span><span class="p">,</span><span class="w"> </span><span class="n">$3</span><span class="p">);</span><span class="w"> </span><span class="p">}</span>
+<span class="w">   </span><span class="o">|</span><span class="w"> </span><span class="n">factor</span><span class="w"> </span><span class="n">DIV</span><span class="w"> </span><span class="n">term</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">$$</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">calc</span><span class="o">-&gt;</span><span class="n">createNode</span><span class="p">(</span><span class="n">t_DIV</span><span class="p">,</span><span class="w"> </span><span class="n">$1</span><span class="p">,</span><span class="w"> </span><span class="n">$3</span><span class="p">);</span><span class="w"> </span><span class="p">}</span>
+<span class="w">   </span><span class="p">;</span>
+
+<span class="nl">term</span><span class="p">:</span><span class="w"> </span><span class="n">NUM</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">$$</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">$1</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">   </span><span class="o">|</span><span class="w"> </span><span class="n">LBRACE</span><span class="w"> </span><span class="n">exp</span><span class="w"> </span><span class="n">RBRACE</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">$$</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">$2</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">   </span><span class="o">|</span><span class="w"> </span><span class="n">SUB</span><span class="w"> </span><span class="n">term</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">$$</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">calc</span><span class="o">-&gt;</span><span class="n">createNode</span><span class="p">(</span><span class="n">t_MINUS</span><span class="p">,</span><span class="w"> </span><span class="n">$2</span><span class="p">,</span><span class="w"> </span><span class="k">nullptr</span><span class="p">);</span><span class="w"> </span><span class="p">}</span>
+<span class="w">   </span><span class="p">;</span>
+
+<span class="o">%%</span>
+</code></pre></div>
+<p>上面的代码是例子中的语法规则(<a href="code/bison_calc/calc.y">calc.y</a>)，由<code>%%</code>符号分成三个部分：</p>
+<ul>
+<li>定义部分<ul>
+<li><code>%{</code>和<code>%}</code>内定义C代码</li>
+<li><code>%lex-param</code>为<code>yylex</code>函数添加参数</li>
+<li><code>%parse-param</code>为<code>yyparse</code>函数添加参数</li>
+<li><code>%token</code>定义记号<ul>
+<li>在语法分析器的规则部分，可引用此记号</li>
+<li>词法分析器匹配到此词块时，返回此记号</li>
+</ul>
+</li>
+<li><code>%left</code>表示左结合，详情参见<a href="#_5">"优先级和结合性"</a>章节</li>
+</ul>
+</li>
+<li>规则部分<ul>
+<li>语义动作可以通过一个美元符号加上一个数字来使用规则中语法符号所关联的值</li>
+<li><code>$$</code>指向左部符号，也就是规则中冒号左边的符号的值</li>
+<li>没有语义动作的规则，使用默认动作：<code>{ $$ = $1;}</code></li>
+</ul>
+</li>
+<li>用户例程<ul>
+<li>例子中将代码单独放到了其他文件中，所以此部分为空</li>
+</ul>
+</li>
+</ul>
+<h4 id="_5">优先级和结合性<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h4>
+<p><code>%left</code>、<code>%right</code>和<code>%nonassoc</code>分别使得一个操作符遵循左结合、右结合或者没有结合性的操作。在同一行的所有操作符具有相同的优先级。例如，
+<div class="highlight"><pre><span></span><code>%left &#39;+&#39; &#39;-&#39;
+%left &#39;*&#39; &#39;/&#39;
+%right POW
+</code></pre></div>
+优先级最低的操作符是+和-，其次是*和/，POW优先级最高。</p>
+<p>每条规则也有各自的优先级和结合性，通过<code>%prec</code>来声明，如果没有<code>%prec</code>子句的话，由最右边的记号的优先级决定。例如，
+<div class="highlight"><pre><span></span><code>exp: ...
+    | exp &#39;-&#39; exp
+    ...
+    | &#39;-&#39; exp %prec UMINUS
+</code></pre></div>
+<code>'-' exp</code>规则的优先级由<code>UMINUS</code>的优先级决定，从而和<code>exp '-' exp</code>规则的优先级区分开来。</p>
+<p>当在存在<strong>移进/归约冲突</strong>时，</p>
+<ul>
+<li>如果记号的优先级更高，那么就移进</li>
+<li>如果规则的优先级更高，那么就归约</li>
+<li>如果两者具有相同的优先级，将检查结合性<ul>
+<li>左结合，就归约</li>
+<li>右结合，就移进</li>
+</ul>
+</li>
+</ul>
+<p>例如，
+<div class="highlight"><pre><span></span><code>e: &#39;X&#39;
+   | e &#39;+&#39; e
+   ;
+</code></pre></div>
+对于<code>X+X+X</code>输入，有两种可能的语法分析：</p>
+<ul>
+<li>先选择归约 - <code>(X+X)+X</code><ul>
+<li><code>+</code>优先级高于<code>X</code>优先级</li>
+<li>或者，优先级相同，左结合</li>
+</ul>
+</li>
+<li>先选择移进操作 - <code>X+(X+X)</code><ul>
+<li><code>X</code>优先级高于<code>+</code>优先级</li>
+<li>或者，优先级相同，右结合</li>
+</ul>
+</li>
+</ul>
+<h3 id="_6">词法规则<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h3>
+<div class="highlight"><span class="filename">calc.lex</span><pre><span></span><code><span class="o">%</span><span class="p">{</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;calc.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;stdlib.h&quot;</span>
+
+<span class="c1">// Has to define YYSTYPE before &quot;hcl_yacc_gen.hpp&quot;</span>
+<span class="cp">#define YYSTYPE NodePtr</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;calc_yacc_gen.hpp&quot;</span>
+
+<span class="k">extern</span><span class="w"> </span><span class="n">YYSTYPE</span><span class="w"> </span><span class="n">calc_lval</span><span class="p">;</span>
+<span class="cp">#define YY_DECL int calc_lex(Calc *calc)</span>
+<span class="o">%</span><span class="p">}</span>
+
+<span class="o">%</span><span class="n">option</span><span class="w"> </span><span class="n">noinput</span>
+<span class="o">%</span><span class="n">option</span><span class="w"> </span><span class="n">nounput</span>
+<span class="o">%</span><span class="n">option</span><span class="w"> </span><span class="n">noyywrap</span>
+<span class="o">%</span><span class="n">option</span><span class="w"> </span><span class="n">yylineno</span>
+
+<span class="n">EXP</span><span class="w"> </span><span class="p">([</span><span class="n">Ee</span><span class="p">][</span><span class="o">-+</span><span class="p">]</span><span class="o">?</span><span class="p">[</span><span class="mi">0-9</span><span class="p">]</span><span class="o">+</span><span class="p">)</span>
+
+<span class="o">%%</span>
+
+<span class="p">[</span><span class="w"> </span><span class="err">\</span><span class="n">r</span><span class="err">\</span><span class="n">t</span><span class="err">\</span><span class="n">f</span><span class="p">]</span><span class="w">               </span><span class="p">;</span>
+<span class="s">&quot;+&quot;</span><span class="w">                     </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">ADD</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="s">&quot;-&quot;</span><span class="w">                     </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">SUB</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="s">&quot;*&quot;</span><span class="w">                     </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">MUL</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="s">&quot;/&quot;</span><span class="w">                     </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">DIV</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="s">&quot;(&quot;</span><span class="w">                     </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">LBRACE</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="s">&quot;)&quot;</span><span class="w">                     </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">RBRACE</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="p">[</span><span class="mi">0-9</span><span class="p">]</span><span class="o">+</span><span class="s">&quot;.&quot;</span><span class="p">[</span><span class="mi">0-9</span><span class="p">]</span><span class="o">*</span><span class="p">{</span><span class="n">EXP</span><span class="p">}</span><span class="o">?</span><span class="w">   </span><span class="o">|</span>
+<span class="s">&quot;.&quot;</span><span class="o">?</span><span class="p">[</span><span class="mi">0-9</span><span class="p">]</span><span class="o">+</span><span class="p">{</span><span class="n">EXP</span><span class="p">}</span><span class="o">?</span><span class="w">        </span><span class="p">{</span><span class="w"> </span><span class="n">calc_lval</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">calc</span><span class="o">-&gt;</span><span class="n">createNode</span><span class="p">(</span><span class="n">t_NUM</span><span class="p">,</span><span class="w"> </span><span class="k">nullptr</span><span class="p">,</span><span class="w"> </span><span class="k">nullptr</span><span class="p">,</span><span class="w"> </span><span class="n">atof</span><span class="p">(</span><span class="n">calc_text</span><span class="p">));</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">NUM</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="err">\</span><span class="n">n</span><span class="w">                      </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">EOL</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="p">.</span><span class="w">                       </span><span class="p">{</span><span class="w"> </span><span class="n">calc</span><span class="o">-&gt;</span><span class="n">fail</span><span class="p">(</span><span class="s">&quot;Bad input character &#39;%s&#39;&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">calc_text</span><span class="p">);</span><span class="w"> </span><span class="p">}</span>
+</code></pre></div>
+<p>上面的代码是例子中的词法规则(<a href="code/bison_calc/calc.lex">calc.lex</a>)，组成部分和<a href="#flex_1">Flex例子</a>中的词法规则相同。两者的不同点在于，此处每个规则的动作都会通过<code>return</code>返回一个记号给语法分析器，从而触发语法分析器进行语法分析。</p>
+<p>对于下面这个动作，词法分析器不仅要传递<code>NUM</code>类型给语法分析器，还需要通过<code>calc_lval</code>（<code>yylval</code>的别名）将具体的数值内容传递语法分析器。默认情况下，<code>yylval</code>是<code>int</code>类型。例子中通过<code>extern YYSTYPE calc_lval</code>，将<code>yylval</code>定义成了自定义指针类型<code>NodePtr</code>，以传递更多的信息：</p>
+<ul>
+<li><code>calc_lval = calc-&gt;createNode(t_NUM, nullptr, nullptr, atof(calc_text)); return NUM;</code></li>
+</ul>
+<h3 id="_7">用户代码<a class="headerlink" href="#_7" title="Permanent link">&para;</a></h3>
+<p>定义好了语法/词法规则后，还需要对应的规则动作，即当语法/词法规则匹配时，需要触发的函数。为了方便使用，例子中将所有的动作都封装在了<code>Calc</code>类中。同时，每个记号的内容统一由<code>NodePtr</code>指针记录。</p>
+<div class="highlight"><span class="filename">calc.h</span><pre><span></span><code><span class="c1">// 六种需要记录内容的记号</span>
+<span class="k">enum</span><span class="w"> </span><span class="nc">NodeType</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="kt">int</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">t_ADD</span><span class="p">,</span>
+<span class="w">    </span><span class="n">t_SUB</span><span class="p">,</span>
+<span class="w">    </span><span class="n">t_MUL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">t_DIV</span><span class="p">,</span>
+<span class="w">    </span><span class="n">t_NUM</span><span class="p">,</span>
+<span class="w">    </span><span class="n">t_MINUS</span>
+<span class="p">};</span>
+
+<span class="k">typedef</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">Node</span>
+<span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+<span class="w">   </span><span class="n">Node</span><span class="p">(</span><span class="n">NodeType</span><span class="w"> </span><span class="n">t</span><span class="p">,</span><span class="w"> </span><span class="n">Node</span><span class="w"> </span><span class="o">*</span><span class="n">l</span><span class="p">,</span><span class="w"> </span><span class="n">Node</span><span class="w"> </span><span class="o">*</span><span class="n">r</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">type</span><span class="p">(</span><span class="n">t</span><span class="p">),</span><span class="w"> </span><span class="n">left</span><span class="p">(</span><span class="n">l</span><span class="p">),</span><span class="w"> </span><span class="n">right</span><span class="p">(</span><span class="n">r</span><span class="p">),</span><span class="w"> </span><span class="n">num</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="p">{}</span>
+<span class="w">   </span><span class="n">NodeType</span><span class="w"> </span><span class="n">type</span><span class="p">;</span>
+<span class="w">   </span><span class="n">Node</span><span class="w"> </span><span class="o">*</span><span class="n">left</span><span class="p">;</span>
+<span class="w">   </span><span class="n">Node</span><span class="w"> </span><span class="o">*</span><span class="n">right</span><span class="p">;</span>
+<span class="w">   </span><span class="kt">double</span><span class="w"> </span><span class="n">num</span><span class="p">;</span>
+<span class="p">}</span><span class="w"> </span><span class="o">*</span><span class="n">NodePtr</span><span class="p">;</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Calc</span>
+<span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+<span class="w">    </span><span class="c1">// 调用yyparse开启语法分析</span>
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="n">compute</span><span class="p">();</span>
+<span class="w">    </span><span class="c1">// 在语法/词法规则匹配时被调用，用于创建新的记号</span>
+<span class="w">    </span><span class="n">NodePtr</span><span class="w"> </span><span class="nf">createNode</span><span class="p">(</span><span class="n">NodeType</span><span class="w"> </span><span class="n">type</span><span class="p">,</span><span class="w"> </span><span class="n">NodePtr</span><span class="w"> </span><span class="n">left</span><span class="p">,</span><span class="w"> </span><span class="n">NodePtr</span><span class="w"> </span><span class="n">right</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">num</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+<span class="w">    </span><span class="c1">// 在语法分析的最后阶段被调用，参见语法规则</span>
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="nf">evalExpr</span><span class="p">(</span><span class="n">NodePtr</span><span class="w"> </span><span class="n">expr</span><span class="p">);</span>
+<span class="w">    </span><span class="p">...</span>
+<span class="p">};</span>
+</code></pre></div>
+<p>一切准备就绪后，用户利用<code>Calc</code>这个类，就可以完成相应的算术运算：</p>
+<p><div class="highlight"><span class="filename">main.cpp</span><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">argv</span><span class="p">[])</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="p">...</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">filename</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">argc</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="k">nullptr</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+<span class="hll"><span class="w">    </span><span class="n">Calc</span><span class="w"> </span><span class="n">calc</span><span class="p">(</span><span class="n">filename</span><span class="p">);</span>
+</span><span class="hll"><span class="w">    </span><span class="n">calc</span><span class="p">.</span><span class="n">compute</span><span class="p">();</span>
+</span><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>&gt;<span class="w"> </span>./main<span class="w"> </span>test.txt<span class="w"> </span>
+<span class="o">(</span><span class="m">2</span>.01+<span class="o">(</span><span class="m">1</span>.01*0.1<span class="o">))</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">2</span>.111
+<span class="o">((</span><span class="m">1</span>+2<span class="o">)</span>*3<span class="o">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">9</span>
+</code></pre></div></p>
+<h2 id="_8">参考<a class="headerlink" href="#_8" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="https://1drv.ms/b/s!AkcJSyT7tq80eo_xy7LTpX6PPs4">《flex与bison》</a></li>
+<li><a href="https://www.cs.virginia.edu/~cr4bd/flex-manual/index.html#SEC_Contents">Flex Manual</a></li>
+<li><a href="https://www.gnu.org/software/bison/manual/bison.html">Bison Manual</a></li>
+</ul>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+                
+
+  <!-- Giscus https://giscus.app/ -->
+  <script src="https://giscus.app/client.js"
+    data-repo="LittleBee1024/learning_book"
+    data-repo-id="R_kgDOGR3spQ"
+    data-category="Q&A"
+    data-category-id="DIC_kwDOGR3spc4B_q-C"
+    data-mapping="title"
+    data-strict="1"
+    data-reactions-enabled="1"
+    data-emit-metadata="0"
+    data-input-position="bottom"
+    data-theme="light"
+    data-lang="zh-CN"
+    crossorigin="anonymous"
+    async>
+  </script>
+
+  <!-- Reload on palette change -->
+  <script>
+    var palette = __md_get("__palette")
+    if (palette && typeof palette.color === "object")
+      if (palette.color.scheme === "slate") {
+        var giscus = document.querySelector("script[src*=giscus]")
+        giscus.setAttribute("data-theme", "dark") 
+      }
+
+    /* Register event handlers after documented loaded */
+    document.addEventListener("DOMContentLoaded", function() {
+      var ref = document.querySelector("[data-md-component=palette]")
+      ref.addEventListener("change", function() {
+        var palette = __md_get("__palette")
+        if (palette && typeof palette.color === "object") {
+          var theme = palette.color.scheme === "slate" ? "dark" : "light"
+
+          /* Instruct Giscus to change theme */
+          var frame = document.querySelector(".giscus-frame")
+          frame.contentWindow.postMessage(
+            { giscus: { setConfig: { theme } } },
+            "https://giscus.app"
+          )
+        }
+      })
+    })
+  </script>
+
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2021 - 2022 Little Bee
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/littlebee1024" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://hub.docker.com/r/littlebee1024" target="_blank" rel="noopener" title="hub.docker.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M349.9 236.3h-66.1v-59.4h66.1zm0-204.3h-66.1v60.7h66.1zm78.2 144.8H362v59.4h66.1zm-156.3-72.1h-66.1v60.1h66.1zm78.1 0h-66.1v60.1h66.1zm276.8 100c-14.4-9.7-47.6-13.2-73.1-8.4-3.3-24-16.7-44.9-41.1-63.7l-14-9.3-9.3 14c-18.4 27.8-23.4 73.6-3.7 103.8-8.7 4.7-25.8 11.1-48.4 10.7H2.4c-8.7 50.8 5.8 116.8 44 162.1 37.1 43.9 92.7 66.2 165.4 66.2 157.4 0 273.9-72.5 328.4-204.2 21.4.4 67.6.1 91.3-45.2 1.5-2.5 6.6-13.2 8.5-17.1zm-511.1-27.9h-66v59.4h66.1v-59.4zm78.1 0h-66.1v59.4h66.1zm78.1 0h-66.1v59.4h66.1zm-78.1-72.1h-66.1v60.1h66.1z"/></svg>
+    </a>
+  
+    
+    
+    
+    
+    <a href="mailto:littlebee1024@outlook.com" target="_blank" rel="noopener" title="" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m20 8-8 5-8-5V6l8 5 8-5m0-2H4c-1.11 0-2 .89-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.top", "navigation.tracking", "search.highlight", "search.share", "search.suggest"], "search": "../../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.60a45f97.min.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

@@ -1,0 +1,22 @@
+<html>
+
+<head>
+   <meta charset="UTF-8">
+   <script src="https://unpkg.com/vue@next"></script>
+</head>
+
+<body>
+   <div id="app">
+      <button @click="toggle">Toggle Button</button>
+      <button @click="update">Update Button</button>
+      <div v-if="active">
+         <life-cycle :text="message" />
+      </div>
+      <div v-else>
+         <p>Life Cycle Component is deactive</p>
+      </div>
+   </div>
+   <script src="index.js"></script>
+</body>
+
+</html>

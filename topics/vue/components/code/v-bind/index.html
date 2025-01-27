@@ -1,0 +1,25 @@
+<html>
+
+<head>
+   <meta charset="UTF-8">
+   <script src="https://unpkg.com/vue@next"></script>
+</head>
+
+<div id="app">
+   <!-- 绑定 span 属性 title -->
+   <span v-bind:title="data">
+      鼠标悬停几秒钟查看此处动态绑定的提示信息(通过v-bind将title和data绑定)
+   </span>
+</div>
+
+<script>
+   const vm = Vue.createApp({
+      data() {
+         return {
+            data: 'user title'
+         }
+      }
+   }).mount('#app')
+</script>
+
+</html>

@@ -1,0 +1,33 @@
+<html>
+
+<head>
+   <meta charset="UTF-8">
+   <script src="https://unpkg.com/vue@next"></script>
+</head>
+
+<div id="app">
+   <div v-if="type === 'A'">
+      A
+   </div>
+   <div v-else-if="type === 'B'">
+      B
+   </div>
+   <div v-else-if="type === 'C'">
+      C
+   </div>
+   <div v-else>
+      Not A/B/C
+   </div>
+</div>
+
+<script>
+   const vm = Vue.createApp({
+      data() {
+         return {
+            type: 'A'
+         }
+      }
+   }).mount('#app')
+</script>
+
+</html>

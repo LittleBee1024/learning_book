@@ -1,0 +1,2435 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="A blog about technical things, such as book notes and simple topics.">
+      
+      
+        <meta name="author" content="Little Bee">
+      
+      
+        <link rel="canonical" href="https://littlebee1024.github.io/learning_book/booknotes/cpp_debug/01/">
+      
+      
+        <link rel="prev" href="../../ml/svm/">
+      
+      
+        <link rel="next" href="../02/">
+      
+      
+      <link rel="icon" href="../../../home/logo.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.50">
+    
+    
+      
+        <title>调试符号和调试器 - Little Bee Blog</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.a40c8224.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noto+Sans+Simplified+Chinese:300,300i,400,400i,700,700i%7CConsolas:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Noto Sans Simplified Chinese";--md-code-font:"Consolas"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+  
+
+
+  
+  
+
+<script id="__analytics">function __md_analytics(){function e(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],e("js",new Date),e("config","G-G2RFHH3DL4"),document.addEventListener("DOMContentLoaded",(function(){document.forms.search&&document.forms.search.query.addEventListener("blur",(function(){this.value&&e("event","search",{search_term:this.value})}));document$.subscribe((function(){var t=document.forms.feedback;if(void 0!==t)for(var a of t.querySelectorAll("[type=submit]"))a.addEventListener("click",(function(a){a.preventDefault();var n=document.location.pathname,d=this.getAttribute("data-md-value");e("event","feedback",{page:n,data:d}),t.firstElementChild.disabled=!0;var r=t.querySelector(".md-feedback__note [data-md-value='"+d+"']");r&&(r.hidden=!1)})),t.hidden=!1})),location$.subscribe((function(t){e("config","G-G2RFHH3DL4",{page_path:t.pathname})}))}));var t=document.createElement("script");t.async=!0,t.src="https://www.googletagmanager.com/gtag/js?id=G-G2RFHH3DL4",document.getElementById("__analytics").insertAdjacentElement("afterEnd",t)}</script>
+  
+    <script>"undefined"!=typeof __md_analytics&&__md_analytics()</script>
+  
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="orange" data-md-color-accent="orange">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#_1" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="Little Bee Blog" class="md-header__button md-logo" aria-label="Little Bee Blog" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17.4 9C17 7.8 16.2 7 15 6.5V5h-1v1.4h-.4c-1.1 0-2 .4-2.8 1.2l-.4.4L9 7.5c-.3-.1-.6-.2-1-.2-.6 0-1.2.2-1.7.6-.6.4-.9.9-1.1 1.4-.2.7-.2 1.3 0 2 .3.7.6 1.2 1.1 1.5-.4 1.5-.1 2.8 1 3.9.8.8 1.7 1.2 2.8 1.2.5 0 .8 0 1.1-.1.6.8 1.4 1.3 2.4 1.3.3 0 .7 0 1-.1.6-.2 1-.6 1.4-1.1.4-.6.6-1.1.6-1.7 0-.4 0-.7-.1-1l-.5-1.6.6-.4c.8-.8 1.2-1.9 1.1-3.1H19V9zm-9.7 2.3c-.6-.3-.8-.7-.6-1.3q.3-.9 1.2-.6l3.2 1.2c-1.6.8-2.8 1-3.8.7m6.3 5.6c-.6.2-1 0-1.3-.6-.3-1-.1-2.2.7-3.8l1.2 3.1c.2.7 0 1.1-.6 1.3m1.2-5.3-.6-1.6v-.1l-.3-.3h-.1L12.6 9c.4-.3.8-.5 1.3-.5s1 .2 1.4.6.6.8.6 1.3c-.2.3-.4.8-.7 1.2"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Little Bee Blog
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              调试符号和调试器
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="orange" data-md-color-accent="orange"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="orange" data-md-color-accent="orange"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/littlebee1024/learning_book" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    littlebee1024/learning_book
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../.." class="md-tabs__link">
+        
+  
+    
+  
+  首页
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+    
+  
+  
+    
+    
+      
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../cxydzwxy/concurrency/" class="md-tabs__link">
+          
+  
+  笔记
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../topics/webassembly/" class="md-tabs__link">
+          
+  
+  专题
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../essays/20250127/" class="md-tabs__link">
+          
+  
+  随笔
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Little Bee Blog" class="md-nav__button md-logo" aria-label="Little Bee Blog" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17.4 9C17 7.8 16.2 7 15 6.5V5h-1v1.4h-.4c-1.1 0-2 .4-2.8 1.2l-.4.4L9 7.5c-.3-.1-.6-.2-1-.2-.6 0-1.2.2-1.7.6-.6.4-.9.9-1.1 1.4-.2.7-.2 1.3 0 2 .3.7.6 1.2 1.1 1.5-.4 1.5-.1 2.8 1 3.9.8.8 1.7 1.2 2.8 1.2.5 0 .8 0 1.1-.1.6.8 1.4 1.3 2.4 1.3.3 0 .7 0 1-.1.6-.2 1-.6 1.4-1.1.4-.6.6-1.1.6-1.7 0-.4 0-.7-.1-1l-.5-1.6.6-.4c.8-.8 1.2-1.9 1.1-3.1H19V9zm-9.7 2.3c-.6-.3-.8-.7-.6-1.3q.3-.9 1.2-.6l3.2 1.2c-1.6.8-2.8 1-3.8.7m6.3 5.6c-.6.2-1 0-1.3-.6-.3-1-.1-2.2.7-3.8l1.2 3.1c.2.7 0 1.1-.6 1.3m1.2-5.3-.6-1.6v-.1l-.3-.3h-.1L12.6 9c.4-.3.8-.5 1.3-.5s1 .2 1.4.6.6.8.6 1.3c-.2.3-.4.8-.7 1.2"/></svg>
+
+    </a>
+    Little Bee Blog
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/littlebee1024/learning_book" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    littlebee1024/learning_book
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    首页
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    笔记
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            笔记
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_1" id="__nav_2_1_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    程序员的自我修养
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            程序员的自我修养
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cxydzwxy/concurrency/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    并发
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cxydzwxy/compile/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    编译
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_1_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_1_3" id="__nav_2_1_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    链接
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_1_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_1_3">
+            <span class="md-nav__icon md-icon"></span>
+            链接
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cxydzwxy/link/static/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    静态链接
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cxydzwxy/link/dynamic/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    动态链接
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cxydzwxy/load/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    装载
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Debug Hacks
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            Debug Hacks
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../debug_hacks/basic/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    调试前的必知必会
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../debug_hacks/advance/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    高级调试技术
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../debug_hacks/gdb/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    GDB
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../debug_hacks/dwarf/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    DWARF
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_3" id="__nav_2_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Linux高性能服务器编程
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            Linux高性能服务器编程
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hplsp/tcp_ip/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    TCP/IP协议
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hplsp/socket/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    套接字基础
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hplsp/multi_io/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    IO复用
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hplsp/adv_io/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    高级IO函数
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_4" id="__nav_2_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Linux设备驱动程序
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_4">
+            <span class="md-nav__icon md-icon"></span>
+            Linux设备驱动程序
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ldd/module/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    内核模块
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ldd/cdev/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    字符设备驱动
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ldd/io/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    高级I/O操作
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ldd/mem_port/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    与硬件通信
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_5" id="__nav_2_5_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    深入理解计算机系统
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_5">
+            <span class="md-nav__icon md-icon"></span>
+            深入理解计算机系统
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../csapp/01/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    计算机漫游
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../csapp/02/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    信息的表示和处理
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../csapp/03/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    程序的机器表示
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../csapp/04/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    处理器体系结构
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../csapp/05/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    优化程序性能
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../csapp/08/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    异常流控制
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../csapp/09/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    虚拟内存
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../csapp/10/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    系统级I/O
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_6" id="__nav_2_6_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    机器学习
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_6">
+            <span class="md-nav__icon md-icon"></span>
+            机器学习
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ml/linear_reg/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    线性回归
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ml/naive_bayes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    朴素贝叶斯法
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ml/decision_tree/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    决策树
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ml/perceptron/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    感知机
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ml/svm/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    支持向量机
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_7" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2_7" id="__nav_2_7_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    高效C/C++调试
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_7_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2_7">
+            <span class="md-nav__icon md-icon"></span>
+            高效C/C++调试
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    调试符号和调试器
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    调试符号和调试器
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      调试符号
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="调试符号">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dwarf" class="md-nav__link">
+    <span class="md-ellipsis">
+      DWARF格式
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      调试器内部
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      调试技巧
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="调试技巧">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#add-symbol-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      add-symbol-file
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      条件断点
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      监测点
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      改变执行及其副作用
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    堆数据结构
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    优化后的二进制
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../10/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    内存调试工具
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    专题
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            专题
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../topics/webassembly/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    WebAssembly
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../topics/cmake/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    CMake
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Vue3
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            Vue3
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../topics/vue/intro/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Vue3简介
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../topics/vue/components/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    组件复用
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../topics/vue/demo/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    样例模板
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../topics/flex_bison/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Flex和Bison
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../topics/tcl_tk_in_c/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Tcl/Tk in C
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    随笔
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            随笔
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../essays/20250127/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    来自AI的开篇
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      调试符号
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="调试符号">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dwarf" class="md-nav__link">
+    <span class="md-ellipsis">
+      DWARF格式
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      调试器内部
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      调试技巧
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="调试技巧">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#add-symbol-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      add-symbol-file
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      条件断点
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      监测点
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      改变执行及其副作用
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+  
+                  
+
+
+<h1 id="_1">调试符号和调试器<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p><a href="http://www.tup.tsinghua.edu.cn/Wap/tsxqy.aspx?id=10204101">《高效C/C++调试》 - 严琦</a>，第一章的读书笔记，本文中的所有代码可在<a href="https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cpp_debug/01/code">GitHub仓库</a>中找到</p>
+</blockquote>
+<h2 id="_2">调试符号<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<p>常见的调试符号有以下几类：</p>
+<ul>
+<li>全局函数和变量</li>
+<li>源文件和行信息</li>
+<li>类型信息</li>
+<li>静态函数和局部变量</li>
+<li>架构和编译器依赖信息</li>
+</ul>
+<h3 id="dwarf">DWARF格式<a class="headerlink" href="#dwarf" title="Permanent link">&para;</a></h3>
+<p><a href="https://dwarfstd.org/">DWARF格式</a>是Linux系统中的标准调试符号格式。DWARF以树形结构组织调试符号。每一个树节点都是一个调试信息记录(Debug Information Entry, DIE)。</p>
+<p>下面我们以<a href="https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cpp_debug/01/code/dwarf/foo.cpp">foo.cpp</a>为例介绍DWARF格式：</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="n">gInt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">GlobalFunc</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">gInt</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+<p>我们可以用<code>readelf --debug-dump foo.o</code>命令查看调试符号的各种信息。调试符号被划分为多个节(section)：</p>
+<ul>
+<li><code>.debug_abbrev</code>节<ul>
+<li>缩略表中记录DIE的模板，用于真实DIE项的索引</li>
+</ul>
+</li>
+<li><code>.debug_info</code>节<ul>
+<li>包含了调试符号的核心内容，其中每个DIE都指定了其在缩略表中的索引</li>
+</ul>
+</li>
+<li><code>.debug_line</code>节<ul>
+<li>用于将指令地址映射到源代码行号</li>
+</ul>
+</li>
+<li><code>.eh_frame</code>节(或<code>.debug_frame</code>节)<ul>
+<li>描述了函数的栈帧和寄存器的分配方式</li>
+</ul>
+</li>
+</ul>
+<p>以<code>GlobalFunc</code>函数的参数<code>int i</code>为例，其在汇编代码"foo.s"中编码如下：</p>
+<div class="highlight"><pre><span></span><code><span class="na">.uleb128</span><span class="w"> </span><span class="mi">0x5</span>
+<span class="na">.string</span><span class="w"> </span><span class="s">&quot;i&quot;</span>
+<span class="na">.byte</span><span class="w">   </span><span class="mi">0x1</span>
+<span class="na">.byte</span><span class="w">   </span><span class="mi">0x2</span>
+<span class="na">.byte</span><span class="w">   </span><span class="mi">0x14</span>
+<span class="na">.long</span><span class="w">   </span><span class="mi">0x44</span>
+<span class="na">.uleb128</span><span class="w"> </span><span class="mi">0x2</span>
+<span class="na">.byte</span><span class="w">   </span><span class="mi">0x91</span>
+<span class="na">.sleb128</span><span class="w"> </span><span class="mi">-20</span>
+<span class="na">.byte</span><span class="w">   </span><span class="mi">0</span>
+</code></pre></div>
+<p>参数<code>int i</code>的DIE在<code>.debug_info</code>段中内容如下：
+<div class="highlight"><pre><span></span><code> &lt;2&gt;&lt;6d&gt;: Abbrev Number: 5 (DW_TAG_formal_parameter)
+    &lt;6e&gt;   DW_AT_name        : i
+    &lt;70&gt;   DW_AT_decl_file   : 1
+    &lt;71&gt;   DW_AT_decl_line   : 2
+    &lt;72&gt;   DW_AT_decl_column : 20
+    &lt;73&gt;   DW_AT_type        : &lt;0x44&gt;
+    &lt;77&gt;   DW_AT_location    : 2 byte block: 91 6c  (DW_OP_fbreg: -20)
+</code></pre></div></p>
+<p>其对应的原始数据可通过<code>objdump -s --section=.debug_info foo.o</code>命令查看：</p>
+<ul>
+<li><code>05 6900 01 02 14 44000000 02 916c 00</code></li>
+</ul>
+<p>参数<code>int i</code>的DIE含义包括：</p>
+<ul>
+<li>这个DIE在缩略表中的索引是5</li>
+<li>参数名称是“i”</li>
+<li>它出现在第1个文件中</li>
+<li>它位于该文件的第2行，第20列</li>
+<li>参数的类型有另一个DIE(引用为0x44)来描述</li>
+<li>参数的存储位置由接下来的2字节指示，这对应于相对于寄存器fbreg的偏移量-20</li>
+<li>最后这个DIE以一共0字节结束</li>
+</ul>
+<h2 id="_3">调试器内部<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<p>Linux内核提供了一个系统调用<code>ptrace</code>，允许一个进程(调试器或其他工具，如系统调用追踪器strace)查询和控制另一个进程(被调试程序)的执行。<code>ptrace</code>提供了以下功能：</p>
+<ul>
+<li>读写被调试进程内存地址空间中的内容，包括文本和数据段</li>
+<li>查询和修改被调试进程的用户区域信息，例如寄存器等</li>
+<li>查询和修改被调试进程的信号信息和设置</li>
+</ul>
+<p>GDB的断点就是利用<code>ptrace</code>实现的。假设函数<code>main</code>的起始地址为<code>0x400590</code>，GDB在<code>main</code>处设置断点，接下来的过程大致如下：</p>
+<ul>
+<li>GDB读取地址<code>0x400590</code>处的代码</li>
+<li>GDB使用<code>PTRACE_POKEDATA</code>请求替换该地址的代码，将最低字节更改为<code>0xcc</code>。<code>0xcc</code>是一种特殊的陷阱指令<a href="https://stackoverflow.com/questions/61816297/what-is-int-3-really-supposed-to-do">INT3</a>，当Linux系统遇到<code>INT3</code>指令，会产生<code>SIGTRAP</code>信号。调试器接收到<code>SIGTRAP</code>信号后，会判断是否存在断点或监控点，从而做出对应的动作</li>
+<li>被调试的程序执行陷阱指令<code>0xcc</code>，进入暂停状态，并向GDB发送<code>SIGTRAP</code>信号</li>
+<li>GDB收到信号后，采取相应的动作。例如，如果存在断点且满足条件，GDB会等待用户调试命令</li>
+<li>如果我们继续执行程序，GDB会替换回<code>0x400590</code>处的原始指令，并使用<code>PTRACE_SINGLESTEP</code>请求执行单个指令</li>
+</ul>
+<h2 id="_4">调试技巧<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<h3 id="add-symbol-file">add-symbol-file<a class="headerlink" href="#add-symbol-file" title="Permanent link">&para;</a></h3>
+<p>如果我们要调试的程序没有<code>debug</code>信息，可以通过<code>add-symbol-file</code>命令手动导入<code>debug</code>信息进行调试。<a href="https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cpp_debug/01/code/add-symbol-file">"add-symbol-file"</a>例子展示了如何利用<code>add-symbol-file</code>命令调试缺失调试信息的程序。</p>
+<p>需要<strong>注意</strong>的是：要想成功导入调试信息，需保证调试信息必须和被调试程序一致，包括优化等级等。否则，断点仍会因为地址不对而无法工作。</p>
+<div class="highlight"><pre><span></span><code>sh&gt;<span class="w"> </span>gdb<span class="w"> </span>-q<span class="w"> </span>./main
+Reading<span class="w"> </span>symbols<span class="w"> </span>from<span class="w"> </span>./main...
+<span class="o">(</span>No<span class="w"> </span>debugging<span class="w"> </span>symbols<span class="w"> </span>found<span class="w"> </span><span class="k">in</span><span class="w"> </span>./main<span class="o">)</span>
+<span class="o">(</span>gdb<span class="o">)</span><span class="w"> </span>b<span class="w"> </span>main
+Breakpoint<span class="w"> </span><span class="m">1</span><span class="w"> </span>at<span class="w"> </span>0x401136
+<span class="c1"># 由于可执行文件“main”不包含调试信息，所以断点信息不全</span>
+<span class="o">(</span>gdb<span class="o">)</span><span class="w"> </span>info<span class="w"> </span>b
+Num<span class="w">     </span>Type<span class="w">           </span>Disp<span class="w"> </span>Enb<span class="w"> </span>Address<span class="w">            </span>What
+<span class="m">1</span><span class="w">       </span>breakpoint<span class="w">     </span>keep<span class="w"> </span>y<span class="w">   </span>0x0000000000401136<span class="w"> </span>&lt;main+4&gt;
+<span class="c1"># 用“add-symbol-file”导入包含调试信息的“main_d”</span>
+<span class="o">(</span>gdb<span class="o">)</span><span class="w"> </span>add-symbol-file<span class="w"> </span>main_d
+Reading<span class="w"> </span>symbols<span class="w"> </span>from<span class="w"> </span>main_d...
+<span class="c1"># 断点在&quot;main.c:6&quot;处</span>
+<span class="o">(</span>gdb<span class="o">)</span><span class="w"> </span>info<span class="w"> </span>b
+Num<span class="w">     </span>Type<span class="w">           </span>Disp<span class="w"> </span>Enb<span class="w"> </span>Address<span class="w">            </span>What
+<span class="m">1</span><span class="w">       </span>breakpoint<span class="w">     </span>keep<span class="w"> </span>y<span class="w">   </span>0x000000000040113a<span class="w"> </span><span class="k">in</span><span class="w"> </span>main<span class="o">()</span><span class="w"> </span>at<span class="w"> </span>main.c:6
+<span class="c1"># 启动程序后，停在了断点处</span>
+<span class="o">(</span>gdb<span class="o">)</span><span class="w"> </span>r
+Breakpoint<span class="w"> </span><span class="m">1</span>,<span class="w"> </span>main<span class="w"> </span><span class="o">()</span><span class="w"> </span>at<span class="w"> </span>main.c:6
+<span class="m">6</span><span class="w">          </span>init<span class="o">()</span><span class="p">;</span>
+<span class="c1"># 由于“libsym.so”不包含调试信息，所以无法在“mm_symbol.c:init”处打断点</span>
+<span class="o">(</span>gdb<span class="o">)</span><span class="w"> </span>b<span class="w"> </span>mm_symbol.c:init
+No<span class="w"> </span><span class="nb">source</span><span class="w"> </span>file<span class="w"> </span>named<span class="w"> </span>mm_symbol.c.
+Make<span class="w"> </span>breakpoint<span class="w"> </span>pending<span class="w"> </span>on<span class="w"> </span>future<span class="w"> </span>shared<span class="w"> </span>library<span class="w"> </span>load?<span class="w"> </span><span class="o">(</span>y<span class="w"> </span>or<span class="w"> </span><span class="o">[</span>n<span class="o">])</span><span class="w"> </span>y
+Breakpoint<span class="w"> </span><span class="m">2</span><span class="w"> </span><span class="o">(</span>mm_symbol.c:init<span class="o">)</span><span class="w"> </span>pending.
+<span class="o">(</span>gdb<span class="o">)</span><span class="w"> </span>info<span class="w"> </span>b
+Num<span class="w">     </span>Type<span class="w">           </span>Disp<span class="w"> </span>Enb<span class="w"> </span>Address<span class="w">            </span>What
+<span class="m">1</span><span class="w">       </span>breakpoint<span class="w">     </span>keep<span class="w"> </span>y<span class="w">   </span>0x000000000040113a<span class="w"> </span><span class="k">in</span><span class="w"> </span>main<span class="o">()</span><span class="w"> </span>at<span class="w"> </span>main.c:6
+<span class="w">        </span>breakpoint<span class="w"> </span>already<span class="w"> </span>hit<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="nb">time</span>
+<span class="m">2</span><span class="w">       </span>breakpoint<span class="w">     </span>keep<span class="w"> </span>y<span class="w">   </span>&lt;PENDING&gt;<span class="w">          </span>mm_symbol.c:init
+<span class="o">(</span>gdb<span class="o">)</span><span class="w"> </span>info<span class="w"> </span>sharedlibrary<span class="w"> </span>
+From<span class="w">                </span>To<span class="w">                  </span>Syms<span class="w"> </span>Read<span class="w">   </span>Shared<span class="w"> </span>Object<span class="w"> </span>Library
+0x00007ffff7dd5030<span class="w">  </span>0x00007ffff7df4214<span class="w">  </span>Yes<span class="w"> </span><span class="o">(</span>*<span class="o">)</span><span class="w">     </span>/lib64/ld-linux-x86-64.so.2
+0x00007ffff7ff1040<span class="w">  </span>0x00007ffff7ff115d<span class="w">  </span>Yes<span class="w"> </span><span class="o">(</span>*<span class="o">)</span><span class="w">     </span>./libsym.so
+<span class="c1"># 导入&quot;libsym_d.so&quot;的调试信息“libsym.sym”到指定地址“0x00007ffff7ff1040”</span>
+<span class="c1"># 共享库地址可通过“info sharedlibrary”找到，“libsym.sym”由</span>
+<span class="c1"># “objcopy --only-keep-debug libsym_d.so libsym.sym”</span>
+<span class="c1"># 命令产生，当然也可以直接从“libsym_d.so”导入调试信息。</span>
+<span class="o">(</span>gdb<span class="o">)</span><span class="w"> </span>add-symbol-file<span class="w"> </span>libsym.sym<span class="w"> </span>0x00007ffff7ff1040
+Reading<span class="w"> </span>symbols<span class="w"> </span>from<span class="w"> </span>libsym.sym...
+<span class="c1"># 调试信息导入成功后，成功在“mm_symbol.c:init”处打上了断点</span>
+<span class="o">(</span>gdb<span class="o">)</span><span class="w"> </span>info<span class="w"> </span>b
+Num<span class="w">     </span>Type<span class="w">           </span>Disp<span class="w"> </span>Enb<span class="w"> </span>Address<span class="w">            </span>What
+<span class="m">1</span><span class="w">       </span>breakpoint<span class="w">     </span>keep<span class="w"> </span>y<span class="w">   </span>0x000000000040113a<span class="w"> </span><span class="k">in</span><span class="w"> </span>main<span class="o">()</span><span class="w"> </span>at<span class="w"> </span>main.c:6
+<span class="w">        </span>breakpoint<span class="w"> </span>already<span class="w"> </span>hit<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="nb">time</span>
+<span class="m">2</span><span class="w">       </span>breakpoint<span class="w">     </span>keep<span class="w"> </span>y<span class="w">   </span>0x00007ffff7ff10f9<span class="w"> </span><span class="k">in</span><span class="w"> </span>init<span class="o">()</span><span class="w"> </span>at<span class="w"> </span>mm_symbol.c:7
+<span class="o">(</span>gdb<span class="o">)</span><span class="w"> </span>c
+Continuing.
+Breakpoint<span class="w"> </span><span class="m">2</span>,<span class="w"> </span>init<span class="w"> </span><span class="o">()</span><span class="w"> </span>at<span class="w"> </span>mm_symbol.c:7
+<span class="m">7</span><span class="w">          </span>g_blocks<span class="o">[</span><span class="m">0</span><span class="o">]</span>.size<span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="p">;</span>
+<span class="o">(</span>gdb<span class="o">)</span><span class="w"> </span>c
+Continuing.
+g_blocks<span class="o">[</span><span class="m">0</span><span class="o">]=</span>0x404040,<span class="w"> </span>g_blocks<span class="o">[</span><span class="m">0</span><span class="o">]</span>.size<span class="o">=</span><span class="m">1</span>,<span class="w"> </span>g_blocks<span class="o">[</span><span class="m">0</span><span class="o">]</span>.prev<span class="o">=(</span>nil<span class="o">)</span>,<span class="w"> </span>g_blocks<span class="o">[</span><span class="m">0</span><span class="o">]</span>.next<span class="o">=</span>0x404058
+g_blocks<span class="o">[</span><span class="m">1</span><span class="o">]=</span>0x404058,<span class="w"> </span>g_blocks<span class="o">[</span><span class="m">1</span><span class="o">]</span>.size<span class="o">=</span><span class="m">2</span>,<span class="w"> </span>g_blocks<span class="o">[</span><span class="m">1</span><span class="o">]</span>.prev<span class="o">=</span>0x404040,<span class="w"> </span>g_blocks<span class="o">[</span><span class="m">1</span><span class="o">]</span>.next<span class="o">=(</span>nil<span class="o">)</span>
+<span class="o">[</span>Inferior<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="o">(</span>process<span class="w"> </span><span class="m">22107</span><span class="o">)</span><span class="w"> </span>exited<span class="w"> </span>normally<span class="o">]</span>
+</code></pre></div>
+<h3 id="_5">条件断点<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h3>
+<p>下面是常见的条件断点设置方法：</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 忽略断点(1) 100次</span>
+<span class="o">(</span>gdb<span class="o">)</span><span class="w"> </span>ignore<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="m">100</span>
+<span class="c1"># 在变量index为5的条件下在函数foo入口处停止</span>
+<span class="o">(</span>gdb<span class="o">)</span><span class="w"> </span><span class="k">break</span><span class="w"> </span>foo<span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nv">index</span><span class="o">==</span><span class="m">5</span>
+<span class="c1"># 在指令地址0x12345678处设置断点，且函数`GetRefCount`返回值为0时才生效</span>
+<span class="c1"># GDB还提供了常用的函数用于设置条件断点，如字符串比较函数“$_streq”，更多函数可参见：</span>
+<span class="c1">#   https://sourceware.org/gdb/current/onlinedocs/gdb.html/Convenience-Funs.html</span>
+<span class="o">(</span>gdb<span class="o">)</span><span class="w"> </span><span class="k">break</span><span class="w"> </span>*0x12345678<span class="w"> </span><span class="k">if</span><span class="w"> </span>GetRefCount<span class="o">(</span>this<span class="o">)==</span><span class="m">0</span>
+</code></pre></div>
+<h3 id="_6">监测点<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h3>
+<p>断点可以设置在代码中，也可以设置在数据对象上。后者被称为监测点，或者数据断点。</p>
+<p>断点和监测点使用不同的机制实现。如前面所述，调试器是通过将指定位置的指令替换为短陷阱指令来设置断点，原来的指令代码被保存在缓冲区。当程序执行到陷阱指令，也就是达到断点时，内核会停止程序运行并通知调试器，后者从等待中醒来，显示所跟踪程序的状态，然后等待用户的下一条命令。</p>
+<p>监测点不能用指令断点的方法实现，因为数据对象是不可执行的。所以它的实现是要么定期地(软件模式)查询数据的值，要么使用CPU支持的调试寄存器(硬件模式)。软件监测点是通过单步运行程序并在每一步检查被跟踪的变量来实现的，这种方式使程序比正常运行要慢数百倍。</p>
+<p>由于单步运行(软件模式)不能保证在多线程环境下的结果一致性，因此在多线程和多处理器的环境下，这种方法可能无法捕获到数据被访问的瞬间。硬件监测点则没有这个问题，因为被跟踪的变量的计算是由硬件完成的，调试器不用介入，它根本不会减慢程序的执行速度。但是由于CPU调试寄存器个数的限制，如果监测点表达式很复杂或需要设置很多监测点，调试器会<strong>隐式</strong>地回归到软件监测点。</p>
+<p><a href="https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cpp_debug/01/code/watch">"watch"</a>例子展示了如何利用<code>watch sum if times &gt;= 2</code>命令设置监控点，监控<code>sum</code>值的变化，并在<code>times</code>大于等于2的条件下触发。</p>
+<div class="highlight"><pre><span></span><code>sh&gt;<span class="w"> </span>gdb<span class="w"> </span>-q<span class="w"> </span>./main<span class="w"> </span>-ex<span class="w"> </span><span class="s1">&#39;b main&#39;</span><span class="w"> </span>-ex<span class="w"> </span><span class="s1">&#39;run&#39;</span><span class="w"> </span>-ex<span class="w"> </span><span class="s1">&#39;watch sum if times &gt;= 2&#39;</span><span class="w"> </span>-ex<span class="w"> </span><span class="s1">&#39;c&#39;</span>
+Breakpoint<span class="w"> </span><span class="m">1</span>,<span class="w"> </span>main<span class="w"> </span><span class="o">()</span><span class="w"> </span>at<span class="w"> </span>main.cpp:5
+<span class="m">5</span><span class="w">           </span>int<span class="w"> </span><span class="nv">sum</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0</span><span class="p">;</span>
+Hardware<span class="w"> </span>watchpoint<span class="w"> </span><span class="m">2</span>:<span class="w"> </span>sum
+Continuing.
+<span class="m">1</span>:<span class="w"> </span><span class="nv">sum</span><span class="o">=</span><span class="m">1</span>
+Hardware<span class="w"> </span>watchpoint<span class="w"> </span><span class="m">2</span>:<span class="w"> </span>sum
+Old<span class="w"> </span><span class="nv">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span>
+New<span class="w"> </span><span class="nv">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">3</span>
+main<span class="w"> </span><span class="o">()</span><span class="w"> </span>at<span class="w"> </span>main.cpp:14
+<span class="m">14</span><span class="w">          </span>printf<span class="o">(</span><span class="s2">&quot;%d: sum=%d\n&quot;</span>,<span class="w"> </span>times,<span class="w"> </span>sum<span class="o">)</span><span class="p">;</span>
+<span class="c1"># 在&quot;times&quot;等于2，&quot;sum&quot;等于3处，成功停住</span>
+<span class="o">(</span>gdb<span class="o">)</span><span class="w"> </span>info<span class="w"> </span>b
+Num<span class="w">     </span>Type<span class="w">           </span>Disp<span class="w"> </span>Enb<span class="w"> </span>Address<span class="w">            </span>What
+<span class="m">1</span><span class="w">       </span>breakpoint<span class="w">     </span>keep<span class="w"> </span>y<span class="w">   </span>0x000000000040112a<span class="w"> </span><span class="k">in</span><span class="w"> </span>main<span class="o">()</span><span class="w"> </span>at<span class="w"> </span>main.cpp:5
+<span class="w">        </span>breakpoint<span class="w"> </span>already<span class="w"> </span>hit<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="nb">time</span>
+<span class="m">2</span><span class="w">       </span>hw<span class="w"> </span>watchpoint<span class="w">  </span>keep<span class="w"> </span>y<span class="w">                      </span>sum
+<span class="w">        </span>stop<span class="w"> </span>only<span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nb">times</span><span class="w"> </span>&gt;<span class="o">=</span><span class="w"> </span><span class="m">2</span>
+<span class="w">        </span>breakpoint<span class="w"> </span>already<span class="w"> </span>hit<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="nb">time</span>
+</code></pre></div>
+<h3 id="_7">改变执行及其副作用<a class="headerlink" href="#_7" title="Permanent link">&para;</a></h3>
+<p>调试器除了可以用来观察被追踪的进程状态，还能够改变被调试进程的状态，从而改变其本来预设的执行路径。其中，最直接的方式是改变变量的值。例如，下面的命令将变量<code>gFlags</code>的值设置为5：
+<div class="highlight"><pre><span></span><code><span class="o">(</span>gdb<span class="o">)</span><span class="w"> </span><span class="nb">set</span><span class="w"> </span>var<span class="w"> </span><span class="nv">gFlags</span><span class="o">=</span><span class="m">5</span>
+</code></pre></div></p>
+<p>下面的代码，调试器调用了函数<code>malloc</code>来分配一个8字节的内存块，并打印出返回的内存地址：
+<div class="highlight"><pre><span></span><code><span class="o">(</span>gdb<span class="o">)</span><span class="w"> </span>print<span class="w"> </span>/x<span class="w"> </span>malloc<span class="o">(</span><span class="m">8</span><span class="o">)</span>
+<span class="w">     </span><span class="nv">$1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>0x501010
+</code></pre></div></p>
+<p>下面的条件断点将启用临时跟踪和日志记录，每次变量<code>sum</code>的值发生改变时，GDB命令都会调用<code>Logme</code>函数将值打印到文件中。但是由于<code>Logme</code>函数一直返回零，所以程序并不会中断。
+<div class="highlight"><pre><span></span><code><span class="o">(</span>gdb<span class="o">)</span><span class="w"> </span>watch<span class="w"> </span>sum<span class="w"> </span><span class="k">if</span><span class="w"> </span>Logme<span class="o">(</span>sum<span class="o">)</span>&gt;0
+</code></pre></div></p>
+<p><a href="https://github.com/LittleBee1024/learning_book/tree/main/docs/booknotes/cpp_debug/01/code/set_var">"set_var"</a>例子展示了如何利用<code>set var</code>命令改变变量的值，并利用<code>watch</code>命令记录<code>sum</code>值的变化情况：</p>
+<div class="highlight"><pre><span></span><code>sh&gt;<span class="w"> </span>make<span class="w"> </span>debug
+<span class="c1"># GDB会执行下面两条指令</span>
+<span class="c1"># (gdb) set var gFlags=5</span>
+<span class="c1"># (gdb) watch sum if Logme(sum)&gt;0</span>
+...
+<span class="c1"># 调式结束后，在&quot;test.log&quot;中，gFlags的值是5而不是0，</span>
+<span class="c1"># var记录了sum变量的值变化过程</span>
+sh&gt;<span class="w"> </span>cat<span class="w"> </span>test.log
+<span class="nv">gFlags</span><span class="o">=</span><span class="m">5</span>,<span class="w"> </span><span class="nv">var</span><span class="o">=</span><span class="m">1</span>
+<span class="nv">gFlags</span><span class="o">=</span><span class="m">5</span>,<span class="w"> </span><span class="nv">var</span><span class="o">=</span><span class="m">3</span>
+<span class="nv">gFlags</span><span class="o">=</span><span class="m">5</span>,<span class="w"> </span><span class="nv">var</span><span class="o">=</span><span class="m">6</span>
+<span class="nv">gFlags</span><span class="o">=</span><span class="m">5</span>,<span class="w"> </span><span class="nv">var</span><span class="o">=</span><span class="m">10</span>
+</code></pre></div>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+                
+
+  <!-- Giscus https://giscus.app/ -->
+  <script src="https://giscus.app/client.js"
+    data-repo="LittleBee1024/learning_book"
+    data-repo-id="R_kgDOGR3spQ"
+    data-category="Q&A"
+    data-category-id="DIC_kwDOGR3spc4B_q-C"
+    data-mapping="title"
+    data-strict="1"
+    data-reactions-enabled="1"
+    data-emit-metadata="0"
+    data-input-position="bottom"
+    data-theme="light"
+    data-lang="zh-CN"
+    crossorigin="anonymous"
+    async>
+  </script>
+
+  <!-- Reload on palette change -->
+  <script>
+    var palette = __md_get("__palette")
+    if (palette && typeof palette.color === "object")
+      if (palette.color.scheme === "slate") {
+        var giscus = document.querySelector("script[src*=giscus]")
+        giscus.setAttribute("data-theme", "dark") 
+      }
+
+    /* Register event handlers after documented loaded */
+    document.addEventListener("DOMContentLoaded", function() {
+      var ref = document.querySelector("[data-md-component=palette]")
+      ref.addEventListener("change", function() {
+        var palette = __md_get("__palette")
+        if (palette && typeof palette.color === "object") {
+          var theme = palette.color.scheme === "slate" ? "dark" : "light"
+
+          /* Instruct Giscus to change theme */
+          var frame = document.querySelector(".giscus-frame")
+          frame.contentWindow.postMessage(
+            { giscus: { setConfig: { theme } } },
+            "https://giscus.app"
+          )
+        }
+      })
+    })
+  </script>
+
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2021 - 2022 Little Bee
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/littlebee1024" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://hub.docker.com/r/littlebee1024" target="_blank" rel="noopener" title="hub.docker.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M349.9 236.3h-66.1v-59.4h66.1zm0-204.3h-66.1v60.7h66.1zm78.2 144.8H362v59.4h66.1zm-156.3-72.1h-66.1v60.1h66.1zm78.1 0h-66.1v60.1h66.1zm276.8 100c-14.4-9.7-47.6-13.2-73.1-8.4-3.3-24-16.7-44.9-41.1-63.7l-14-9.3-9.3 14c-18.4 27.8-23.4 73.6-3.7 103.8-8.7 4.7-25.8 11.1-48.4 10.7H2.4c-8.7 50.8 5.8 116.8 44 162.1 37.1 43.9 92.7 66.2 165.4 66.2 157.4 0 273.9-72.5 328.4-204.2 21.4.4 67.6.1 91.3-45.2 1.5-2.5 6.6-13.2 8.5-17.1zm-511.1-27.9h-66v59.4h66.1v-59.4zm78.1 0h-66.1v59.4h66.1zm78.1 0h-66.1v59.4h66.1zm-78.1-72.1h-66.1v60.1h66.1z"/></svg>
+    </a>
+  
+    
+    
+    
+    
+    <a href="mailto:littlebee1024@outlook.com" target="_blank" rel="noopener" title="" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m20 8-8 5-8-5V6l8 5 8-5m0-2H4c-1.11 0-2 .89-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.tabs", "navigation.top", "navigation.tracking", "search.highlight", "search.share", "search.suggest"], "search": "../../../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.60a45f97.min.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>
